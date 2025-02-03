@@ -1,0 +1,66 @@
+button {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 1px;
+}
+
+/* 
+button:hover {
+    background: #ddd;
+} */
+
+/* Pattern select area at top */
+
+div.flex-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: start;
+    gap: 5px;
+}
+
+#pattern_menu {
+    width: 200px;
+    /* the following doesn't seem to do anything, at least on on macOS Safari */
+    text-overflow: ellipsis;
+}
+
+/* Pattern canvas and the buttons to the right */
+
+#pattern_display_grid {
+    align-items: center;
+}
+
+#pattern_controls_grid {
+    flex-direction: column;
+}
+
+#canvas {
+    border: 1px solid #000000;
+    /* Setting height and width here affects the displayed size, but not the coordinate system
+      and thus not the width and height reported to JavaScript. This is a notorious misfeature.
+      I want the displayed size and coordinate system to match, so I set the canvas dimensions
+      in display.html_template. */
+}
+
+#goto_next_pick_spacer {
+    height: 20px;
+    opacity: 0;
+}
+
+#pick_color {
+    width: 30px;
+    height: 10px;
+    background-color: rgba(0, 0, 0, 0);
+    border-style: solid;
+    border-width: 1px;
+}
+
+#toggle_weave_direction {
+    font-size: 100%;
+}
+
+#weave_direction {
+    width: 30px;
+    height: 30px;
+    font-size: 120%;
+}

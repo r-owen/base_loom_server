@@ -2,13 +2,22 @@
 
 Such web servers are intended to allow you to control your loom from any phone, tablet or other device that has wifi and a web browser.
 
-Used by [seguin_loom_server](<https://pypi.org/project/seguin-loom-server/)>) and [toika_loom_server](https://pypi.org/project/toika-loom-server/).
+Used by [seguin_loom_server](<https://pypi.org/project/seguin-loom-server/)>)
+and [toika_loom_server](https://pypi.org/project/toika-loom-server/).
 
-## Installing this package
+## Installing this Package
 
 * Install [Python](https://www.python.org/downloads/) 3.11 or later on the computer.
 
 * Install this [base_loom_server](https://pypi.org/project/base-loom-server/) package on the computer with command: **pip install base_loom_server**
+
+## Using this Package
+
+* Subclass `BaseMockLoom`; see `ExampleMockLoom` for an example.
+* Subclass `BaseLoomServer`; see `ExampleLoomServer` for an example.
+* Write a `main.py` like the one in this package (which runs `ExampleLoomServer`).
+* The unit tests for `BaseMockLoom` should be able to use `testutils.BaseTestLoomServer`, as `tests/test_loom_server.py` does.
+* Write a `pyproject.toml` like the one for [toika_loom_server](https://pypi.org/project/toika-loom-server/), unless you would rather use a different distribution system.
 
 ## Remembering Patterns
 
@@ -34,9 +43,9 @@ You may also want to reset the database if you are weaving a new project and don
 
     * **pre-commit install** to activate the pre-commit hooks.
 
-* You may run a mock loom by starting the server with: **run_base_loom mock**.
+* You may run a mock loom by starting the server with: **run_example_loom mock**.
   The mock loom does not use a serial port.
-  **run_base_loom** also accepts these command-line arguments:
+  **run_example_loom** also accepts these command-line arguments:
 
     * **--reset-db** Reset the pattern database. Try this if you think the database is corrupted.
 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        {display_css}
+    </style>
+    <title>Loom Control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <div class="flex-container" id="pattern_select_grid">
+        <div>
+            <label>{Pattern}</label>
+            <select name="pattern_menu" id="pattern_menu">
+                <option></option>
+                <hr>
+                <option>{Clear Recents}</option>
+            </select>
+        </div>
+        <form class="upload-form">
+            <input type="file" id="file_input" multiple accept=".wif,.dtx" style="display:none;">
+            <input type="button" value="{Upload}"  id="upload_patterns" onclick="document.getElementById('file_input').click()"/>
+        </form>
+    </div>
+    <p/>
+
+    <div class="flex-container" id="pattern_display_grid">
+        <div>
+            <!-- For best results, the canvas height should be odd. -->
+            <!-- See the style sheet for an explanation of why the dimensions are set here. -->
+            <canvas id="canvas" height="151" width="265"/>
+        </div>
+        <div class="flex-container" id="pattern_controls_grid">
+            <div id="goto_next_pick_spacer"></div>
+            <div><button type="button" id="pick_color"></button></div>
+            <div><button type="button" id="weave_direction">?</button></div>
+        </div>
+    </div>
+
+    <div class="flex-container">
+        <label>{Shafts}</label>
+        <label id="shaft_state"/>
+    </div>
+
+    <div class="flex-container">
+        <label>{Pick}</label>
+        <label id="pick_number"></label>
+        <label>{of}</label>
+        <label id="total_picks">?</label>
+        <label>{repeat}</label>
+        <label id="repeat_number"></label>
+    </div>
+
+    <form action="" id="jump_to_pick_form">
+        <div class="flex-container">
+            <label>{Jump to pick}</label>
+            <input size="5" id="jump_pick_number" inpumode="decimal"></input>
+            <label>{repeat}</label>
+            <input size="3" id="jump_repeat_number" inputmode="decimal"></input>
+            <button type="submit" id="jump_to_pick_submit">{Jump}</button>
+            <button type="button" id="jump_to_pick_reset">{Reset}</button>
+        </div>
+    </form>
+
+    <div class="flex-container">
+        <label>{Status}:</label>
+        <label id="status">disconnected</label>
+    </div>
+
+    <div>
+        <label id="command_problem"/>
+    </div>
+
+    <div style="display:{display_debug_controls}">
+    <hr>
+    <p>Debugging stuff</p>
+    
+    <div class="flex-container">
+        <label>{Command mock loom}</label>
+        <button id="oob_next_pick">{Next Pick}</button>
+        <button id="oob_change_direction">{Change Direction}</button>
+        <button id="oob_close_connection">{Close Connection}</button>
+    </div>
+
+    <div class="flex-container">
+        <label>{Sent command}: </label>
+        <label id='sent_command'/>
+    </div>
+
+    <div class="flex-container">
+        <label>{Read message}: </label>
+        <label id='read_message'/>
+    </div>
+
+    <script>
+        {display_js}
+    </script>
+</body>
+
+</html>
