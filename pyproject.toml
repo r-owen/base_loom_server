@@ -11,9 +11,10 @@ dynamic = ["version"]
 description = "Base package for web servers that control dobby multi-shaft looms"
 readme = "README.md"
 dependencies = [
-  "fastapi >= 0.115",
-  "dtx_to_wif >= 3.0",
-  "pyserial-asyncio >= 0.6",
+  "aiosqlite >= 0.20",
+  "dtx_to_wif ~= 3.0",
+  "fastapi[standard] ~= 0.115",
+  "pyserial-asyncio ~= 0.6",
 ]
 authors = [
   { name="Russell Owen", email="r3owen@gmail.com" },
@@ -27,9 +28,9 @@ requires-python = ">=3.11"
 
 [project.optional-dependencies]
 dev = [
-  "pre-commit >= 3.8",
-  "pytest >= 8.3",
-  "pytest-asyncio >= 0.24",
+  "pre-commit ~= 4.0",
+  "pytest ~= 8.3",
+  "pytest-asyncio ~= 0.25",
 ]
 
 # Needed due to including package data below
