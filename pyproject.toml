@@ -33,19 +33,6 @@ dev = [
   "pytest-asyncio ~= 0.25",
 ]
 
-# Needed due to including package data below
-[tool.setuptools.packages.find]
-where = ["src"]
-
-[tool.setuptools.package-data]
-"base_loom_server" = [
-  "py.typed",
-  "display.css",
-  "display.html_template",
-  "display.js",
-  "favicon-32x32.png"
-]
-
 [project.scripts]
 run_example_loom = "base_loom_server.main:run_example_loom"
 
