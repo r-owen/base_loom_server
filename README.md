@@ -38,18 +38,28 @@ You may also want to reset the database if you are weaving a new project and don
 
 * Inside the directory, issue the following commands:
 
-    * **pip install -e .** (note the final period) to make an "editable installation" of the package.
+    * **pip install -e .'[dev]'** (the single quotes are required in zsh, but not in bash)
+      to make an "editable installation" of the package.
       An editable installation runs from the source code, so changes you make to the source are used when you run or test the code, without the need to reinstall the package.
+      **'[dev]'** installs development-related packages such as pytest (see the file `pyproject.toml` for the full list).
 
     * **pre-commit install** to activate the pre-commit hooks.
+    
+    * **pytest** to test your installation.
 
-* You may run a mock loom by starting the server with: **run_example_loom mock**.
-  The mock loom does not use a serial port.
-  **run_example_loom** also accepts these command-line arguments:
+* You may run an example loom server with: **run_example_loom mock**.
+  Please only specify the **mock** serial port; do not try to connect the example loom server
+  to any real dobby loom, because it will not work.
+
+  **run_example_loom mock** also accepts these command-line arguments:
 
     * **--reset-db** Reset the pattern database. Try this if you think the database is corrupted.
 
     * **--verbose** Print more diagnostic information.
+  
+  Note that the example loom server uses the same pattern database as
+  [seguin_loom_server](<https://pypi.org/project/seguin-loom-server/)>)
+  and [toika_loom_server](https://pypi.org/project/toika-loom-server/).
 
 * In mock mode the web page shows a few extra controls for debugging.
 
