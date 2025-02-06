@@ -384,7 +384,6 @@ class LoomClient {
             pickColorElt.style.backgroundColor = this.currentPattern.color_table[pick.color]
         } else {
             pickColorElt.style.backgroundColor = "rgb(0, 0, 0, 0)"
-            shaftsRaisedElt.textContent = ""
         }
         var canvas = document.getElementById("canvas")
         var ctx = canvas.getContext("2d")
