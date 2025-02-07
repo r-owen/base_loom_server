@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 __all__ = ["BaseMockLoom"]
 
 from .base_mock_loom import BaseMockLoom

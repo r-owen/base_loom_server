@@ -19,6 +19,30 @@ LOCALE_FILES = PKG_FILES.joinpath("locales")
 
 
 class AppRunner:
+    """Run the loom server application.
+
+    This contains the web server's endpoints,
+    the lifespan context manager,
+    and a method to create the argument parser.
+
+    In order to use this you *must* create an instance on import
+    (i.e. at the module level), typically in `main.py'.
+    If you defer creation, the web server will not see the endpoints!
+    See ``main.py`` for an example.
+
+    Parameters
+    ----------
+    app : FastAPI
+        The application, generated with ``app = FastAPI()``
+    server_class : Type[BaseLoomServer]
+        Your loom server class (NOT an instance, but the class itself).
+    favicon : bytes
+        A 32x32 or so favicon. None if empty.
+    app_package_name : the name of the python package for your loom server,
+        e.g. "toika_loom_server". This is used by the `run` method,
+        as an argument to `uvicorn.run`.
+    """
+
     def __init__(
         self,
         app: FastAPI,
@@ -52,9 +76,11 @@ class AppRunner:
         async def get_wrapper():
             return await self.get()
 
-        @router.get("/favicon.ico", include_in_schema=False)
-        async def get_favicon():
-            return await self.get_favicon()
+        if self.favicon:
+
+            @router.get("/favicon.ico", include_in_schema=False)
+            async def get_favicon():
+                return await self.get_favicon()
 
         @router.websocket("/ws")
         async def websocket_endpoint_wrapper(websocket: WebSocket):
@@ -63,6 +89,10 @@ class AppRunner:
         app.include_router(router)
 
     def create_argument_parser(self) -> argparse.ArgumentParser:
+        """Create the argument parser.
+
+        Subclasses may override this to add more options.
+        """
         parser = argparse.ArgumentParser()
         parser.add_argument(
             "serial_port",
@@ -98,6 +128,13 @@ class AppRunner:
 
     @asynccontextmanager
     async def lifespan(self, app: FastAPI) -> AsyncGenerator[None, FastAPI]:
+        """Lifespan context manager for fastAPI.
+
+        Load the translation dict and create the sole instance of
+        the loom server class. That loom server instance persists
+        for the entire time the web server is running. This is because
+        the loom server speaks to one loom and serves at most one user.
+        """
         self.translation_dict = self.get_translation_dict()
 
         parser = self.create_argument_parser()
@@ -138,6 +175,7 @@ class AppRunner:
         return translation_dict
 
     async def get(self) -> HTMLResponse:
+        """Endpoint to get the main page."""
         display_html_template = PKG_FILES.joinpath("display.html_template").read_text()
 
         display_css = PKG_FILES.joinpath("display.css").read_text()
@@ -164,13 +202,16 @@ class AppRunner:
         return HTMLResponse(display_html)
 
     async def get_favicon(self) -> Response:
+        """Endpoint to get the favicon"""
         return Response(content=self.favicon, media_type="image/x-icon")
 
     async def websocket_endpoint(self, websocket: WebSocket) -> None:
+        """Websocket endpoint."""
         assert self.loom_server is not None
         await self.loom_server.run_client(websocket=websocket)
 
     def run(self, host="0.0.0.0", port=8000, log_level="info", reload=True) -> None:
+        """Parse command-line arguments and run the web server."""
         # Handle the help argument and also catch parsing errors right away
         arg_parser = self.create_argument_parser()
         arg_parser.parse_args()

@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-__all__ = ["BaseLoomServer"]
+__all__ = ["ExampleLoomServer"]
 
 import pathlib
 
@@ -8,10 +6,6 @@ from .base_loom_server import BaseLoomServer
 from .client_replies import MessageSeverityEnum, ShaftStateEnum
 from .example_mock_loom import ExampleMockLoom
 from .reduced_pattern import Pick
-
-
-class CommandError(Exception):
-    pass
 
 
 class ExampleLoomServer(BaseLoomServer):

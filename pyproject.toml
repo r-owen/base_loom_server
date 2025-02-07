@@ -53,3 +53,6 @@ write_to_template = """
 __all__ = ["__version__"]
 __version__ = "{version}"
 """
+
+[tool.mypy]
+explicit_package_bases = "True"

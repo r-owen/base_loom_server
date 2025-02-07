@@ -1,3 +1,5 @@
+__all__ = ["PatternDatabase"]
+
 import dataclasses
 import json
 import pathlib
