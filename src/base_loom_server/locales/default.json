@@ -10,8 +10,12 @@
   "connecting": null,
   "disconnected": null,
   "disconnecting": null,
+  "End": null,
   "error": null,
+  "Group size": null,
+  "invalid end number": null,
   "invalid pick number": null,
+  "Jump to end": null,
   "Jump to pick": null,
   "Jump": null,
   "lost connection to server": null,
@@ -29,6 +33,8 @@
   "Shafts": null,
   "Status": null,
   "Submit": null,
+  "Threading": null,
   "Toggle Error": null,
-  "Upload": null
+  "Upload": null,
+  "Weaving": null
 }

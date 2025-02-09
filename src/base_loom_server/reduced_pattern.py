@@ -66,12 +66,11 @@ class ReducedPattern:
     pick0: Pick
     # Keep track of where we are in weaving
     pick_number: int = 0
-    weaving_repeat_number: int = 1
+    pick_repeat_number: int = 1
     # keep track of where we are in threading
-    threading_end_number: int = 0
-    threading_group_size: int = 1
-    threading_low_to_high: bool = True
-    threading_repeat_number: int = 1
+    end_number0: int = 0
+    end_number1: int = 0
+    end_repeat_number: int = 1
 
     @classmethod
     def from_dict(cls, datadict: dict[str, Any]) -> ReducedPattern:
@@ -82,6 +81,17 @@ class ReducedPattern:
         datadict["picks"] = [Pick.from_dict(pickdict) for pickdict in datadict["picks"]]
         datadict["pick0"] = Pick.from_dict(datadict["pick0"])
         return cls(**datadict)
+
+    def check_end_number(self, end_number0: int) -> None:
+        """Raise IndexError if end_number0 out of range.
+
+        The allowed range is 0 to self.len(self.threading), inclusive.
+        See get_end_number for more information.
+        """
+        if end_number0 < 0:
+            raise IndexError(f"{end_number0=} < 0")
+        if end_number0 > len(self.threading):
+            raise IndexError(f"{end_number0=} > {len(self.threading)}")
 
     def check_pick_number(self, pick_number: int) -> None:
         """Raise IndexError if pick_number out of range.
@@ -114,23 +124,146 @@ class ReducedPattern:
             return self.pick0
         return self.picks[pick_number - 1]
 
+    def get_threading_shaft_word(self) -> int:
+        """Get current threading shaft word."""
+        if self.end_number0 == 0:
+            return 0
+        shaft_set = {
+            self.threading[i] for i in range(self.end_number0 - 1, self.end_number1 - 1)
+        }
+        shaft_word = sum(1 << shaft for shaft in shaft_set if shaft >= 0)
+        return shaft_word
+
+    def increment_end_number(
+        self, thread_group_size: int, thread_low_to_high: bool
+    ) -> None:
+        """Increment self.end_number0 in the specified direction.
+        Increment end_repeat_number as well, if appropriate.
+
+        Parameters
+        ----------
+        thread_group_size : int
+            Number of threads in the group.
+        thread_low_to_high : bool
+            Should the new end_number0 be larger than old?
+            (However, if True and end_number0 is at its max value,
+            then it wraps around to 0).
+
+        Notes
+        -----
+        End number is 1-based, but 0 means at start or end
+        (in which case there are no threads in the group).
+        """
+        self.check_end_number(self.end_number0)
+        if thread_group_size < 1:
+            raise ValueError(f"{thread_group_size=} must be >= 1")
+        max_end_number = len(self.threading)
+        new_end_number0 = 0
+        # Initialize new_end_number1 to None to allow set_current_end_number
+        # to compute it, by default; there's at least one case where
+        # it is simpler to compute it here
+        new_end_number1 = None
+        new_end_repeat_number = self.end_repeat_number
+        if thread_low_to_high:
+            if self.end_number0 == 0:
+                new_end_number0 = 1
+            elif self.end_number1 > max_end_number:
+                new_end_number0 = 0
+                new_end_repeat_number += 1
+            else:
+                new_end_number0 = self.end_number1
+        else:
+            if self.end_number0 == 0:
+                new_end_number0 = max(max_end_number - thread_group_size, 1)
+                new_end_repeat_number -= 1
+            elif self.end_number0 == 1:
+                new_end_number0 = 0
+            else:
+                new_end_number0 = max(self.end_number0 - thread_group_size, 1)
+                new_end_number1 = self.end_number0
+        self.set_current_end_number(
+            end_number0=new_end_number0,
+            thread_group_size=thread_group_size,
+            end_number1=new_end_number1,
+            end_repeat_number=new_end_repeat_number,
+        )
+
     def increment_pick_number(self, weave_forward: bool) -> int:
         """Increment pick_number in the specified direction.
 
-        Increment weaving_repeat_number as well, if appropriate.
+        Increment pick_repeat_number as well, if appropriate.
 
         Return the new pick number.
         """
         self.check_pick_number(self.pick_number)
         next_pick_number = self.pick_number + (1 if weave_forward else -1)
         if next_pick_number < 0:
-            self.weaving_repeat_number -= 1
+            self.pick_repeat_number -= 1
             next_pick_number = len(self.picks)
         elif next_pick_number > len(self.picks):
-            self.weaving_repeat_number += 1
+            self.pick_repeat_number += 1
             next_pick_number = 0
         self.pick_number = next_pick_number
         return next_pick_number
+
+    def set_current_end_number(
+        self,
+        end_number0: int,
+        thread_group_size: int,
+        end_number1: int | None = None,
+        end_repeat_number: int | None = None,
+    ) -> None:
+        """Set end_number0.
+
+        Parameters
+        ----------
+        end_number0 : int
+            New end_number0, the starting end number
+            for a group of ends to thread.
+        thread_group_size: int,
+            Thread group size; used to compute end_number1;
+            ignored (other than range checking) if end_number1 specified
+        end_number1: int | None
+            New value for end_number1; if None, compute it
+        end_repeat_number : int | None
+            New value for end_repeat_number; if None then use current value.
+
+        Raises
+        ------
+        IndexError
+            If end_number0 < 0 or > len(self.threading)
+        IndexError
+            If end_number1 not None invalid:
+
+            * end_number0 = 0 and end_number1 != 0
+            * end_number1 <= end_number0
+            * end_number1 > # shafts + 1
+        ValueError
+            If thread_group_size < 1
+        """
+        self.check_end_number(end_number0)
+        if thread_group_size < 1:
+            raise ValueError(f"{thread_group_size=} must be >= 1")
+        max_end_number = len(self.threading)
+        if end_number1 is not None:
+            if end_number0 == 0:
+                if end_number1 != 0:
+                    raise IndexError(f"{end_number1=} must be 0, since end_number0=0")
+            elif end_number1 > max_end_number + 1:
+                raise IndexError(f"{end_number1=} must be <= {max_end_number + 1}")
+            elif end_number1 <= end_number0:
+                raise IndexError(f"{end_number1=} must be > {end_number0=}")
+            self.end_number1 = end_number1
+        else:
+            if end_number0 == 0:
+                self.end_number1 = 0
+            else:
+                self.end_number1 = min(
+                    end_number0 + thread_group_size, max_end_number + 1
+                )
+        self.end_number0 = end_number0
+        if end_repeat_number is not None:
+            self.end_repeat_number = end_repeat_number
 
     def set_current_pick_number(self, pick_number: int) -> None:
         """Set pick_number.

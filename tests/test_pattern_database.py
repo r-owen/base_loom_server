@@ -34,15 +34,13 @@ async def test_add_and_get_pattern() -> None:
 
         # Check that adding a pattern ignores cache values:
         # * pick_number
-        # * weaving_repeat_number
-        # * threading_end_number
-        # * threading_group_size
-        # * threading_repeat_number
+        # * pick_repeat_number
+        # * end_number0
+        # * end_repeat_number
         pattern1.pick_number = 20
-        pattern1.weaving_repeat_number = 21
-        pattern1.threading_end_number = 22
-        pattern1.threading_group_size = 23
-        pattern1.threading_repeat_number = 25
+        pattern1.pick_repeat_number = 21
+        pattern1.end_number0 = 22
+        pattern1.end_repeat_number = 25
         await db.add_pattern(pattern1)
         pattern_names = await db.get_pattern_names()
         assert pattern_names == [pattern1.name]
@@ -146,7 +144,7 @@ async def test_create_database() -> None:
         assert initial_pattern_names == expected_pattern_names
 
 
-async def test_update_pick() -> None:
+async def test_update_threading_end_number() -> None:
     with tempfile.NamedTemporaryFile() as f:
         dbpath = pathlib.Path(f.name)
         db = await create_pattern_database(dbpath)
@@ -164,7 +162,44 @@ async def test_update_pick() -> None:
         ]
         assert pattern_names == expected_pattern_names
 
-        for pattern_name, pick_number, weaving_repeat_number in (
+        for pattern_name, end_number0, end_number1, end_repeat_number in (
+            (pattern_names[0], 50, 51, -5),
+            (pattern_names[1], 3, 42, 49),
+            (pattern_names[0], 0, 0, 1),
+            (pattern_names[2], 15, 60, 101),
+        ):
+            await db.update_end_number(
+                pattern_name=pattern_name,
+                end_number0=end_number0,
+                end_number1=end_number1,
+                end_repeat_number=end_repeat_number,
+            )
+            pattern = await db.get_pattern(pattern_name)
+            assert pattern.name == pattern_name
+            assert pattern.end_number0 == end_number0
+            assert pattern.end_number1 == end_number1
+            assert pattern.end_repeat_number == end_repeat_number
+
+
+async def test_update_pick_number() -> None:
+    with tempfile.NamedTemporaryFile() as f:
+        dbpath = pathlib.Path(f.name)
+        db = await create_pattern_database(dbpath)
+        initial_pattern_names = await db.get_pattern_names()
+        assert initial_pattern_names == []
+
+        num_to_add = 3
+        for patternpath in ALL_PATTERN_PATHS[0:num_to_add]:
+            pattern = read_reduced_pattern(patternpath)
+            await db.add_pattern(pattern)
+            pattern_names = await db.get_pattern_names()
+
+        expected_pattern_names = [
+            patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]
+        ]
+        assert pattern_names == expected_pattern_names
+
+        for pattern_name, pick_number, pick_repeat_number in (
             (pattern_names[0], 50, -5),
             (pattern_names[1], 3, 49),
             (pattern_names[0], 0, 1),
@@ -173,9 +208,9 @@ async def test_update_pick() -> None:
             await db.update_pick_number(
                 pattern_name=pattern_name,
                 pick_number=pick_number,
-                weaving_repeat_number=weaving_repeat_number,
+                pick_repeat_number=pick_repeat_number,
             )
             pattern = await db.get_pattern(pattern_name)
             assert pattern.name == pattern_name
             assert pattern.pick_number == pick_number
-            assert pattern.weaving_repeat_number == weaving_repeat_number
+            assert pattern.pick_repeat_number == pick_repeat_number

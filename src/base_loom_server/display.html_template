@@ -10,6 +10,13 @@
 </head>
 
 <body>
+    <div class="flex-container">
+    <div class="tabbar">
+        <button class="tabchoices" id="mode_weaving">{Weaving}</button>
+        <button class="tabchoices" id="mode_threading"">{Threading}</button>
+    </div>
+    </div>
+    <p>
     <div class="flex-container" id="pattern_select_grid">
         <div>
             <label>{Pattern}</label>
@@ -21,7 +28,7 @@
         </div>
         <form class="upload-form">
             <input type="file" id="file_input" multiple accept=".wif,.dtx" style="display:none;">
-            <input type="button" value="{Upload}"  id="upload_patterns" onclick="document.getElementById('file_input').click()"/>
+            <button id="upload_patterns" onclick="document.getElementById('file_input').click()"/>{Upload}</button>
         </form>
     </div>
     <p/>
@@ -29,8 +36,8 @@
     <div class="flex-container" id="pattern_display_grid">
         <div>
             <!-- For best results, the canvas height should be odd. -->
-            <!-- See the style sheet for an explanation of why the dimensions are set here. -->
-            <canvas id="canvas" height="151" width="265"/>
+            <!-- Size of canvas must be set in html or javascript, not css. -->
+            <canvas id="pattern_canvas" height="151" width="265"/>
         </div>
         <div class="flex-container" id="pattern_controls_grid">
             <div id="goto_next_pick_spacer"></div>
@@ -39,30 +46,79 @@
         </div>
     </div>
 
+    <div class="flex-container" id="threading_display_grid">
+        <div>
+            <!-- For best results, the canvas height should be odd. -->
+            <!-- Size of canvas must be set in html or javascript, not css. -->
+            <canvas id="threading_canvas" height="151" width="265"/>
+        </div>
+        <div class="flex-container" id="threading_controls_grid">
+            <div><button type="button" id="thread_direction">?</button></div>
+        </div>
+    </div>
+
     <div class="flex-container">
         <label>{Shafts}</label>
         <label id="shaft_state"/>
     </div>
 
-    <div class="flex-container">
+    <div class="flex-container" id="end_number_div">
+        <label>{End}</label>
+        <label id="end_number0"></label>
+        <label> - </label>
+        <label id="end_number1"></label>
+        <label>{of}</label>
+        <label id="total_ends">?</label>
+        <label>{repeat}</label>
+        <label id="end_repeat_number"></label>
+    </div>
+
+    <div class="flex-container" id="pick_number_div">
         <label>{Pick}</label>
         <label id="pick_number"></label>
         <label>{of}</label>
         <label id="total_picks">?</label>
         <label>{repeat}</label>
-        <label id="weaving_repeat_number"></label>
+        <label id="pick_repeat_number"></label>
     </div>
+
+    <form action="" id="jump_to_end_form">
+        <div class="flex-container">
+            <label>{Jump to end}</label>
+            <input size="5" id="jump_end_number0" inpumode="decimal"></input>
+            <label>{repeat}</label>
+            <input size="3" id="jump_end_repeat_number" inputmode="decimal"></input>
+            <button type="submit" id="jump_to_end_submit">{Jump}</button>
+            <button type="button" id="jump_to_end_reset">{Reset}</button>
+        </div>
+    </form>
 
     <form action="" id="jump_to_pick_form">
         <div class="flex-container">
             <label>{Jump to pick}</label>
             <input size="5" id="jump_pick_number" inpumode="decimal"></input>
             <label>{repeat}</label>
-            <input size="3" id="jump_repeat_number" inputmode="decimal"></input>
+            <input size="3" id="jump_pick_repeat_number" inputmode="decimal"></input>
             <button type="submit" id="jump_to_pick_submit">{Jump}</button>
             <button type="button" id="jump_to_pick_reset">{Reset}</button>
         </div>
     </form>
+
+    <div class="flex-container" id="thread_group_size_grid">
+        <div>
+            <label>{Group size}</label>
+            <select name="thread_group_size" id="thread_group_size">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+            </select>
+        </div>
+    </div>
 
     <div class="flex-container">
         <label>{Status}:</label>

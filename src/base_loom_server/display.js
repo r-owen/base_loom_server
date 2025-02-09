@@ -5,8 +5,16 @@ const MaxFiles = 10
 
 const MinBlockSize = 11
 const MaxBlockSize = 41
+
+// Display gap on left and right edges end numbers
+const EndDisplayGap = 3
+
 // Display gap on left and right edges of warp and top and bottom edges of weft
 const ThreadDisplayGap = 1
+
+const ThreadHalfWidth = 5
+
+const EndFont = "18px Times New Roman"
 
 // Keys are the possible values of the LoomConnectionState.state messages
 // Values are entries in ConnectionStateEnum
@@ -15,6 +23,11 @@ const ConnectionStateTranslationDict = {
     1: "connected",
     2: "connecting",
     3: "disconnecting",
+}
+
+const ModeEnum = {
+    "WEAVING": 1,
+    "THREADING": 2,
 }
 
 const SeverityColors = {
@@ -29,6 +42,19 @@ const ShaftStateTranslationDict = {
     2: "moving",
     3: "error",
 }
+
+const ThreadingSpecificElements = [
+    "thread_group_size_grid",
+    "threading_display_grid",
+    "end_number_div",
+    "jump_to_end_form",
+]
+
+const WeavingSpecificElements = [
+    "pattern_display_grid",
+    "pick_number_div",
+    "jump_to_pick_form",
+]
 
 var ConnectionStateEnum = {}
 for (let i = 0; i < Object.keys(ConnectionStateTranslationDict).length; ++i) {
@@ -66,7 +92,10 @@ class ReducedPattern {
         this.threading = datadict.threading
         this.picks = []
         this.pick_number = datadict.pick_number
-        this.weaving_repeat_number = datadict.weaving_repeat_number
+        this.pick_repeat_number = datadict.pick_repeat_number
+        this.end_number0 = datadict.end_number0
+        this.end_number1 = datadict.end_number1
+        this.repeat_end_number = datadict.repeat_end_number
         datadict.picks.forEach((pickdata) => {
             this.picks.push(new Pick(pickdata))
         })
@@ -118,7 +147,10 @@ class LoomClient {
         this.loomConnectionStateReason = ""
         this.statusMessage = null
         this.jumpPickNumber = null
-        this.jumpRepeatNumber = null
+        this.jumpPickRepeatNumber = null
+        this.threadGroupSize = 4
+        this.threadLowToHigh = true
+
         // this.init()
     }
 
@@ -151,22 +183,47 @@ class LoomClient {
 
         dropAreaElt.addEventListener("drop", this.handleDrop.bind(this))
 
+        var tabWeavingElt = document.getElementById("mode_weaving")
+        tabWeavingElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.WEAVING))
+
+        var tabThreadingElt = document.getElementById("mode_threading")
+        tabThreadingElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.THREADING))
+
         var fileInputElt = document.getElementById("file_input")
         fileInputElt.addEventListener("change", this.handleFileInput.bind(this))
 
+        var groupSizeElt = document.getElementById("thread_group_size")
+        groupSizeElt.addEventListener("change", this.handleThreadGroupSize.bind(this))
+
+        var jumpToEndForm = document.getElementById("jump_to_end_form")
+        jumpToEndForm.addEventListener("submit", this.handleJumpToEndSubmit.bind(this))
+
+        var jumpToEndResetElt = document.getElementById("jump_to_end_reset")
+        jumpToEndResetElt.addEventListener("click", this.handleJumpToEndReset.bind(this))
+
         var jumpToPickForm = document.getElementById("jump_to_pick_form")
-        jumpToPickForm.addEventListener("submit", this.handleJumpToPick.bind(this))
+        jumpToPickForm.addEventListener("submit", this.handleJumpToPickSubmit.bind(this))
 
         var jumpToPickResetElt = document.getElementById("jump_to_pick_reset")
         jumpToPickResetElt.addEventListener("click", this.handleJumpToPickReset.bind(this))
 
+        var jumpEndNumber0Elt = document.getElementById("jump_end_number0")
         // Select all text on focus, to make it easier to try different jump values
         // (without this, you are likely to append digits, which is rarely what you want)
+        jumpEndNumber0Elt.addEventListener(`focus`, () => jumpEndNumber0Elt.select())
+        jumpEndNumber0Elt.addEventListener("input", this.handleJumpToEndInput.bind(this))
+
+        var jumpEndRepeatNumberElt = document.getElementById("jump_end_repeat_number")
+        jumpEndRepeatNumberElt.addEventListener(`focus`, () => jumpEndRepeatNumberElt.select())
+        jumpEndRepeatNumberElt.addEventListener("input", this.handleJumpToEndInput.bind(this))
+
         var jumpPickNumberElt = document.getElementById("jump_pick_number")
         jumpPickNumberElt.addEventListener(`focus`, () => jumpPickNumberElt.select())
+        jumpPickNumberElt.addEventListener("input", this.handleJumpToPickInput.bind(this))
 
-        var jumpRepeatNumberElt = document.getElementById("jump_repeat_number")
-        jumpRepeatNumberElt.addEventListener(`focus`, () => jumpRepeatNumberElt.select())
+        var jumpPickRepeatNumberElt = document.getElementById("jump_pick_repeat_number")
+        jumpPickRepeatNumberElt.addEventListener(`focus`, () => jumpPickRepeatNumberElt.select())
+        jumpPickRepeatNumberElt.addEventListener("input", this.handleJumpToPickInput.bind(this))
 
         var oobChangeDirectionButton = document.getElementById("oob_change_direction")
         oobChangeDirectionButton.addEventListener("click", this.handleOOBChangeDirection.bind(this))
@@ -177,15 +234,11 @@ class LoomClient {
         var oobNextPickButton = document.getElementById("oob_next_pick")
         oobNextPickButton.addEventListener("click", this.handleOOBNextPick.bind(this))
 
+        var threadDirectionElt = document.getElementById("thread_direction")
+        threadDirectionElt.addEventListener("click", this.handleToggleThreadDirection.bind(this))
+
         var weaveDirectionElt = document.getElementById("weave_direction")
         weaveDirectionElt.addEventListener("click", this.handleToggleWeaveDirection.bind(this))
-
-        var jumpPickNumberElt = document.getElementById("jump_pick_number")
-        jumpPickNumberElt.addEventListener("input", this.handleJumpInput.bind(this))
-
-        var jumpRepeatNumberElt = document.getElementById("jump_repeat_number")
-        jumpRepeatNumberElt.addEventListener("input", this.handleJumpInput.bind(this))
-
         var patternMenu = document.getElementById("pattern_menu")
         patternMenu.addEventListener("change", this.handlePatternMenu.bind(this))
     }
@@ -204,17 +257,41 @@ class LoomClient {
 
         const datadict = JSON.parse(event.data)
         var resetCommandProblemMessage = true
-        if (datadict.type == "CurrentPickNumber") {
+        if (datadict.type == "CurrentEndNumber") {
+            if (!this.currentPattern) {
+                console.log("Ignoring CurrentEndNumber: no pattern loaded")
+            }
+            this.currentPattern.end_number0 = datadict.end_number0
+            this.currentPattern.end_number1 = datadict.end_number1
+            this.currentPattern.end_repeat_number = datadict.end_repeat_number
+            this.displayThreadingPattern()
+            this.displayEnds()
+        } else if (datadict.type == "CurrentPickNumber") {
             if (!this.currentPattern) {
                 console.log("Ignoring CurrentPickNumber: no pattern loaded")
             }
             this.currentPattern.pick_number = datadict.pick_number
-            this.currentPattern.weaving_repeat_number = datadict.weaving_repeat_number
-            this.displayCurrentPattern()
+            this.currentPattern.pick_repeat_number = datadict.pick_repeat_number
+            this.displayWeavingPattern()
             this.displayPick()
+        } else if (datadict.type == "Mode") {
+            this.mode = datadict.mode
+            this.displayMode()
+        } else if (datadict.type == "ThreadDirection") {
+            this.threadLowToHigh = datadict.low_to_high
+            this.displayThreadingPattern()
+            this.displayThreadDirection()
+        } else if (datadict.type == "ThreadGroupSize") {
+            this.threadGroupSize = datadict.group_size
+            var threadGroupSizeMenu = document.getElementById("thread_group_size")
+            threadGroupSizeMenu.value = this.threadGroupSize
+        } else if (datadict.type == "JumpEndNumber") {
+            this.jumpEndNumber0 = datadict.end_number0
+            this.jumpEndRepeatNumber = datadict.repeatNumber
+            this.displayJumpEnd()
         } else if (datadict.type == "JumpPickNumber") {
             this.jumpPickNumber = datadict.pick_number
-            this.jumpRepeatNumber = datadict.weaving_repeat_number
+            this.jumpPickRepeatNumber = datadict.pick_repeat_number
             this.displayJumpPick()
         } else if (datadict.type == "LoomConnectionState") {
             this.loomConnectionState = datadict
@@ -228,7 +305,8 @@ class LoomClient {
             this.displayStatusMessage()
         } else if (datadict.type == "ReducedPattern") {
             this.currentPattern = new ReducedPattern(datadict)
-            this.displayCurrentPattern()
+            this.displayWeavingPattern()
+            this.displayThreadingPattern()
             var patternMenu = document.getElementById("pattern_menu")
             patternMenu.value = this.currentPattern.name
         } else if (datadict.type == "PatternNames") {
@@ -285,25 +363,13 @@ class LoomClient {
             commandProblemElt.style.color = color
         } else if (datadict.type == "WeaveDirection") {
             this.weaveForward = datadict.forward
-            this.displayDirection()
+            this.displayWeaveDirection()
         } else {
             console.log("Unknown message type", datadict.type)
         }
         if (resetCommandProblemMessage) {
             commandProblemElt.textContent = ""
             commandProblemElt.style.color = "#ffffff"
-        }
-    }
-
-    // Display the weave direction -- the value of the global "weaveForward" 
-    displayDirection() {
-        var weaveDirectionElt = document.getElementById("weave_direction")
-        if (this.weaveForward) {
-            weaveDirectionElt.textContent = "↓"
-            weaveDirectionElt.style.color = "green"
-        } else {
-            weaveDirectionElt.textContent = "↑"
-            weaveDirectionElt.style.color = "red"
         }
     }
 
@@ -361,18 +427,282 @@ class LoomClient {
     }
 
     /*
-    Display a portion of weavingPattern on the "canvas" element.
-
-    Center the jump or current pick vertically.
+    Display the current end numbers.
     */
-    displayCurrentPattern() {
-        var canvas = document.getElementById("canvas")
+    displayEnds() {
+        var endNumber0Elt = document.getElementById("end_number0")
+        var endNumber1Elt = document.getElementById("end_number1")
+        var repeatNumberElt = document.getElementById("end_repeat_number")
+        var totalEndsElt = document.getElementById("total_ends")
+        var endNumber0 = ""
+        var endNumber1 = ""
+        var totalEnds = "?"
+        var repeatNumber = ""
+        if (this.currentPattern) {
+            endNumber0 = this.currentPattern.end_number0
+            endNumber1 = this.currentPattern.end_number1
+            repeatNumber = this.currentPattern.end_repeat_number
+            totalEnds = this.currentPattern.threading.length
+        }
+        endNumber0Elt.textContent = endNumber0
+        endNumber1Elt.textContent = endNumber1
+        repeatNumberElt.textContent = repeatNumber
+        totalEndsElt.textContent = totalEnds
+    }
+
+    /*
+    Display the current pick and repeat.
+    */
+    displayPick() {
+        var repeatNumberElt = document.getElementById("pick_repeat_number")
+        var pickNumberElt = document.getElementById("pick_number")
+        var totalPicksElt = document.getElementById("total_picks")
+        var pickNumber = ""
+        var totalPicks = "?"
+        var repeatNumber = ""
+        if (this.currentPattern) {
+            pickNumber = this.currentPattern.pick_number
+            repeatNumber = this.currentPattern.pick_repeat_number
+            totalPicks = this.currentPattern.picks.length
+        }
+        pickNumberElt.textContent = pickNumber
+        repeatNumberElt.textContent = repeatNumber
+        totalPicksElt.textContent = totalPicks
+    }
+
+    /*
+    Display the jump end and repeat
+    */
+    displayJumpEnd() {
+        var endNumber0Elt = document.getElementById("jump_end_number0")
+        var repeatNumberElt = document.getElementById("jump_end_repeat_number")
+        if (!this.currentPattern) {
+            this.jumpEndNumber0 = null
+            this.jumpEndRepeatNumber = null
+        }
+        endNumber0Elt.value = nullToBlank(this.jumpEndNumber)
+        repeatNumberElt.value = nullToBlank(this.jumpEndRepeatNumber)
+        if (this.currentPattern) {
+            this.displayThreadingPattern()
+        }
+        this.handleJumpToEndInput(null)
+    }
+
+    /*
+    Display the jump pick and repeat
+    */
+    displayJumpPick() {
+        var pickNumberElt = document.getElementById("jump_pick_number")
+        var repeatNumberElt = document.getElementById("jump_pick_repeat_number")
+        if (!this.currentPattern) {
+            this.jumpPickNumber = null
+            this.jumpPickRepeatNumber = null
+        }
+        pickNumberElt.value = nullToBlank(this.jumpPickNumber)
+        repeatNumberElt.value = nullToBlank(this.jumpPickRepeatNumber)
+        if (this.currentPattern) {
+            this.displayWeavingPattern()
+        }
+        this.handleJumpToPickInput(null)
+    }
+
+    /*
+    Display the current mode
+    */
+    displayMode() {
+        // Get all elements with class="tablinks" and remove the class "active"
+        var buttons = document.getElementsByClassName("tabchoices")
+        for (var button of buttons) {
+            button.className = button.className.replace(" active", "")
+        }
+
+        var elt = null
+        var modeButton = null
+        if (this.mode == ModeEnum.THREADING) {
+            modeButton = document.getElementById("mode_threading")
+            for (const name of WeavingSpecificElements) {
+                elt = document.getElementById(name)
+                elt.style.display = "none"
+            }
+            for (const name of ThreadingSpecificElements) {
+                elt = document.getElementById(name)
+                elt.style.display = "flex"
+            }
+        } else {
+            modeButton = document.getElementById("mode_weaving")
+            for (const name of ThreadingSpecificElements) {
+                elt = document.getElementById(name)
+                elt.style.display = "none"
+            }
+            for (const name of WeavingSpecificElements) {
+                elt = document.getElementById(name)
+                elt.style.display = "flex"
+            }
+        }
+        if (modeButton != null) {
+            modeButton.className += " active"
+        }
+    }
+
+    /*
+    Display thread direction
+    */
+    displayThreadDirection() {
+        var threadDirectionElt = document.getElementById("thread_direction")
+        if (this.threadLowToHigh) {
+            threadDirectionElt.textContent = "←"
+        } else {
+            threadDirectionElt.textContent = "→"
+        }
+    }
+
+    /*
+    Display a portion of threading on the "threading_canvas" element.
+    
+    Center the jump or current range horizontally.
+    */
+    displayThreadingPattern() {
+        var canvas = document.getElementById("threading_canvas")
         var ctx = canvas.getContext("2d")
         if (!this.currentPattern) {
-            context.clearRect(0, 0, canvas.width, canvas.height)
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
             return
         }
+        var endNumber0 = this.currentPattern.end_number0
+        var endNumber1 = this.currentPattern.end_number1
+        var isJump = false
+        if (this.jumpEndNumber0 != null) {
+            isJump = true
+            endNumber0 = this.jumpEndNumber0
+            endNumber1 = Math.min(this.jumpEndNumber0 + this.threadGroupSize, this.currentPattern.threading.length) + 1
+        }
+        const centerEndNumber = Math.round(Math.max(0, (endNumber0 + endNumber1 - 1) / 2))
+        ctx.font = EndFont
+        ctx.textBaseline = "middle"
+        ctx.textAlign = "center"
+        const fontMeas = ctx.measureText("32")
+        var blockWidth = Math.ceil(fontMeas.width) + EndDisplayGap
+        if (blockWidth % 2 == 0) {
+            blockWidth++
+        }
+        const blockHalfWidth = (blockWidth - 1) / 2
+        var blockHeight = Math.ceil(fontMeas.actualBoundingBoxAscent + fontMeas.actualBoundingBoxDescent)
+        if (blockHeight % 2 == 0) {
+            blockHeight++
+        }
+        const numEnds = this.currentPattern.warp_colors.length
+        const remainingHeight = canvas.height - (blockHeight + fontMeas.actualBoundingBoxAscent + fontMeas.actualBoundingBoxDescent)
+        const maxShaftNum = Math.max(...this.currentPattern.threading) + 1
+        const verticalDelta = Math.floor(Math.min(blockHeight, remainingHeight / maxShaftNum))
+
+        const numEndsToShow = Math.min(numEnds, Math.floor(canvas.width / blockWidth))
+
+        const centerSlotIndex = Math.round((numEndsToShow - 1) / 2)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        const maxColoredEndIndex = isJump ? endNumber0 - 2 : endNumber1 - 2
+
+        // TODO: put a box about the current thread group
+
+        // Display 2 end numbers: endNumber0 and, if there is space, endNumber1,
+        // else endNumber0 + 2
+        const displayEndNumber = Math.max(endNumber1 - 1, endNumber0 + 2)
+        for (let slotIndex = 0; slotIndex < numEndsToShow; slotIndex++) {
+            const endIndex = centerEndNumber + slotIndex - centerSlotIndex - 1
+
+            if (endIndex < 0 || endIndex >= this.currentPattern.threading.length) {
+                continue
+            }
+            if (endIndex > maxColoredEndIndex) {
+                ctx.globalAlpha = 0.3
+            } else {
+                ctx.globalAlpha = 1.0
+            }
+
+            const shaftIndex = this.currentPattern.threading[endIndex]
+
+            const xCenter = canvas.width - blockWidth * slotIndex - blockHalfWidth
+            const yCenter = canvas.height - verticalDelta * (shaftIndex + 0.5) - fontMeas.actualBoundingBoxDescent
+
+            if (endIndex == endNumber0 - 1) {
+                ctx.fillStyle = "black"
+                ctx.fillText(endIndex + 1,
+                    xCenter,
+                    fontMeas.actualBoundingBoxAscent + 2,
+                )
+                ctx.strokeRect(
+                    xCenter + blockHalfWidth,
+                    blockHeight + 2,
+                    - blockWidth * (endNumber1 - endNumber0),
+                    canvas.height - blockHeight - 2,
+                )
+            } else if (endIndex == displayEndNumber - 1) {
+                ctx.fillStyle = "black"
+                ctx.fillText(endIndex + 1,
+                    xCenter,
+                    fontMeas.actualBoundingBoxAscent + 2,
+                )
+            }
+
+            // Display weft (end) color as bars above and below the shaft number
+            const xStart = xCenter - ThreadHalfWidth
+            const xEnd = xCenter + ThreadHalfWidth
+            const endColor = this.currentPattern.color_table[this.currentPattern.warp_colors[endIndex]]
+            var endGradient = ctx.createLinearGradient(xStart, 0, xEnd, 0)
+            endGradient.addColorStop(0, "white")
+            endGradient.addColorStop(0.2, endColor)
+            endGradient.addColorStop(0.8, endColor)
+            endGradient.addColorStop(1, "gray")
+
+            ctx.fillStyle = endGradient
+            ctx.fillRect(
+                xCenter - ThreadHalfWidth,
+                blockHeight + 2,
+                ThreadHalfWidth * 2,
+                yCenter - Math.round(blockHeight / 2) - blockHeight - 4,
+            )
+            ctx.fillRect(
+                xCenter - ThreadHalfWidth,
+                yCenter + Math.round(blockHeight / 2) + 2,
+                ThreadHalfWidth * 2,
+                canvas.height - (yCenter + Math.round(blockHeight / 2) + 2)
+            )
+
+            // Display shaft number
+            ctx.fillStyle = "black"
+            ctx.fillText(shaftIndex + 1,
+                xCenter,
+                yCenter
+            )
+        }
+    }
+
+    // Display the weave direction -- the value of the global "weaveForward" 
+    displayWeaveDirection() {
+        var weaveDirectionElt = document.getElementById("weave_direction")
+        if (this.weaveForward) {
+            weaveDirectionElt.textContent = "↓"
+            weaveDirectionElt.style.color = "green"
+        } else {
+            weaveDirectionElt.textContent = "↑"
+            weaveDirectionElt.style.color = "red"
+        }
+    }
+
+    /*
+    Display weaving pattern on the "pattern_canvas" element.
+ 
+    Center the jump or current pick vertically.
+    */
+    displayWeavingPattern() {
         var pickColorElt = document.getElementById("pick_color")
+        var canvas = document.getElementById("pattern_canvas")
+        var ctx = canvas.getContext("2d")
+        if (!this.currentPattern) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            pickColorElt.style.backgroundColor = "rgb(0, 0, 0, 0)"
+            return
+        }
         var centerPickNumber = this.currentPattern.pick_number
         var isJump = false
         if (this.jumpPickNumber != null) {
@@ -385,8 +715,6 @@ class LoomClient {
         } else {
             pickColorElt.style.backgroundColor = "rgb(0, 0, 0, 0)"
         }
-        var canvas = document.getElementById("canvas")
-        var ctx = canvas.getContext("2d")
         const numEnds = this.currentPattern.warp_colors.length
         const numPicks = this.currentPattern.picks.length
         var blockSize = Math.min(
@@ -502,44 +830,6 @@ class LoomClient {
     }
 
     /*
-    Display the current pick and repeat.
-    */
-    displayPick() {
-        var repeatNumberElt = document.getElementById("weaving_repeat_number")
-        var pickNumberElt = document.getElementById("pick_number")
-        var totalPicksElt = document.getElementById("total_picks")
-        var pickNumber = ""
-        var totalPicks = "?"
-        var repeatNumber = ""
-        if (this.currentPattern) {
-            pickNumber = this.currentPattern.pick_number
-            repeatNumber = this.currentPattern.weaving_repeat_number
-            totalPicks = this.currentPattern.picks.length
-        }
-        pickNumberElt.textContent = pickNumber
-        repeatNumberElt.textContent = repeatNumber
-        totalPicksElt.textContent = totalPicks
-    }
-
-    /*
-    Display the jump pick and repeat
-    */
-    displayJumpPick() {
-        var pickNumberElt = document.getElementById("jump_pick_number")
-        var repeatNumberElt = document.getElementById("jump_repeat_number")
-        if (!this.currentPattern) {
-            this.jumpPickNumber = null
-            this.jumpRepeatNumber = null
-        }
-        pickNumberElt.value = nullToBlank(this.jumpPickNumber)
-        repeatNumberElt.value = nullToBlank(this.jumpRepeatNumber)
-        if (this.currentPattern) {
-            this.displayCurrentPattern()
-        }
-        this.handleJumpInput(null)
-    }
-
-    /*
     Handle the pattern_menu select menu.
     
     Send the "select_pattern" or "clear_pattern_names" command.
@@ -603,15 +893,84 @@ class LoomClient {
         await this.sendCommand(selectPatternCommand)
     }
 
+    /*
+    Handle the thread group size select menu
+    */
+    async handleThreadGroupSize(event) {
+        var patternMenu = document.getElementById("thread_group_size")
+        const command = { "type": "thread_group_size", "group_size": Number(patternMenu.value) }
+        await this.sendCommand(command)
+    }
+
 
     /*
-    Handle user editing of jump_pick_number and jump_repeat_number.
+    Handle user editing of jump_end_number and jump_end_repeat_number.
     */
-    async handleJumpInput(event) {
+    async handleJumpToEndInput(event) {
+        var jumpToEndSubmitElt = document.getElementById("jump_to_end_submit")
+        var jumpToEndResetElt = document.getElementById("jump_to_end_reset")
+        var jumpEndNumber0Elt = document.getElementById("jump_end_number0")
+        var jumpEndRepeatNumberElt = document.getElementById("jump_end_repeat_number")
+        var disableJump = true
+        if (asNumberOrNull(jumpEndNumber0Elt.value) != this.jumpEndNumber) {
+            jumpEndNumber0Elt.style.backgroundColor = "pink"
+            disableJump = false
+        } else {
+            jumpEndNumber0Elt.style.backgroundColor = "white"
+        }
+        if (asNumberOrNull(jumpEndRepeatNumberElt.value) != this.jumpEndRepeatNumber) {
+            jumpEndRepeatNumberElt.style.backgroundColor = "pink"
+            disableJump = false
+        } else {
+            jumpEndRepeatNumberElt.style.backgroundColor = "white"
+        }
+        var disableReset = disableJump && (jumpEndNumber0Elt.value == "") && (jumpEndRepeatNumberElt.value == "")
+        jumpToEndSubmitElt.disabled = disableJump
+        jumpToEndResetElt.disabled = disableReset
+        if (event != null) {
+            event.preventDefault()
+        }
+    }
+
+    /*
+    Handle Reset buttin in the "jump_to_end" form.
+    
+    Reset end number and repeat number to current values.
+    */
+    async handleJumpToEndReset(event) {
+        const jumpEndNumber0Elt = document.getElementById("jump_end_number0")
+        const jumpEndRepeatNumberElt = document.getElementById("jump_end_repeat_number")
+        jumpEndNumber0Elt.value = ""
+        jumpEndRepeatNumberElt.value = ""
+        const command = { "type": "jump_to_end", "end_number0": null, "end_repeat_number": null }
+        await this.sendCommand(command)
+        event.preventDefault()
+    }
+
+    /*
+    Handle jump_to_end form submit.
+    
+    Send the "jump_to_end" command.
+    */
+    async handleJumpToEndSubmit(event) {
+        const jumpEndNumber0Elt = document.getElementById("jump_end_number0")
+        const jumpEndRepeatNumberElt = document.getElementById("jump_end_repeat_number")
+        // Handle blanks by using the current default, if any
+        const endNumber0 = asNumberOrNull(jumpEndNumber0Elt.value)
+        const repeatNumber = asNumberOrNull(jumpEndRepeatNumberElt.value)
+        const command = { "type": "jump_to_end", "end_number0": endNumber0, "end_repeat_number": repeatNumber }
+        await this.sendCommand(command)
+        event.preventDefault()
+    }
+
+    /*
+    Handle user editing of jump_pick_number and jump_pick_repeat_number.
+    */
+    async handleJumpToPickInput(event) {
         var jumpToPickSubmitElt = document.getElementById("jump_to_pick_submit")
         var jumpToPickResetElt = document.getElementById("jump_to_pick_reset")
         var jumpPickNumberElt = document.getElementById("jump_pick_number")
-        var jumpRepeatNumberElt = document.getElementById("jump_repeat_number")
+        var jumpPickRepeatNumberElt = document.getElementById("jump_pick_repeat_number")
         var disableJump = true
         if (asNumberOrNull(jumpPickNumberElt.value) != this.jumpPickNumber) {
             jumpPickNumberElt.style.backgroundColor = "pink"
@@ -619,13 +978,13 @@ class LoomClient {
         } else {
             jumpPickNumberElt.style.backgroundColor = "white"
         }
-        if (asNumberOrNull(jumpRepeatNumberElt.value) != this.jumpRepeatNumber) {
-            jumpRepeatNumberElt.style.backgroundColor = "pink"
+        if (asNumberOrNull(jumpPickRepeatNumberElt.value) != this.jumpPickRepeatNumber) {
+            jumpPickRepeatNumberElt.style.backgroundColor = "pink"
             disableJump = false
         } else {
-            jumpRepeatNumberElt.style.backgroundColor = "white"
+            jumpPickRepeatNumberElt.style.backgroundColor = "white"
         }
-        var disableReset = disableJump && (jumpPickNumberElt.value == "") && (jumpRepeatNumberElt.value == "")
+        var disableReset = disableJump && (jumpPickNumberElt.value == "") && (jumpPickRepeatNumberElt.value == "")
         jumpToPickSubmitElt.disabled = disableJump
         jumpToPickResetElt.disabled = disableReset
         if (event != null) {
@@ -634,35 +993,36 @@ class LoomClient {
     }
 
     /*
-    Handle jump_to_pick form submit.
-    
-    Send the "jump_to_pick" command.
-    */
-    async handleJumpToPick(event) {
-        var jumpPickNumberElt = document.getElementById("jump_pick_number")
-        var jumpRepeatNumberElt = document.getElementById("jump_repeat_number")
-        // Handle blanks by using the current default, if any
-        var pickNumber = asNumberOrNull(jumpPickNumberElt.value)
-        var repeatNumber = asNumberOrNull(jumpRepeatNumberElt.value)
-        var command = { "type": "jump_to_pick", "pick_number": pickNumber, "weaving_repeat_number": repeatNumber }
-        await this.sendCommand(command)
-        event.preventDefault()
-    }
-
-    /*
     Handle Reset buttin in the "jump_to_pick" form.
     
     Reset pick number and repeat number to current values.
     */
     async handleJumpToPickReset(event) {
-        var jumpPickNumberElt = document.getElementById("jump_pick_number")
-        var jumpRepeatNumberElt = document.getElementById("jump_repeat_number")
+        const jumpPickNumberElt = document.getElementById("jump_pick_number")
+        const jumpPickRepeatNumberElt = document.getElementById("jump_pick_repeat_number")
         jumpPickNumberElt.value = ""
-        jumpRepeatNumberElt.value = ""
-        var command = { "type": "jump_to_pick", "pick_number": null, "weaving_repeat_number": null }
+        jumpPickRepeatNumberElt.value = ""
+        const command = { "type": "jump_to_pick", "pick_number": null, "pick_repeat_number": null }
         await this.sendCommand(command)
         event.preventDefault()
     }
+
+    /*
+    Handle jump_to_pick form submit.
+    
+    Send the "jump_to_pick" command.
+    */
+    async handleJumpToPickSubmit(event) {
+        const jumpPickNumberElt = document.getElementById("jump_pick_number")
+        const jumpPickRepeatNumberElt = document.getElementById("jump_pick_repeat_number")
+        // Handle blanks by using the current default, if any
+        const pickNumber = asNumberOrNull(jumpPickNumberElt.value)
+        const repeatNumber = asNumberOrNull(jumpPickRepeatNumberElt.value)
+        const command = { "type": "jump_to_pick", "pick_number": pickNumber, "pick_repeat_number": repeatNumber }
+        await this.sendCommand(command)
+        event.preventDefault()
+    }
+
 
     /*
     Handle the OOB change direction button.
@@ -695,6 +1055,29 @@ class LoomClient {
         var command = { "type": "oobcommand", "command": "n" }
         await this.sendCommand(command)
         event.preventDefault()
+    }
+
+    /*
+    Handle the mode tab bar buttons
+
+    Mode us a ModeEnum value
+    */
+    async handleMode(mode, event) {
+        var command = { "type": "mode", "mode": mode }
+        await this.sendCommand(command)
+        event.preventDefault()
+    }
+
+    /*
+    Handle thread_direction button clicks.
+    
+    Send the weave_direction command to the loom server.
+    */
+    async handleToggleThreadDirection(event) {
+        var threadDirectionElt = document.getElementById("thread_direction")
+        var newLowToHigh = (threadDirectionElt.textContent == "→") ? true : false
+        var command = { "type": "thread_direction", "low_to_high": newLowToHigh }
+        await this.sendCommand(command)
     }
 
     /*

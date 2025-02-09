@@ -19,6 +19,12 @@ class MessageSeverityEnum(enum.IntEnum):
     ERROR = 3
 
 
+class ModeEnum(enum.IntEnum):
+    WEAVE = 1
+    THREAD = 2
+    TEST = 3
+
+
 class ShaftStateEnum(enum.IntEnum):
     """Shaft state"""
 
@@ -38,12 +44,36 @@ class CommandProblem:
 
 
 @dataclasses.dataclass
+class CurrentEndNumbers:
+    """The current threading end numbers and repeat number
+
+    The range of end numbers is [end_number0, end_number1).
+    If end_number0 is 0 then end_number1 will also be zero
+    (no threads in range).
+    """
+
+    type: str = dataclasses.field(init=False, default="CurrentEndNumber")
+    end_number0: int
+    end_number1: int
+    end_repeat_number: int
+
+
+@dataclasses.dataclass
 class CurrentPickNumber:
-    """The current pick and repeat numbers"""
+    """The current weaving pick and repeat numbers"""
 
     type: str = dataclasses.field(init=False, default="CurrentPickNumber")
     pick_number: int
-    weaving_repeat_number: int
+    pick_repeat_number: int
+
+
+@dataclasses.dataclass
+class JumpEndNumber:
+    """Pending end and repeat numbers"""
+
+    type: str = dataclasses.field(init=False, default="JumpEndNumber")
+    end_number0: int | None = None
+    end_repeat_number: int | None = None
 
 
 @dataclasses.dataclass
@@ -51,8 +81,8 @@ class JumpPickNumber:
     """Pending pick and repeat numbers"""
 
     type: str = dataclasses.field(init=False, default="JumpPickNumber")
-    pick_number: int | None
-    weaving_repeat_number: int | None
+    pick_number: int | None = None
+    pick_repeat_number: int | None = None
 
 
 @dataclasses.dataclass
@@ -62,6 +92,14 @@ class LoomConnectionState:
     type: str = dataclasses.field(init=False, default="LoomConnectionState")
     state: ConnectionStateEnum
     reason: str = ""
+
+
+@dataclasses.dataclass
+class Mode:
+    """The mode of the server"""
+
+    type: str = dataclasses.field(init=False, default="Mode")
+    mode: ModeEnum
 
 
 @dataclasses.dataclass
@@ -96,6 +134,22 @@ class PatternNames:
 
     type: str = dataclasses.field(init=False, default="PatternNames")
     names: list[str]
+
+
+@dataclasses.dataclass
+class ThreadDirection:
+    """The threading direction"""
+
+    type: str = dataclasses.field(init=False, default="ThreadDirection")
+    low_to_high: bool
+
+
+@dataclasses.dataclass
+class ThreadGroupSize:
+    """The threading group size"""
+
+    type: str = dataclasses.field(init=False, default="ThreadGroupSize")
+    group_size: int
 
 
 @dataclasses.dataclass

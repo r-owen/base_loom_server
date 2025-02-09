@@ -76,10 +76,6 @@ class AppRunner:
         async def get_wrapper():
             return await self.get()
 
-        @router.get("/thread")
-        async def get_thread_wrapper():
-            return await self.get_thread()
-
         if self.favicon:
 
             @router.get("/favicon.ico", include_in_schema=False)
@@ -204,31 +200,6 @@ class AppRunner:
         )
 
         return HTMLResponse(display_html)
-
-    async def get_thread(self) -> HTMLResponse:
-        """Endpoint to get the threading page."""
-        thread_html_template = PKG_FILES.joinpath("thread.html_template").read_text()
-
-        thread_css = PKG_FILES.joinpath("thread.css").read_text()
-
-        thread_js = PKG_FILES.joinpath("thread.js").read_text()
-        js_translation_str = "const TranslationDict = " + json.dumps(
-            self.translation_dict, indent=4
-        )
-        thread_js = thread_js.replace("const TranslationDict = {}", js_translation_str)
-
-        assert self.loom_server is not None
-        is_mock = self.loom_server.mock_loom is not None
-        display_debug_controls = "block" if is_mock else "none"
-
-        thread_html = thread_html_template.format(
-            thread_css=thread_css,
-            thread_js=thread_js,
-            display_debug_controls=display_debug_controls,
-            **self.translation_dict,
-        )
-
-        return HTMLResponse(thread_html)
 
     async def get_favicon(self) -> Response:
         """Endpoint to get the favicon"""

@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-__all__ = ["BaseLoomServer", "DEFAULT_DATABASE_PATH", "MOCK_PORT_NAME"]
+__all__ = [
+    "BaseLoomServer",
+    "DEFAULT_DATABASE_PATH",
+    "DEFAULT_THREAD_GROUP_SIZE",
+    "MOCK_PORT_NAME",
+]
 
 import abc
 import asyncio
@@ -21,16 +26,18 @@ from serial_asyncio import open_serial_connection  # type: ignore
 
 from . import client_replies
 from .base_mock_loom import BaseMockLoom
-from .client_replies import MessageSeverityEnum, ShaftStateEnum
+from .client_replies import MessageSeverityEnum, ModeEnum, ShaftStateEnum
 from .constants import LOG_NAME
 from .mock_streams import StreamReaderType, StreamWriterType
 from .pattern_database import PatternDatabase
-from .reduced_pattern import Pick, ReducedPattern, reduced_pattern_from_pattern_data
+from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
 
 # The maximum number of patterns that can be in the history
 MAX_PATTERNS = 25
 
 DEFAULT_DATABASE_PATH = pathlib.Path(tempfile.gettempdir()) / "pattern_database.sqlite"
+
+DEFAULT_THREAD_GROUP_SIZE = 4
 
 MOCK_PORT_NAME = "mock"
 
@@ -118,23 +125,48 @@ class BaseLoomServer:
         self.read_loom_task: asyncio.Future = asyncio.Future()
         self.done_task: asyncio.Future = asyncio.Future()
         self.current_pattern: ReducedPattern | None = None
-        self.jump_pick = client_replies.JumpPickNumber(
-            pick_number=None, weaving_repeat_number=None
-        )
+        self.jump_pick = client_replies.JumpPickNumber()
+        self.jump_end = client_replies.JumpEndNumber()
+        self.mode = ModeEnum.WEAVE
         self.weave_forward = True
-        self.loom_error_flag = False
+        self.thread_low_to_high = True
+        self.thread_group_size = DEFAULT_THREAD_GROUP_SIZE
         self.command_dispatch_table = dict(
             clear_pattern_names=self.cmd_clear_pattern_names,
             file=self.cmd_file,
+            jump_to_end=self.cmd_jump_to_end,
             jump_to_pick=self.cmd_jump_to_pick,
+            mode=self.cmd_mode,
             select_pattern=self.cmd_select_pattern,
+            thread_direction=self.cmd_thread_direction,
+            thread_group_size=self.cmd_thread_group_size,
             weave_direction=self.cmd_weave_direction,
             oobcommand=self.cmd_oobcommand,
         )
 
+    @abc.abstractmethod
+    async def handle_loom_reply(self, reply_bytes: bytes) -> None:
+        """Process one reply from the loom."""
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def write_shafts_to_loom(self, shaft_word: int) -> None:
+        """Write the shaft word to the loom."""
+        raise NotImplementedError()
+
+    @property
+    def loom_connected(self) -> bool:
+        """Return True if connected to the loom."""
+        return not (
+            self.loom_writer is None
+            or self.loom_reader is None
+            or self.loom_writer.is_closing()
+            or self.loom_reader.at_eof()
+        )
+
     async def start(self) -> None:
         await self.pattern_db.init()
-        await self.clear_jump_pick()
+        await self.clear_jumps()
         # Restore current pattern, if any
         names = await self.pattern_db.get_pattern_names()
         if len(names) > 0:
@@ -166,16 +198,6 @@ class BaseLoomServer:
         await self.pattern_db.add_pattern(pattern=pattern, max_entries=MAX_PATTERNS)
         await self.report_pattern_names()
 
-    @property
-    def loom_connected(self) -> bool:
-        """Return True if connected to the loom."""
-        return not (
-            self.loom_writer is None
-            or self.loom_reader is None
-            or self.loom_writer.is_closing()
-            or self.loom_reader.at_eof()
-        )
-
     async def close_websocket(
         self, ws: WebSocket, code: CloseCode = CloseCode.NORMAL, reason: str = ""
     ) -> None:
@@ -197,19 +219,6 @@ class BaseLoomServer:
         reports its own state when software connects to it.
         """
         pass
-
-    async def report_initial_server_state(self) -> None:
-        """Report server state.
-
-        Called just after a client connects to the server.
-        """
-        await self.report_loom_connection_state()
-        await self.report_pattern_names()
-        await self.report_weave_direction()
-        await self.clear_jump_pick(force_output=True)
-        await self.report_current_pattern()
-        await self.report_current_pick_number()
-        await self.report_shaft_state()
 
     async def connect_to_loom(self) -> None:
         """Connect to the loom.
@@ -300,6 +309,20 @@ class BaseLoomServer:
             self.loom_disconnecting = False
             await self.report_loom_connection_state()
 
+    async def clear_jump_end(self, force_output=False):
+        """Clear self.jump_end and report value if changed or force_output
+
+        Parameters
+        ----------
+        force_output : bool
+            If True then report JumpEndNumber, even if it has not changed.
+        """
+        null_jump_end = client_replies.JumpEndNumber()
+        do_report = force_output or self.jump_end != null_jump_end
+        self.jump_end = null_jump_end
+        if do_report:
+            await self.report_jump_end()
+
     async def clear_jump_pick(self, force_output=False):
         """Clear self.jump_pick and report value if changed or force_output
 
@@ -308,48 +331,16 @@ class BaseLoomServer:
         force_output : bool
             If True then report JumpPickNumber, even if it has not changed.
         """
-        null_jump_pick = client_replies.JumpPickNumber(
-            pick_number=None, weaving_repeat_number=None
-        )
+        null_jump_pick = client_replies.JumpPickNumber()
         do_report = force_output or self.jump_pick != null_jump_pick
         self.jump_pick = null_jump_pick
         if do_report:
-            await self.report_jump_pick_number()
+            await self.report_jump_pick()
 
-    async def write_to_loom(self, data: bytes | bytearray | str) -> None:
-        """Send data to the loom.
-
-        Parameters
-        ----------
-        data : str | bytes
-            The data to send, without a terminator.
-            (This method will append the terminator).
-        """
-        if self.loom_writer is None or self.loom_writer.is_closing():
-            raise RuntimeError("Cannot write to the loom: no connection.")
-        data_bytes = data.encode() if isinstance(data, str) else data
-        if self.verbose:
-            self.log.info(
-                f"{self}: sending command to loom: {data_bytes + self.terminator!r}"
-            )
-        self.loom_writer.write(data_bytes + self.terminator)
-        await self.loom_writer.drain()
-
-    def increment_pick_number(self) -> int:
-        """Increment pick_number in the specified direction.
-
-        Increment weaving_repeat_number as well, if appropriate.
-
-        Return the new pick number. This will be 0 if
-        weaving_repeat_number changed,
-        or if unweaving and weaving_repeat_number
-        would be decremented to 0.
-        """
-        if self.current_pattern is None:
-            return 0
-        return self.current_pattern.increment_pick_number(
-            weave_forward=self.weave_forward
-        )
+    async def clear_jumps(self, force_output=False):
+        """Clear all jumps and report values if changed or force_output."""
+        await self.clear_jump_end(force_output=force_output)
+        await self.clear_jump_pick(force_output=force_output)
 
     async def cmd_clear_pattern_names(self, command: SimpleNamespace) -> None:
         # Clear the pattern database
@@ -388,6 +379,29 @@ class BaseLoomServer:
                 severity=MessageSeverityEnum.WARNING,
             )
 
+    async def cmd_jump_to_end(self, command: SimpleNamespace) -> None:
+        if self.current_pattern is None:
+            raise CommandError(
+                self.t("cannot jump to an end") + ": " + self.t("no pattern")
+            )
+        if command.end_number0 is not None:
+            if command.end_number0 < 0:
+                raise CommandError(
+                    self.t("invalid end number") + f" {command.end_number0} < 0"
+                )
+            max_end_number = len(self.current_pattern.threading)
+            if command.end_number0 > max_end_number:
+                raise CommandError(
+                    self.t("invalid end number")
+                    + f" {command.end_number0} > {max_end_number}"
+                )
+
+        self.jump_end = client_replies.JumpEndNumber(
+            end_number0=command.end_number0,
+            end_repeat_number=command.end_repeat_number,
+        )
+        await self.report_jump_end()
+
     async def cmd_jump_to_pick(self, command: SimpleNamespace) -> None:
         if self.current_pattern is None:
             raise CommandError(
@@ -407,16 +421,30 @@ class BaseLoomServer:
 
         self.jump_pick = client_replies.JumpPickNumber(
             pick_number=command.pick_number,
-            weaving_repeat_number=command.weaving_repeat_number,
+            pick_repeat_number=command.pick_repeat_number,
         )
-        await self.report_jump_pick_number()
+        await self.report_jump_pick()
+
+    async def cmd_mode(self, command: SimpleNamespace) -> None:
+        self.mode = ModeEnum(command.mode)
+        await self.report_mode()
 
     async def cmd_select_pattern(self, command: SimpleNamespace) -> None:
         name = command.name
         if self.current_pattern is not None and self.current_pattern.name == name:
             return
         await self.select_pattern(name)
-        await self.clear_jump_pick()
+        await self.clear_jumps()
+
+    async def cmd_thread_direction(self, command: SimpleNamespace) -> None:
+        self.thread_low_to_high = command.low_to_high
+        await self.report_thread_direction()
+
+    async def cmd_thread_group_size(self, command: SimpleNamespace) -> None:
+        if self.current_pattern is None:
+            return
+        self.thread_group_size = command.group_size
+        await self.report_thread_group_size()
 
     async def cmd_weave_direction(self, command: SimpleNamespace) -> None:
         self.weave_forward = command.forward
@@ -424,6 +452,81 @@ class BaseLoomServer:
 
     async def cmd_oobcommand(self, command: SimpleNamespace) -> None:
         await self.write_to_loom(f"#{command.command}")
+
+    def get_threading_shaft_word(self) -> int:
+        if self.current_pattern is None:
+            return 0
+        return self.current_pattern.get_threading_shaft_word()
+
+    async def handle_next_pick_request(self) -> None:
+        """Handle next pick request from loom.
+
+        Call this from handle_loom_reply.
+
+        Figure out the next pick, send it to the loom,
+        and report the information to the client.
+        """
+        if not self.current_pattern:
+            return
+        match self.mode:
+            case ModeEnum.WEAVE:
+                # Command a new pick, if there is one.
+                if self.jump_pick.pick_number is not None:
+                    new_pick_number = self.jump_pick.pick_number
+                    self.current_pattern.set_current_pick_number(new_pick_number)
+                else:
+                    new_pick_number = self.increment_pick_number()
+                if self.jump_pick.pick_repeat_number is not None:
+                    self.current_pattern.pick_repeat_number = (
+                        self.jump_pick.pick_repeat_number
+                    )
+                pick = self.current_pattern.get_current_pick()
+                await self.write_shafts_to_loom(pick.shaft_word)
+                await self.clear_jumps()
+                await self.report_current_pick_number()
+            case ModeEnum.THREAD:
+                # Advance to the next thread group, if there is one
+                if self.jump_end.end_number0 is not None:
+                    self.current_pattern.set_current_end_number(
+                        end_number0=self.jump_end.end_number0,
+                        thread_group_size=self.thread_group_size,
+                    )
+                else:
+                    self.increment_end_number()
+
+                shaft_word = self.get_threading_shaft_word()
+                await self.write_shafts_to_loom(shaft_word)
+                await self.clear_jumps()
+                await self.report_current_end_numbers()
+            case ModeEnum.TEST:
+                raise RuntimeError("Test mode is not yet supported")
+            case _:
+                raise RuntimeError(f"Invalid mode={self.mode!r}.")
+
+    def increment_pick_number(self) -> int:
+        """Increment pick_number in the current direction.
+
+        Increment pick_repeat_number as well, if appropriate.
+
+        Return the new pick number. This will be 0 if
+        pick_repeat_number changed,
+        or if unweaving and pick_repeat_number
+        would be decremented to 0.
+        """
+        if self.current_pattern is None:
+            return 0
+        return self.current_pattern.increment_pick_number(
+            weave_forward=self.weave_forward
+        )
+
+    def increment_end_number(self) -> None:
+        """Increment end_number0 in the current direction."""
+        if self.current_pattern is None:
+            return
+        self.current_pattern.increment_end_number(
+            thread_group_size=self.thread_group_size,
+            thread_low_to_high=self.thread_low_to_high,
+        )
 
     async def read_client_loop(self) -> None:
         """Read and process commands from the client."""
@@ -506,41 +609,6 @@ class BaseLoomServer:
                     self.websocket, code=CloseCode.ERROR, reason=repr(e)
                 )
 
-    @abc.abstractmethod
-    async def handle_loom_reply(self, reply_bytes: bytes) -> None:
-        """Process one reply from the loom."""
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def write_shafts_to_loom(self, pick: Pick) -> None:
-        """Write the shaft word to the loom."""
-        raise NotImplementedError()
-
-    async def handle_next_pick_request(self) -> None:
-        """Handle next pick request from loom.
-
-        Call this from handle_loom_reply.
-
-        Figure out the next pick, send it to the loom,
-        and report the information to the client.
-        """
-        if not self.current_pattern:
-            return
-        # Command a new pick, if there is one.
-        if self.jump_pick.pick_number is not None:
-            new_pick_number = self.jump_pick.pick_number
-            self.current_pattern.set_current_pick_number(new_pick_number)
-        else:
-            new_pick_number = self.increment_pick_number()
-        if self.jump_pick.weaving_repeat_number is not None:
-            self.current_pattern.weaving_repeat_number = (
-                self.jump_pick.weaving_repeat_number
-            )
-        pick = self.current_pattern.get_current_pick()
-        await self.write_shafts_to_loom(pick)
-        await self.clear_jump_pick()
-        await self.report_current_pick_number()
-
     async def read_loom_loop(self) -> None:
         """Read and process replies from the loom."""
         try:
@@ -567,6 +635,150 @@ class BaseLoomServer:
             )
             await self.disconnect_from_loom()
 
+    async def report_command_problem(self, message: str, severity: MessageSeverityEnum):
+        """Report a CommandProblem to the client."""
+        reply = client_replies.CommandProblem(message=message, severity=severity)
+        await self.write_to_client(reply)
+
+    async def report_current_pattern(self) -> None:
+        """Report pattern to the client"""
+        if self.current_pattern is not None:
+            await self.write_to_client(self.current_pattern)
+
+    async def report_initial_server_state(self) -> None:
+        """Report server state.
+
+        Called just after a client connects to the server.
+        """
+        await self.report_loom_connection_state()
+        await self.report_mode()
+        await self.report_pattern_names()
+        await self.report_thread_direction()
+        await self.report_thread_group_size()
+        await self.report_weave_direction()
+        await self.clear_jumps(force_output=True)
+        await self.report_current_pattern()
+        await self.report_current_end_numbers()
+        await self.report_current_pick_number()
+        await self.report_shaft_state()
+
+    async def report_loom_connection_state(self, reason: str = "") -> None:
+        """Report LoomConnectionState to the client."""
+        if self.loom_connecting:
+            state = client_replies.ConnectionStateEnum.CONNECTING
+        elif self.loom_disconnecting:
+            state = client_replies.ConnectionStateEnum.DISCONNECTING
+        elif self.loom_connected:
+            state = client_replies.ConnectionStateEnum.CONNECTED
+        else:
+            state = client_replies.ConnectionStateEnum.DISCONNECTED
+        reply = client_replies.LoomConnectionState(state=state, reason=reason)
+        await self.write_to_client(reply)
+
+    async def report_pattern_names(self) -> None:
+        """Report PatternNames to the client."""
+        names = await self.pattern_db.get_pattern_names()
+        reply = client_replies.PatternNames(names=names)
+        await self.write_to_client(reply)
+
+    async def report_current_pick_number(self) -> None:
+        """Report CurrentPickNumber to the client.
+
+        Also update pick information in the database."""
+        if self.current_pattern is None:
+            return
+        await self.pattern_db.update_pick_number(
+            pattern_name=self.current_pattern.name,
+            pick_number=self.current_pattern.pick_number,
+            pick_repeat_number=self.current_pattern.pick_repeat_number,
+        )
+        reply = client_replies.CurrentPickNumber(
+            pick_number=self.current_pattern.pick_number,
+            pick_repeat_number=self.current_pattern.pick_repeat_number,
+        )
+        await self.write_to_client(reply)
+
+    async def report_current_end_numbers(self) -> None:
+        """Report CurrentEndNumbers to the client.
+
+        Also update threading information the database.
+        """
+        if self.current_pattern is None:
+            return
+        await self.pattern_db.update_end_number(
+            pattern_name=self.current_pattern.name,
+            end_number0=self.current_pattern.end_number0,
+            end_number1=self.current_pattern.end_number1,
+            end_repeat_number=self.current_pattern.end_repeat_number,
+        )
+        reply = client_replies.CurrentEndNumbers(
+            end_number0=self.current_pattern.end_number0,
+            end_number1=self.current_pattern.end_number1,
+            end_repeat_number=self.current_pattern.end_repeat_number,
+        )
+        await self.write_to_client(reply)
+
+    async def report_jump_end(self) -> None:
+        """Report JumpEndNumber to the client."""
+        await self.write_to_client(self.jump_end)
+
+    async def report_jump_pick(self) -> None:
+        """Report JumpPickNumber to the client."""
+        await self.write_to_client(self.jump_pick)
+
+    async def report_shaft_state(self) -> None:
+        """Report ShaftState to the client."""
+        await self.write_to_client(
+            client_replies.ShaftState(
+                state=self.shaft_state, shaft_word=self.shaft_word
+            )
+        )
+
+    async def report_mode(self) -> None:
+        """Report the current mode to the client."""
+        await self.write_to_client(client_replies.Mode(mode=self.mode))
+
+    async def report_status_message(
+        self, message: str, severity: MessageSeverityEnum
+    ) -> None:
+        """Report a status message to the client."""
+        await self.write_to_client(
+            client_replies.StatusMessage(message=message, severity=severity)
+        )
+
+    async def report_thread_direction(self) -> None:
+        """Report ThreadDirection"""
+        client_reply = client_replies.ThreadDirection(
+            low_to_high=self.thread_low_to_high
+        )
+        await self.write_to_client(client_reply)
+
+    async def report_thread_group_size(self) -> None:
+        """Report ThreadGroupSize"""
+        client_reply = client_replies.ThreadGroupSize(group_size=self.thread_group_size)
+        await self.write_to_client(client_reply)
+
+    async def report_weave_direction(self) -> None:
+        """Report WeaveDirection"""
+        client_reply = client_replies.WeaveDirection(forward=self.weave_forward)
+        await self.write_to_client(client_reply)
+
+    async def select_pattern(self, name: str) -> None:
+        try:
+            pattern = await self.pattern_db.get_pattern(name)
+        except LookupError:
+            raise CommandError(f"select_pattern failed: no such pattern: {name}")
+        self.current_pattern = pattern
+        await self.report_current_pattern()
+        await self.report_current_end_numbers()
+        await self.report_current_pick_number()
+
+    def t(self, phrase: str) -> str:
+        """Translate a phrase, if possible."""
+        if phrase not in self.translation_dict:
+            self.log.warning(f"{phrase!r} not in translation dict")
+        return self.translation_dict.get(phrase, phrase)
+
     async def write_to_client(self, reply: Any) -> None:
         """Send a reply to the client.
 
@@ -592,89 +804,24 @@ class BaseLoomServer:
                     reply_str = reply_str[0:120] + "..."
                 self.log.info(f"{self}: do not send reply {reply_str}; not connected")
 
-    async def report_command_problem(self, message: str, severity: MessageSeverityEnum):
-        """Report a CommandProblem to the client."""
-        reply = client_replies.CommandProblem(message=message, severity=severity)
-        await self.write_to_client(reply)
+    async def write_to_loom(self, data: bytes | bytearray | str) -> None:
+        """Send data to the loom.
 
-    async def report_current_pattern(self) -> None:
-        """Report pattern to the client"""
-        if self.current_pattern is not None:
-            await self.write_to_client(self.current_pattern)
-
-    async def report_loom_connection_state(self, reason: str = "") -> None:
-        """Report LoomConnectionState to the client."""
-        if self.loom_connecting:
-            state = client_replies.ConnectionStateEnum.CONNECTING
-        elif self.loom_disconnecting:
-            state = client_replies.ConnectionStateEnum.DISCONNECTING
-        elif self.loom_connected:
-            state = client_replies.ConnectionStateEnum.CONNECTED
-        else:
-            state = client_replies.ConnectionStateEnum.DISCONNECTED
-        reply = client_replies.LoomConnectionState(state=state, reason=reason)
-        await self.write_to_client(reply)
-
-    async def report_pattern_names(self) -> None:
-        """Report PatternNames to the client."""
-        names = await self.pattern_db.get_pattern_names()
-        reply = client_replies.PatternNames(names=names)
-        await self.write_to_client(reply)
-
-    async def report_current_pick_number(self) -> None:
-        """Report CurrentPickNumber to the client."""
-        if self.current_pattern is None:
-            return
-        await self.pattern_db.update_pick_number(
-            pattern_name=self.current_pattern.name,
-            pick_number=self.current_pattern.pick_number,
-            weaving_repeat_number=self.current_pattern.weaving_repeat_number,
-        )
-        reply = client_replies.CurrentPickNumber(
-            pick_number=self.current_pattern.pick_number,
-            weaving_repeat_number=self.current_pattern.weaving_repeat_number,
-        )
-        await self.write_to_client(reply)
-
-    async def report_jump_pick_number(self) -> None:
-        """Report JumpPickNumber to the client."""
-        await self.write_to_client(self.jump_pick)
-
-    async def report_shaft_state(self) -> None:
-        """Report ShaftState to the client."""
-        await self.write_to_client(
-            client_replies.ShaftState(
-                state=self.shaft_state, shaft_word=self.shaft_word
+        Parameters
+        ----------
+        data : str | bytes
+            The data to send, without a terminator.
+            (This method will append the terminator).
+        """
+        if self.loom_writer is None or self.loom_writer.is_closing():
+            raise RuntimeError("Cannot write to the loom: no connection.")
+        data_bytes = data.encode() if isinstance(data, str) else data
+        if self.verbose:
+            self.log.info(
+                f"{self}: sending command to loom: {data_bytes + self.terminator!r}"
             )
-        )
-
-    async def report_status_message(
-        self, message: str, severity: MessageSeverityEnum
-    ) -> None:
-        """Report a status message to the client."""
-        await self.write_to_client(
-            client_replies.StatusMessage(message=message, severity=severity)
-        )
-
-    async def report_weave_direction(self) -> None:
-        """Report WeaveDirection"""
-        client_reply = client_replies.WeaveDirection(forward=self.weave_forward)
-        await self.write_to_client(client_reply)
-
-    async def select_pattern(self, name: str) -> None:
-        try:
-            pattern = await self.pattern_db.get_pattern(name)
-        except LookupError:
-            raise CommandError(f"select_pattern failed: no such pattern: {name}")
-        self.current_pattern = pattern
-        await self.report_current_pattern()
-        await self.report_current_pick_number()
-
-    def t(self, phrase: str) -> str:
-        """Translate a phrase, if possible."""
-        if phrase not in self.translation_dict:
-            self.log.warning(f"{phrase!r} not in translation dict")
-        return self.translation_dict.get(phrase, phrase)
+        self.loom_writer.write(data_bytes + self.terminator)
+        await self.loom_writer.drain()
 
     def __repr__(self) -> str:
         return type(self).__name__

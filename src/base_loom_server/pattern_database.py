@@ -14,10 +14,10 @@ FIELD_TYPE_DICT = dict(
     pattern_name="text",
     pattern_json="text",
     pick_number="integer",
-    weaving_repeat_number="integer",
-    threading_end_number="integer",
-    threading_group_size="integer",
-    threading_repeat_number="integer",
+    pick_repeat_number="integer",
+    end_number0="integer",
+    end_number1="integer",
+    end_repeat_number="integer",
     timestamp_sec="real",
 )
 
@@ -36,10 +36,10 @@ INSERT_STR = make_insert_str(FIELD_TYPE_DICT)
 # Dict of cache field name: default value
 CACHE_DEFAULT_DICT = dict(
     pick_number=0,
-    weaving_repeat_number=1,
-    threading_end_number=0,
-    threading_group_size=1,
-    threading_repeat_number=1,
+    pick_repeat_number=1,
+    end_number0=0,
+    end_number1=0,
+    end_repeat_number=1,
 )
 
 # Tuple of default cache values, in the same order as the fields
@@ -86,10 +86,10 @@ class PatternDatabase:
             are set to default values:
 
             * pick_number
-            * weaving_repeat_number
-            * threading_end_number
-            * threading_group_size
-            * threading_repeat_number
+            * pick_repeat_number
+            * end_number0
+            * end_number1
+            * end_repeat_number
 
         max_patterns : int
             Maximum number of patterns to keep; if 0 then no limit.
@@ -162,15 +162,38 @@ class PatternDatabase:
         return [row[0] for row in rows]
 
     async def update_pick_number(
-        self, pattern_name: str, pick_number: int, weaving_repeat_number: int
+        self, pattern_name: str, pick_number: int, pick_repeat_number: int
     ) -> None:
-        """Update the pick and repeat numbers for the specified pattern."""
+        """Update weaving pick and repeat numbers for the specified pattern."""
         async with aiosqlite.connect(self.dbpath) as db:
             await db.execute(
                 "update patterns "
-                "set pick_number = ?, weaving_repeat_number = ?, timestamp_sec = ?"
+                "set pick_number = ?, pick_repeat_number = ?, timestamp_sec = ?"
                 "where pattern_name = ?",
-                (pick_number, weaving_repeat_number, time.time(), pattern_name),
+                (pick_number, pick_repeat_number, time.time(), pattern_name),
+            )
+            await db.commit()
+
+    async def update_end_number(
+        self,
+        pattern_name: str,
+        end_number0: int,
+        end_number1: int,
+        end_repeat_number: int,
+    ) -> None:
+        """Update threading end & repeat numbers for the specified pattern."""
+        async with aiosqlite.connect(self.dbpath) as db:
+            await db.execute(
+                "update patterns "
+                "set end_number0 = ?, end_number1 = ?, end_repeat_number = ?, timestamp_sec = ?"
+                "where pattern_name = ?",
+                (
+                    end_number0,
+                    end_number1,
+                    end_repeat_number,
+                    time.time(),
+                    pattern_name,
+                ),
             )
             await db.commit()
 
