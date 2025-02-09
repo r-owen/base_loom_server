@@ -64,15 +64,18 @@ class ReducedPattern:
     threading: list[int]
     picks: list[Pick]
     pick0: Pick
+    # Keep track of where we are in weaving
     pick_number: int = 0
-    repeat_number: int = 1
+    weaving_repeat_number: int = 1
+    # keep track of where we are in threading
+    threading_end_number: int = 0
+    threading_group_size: int = 1
+    threading_low_to_high: bool = True
+    threading_repeat_number: int = 1
 
     @classmethod
     def from_dict(cls, datadict: dict[str, Any]) -> ReducedPattern:
-        """Construct a ReducedPattern from a dict.
-
-        The "type" field is optional, but checked if present.
-        """
+        """Construct a ReducedPattern from a dict."""
         # Make a copy, so the caller doesn't see the picks field change
         datadict = copy.deepcopy(datadict)
         pop_and_check_type_field(typename="ReducedPattern", datadict=datadict)
@@ -80,52 +83,54 @@ class ReducedPattern:
         datadict["pick0"] = Pick.from_dict(datadict["pick0"])
         return cls(**datadict)
 
-    def increment_pick_number(self, weave_forward: bool) -> int:
-        """Increment pick_number in the specified direction.
+    def check_pick_number(self, pick_number: int) -> None:
+        """Raise IndexError if pick_number out of range.
 
-        Increment repeat_number as well, if appropriate.
-
-        Return the new pick number.
+        The allowed range is 0 to self.len(self.picks), inclusive.
+        See get_pick_number for more information.
         """
-        if self.pick_number < 0 or self.pick_number > len(self.picks):
-            raise RuntimeError(
-                f"Bug: {self.pick_number=} out of range [0, {len(self.picks)}"
-            )
-        next_pick_number = self.pick_number + (1 if weave_forward else -1)
-        if next_pick_number < 0:
-            self.repeat_number -= 1
-            next_pick_number = len(self.picks)
-        elif next_pick_number > len(self.picks):
-            self.repeat_number += 1
-            next_pick_number = 0
-        self.pick_number = next_pick_number
-        return next_pick_number
-
-    def get_current_pick(self) -> Pick:
-        """Get the current pick.
-
-        Raises
-        ------
-        IndexError
-            If current pick number < 1 or > len(self.picks)
-        """
-        pick_number = self.pick_number
-        if pick_number == 0:
-            return self.pick0
-        if pick_number < 0 or pick_number > len(self.picks):
-            raise IndexError(f"{pick_number=} < 0 or > {len(self.picks)}")
-        else:
-            return self.picks[pick_number - 1]
-
-    def get_pick(self, pick_number: int) -> Pick:
-        """Get the specified pick"""
         if pick_number < 0:
             raise IndexError(f"{pick_number=} < 0")
         if pick_number > len(self.picks):
             raise IndexError(f"{pick_number=} > {len(self.picks)}")
+
+    def get_current_pick(self) -> Pick:
+        """Get the current pick."""
+        return self.get_pick(self.pick_number)
+
+    def get_pick(self, pick_number: int) -> Pick:
+        """Get the specified pick.
+
+        Return self.pick0 if pick_number = 0,
+        else return self.picks[pick_number-1] if pick_number in range.
+
+        Raises
+        ------
+        IndexError
+            If pick_number < 0 or > len(self.picks).
+        """
+        self.check_pick_number(pick_number)
         if pick_number == 0:
             return self.pick0
         return self.picks[pick_number - 1]
+
+    def increment_pick_number(self, weave_forward: bool) -> int:
+        """Increment pick_number in the specified direction.
+
+        Increment weaving_repeat_number as well, if appropriate.
+
+        Return the new pick number.
+        """
+        self.check_pick_number(self.pick_number)
+        next_pick_number = self.pick_number + (1 if weave_forward else -1)
+        if next_pick_number < 0:
+            self.weaving_repeat_number -= 1
+            next_pick_number = len(self.picks)
+        elif next_pick_number > len(self.picks):
+            self.weaving_repeat_number += 1
+            next_pick_number = 0
+        self.pick_number = next_pick_number
+        return next_pick_number
 
     def set_current_pick_number(self, pick_number: int) -> None:
         """Set pick_number.
@@ -137,8 +142,7 @@ class ReducedPattern:
 
         Raise IndexError if pick_number < 0 or > num picks.
         """
-        if pick_number < 0 or pick_number > len(self.picks):
-            raise IndexError(f"{pick_number=} < 0 or > {len(self.picks)}")
+        self.check_pick_number(pick_number)
         self.pick_number = pick_number
 
 

@@ -119,7 +119,7 @@ class BaseLoomServer:
         self.done_task: asyncio.Future = asyncio.Future()
         self.current_pattern: ReducedPattern | None = None
         self.jump_pick = client_replies.JumpPickNumber(
-            pick_number=None, repeat_number=None
+            pick_number=None, weaving_repeat_number=None
         )
         self.weave_forward = True
         self.loom_error_flag = False
@@ -309,7 +309,7 @@ class BaseLoomServer:
             If True then report JumpPickNumber, even if it has not changed.
         """
         null_jump_pick = client_replies.JumpPickNumber(
-            pick_number=None, repeat_number=None
+            pick_number=None, weaving_repeat_number=None
         )
         do_report = force_output or self.jump_pick != null_jump_pick
         self.jump_pick = null_jump_pick
@@ -338,10 +338,12 @@ class BaseLoomServer:
     def increment_pick_number(self) -> int:
         """Increment pick_number in the specified direction.
 
-        Increment repeat_number as well, if appropriate.
+        Increment weaving_repeat_number as well, if appropriate.
 
-        Return the new pick number. This will be 0 if repeat_number changed,
-        or if unweaving and repeat_number would be decremented to 0.
+        Return the new pick number. This will be 0 if
+        weaving_repeat_number changed,
+        or if unweaving and weaving_repeat_number
+        would be decremented to 0.
         """
         if self.current_pattern is None:
             return 0
@@ -405,7 +407,7 @@ class BaseLoomServer:
 
         self.jump_pick = client_replies.JumpPickNumber(
             pick_number=command.pick_number,
-            repeat_number=command.repeat_number,
+            weaving_repeat_number=command.weaving_repeat_number,
         )
         await self.report_jump_pick_number()
 
@@ -530,8 +532,10 @@ class BaseLoomServer:
             self.current_pattern.set_current_pick_number(new_pick_number)
         else:
             new_pick_number = self.increment_pick_number()
-        if self.jump_pick.repeat_number is not None:
-            self.current_pattern.repeat_number = self.jump_pick.repeat_number
+        if self.jump_pick.weaving_repeat_number is not None:
+            self.current_pattern.weaving_repeat_number = (
+                self.jump_pick.weaving_repeat_number
+            )
         pick = self.current_pattern.get_current_pick()
         await self.write_shafts_to_loom(pick)
         await self.clear_jump_pick()
@@ -624,11 +628,11 @@ class BaseLoomServer:
         await self.pattern_db.update_pick_number(
             pattern_name=self.current_pattern.name,
             pick_number=self.current_pattern.pick_number,
-            repeat_number=self.current_pattern.repeat_number,
+            weaving_repeat_number=self.current_pattern.weaving_repeat_number,
         )
         reply = client_replies.CurrentPickNumber(
             pick_number=self.current_pattern.pick_number,
-            repeat_number=self.current_pattern.repeat_number,
+            weaving_repeat_number=self.current_pattern.weaving_repeat_number,
         )
         await self.write_to_client(reply)
 

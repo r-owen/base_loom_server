@@ -128,12 +128,12 @@ def create_test_client(
                                     == expected_current_pattern.pick_number
                                 )
                                 assert (
-                                    reply.repeat_number
-                                    == expected_current_pattern.repeat_number
+                                    reply.weaving_repeat_number
+                                    == expected_current_pattern.weaving_repeat_number
                                 )
                             case "JumpPickNumber":
                                 assert reply.pick_number is None
-                                assert reply.repeat_number is None
+                                assert reply.weaving_repeat_number is None
                             case "LoomConnectionState":
                                 if reply.state not in good_connection_states:
                                     raise AssertionError(
@@ -220,14 +220,14 @@ def command_next_pick(
             dict(
                 type="JumpPickNumber",
                 pick_number=None,
-                repeat_number=None,
+                weaving_repeat_number=None,
             ),
         ]
     expected_replies += [
         dict(
             type="CurrentPickNumber",
             pick_number=expected_pick_number,
-            repeat_number=expected_repeat_number,
+            weaving_repeat_number=expected_repeat_number,
         ),
     ]
     if motion_reported:
@@ -267,7 +267,7 @@ def select_pattern(
     websocket: WebSocketType,
     pattern_name: str,
     pick_number: int = 0,
-    repeat_number: int = 1,
+    weaving_repeat_number: int = 1,
 ) -> ReducedPattern:
     """Tell the loom server to select a pattern.
 
@@ -281,7 +281,7 @@ def select_pattern(
         Pattern name.
     pick_number : int
         Expected current pick number.
-    repeat_number : int
+    weaving_repeat_number : int
         Expected current repeat number.
     """
     websocket.send_json(dict(type="select_pattern", name=pattern_name))
@@ -289,10 +289,12 @@ def select_pattern(
     assert reply["type"] == "ReducedPattern"
     pattern = ReducedPattern.from_dict(reply)
     assert pattern.pick_number == pick_number
-    assert pattern.repeat_number == repeat_number
+    assert pattern.weaving_repeat_number == weaving_repeat_number
     reply = receive_dict(websocket)
     assert reply == dict(
-        type="CurrentPickNumber", pick_number=pick_number, repeat_number=repeat_number
+        type="CurrentPickNumber",
+        pick_number=pick_number,
+        weaving_repeat_number=weaving_repeat_number,
     )
     return pattern
 
@@ -349,19 +351,19 @@ class BaseTestLoomServer:
             num_picks_in_pattern = len(pattern.picks)
 
             for pick_number in (0, 1, num_picks_in_pattern // 3, num_picks_in_pattern):
-                for repeat_number in (-1, 0, 1):
+                for weaving_repeat_number in (-1, 0, 1):
                     websocket.send_json(
                         dict(
                             type="jump_to_pick",
                             pick_number=pick_number,
-                            repeat_number=repeat_number,
+                            weaving_repeat_number=weaving_repeat_number,
                         )
                     )
                     reply = receive_dict(websocket)
                     assert reply == dict(
                         type="JumpPickNumber",
                         pick_number=pick_number,
-                        repeat_number=repeat_number,
+                        weaving_repeat_number=weaving_repeat_number,
                     )
 
     def test_oobcommand(self) -> None:
@@ -458,19 +460,19 @@ class BaseTestLoomServer:
                     )
                     pattern_list.append(pattern)
                     pattern.pick_number = rnd.randrange(2, len(pattern.picks))
-                    pattern.repeat_number = rnd.randrange(-10, 10)
+                    pattern.weaving_repeat_number = rnd.randrange(-10, 10)
                     websocket.send_json(
                         dict(
                             type="jump_to_pick",
                             pick_number=pattern.pick_number,
-                            repeat_number=pattern.repeat_number,
+                            weaving_repeat_number=pattern.weaving_repeat_number,
                         )
                     )
                     reply = receive_dict(websocket)
                     assert reply == dict(
                         type="JumpPickNumber",
                         pick_number=pattern.pick_number,
-                        repeat_number=pattern.repeat_number,
+                        weaving_repeat_number=pattern.weaving_repeat_number,
                     )
                     expected_pick_number = pattern.pick_number
                     expected_shaft_word = pattern.get_pick(
@@ -481,7 +483,7 @@ class BaseTestLoomServer:
                         motion_reported=self.motion_reported,
                         jump_pending=True,
                         expected_pick_number=expected_pick_number,
-                        expected_repeat_number=pattern.repeat_number,
+                        expected_repeat_number=pattern.weaving_repeat_number,
                         expected_shaft_word=expected_shaft_word,
                     )
 
@@ -511,7 +513,7 @@ class BaseTestLoomServer:
                         websocket=websocket,
                         pattern_name=pattern.name,
                         pick_number=pattern.pick_number,
-                        repeat_number=pattern.repeat_number,
+                        weaving_repeat_number=pattern.weaving_repeat_number,
                     )
 
             # Now try again, but this time reset the database

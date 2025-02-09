@@ -4,7 +4,10 @@ import time
 
 import pytest
 
-from base_loom_server.pattern_database import create_pattern_database
+from base_loom_server.pattern_database import (
+    CACHE_DEFAULT_DICT,
+    create_pattern_database,
+)
 from base_loom_server.reduced_pattern import (
     ReducedPattern,
     read_full_pattern,
@@ -29,21 +32,33 @@ async def test_add_and_get_pattern() -> None:
 
         pattern1 = read_reduced_pattern(patternpath1)
 
-        # Check that adding a pattern ignores pick_number and repeat_number
+        # Check that adding a pattern ignores cache values:
+        # * pick_number
+        # * weaving_repeat_number
+        # * threading_end_number
+        # * threading_group_size
+        # * threading_repeat_number
         pattern1.pick_number = 20
-        pattern1.repeat_number = 30
+        pattern1.weaving_repeat_number = 21
+        pattern1.threading_end_number = 22
+        pattern1.threading_group_size = 23
+        pattern1.threading_repeat_number = 25
         await db.add_pattern(pattern1)
         pattern_names = await db.get_pattern_names()
         assert pattern_names == [pattern1.name]
         returned_pattern1 = await db.get_pattern(pattern1.name)
-        assert returned_pattern1.pick_number == 0
-        assert returned_pattern1.repeat_number == 1
 
-        # Check that the read pattern matches,
-        # other than pick_number and repeat_number
-        pattern1.pick_number = 0
-        pattern1.repeat_number = 1
-        assert pattern1 == returned_pattern1
+        # Cached values should be set to defaults
+        # when reading a newly added pattern
+        for field_name, value in CACHE_DEFAULT_DICT.items():
+            assert getattr(returned_pattern1, field_name) == value
+
+        # Non-cached values should match the original
+        non_cached_fields = set(vars(returned_pattern1)) - set(CACHE_DEFAULT_DICT)
+        for field_name in non_cached_fields:
+            assert getattr(pattern1, field_name) == getattr(
+                returned_pattern1, field_name
+            )
 
         # Adding another pattern puts it to the end of the name list
         pattern2 = read_reduced_pattern(patternpath2)
@@ -149,7 +164,7 @@ async def test_update_pick() -> None:
         ]
         assert pattern_names == expected_pattern_names
 
-        for pattern_name, pick_number, repeat_number in (
+        for pattern_name, pick_number, weaving_repeat_number in (
             (pattern_names[0], 50, -5),
             (pattern_names[1], 3, 49),
             (pattern_names[0], 0, 1),
@@ -158,9 +173,9 @@ async def test_update_pick() -> None:
             await db.update_pick_number(
                 pattern_name=pattern_name,
                 pick_number=pick_number,
-                repeat_number=repeat_number,
+                weaving_repeat_number=weaving_repeat_number,
             )
             pattern = await db.get_pattern(pattern_name)
             assert pattern.name == pattern_name
             assert pattern.pick_number == pick_number
-            assert pattern.repeat_number == repeat_number
+            assert pattern.weaving_repeat_number == weaving_repeat_number

@@ -43,7 +43,7 @@ class CurrentPickNumber:
 
     type: str = dataclasses.field(init=False, default="CurrentPickNumber")
     pick_number: int
-    repeat_number: int
+    weaving_repeat_number: int
 
 
 @dataclasses.dataclass
@@ -52,7 +52,7 @@ class JumpPickNumber:
 
     type: str = dataclasses.field(init=False, default="JumpPickNumber")
     pick_number: int | None
-    repeat_number: int | None
+    weaving_repeat_number: int | None
 
 
 @dataclasses.dataclass

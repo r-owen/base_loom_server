@@ -9,25 +9,62 @@ import aiosqlite
 
 from .reduced_pattern import ReducedPattern
 
+FIELD_TYPE_DICT = dict(
+    id="integer primary key",
+    pattern_name="text",
+    pattern_json="text",
+    pick_number="integer",
+    weaving_repeat_number="integer",
+    threading_end_number="integer",
+    threading_group_size="integer",
+    threading_repeat_number="integer",
+    timestamp_sec="real",
+)
+
+FIELDS_STR = ", ".join(f"{key} {value}" for key, value in FIELD_TYPE_DICT.items())
+
+
+def make_insert_str(field_type_dict):
+    field_names = [field_name for field_name in FIELD_TYPE_DICT if field_name != "id"]
+    field_names_str = ", ".join(field_names)
+    placeholders_str = ", ".join(["?"] * len(field_names))
+    return f"insert into patterns ({field_names_str}) values ({placeholders_str})"
+
+
+INSERT_STR = make_insert_str(FIELD_TYPE_DICT)
+
+# Dict of cache field name: default value
+CACHE_DEFAULT_DICT = dict(
+    pick_number=0,
+    weaving_repeat_number=1,
+    threading_end_number=0,
+    threading_group_size=1,
+    threading_repeat_number=1,
+)
+
+# Tuple of default cache values, in the same order as the fields
+CACHE_DEFAULT_VALUES_TUPLE = tuple(
+    CACHE_DEFAULT_DICT[field]
+    for field in FIELD_TYPE_DICT
+    if field in CACHE_DEFAULT_DICT
+)
+
 
 class PatternDatabase:
-    FIELDS_STR = ", ".join(
-        (
-            "id integer primary key",
-            "pattern_name text",
-            "pattern_json text",
-            "pick_number integer",
-            "repeat_number integer",
-            "timestamp_sec real",
-        )
-    )
+    """sqlite database to hold ReducedPattern instances
+
+    The patterns are stored as json strings, but the
+    the associated cache fields are saved in separate fields
+    so they can be updated as they change (the values in the json
+    strings are ignored during pattern retrieval).
+    """
 
     def __init__(self, dbpath: pathlib.Path) -> None:
         self.dbpath = dbpath
 
     async def init(self) -> None:
         async with aiosqlite.connect(self.dbpath) as db:
-            await db.execute(f"create table if not exists patterns ({self.FIELDS_STR})")
+            await db.execute(f"create table if not exists patterns ({FIELDS_STR})")
             await db.commit()
 
     async def add_pattern(
@@ -45,7 +82,15 @@ class PatternDatabase:
         Parameters
         ----------
         pattern : ReducedPattern
-            The pattern to add. The pick_number and repeat_number are ignored.
+            The pattern to add. The associated cache fields
+            are set to default values:
+
+            * pick_number
+            * weaving_repeat_number
+            * threading_end_number
+            * threading_group_size
+            * threading_repeat_number
+
         max_patterns : int
             Maximum number of patterns to keep; if 0 then no limit.
             If there are more than this many patterns in the database,
@@ -68,10 +113,10 @@ class PatternDatabase:
             if max_entries > 0:
                 max_entries = max(max_entries, 2)
             await db.execute(
-                "insert into patterns "
-                "(pattern_name, pattern_json, pick_number, repeat_number, timestamp_sec) "
-                "values (?, ?, ?, ?, ?)",
-                (pattern.name, pattern_json, 0, 1, current_time),
+                INSERT_STR,
+                (pattern.name, pattern_json)
+                + CACHE_DEFAULT_VALUES_TUPLE
+                + (current_time,),
             )
             await db.commit()
 
@@ -103,8 +148,8 @@ class PatternDatabase:
             raise LookupError(f"{pattern_name} not found")
         pattern_dict = json.loads(row["pattern_json"])
         pattern = ReducedPattern.from_dict(pattern_dict)
-        pattern.pick_number = row["pick_number"]
-        pattern.repeat_number = row["repeat_number"]
+        for field_name in CACHE_DEFAULT_DICT:
+            setattr(pattern, field_name, row[field_name])
         return pattern
 
     async def get_pattern_names(self) -> list[str]:
@@ -117,15 +162,15 @@ class PatternDatabase:
         return [row[0] for row in rows]
 
     async def update_pick_number(
-        self, pattern_name: str, pick_number: int, repeat_number: int
+        self, pattern_name: str, pick_number: int, weaving_repeat_number: int
     ) -> None:
         """Update the pick and repeat numbers for the specified pattern."""
         async with aiosqlite.connect(self.dbpath) as db:
             await db.execute(
                 "update patterns "
-                "set pick_number = ?, repeat_number = ?, timestamp_sec = ?"
+                "set pick_number = ?, weaving_repeat_number = ?, timestamp_sec = ?"
                 "where pattern_name = ?",
-                (pick_number, repeat_number, time.time(), pattern_name),
+                (pick_number, weaving_repeat_number, time.time(), pattern_name),
             )
             await db.commit()
 

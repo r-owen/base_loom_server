@@ -50,7 +50,7 @@
         <label>{of}</label>
         <label id="total_picks">?</label>
         <label>{repeat}</label>
-        <label id="repeat_number"></label>
+        <label id="weaving_repeat_number"></label>
     </div>
 
     <form action="" id="jump_to_pick_form">

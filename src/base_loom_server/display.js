@@ -66,7 +66,7 @@ class ReducedPattern {
         this.threading = datadict.threading
         this.picks = []
         this.pick_number = datadict.pick_number
-        this.repeat_number = datadict.repeat_number
+        this.weaving_repeat_number = datadict.weaving_repeat_number
         datadict.picks.forEach((pickdata) => {
             this.picks.push(new Pick(pickdata))
         })
@@ -209,12 +209,12 @@ class LoomClient {
                 console.log("Ignoring CurrentPickNumber: no pattern loaded")
             }
             this.currentPattern.pick_number = datadict.pick_number
-            this.currentPattern.repeat_number = datadict.repeat_number
+            this.currentPattern.weaving_repeat_number = datadict.weaving_repeat_number
             this.displayCurrentPattern()
             this.displayPick()
         } else if (datadict.type == "JumpPickNumber") {
             this.jumpPickNumber = datadict.pick_number
-            this.jumpRepeatNumber = datadict.repeat_number
+            this.jumpRepeatNumber = datadict.weaving_repeat_number
             this.displayJumpPick()
         } else if (datadict.type == "LoomConnectionState") {
             this.loomConnectionState = datadict
@@ -505,7 +505,7 @@ class LoomClient {
     Display the current pick and repeat.
     */
     displayPick() {
-        var repeatNumberElt = document.getElementById("repeat_number")
+        var repeatNumberElt = document.getElementById("weaving_repeat_number")
         var pickNumberElt = document.getElementById("pick_number")
         var totalPicksElt = document.getElementById("total_picks")
         var pickNumber = ""
@@ -513,7 +513,7 @@ class LoomClient {
         var repeatNumber = ""
         if (this.currentPattern) {
             pickNumber = this.currentPattern.pick_number
-            repeatNumber = this.currentPattern.repeat_number
+            repeatNumber = this.currentPattern.weaving_repeat_number
             totalPicks = this.currentPattern.picks.length
         }
         pickNumberElt.textContent = pickNumber
@@ -644,7 +644,7 @@ class LoomClient {
         // Handle blanks by using the current default, if any
         var pickNumber = asNumberOrNull(jumpPickNumberElt.value)
         var repeatNumber = asNumberOrNull(jumpRepeatNumberElt.value)
-        var command = { "type": "jump_to_pick", "pick_number": pickNumber, "repeat_number": repeatNumber }
+        var command = { "type": "jump_to_pick", "pick_number": pickNumber, "weaving_repeat_number": repeatNumber }
         await this.sendCommand(command)
         event.preventDefault()
     }
@@ -659,7 +659,7 @@ class LoomClient {
         var jumpRepeatNumberElt = document.getElementById("jump_repeat_number")
         jumpPickNumberElt.value = ""
         jumpRepeatNumberElt.value = ""
-        var command = { "type": "jump_to_pick", "pick_number": null, "repeat_number": null }
+        var command = { "type": "jump_to_pick", "pick_number": null, "weaving_repeat_number": null }
         await this.sendCommand(command)
         event.preventDefault()
     }

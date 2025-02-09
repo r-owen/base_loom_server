@@ -33,21 +33,23 @@ def test_basics() -> None:
         assert reduced_pattern.type == "ReducedPattern"
         assert reduced_pattern.name == filepath.name
         assert reduced_pattern.pick_number == 0
-        assert reduced_pattern.repeat_number == 1
+        assert reduced_pattern.weaving_repeat_number == 1
 
         for pick_number, weft_color in full_pattern.weft_colors.items():
             assert weft_color - 1 == reduced_pattern.picks[pick_number - 1].color
 
-        for end_number, warp_color in full_pattern.warp_colors.items():
-            assert warp_color - 1 == reduced_pattern.warp_colors[end_number - 1]
+        for threading_end_number, warp_color in full_pattern.warp_colors.items():
+            assert (
+                warp_color - 1 == reduced_pattern.warp_colors[threading_end_number - 1]
+            )
 
-        for end_number, shaft_set in full_pattern.threading.items():
+        for threading_end_number, shaft_set in full_pattern.threading.items():
             shaft_set -= {0}
             if len(shaft_set) > 1:
                 shaft = max(shaft_set)
             else:
                 shaft = shaft_set.pop()
-            assert shaft - 1 == reduced_pattern.threading[end_number - 1]
+            assert shaft - 1 == reduced_pattern.threading[threading_end_number - 1]
 
         # Test ReducedPattern.picks
         if full_pattern.liftplan:
