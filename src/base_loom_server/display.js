@@ -80,7 +80,7 @@ Data for a pick
 class Pick {
     constructor(datadict) {
         this.color = datadict.color
-        this.shaft_word = Number(datadict.shaft_word)
+        this.shaft_word = BigInt(datadict.shaft_word)
     }
 }
 
@@ -320,14 +320,14 @@ class LoomClient {
         if (datadict.state == 1) {
             // Move is done; display shaft numbers
             var raisedShaftList = []
-            var bitmask = datadict.shaft_word
+            var bitmask = BigInt(datadict.shaft_word)
             var shaft_number = 1
 
-            while (bitmask !== 0) {
-                if (bitmask & 1) {
+            while (bitmask !== 0n) {
+                if (bitmask & 1n) {
                     raisedShaftList.push(shaft_number)
                 }
-                bitmask >>= 1
+                bitmask >>= 1n
                 shaft_number++
             }
             text = raisedShaftList.join(", ")
@@ -448,7 +448,7 @@ class LoomClient {
             const shaft_word = this.currentPattern.picks[pickIndex].shaft_word
             for (let end = 0; end < numEndsToShow; end++) {
                 const shaft = this.currentPattern.threading[end]
-                if (shaft_word & 1 << shaft) {
+                if (shaft_word & (1n << BigInt(shaft))) {
                     // Display warp end
                     ctx.fillStyle = this.currentPattern.warpGradients[end]
                     ctx.fillRect(
