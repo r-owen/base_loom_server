@@ -28,12 +28,12 @@
         </div>
         <form class="upload-form">
             <input type="file" id="file_input" multiple accept=".wif,.dtx" style="display:none;">
-            <button id="upload_patterns" onclick="document.getElementById('file_input').click()"/>{Upload}</button>
+            <input type="button" value="{Upload}"  id="upload_patterns" onclick="document.getElementById('file_input').click()"/>
         </form>
     </div>
     <p/>
 
-    <div class="flex-container" id="pattern_display_grid">
+    <div class="flex-container weaving" id="pattern_display_grid">
         <div>
             <!-- For best results, the canvas height should be odd. -->
             <!-- Size of canvas must be set in html or javascript, not css. -->
@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <div class="flex-container" id="threading_display_grid">
+    <div class="flex-container threading" id="threading_display_grid">
         <div>
             <!-- For best results, the canvas height should be odd. -->
             <!-- Size of canvas must be set in html or javascript, not css. -->
@@ -62,7 +62,7 @@
         <label id="shaft_state"/>
     </div>
 
-    <div class="flex-container" id="end_number_div">
+    <div class="flex-container threading" id="end_number_div">
         <label>{End}</label>
         <label id="end_number0"></label>
         <label> - </label>
@@ -73,7 +73,7 @@
         <label id="end_repeat_number"></label>
     </div>
 
-    <div class="flex-container" id="pick_number_div">
+    <div class="flex-container weaving" id="pick_number_div">
         <label>{Pick}</label>
         <label id="pick_number"></label>
         <label>{of}</label>
@@ -82,7 +82,7 @@
         <label id="pick_repeat_number"></label>
     </div>
 
-    <form action="" id="jump_to_end_form">
+    <form action="" class="threading" id="jump_to_end_form">
         <div class="flex-container">
             <label>{Jump to end}</label>
             <input size="5" id="jump_end_number0" inpumode="decimal"></input>
@@ -93,7 +93,7 @@
         </div>
     </form>
 
-    <form action="" id="jump_to_pick_form">
+    <form action="" class="weaving" id="jump_to_pick_form">
         <div class="flex-container">
             <label>{Jump to pick}</label>
             <input size="5" id="jump_pick_number" inpumode="decimal"></input>
@@ -104,7 +104,7 @@
         </div>
     </form>
 
-    <div class="flex-container" id="thread_group_size_grid">
+    <div class="flex-container threading" id="thread_group_size_grid">
         <div>
             <label>{Group size}</label>
             <select name="thread_group_size" id="thread_group_size">

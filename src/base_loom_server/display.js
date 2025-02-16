@@ -43,22 +43,9 @@ const ShaftStateTranslationDict = {
     3: "error",
 }
 
-const ThreadingSpecificElements = [
-    "thread_group_size_grid",
-    "threading_display_grid",
-    "end_number_div",
-    "jump_to_end_form",
-]
-
-const WeavingSpecificElements = [
-    "pattern_display_grid",
-    "pick_number_div",
-    "jump_to_pick_form",
-]
-
 var ConnectionStateEnum = {}
-for (let i = 0; i < Object.keys(ConnectionStateTranslationDict).length; ++i) {
-    var name = ConnectionStateTranslationDict[i]
+for (var key of Object.keys(ConnectionStateTranslationDict)) {
+    var name = ConnectionStateTranslationDict[key]
     ConnectionStateEnum[name] = name
 }
 Object.freeze(ConnectionStateEnum)
@@ -96,9 +83,9 @@ class ReducedPattern {
         this.end_number0 = datadict.end_number0
         this.end_number1 = datadict.end_number1
         this.repeat_end_number = datadict.repeat_end_number
-        datadict.picks.forEach((pickdata) => {
+        for (var pickdata of datadict.picks) {
             this.picks.push(new Pick(pickdata))
-        })
+        }
         this.warpGradients = {}
     }
 }
@@ -342,14 +329,13 @@ class LoomClient {
             var numOldPatternNames = patternMenu.options.length - 1
 
             // Insert new pattern names
-            for (let i = 0; i < patternNames.length; i++) {
-                var patternName = patternNames[i]
+            for (var patternName of patternNames) {
                 var option = new Option(patternName)
                 menuOptions.add(option, 0)
             }
 
             // Purge old pattern names
-            for (let i = patternNames.length; i < patternNames.length + numOldPatternNames; i++) {
+            for (var i = 0; i < numOldPatternNames; i++) {
                 menuOptions.remove(patternNames.length)
             }
             patternMenu.value = currentName
@@ -520,22 +506,19 @@ class LoomClient {
         var modeButton = null
         if (this.mode == ModeEnum.THREADING) {
             modeButton = document.getElementById("mode_threading")
-            for (const name of WeavingSpecificElements) {
-                elt = document.getElementById(name)
+            for (const elt of document.getElementsByClassName("weaving")) {
                 elt.style.display = "none"
             }
-            for (const name of ThreadingSpecificElements) {
-                elt = document.getElementById(name)
+            for (const elt of document.getElementsByClassName("threading")) {
                 elt.style.display = "flex"
             }
         } else {
+            // weaving
             modeButton = document.getElementById("mode_weaving")
-            for (const name of ThreadingSpecificElements) {
-                elt = document.getElementById(name)
+            for (const elt of document.getElementsByClassName("threading")) {
                 elt.style.display = "none"
             }
-            for (const name of WeavingSpecificElements) {
-                elt = document.getElementById(name)
+            for (const elt of document.getElementsByClassName("weaving")) {
                 elt.style.display = "flex"
             }
         }
@@ -880,8 +863,7 @@ class LoomClient {
         var fileArray = Array.from(fileList)
         fileArray.sort(compareFiles)
 
-        for (let i = 0; i < fileArray.length; i++) {
-            var file = fileArray[i]
+        for (var file of fileArray) {
             var data = await readTextFile(file)
             var fileCommand = { "type": "file", "name": file.name, "data": data }
             await this.sendCommand(fileCommand)
