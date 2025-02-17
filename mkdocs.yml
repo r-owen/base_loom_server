@@ -1,0 +1,7 @@
+site_name: Base Loom Server
+nav:
+  - Home: index.md
+  - Weaving: weaving.md
+  - Threading: threading.md
+  - Installing: installing.md
+  - Coding: coding.md

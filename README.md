@@ -2,14 +2,14 @@
 
 Such web servers are intended to allow you to control your loom from any phone, tablet or other device that has wifi and a web browser.
 
-Used by [seguin_loom_server](<https://pypi.org/project/seguin-loom-server/)>)
+Used by [seguin_loom_server](https://pypi.org/project/seguin-loom-server/)
 and [toika_loom_server](https://pypi.org/project/toika-loom-server/).
 
 ## Installing this Package
 
 You should only have to install this package if you want to examine or modify it.
 If you are installing a loom driver such as
-such as [seguin_loom_server](<https://pypi.org/project/seguin-loom-server/)>)
+such as [seguin_loom_server](https://pypi.org/project/seguin-loom-server/)
 or [toika_loom_server](https://pypi.org/project/toika-loom-server/),
 then you only need to install that package.
 Doing so will pull in all dependencies.
@@ -92,7 +92,7 @@ You may also want to reset the database if you are weaving a new project and don
     * **--verbose** Print more diagnostic information.
   
   Note that the example loom server uses the same pattern database as
-  [seguin_loom_server](<https://pypi.org/project/seguin-loom-server/)>)
+  [seguin_loom_server](https://pypi.org/project/seguin-loom-server/)
   and [toika_loom_server](https://pypi.org/project/toika-loom-server/).
 
 * To run mypy run: ***MYPYPATH=src mypy .***. This avoids complaints about module name ambiguity.
