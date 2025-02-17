@@ -1,6 +1,5 @@
-__all__ = ["create_test_client"]
-
 import contextlib
+import dataclasses
 import importlib.resources
 import io
 import pathlib
@@ -11,13 +10,15 @@ from collections.abc import Generator, Iterable
 from types import SimpleNamespace
 from typing import Any, TypeAlias
 
+import pytest
 from dtx_to_wif import read_dtx, read_wif
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from fastapi.websockets import WebSocket
 from starlette.testclient import WebSocketTestSession
 
-from .base_loom_server import DEFAULT_THREAD_GROUP_SIZE
+from .base_loom_server import DEFAULT_THREAD_GROUP_SIZE, BaseLoomServer
+from .base_mock_loom import BaseMockLoom
 from .client_replies import (
     ConnectionStateEnum,
     MessageSeverityEnum,
@@ -37,196 +38,60 @@ ALL_PATTERN_PATHS = list(TEST_DATA_FILES.glob("*.wif")) + list(  # type: ignore
 )
 
 
-def receive_dict(websocket: WebSocketType) -> dict[str, Any]:
-    """Wrapper around websocket.receive_json to make mypy happy"""
-    data: Any = websocket.receive_json()
-    assert isinstance(data, dict)
-    return data
+@dataclasses.dataclass
+class Client:
+    test_client: TestClient
+    loom_server: BaseLoomServer
+    mock_loom: BaseMockLoom
+    websocket: WebSocketType
+
+    def send_dict(self, datadict: dict[str, Any]):
+        """Write a dict as json"""
+        self.websocket.send_json(datadict)
+
+    def receive_dict(self) -> dict[str, Any]:
+        """Read json as a dict"""
+        data: Any = self.websocket.receive_json()
+        assert isinstance(data, dict)
+        return data
 
 
-@contextlib.contextmanager
-def create_test_client(
-    app: FastAPI | None,
-    read_initial_state: bool = True,
-    upload_patterns: Iterable[pathlib.Path] = (),
-    reset_db: bool = False,
-    db_path: pathlib.Path | str | None = None,
-    expected_status_messages: Iterable[str] = (),
-    expected_pattern_names: Iterable[str] = (),
-    expected_current_pattern: ReducedPattern | None = None,
-) -> Generator[tuple[TestClient, WebSocketType], None]:
-    """Create a test server, client, websocket. Return (client, websocket).
+def change_weave_direction(client: Client):
+    """Command the loom to weave in the specified direction,
+    and read and check the reply, if one is expected.
+
+    Use a software command, if the loom supports that,
+    else an oob command.
 
     Parameters
     ----------
-    app : FastAPI
-        Server application to test.
-        If None then raises an error (BaseTestLoomServer needs
-        this be be able to be None).
-    read_initial_state : bool
-        If true, read and check the initial server replies from the websocket
-    upload_patterns : Iterable[pathlib.Path]
-        Initial patterns to upload, if any.
-    reset_db : bool
-        Specify argument --reset-db?
-        If False then you should also specify expected_pattern_names
-    db_path : pathLib.Path | str | None
-        --db-path argument value. If None, use a temp file.
-        If non-None and you expect the database to contain any patterns,
-        then also specify expected_pattern_names and expected_current_pattern.
-    expected_status_messages : Iterable[str]
-        Expected status messages when the connection is made, in order.
-        All should have severity level INFO.
-    expected_pattern_names : Iterable[str]
-        Expected pattern names, in order.
-        Specify if and only if db_path is not None
-        and you expect the database to contain any patterns.
-    expected_current_pattern : ReducedPattern | None
-        Expected_current_pattern. Specify if and only if db_path is not None
-        and you expect the database to contain any patterns.
+    client: Client
+        Client fixture
     """
-    expected_pattern_names = list(expected_pattern_names)
-    expected_status_messages = list(expected_status_messages)
-    if app is None:
-        raise AssertionError(
-            "app is None but must be a FastAPI; "
-            "you must set the app class property in your subclass"
-        )
-    with tempfile.NamedTemporaryFile() as f:
-        argv = ["testutils", "mock", "--verbose"]
-        if reset_db:
-            argv.append("--reset-db")
-        if db_path is None:
-            argv += ["--db-path", f.name]
-        else:
-            argv += ["--db-path", str(db_path)]
-        sys.argv = argv
+    expected_weave_direction_reply = True
+    client.mock_loom.command_threading_event.set()
+    if client.loom_server.enable_software_weave_direction:
+        weave_forward = not client.loom_server.weave_forward
+        client.send_dict(dict(type="weave_direction", forward=weave_forward))
+    else:
+        expected_weave_direction_reply = client.loom_server.loom_reports_direction
+        weave_forward = not client.mock_loom.weave_forward
+        client.send_dict(dict(type="oobcommand", command="d"))
 
-        with TestClient(app) as client:
-            with client.websocket_connect("/ws") as websocket:
-
-                if read_initial_state:
-                    seen_types: set[str] = set()
-                    expected_types = {
-                        "JumpEndNumber",
-                        "JumpPickNumber",
-                        "LoomConnectionState",
-                        "Mode",
-                        "PatternNames",
-                        "ShaftState",
-                        "ThreadDirection",
-                        "ThreadGroupSize",
-                        "WeaveDirection",
-                    }
-                    if expected_status_messages:
-                        expected_types |= {"StatusMessage"}
-                    if expected_current_pattern:
-                        expected_types |= {
-                            "ReducedPattern",
-                            "CurrentPickNumber",
-                            "CurrentEndNumber",
-                            "ThreadGroupSize",
-                        }
-                    good_connection_states = {
-                        ConnectionStateEnum.CONNECTING,
-                        ConnectionStateEnum.CONNECTED,
-                    }
-                    while True:
-                        reply_dict = receive_dict(websocket)
-                        reply = SimpleNamespace(**reply_dict)
-                        num_status_messages_seen = 0
-                        match reply.type:
-                            case "CurrentEndNumber":
-                                assert expected_current_pattern is not None
-                                assert (
-                                    reply.end_number0
-                                    == expected_current_pattern.end_number0
-                                )
-                                assert (
-                                    reply.end_repeat_number
-                                    == expected_current_pattern.end_repeat_number
-                                )
-                            case "CurrentPickNumber":
-                                assert expected_current_pattern is not None
-                                assert (
-                                    reply.pick_number
-                                    == expected_current_pattern.pick_number
-                                )
-                                assert (
-                                    reply.pick_repeat_number
-                                    == expected_current_pattern.pick_repeat_number
-                                )
-                            case "JumpEndNumber":
-                                assert reply.end_number0 is None
-                                assert reply.end_repeat_number is None
-                            case "JumpPickNumber":
-                                assert reply.pick_number is None
-                                assert reply.pick_repeat_number is None
-                            case "LoomConnectionState":
-                                if reply.state not in good_connection_states:
-                                    raise AssertionError(
-                                        f"Unexpected state in {reply=}; "
-                                        f"should be in {good_connection_states}"
-                                    )
-                                elif reply.state != ConnectionStateEnum.CONNECTED:
-                                    continue
-                            case "Mode":
-                                assert reply.mode == ModeEnum.WEAVE
-                            case "PatternNames":
-                                assert reply.names == expected_pattern_names
-                            case "ReducedPattern":
-                                if not expected_pattern_names:
-                                    raise AssertionError(
-                                        f"Unexpected message type {reply.type} "
-                                        "because expected_current_pattern is None"
-                                    )
-
-                                assert reply.name == expected_pattern_names[-1]
-                            case "ShaftState":
-                                assert reply.state == ShaftStateEnum.DONE
-                                assert reply.shaft_word == 0
-                            case "StatusMessage":
-                                num_status_messages_seen += 1
-                                assert (
-                                    reply.message
-                                    == expected_status_messages[
-                                        num_status_messages_seen - 1
-                                    ]
-                                )
-                                assert reply.severity == MessageSeverityEnum.INFO
-                            case "ThreadDirection":
-                                assert reply.low_to_high
-                            case "ThreadGroupSize":
-                                assert reply.group_size == DEFAULT_THREAD_GROUP_SIZE
-                            case "WeaveDirection":
-                                assert reply.forward
-                            case _:
-                                raise AssertionError(
-                                    f"Unexpected message type {reply.type}"
-                                )
-                        seen_types.add(reply.type)
-                        if (
-                            seen_types == expected_types
-                            and num_status_messages_seen
-                            == len(expected_status_messages)
-                        ):
-                            break
-
-                expected_names: list[str] = []
-                for path in upload_patterns:
-                    expected_names.append(path.name)
-                    upload_pattern(websocket, path, expected_names)
-
-                yield (client, websocket)
+    if expected_weave_direction_reply:
+        reply = client.receive_dict()
+        assert reply == dict(type="WeaveDirection", forward=weave_forward)
+    else:
+        # Give the loom client time to process the command
+        client.mock_loom.command_threading_event.wait(timeout=1)
 
 
 def command_next_pick(
-    websocket: WebSocketType,
+    client: Client,
     expected_pick_number: int,
     expected_repeat_number: int,
     expected_shaft_word: int,
     jump_pending: bool = False,
-    motion_reported: bool = True,
 ) -> None:
     """Command the next pick and test the replies.
 
@@ -234,8 +99,8 @@ def command_next_pick(
 
     Parameters
     ----------
-    websocket : WebSocketType
-        websocket connection
+    client : Client
+        client fixture
     expected_pick_number : int
         Expected pick number of the next pick
     expected_repeat_number : int
@@ -244,11 +109,22 @@ def command_next_pick(
         Expected shaft_word of the pick.
     jump_pending : bool
         Is a jump pending?
-    motion_reported : bool
-        Does the server output ShaftState messages with state MOVING?
     """
-    websocket.send_json(dict(type="oobcommand", command="n"))
+    client.send_dict(dict(type="oobcommand", command="n"))
     expected_replies: list[dict[str, Any]] = []
+    if (
+        not client.loom_server.enable_software_weave_direction
+        and not client.loom_server.loom_reports_direction
+        and client.loom_server.weave_forward != client.mock_loom.weave_forward
+    ):
+        # Loom only reports direction when it asks for a pick
+        # and the direction has changed
+        expected_replies += [
+            dict(
+                type="WeaveDirection",
+                forward=client.mock_loom.weave_forward,
+            )
+        ]
     if jump_pending:
         expected_replies += [
             dict(
@@ -264,7 +140,7 @@ def command_next_pick(
             pick_repeat_number=expected_repeat_number,
         ),
     ]
-    if motion_reported:
+    if client.loom_server.loom_reports_motion:
         expected_replies += [
             dict(
                 type="ShaftState",
@@ -285,7 +161,7 @@ def command_next_pick(
         ),
     ]
     for expected_reply in expected_replies:
-        reply = receive_dict(websocket)
+        reply = client.receive_dict()
         if (
             reply["type"] == "ServerMessage"
             and reply["severity"] == MessageSeverityEnum.INFO
@@ -298,7 +174,7 @@ def command_next_pick(
 
 
 def select_pattern(
-    websocket: WebSocketType,
+    client: Client,
     pattern_name: str,
     pick_number: int = 0,
     pick_repeat_number: int = 1,
@@ -309,8 +185,8 @@ def select_pattern(
 
     Parameters
     ----------
-    websocket : WebSocketType
-        Websocket connection to loom server.
+    client : Client
+        Client test fixture
     pattern_name : str
         Pattern name.
     pick_number : int
@@ -318,8 +194,8 @@ def select_pattern(
     pick_repeat_number : int
         Expected current repeat number.
     """
-    websocket.send_json(dict(type="select_pattern", name=pattern_name))
-    reply_dict = receive_dict(websocket)
+    client.send_dict(dict(type="select_pattern", name=pattern_name))
+    reply_dict = client.receive_dict()
     assert reply_dict["type"] == "ReducedPattern"
     pattern = ReducedPattern.from_dict(reply_dict)
     assert pattern.pick_number == pick_number
@@ -327,7 +203,7 @@ def select_pattern(
     seen_types: set[str] = set()
     expected_types = {"CurrentPickNumber", "CurrentEndNumber"}
     while True:
-        reply_dict = receive_dict(websocket)
+        reply_dict = client.receive_dict()
         reply = SimpleNamespace(**reply_dict)
         match reply.type:
             case "CurrentPickNumber":
@@ -345,7 +221,7 @@ def select_pattern(
 
 
 def upload_pattern(
-    websocket: WebSocketType, filepath: pathlib.Path, expected_names: Iterable[str]
+    client: Client, filepath: pathlib.Path, expected_names: Iterable[str]
 ) -> None:
     """Upload a pattern to the loom server.
 
@@ -353,8 +229,8 @@ def upload_pattern(
 
     Parameters
     ----------
-    websocket : WebSocketType
-        Websocket connection to loom server.
+    client: Client
+        Test client
     filepath : pathlib.Path
         Path to pattern file
     expected_names : Iterable[str]
@@ -362,9 +238,8 @@ def upload_pattern(
     """
     with open(filepath, "r") as f:
         data = f.read()
-    cmd = dict(type="file", name=filepath.name, data=data)
-    websocket.send_json(cmd)
-    reply_dict = receive_dict(websocket)
+    client.send_dict(dict(type="file", name=filepath.name, data=data))
+    reply_dict = client.receive_dict()
     assert reply_dict == dict(type="PatternNames", names=list(expected_names))
 
 
@@ -378,33 +253,29 @@ class BaseTestLoomServer:
     """
 
     expected_status_messages = ()
-    motion_reported = True
     app: FastAPI | None = None
+    extra_args = ()
 
     def test_jump_to_pick(self) -> None:
         pattern_name = ALL_PATTERN_PATHS[3].name
 
-        with create_test_client(
+        with self.create_test_client(
             app=self.app,
             upload_patterns=ALL_PATTERN_PATHS[2:5],
-            expected_status_messages=self.expected_status_messages,
-        ) as (
-            client,
-            websocket,
-        ):
-            pattern = select_pattern(websocket=websocket, pattern_name=pattern_name)
+        ) as client:
+            pattern = select_pattern(client=client, pattern_name=pattern_name)
             num_picks_in_pattern = len(pattern.picks)
 
             for pick_number in (0, 1, num_picks_in_pattern // 3, num_picks_in_pattern):
                 for pick_repeat_number in (-1, 0, 1):
-                    websocket.send_json(
+                    client.send_dict(
                         dict(
                             type="jump_to_pick",
                             pick_number=pick_number,
                             pick_repeat_number=pick_repeat_number,
                         )
                     )
-                    reply = receive_dict(websocket)
+                    reply = client.receive_dict()
                     assert reply == dict(
                         type="JumpPickNumber",
                         pick_number=pick_number,
@@ -414,15 +285,11 @@ class BaseTestLoomServer:
     def test_oobcommand(self) -> None:
         pattern_name = ALL_PATTERN_PATHS[2].name
 
-        with create_test_client(
+        with self.create_test_client(
             app=self.app,
             upload_patterns=ALL_PATTERN_PATHS[0:3],
-            expected_status_messages=self.expected_status_messages,
-        ) as (
-            client,
-            websocket,
-        ):
-            pattern = select_pattern(websocket=websocket, pattern_name=pattern_name)
+        ) as client:
+            pattern = select_pattern(client=client, pattern_name=pattern_name)
             num_picks_in_pattern = len(pattern.picks)
 
             # Make enough forward picks to get into the 3rd repeat
@@ -437,16 +304,13 @@ class BaseTestLoomServer:
                     expected_repeat_number += 1
                 expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
                 command_next_pick(
-                    websocket=websocket,
-                    motion_reported=self.motion_reported,
+                    client=client,
                     expected_pick_number=expected_pick_number,
                     expected_repeat_number=expected_repeat_number,
                     expected_shaft_word=expected_shaft_word,
                 )
 
-            websocket.send_json(dict(type="weave_direction", forward=False))
-            reply = receive_dict(websocket)
-            assert reply == dict(type="WeaveDirection", forward=False)
+            change_weave_direction(client=client)
 
             # Now go backwards at least two picks past the beginning
             end_pick_number = num_picks_in_pattern - 2
@@ -459,8 +323,7 @@ class BaseTestLoomServer:
                     expected_repeat_number -= 1
                 expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
                 command_next_pick(
-                    websocket=websocket,
-                    motion_reported=self.motion_reported,
+                    client=client,
                     expected_pick_number=expected_pick_number,
                     expected_repeat_number=expected_repeat_number,
                     expected_shaft_word=expected_shaft_word,
@@ -469,15 +332,12 @@ class BaseTestLoomServer:
             assert expected_repeat_number == 0
 
             # Change direction to forward
-            websocket.send_json(dict(type="weave_direction", forward=True))
+            change_weave_direction(client)
             expected_pick_number += 1
-            reply = receive_dict(websocket)
-            assert reply == dict(type="WeaveDirection", forward=True)
 
             expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
             command_next_pick(
-                websocket=websocket,
-                motion_reported=self.motion_reported,
+                client=client,
                 expected_pick_number=expected_pick_number,
                 expected_repeat_number=expected_repeat_number,
                 expected_shaft_word=expected_shaft_word,
@@ -487,33 +347,27 @@ class BaseTestLoomServer:
         rnd = random.Random(47)
         pattern_list = []
         with tempfile.NamedTemporaryFile() as f:
-            with create_test_client(
+            with self.create_test_client(
                 app=self.app,
                 upload_patterns=ALL_PATTERN_PATHS,
                 db_path=f.name,
-                expected_status_messages=self.expected_status_messages,
-            ) as (
-                client,
-                websocket,
-            ):
+            ) as client:
                 # Select a few patterns; for each one jump to some random
                 # pick (including actually going to that pick).
                 assert len(ALL_PATTERN_PATHS) > 3
                 for path in (ALL_PATTERN_PATHS[0], ALL_PATTERN_PATHS[3]):
-                    pattern = select_pattern(
-                        websocket=websocket, pattern_name=path.name
-                    )
+                    pattern = select_pattern(client=client, pattern_name=path.name)
                     pattern_list.append(pattern)
                     pattern.pick_number = rnd.randrange(2, len(pattern.picks))
                     pattern.pick_repeat_number = rnd.randrange(-10, 10)
-                    websocket.send_json(
+                    client.send_dict(
                         dict(
                             type="jump_to_pick",
                             pick_number=pattern.pick_number,
                             pick_repeat_number=pattern.pick_repeat_number,
                         )
                     )
-                    reply = receive_dict(websocket)
+                    reply = client.receive_dict()
                     assert reply == dict(
                         type="JumpPickNumber",
                         pick_number=pattern.pick_number,
@@ -524,8 +378,7 @@ class BaseTestLoomServer:
                         expected_pick_number
                     ).shaft_word
                     command_next_pick(
-                        websocket=websocket,
-                        motion_reported=self.motion_reported,
+                        client=client,
                         jump_pending=True,
                         expected_pick_number=expected_pick_number,
                         expected_repeat_number=pattern.pick_repeat_number,
@@ -542,34 +395,26 @@ class BaseTestLoomServer:
             )
             expected_current_pattern = pattern_list[1]
 
-            with create_test_client(
+            with self.create_test_client(
                 app=self.app,
                 reset_db=False,
                 expected_pattern_names=expected_pattern_names,
                 expected_current_pattern=expected_current_pattern,
                 db_path=f.name,
-                expected_status_messages=self.expected_status_messages,
-            ) as (
-                client,
-                websocket,
-            ):
+            ) as client:
                 for pattern in pattern_list:
                     pattern = select_pattern(
-                        websocket=websocket,
+                        client=client,
                         pattern_name=pattern.name,
                         pick_number=pattern.pick_number,
                         pick_repeat_number=pattern.pick_repeat_number,
                     )
 
             # Now try again, but this time reset the database
-            with create_test_client(
+            with self.create_test_client(
                 app=self.app,
                 reset_db=True,
-                expected_status_messages=self.expected_status_messages,
-            ) as (
-                client,
-                websocket,
-            ):
+            ) as client:
                 pass
 
     def test_select_pattern(self) -> None:
@@ -590,46 +435,221 @@ class BaseTestLoomServer:
             name=pattern_name, data=pattern_data
         )
 
-        with create_test_client(
+        with self.create_test_client(
             app=self.app,
             upload_patterns=ALL_PATTERN_PATHS[0:3],
-            expected_status_messages=self.expected_status_messages,
-        ) as (
-            client,
-            websocket,
-        ):
-            returned_pattern = select_pattern(
-                websocket=websocket, pattern_name=pattern_name
-            )
+        ) as client:
+            returned_pattern = select_pattern(client=client, pattern_name=pattern_name)
             assert returned_pattern == reduced_pattern
 
     def test_upload(self) -> None:
-        with create_test_client(
+        with self.create_test_client(
             app=self.app,
             upload_patterns=ALL_PATTERN_PATHS,
-            expected_status_messages=self.expected_status_messages,
-        ) as (
-            client,
-            websocket,
-        ):
+        ) as _:
             pass
 
     def test_weave_direction(self) -> None:
-        # TO DO: expand this test to test commanding the same direction
-        # multiple times in a row, once I know what mock loom ought to do.
         pattern_name = ALL_PATTERN_PATHS[1].name
 
-        with create_test_client(
+        with self.create_test_client(
             app=self.app,
             upload_patterns=ALL_PATTERN_PATHS[0:4],
-            expected_status_messages=self.expected_status_messages,
-        ) as (
-            client,
-            websocket,
-        ):
-            select_pattern(websocket=websocket, pattern_name=pattern_name)
+        ) as client:
+            if not client.loom_server.enable_software_weave_direction:
+                raise pytest.skip("Weave direction cannot be controlled by software")
+
+            select_pattern(client=client, pattern_name=pattern_name)
 
             for forward in (False, True):
-                websocket.send_json(dict(type="weave_direction", forward=forward))
-                reply = receive_dict(websocket)
+                client.send_dict(dict(type="weave_direction", forward=forward))
+                reply = client.receive_dict()
                 assert reply == dict(type="WeaveDirection", forward=forward)
+
+    @classmethod
+    @contextlib.contextmanager
+    def create_test_client(
+        cls,
+        app: FastAPI | None,
+        read_initial_state: bool = True,
+        upload_patterns: Iterable[pathlib.Path] = (),
+        reset_db: bool = False,
+        db_path: pathlib.Path | str | None = None,
+        expected_status_messages: Iterable[str] = (),
+        expected_pattern_names: Iterable[str] = (),
+        expected_current_pattern: ReducedPattern | None = None,
+    ) -> Generator[Client, None]:
+        """Create a test client fixture.
+
+        Parameters
+        ----------
+        app : FastAPI
+            Server application to test.
+            If None then raises an error (BaseTestLoomServer needs
+            this be be able to be None).
+        read_initial_state : bool
+            If true, read and check the initial server replies
+            from the websocket. This is the most common case.
+        upload_patterns : Iterable[pathlib.Path]
+            Initial patterns to upload, if any.
+        reset_db : bool
+            Specify argument --reset-db?
+            If False then you should also specify expected_pattern_names
+        db_path : pathLib.Path | str | None
+            --db-path argument value. If None, use a temp file.
+            If not None and you expect the database to contain any patterns,
+            then also specify expected_pattern_names and
+            expected_current_pattern.
+        expected_status_messages : Iterable[str]
+            Expected status messages when the connection is made, in order.
+            All should have severity level INFO.
+        expected_pattern_names : Iterable[str]
+            Expected pattern names, in order.
+            Specify if and only if db_path is not None
+            and you expect the database to contain any patterns.
+        expected_current_pattern : ReducedPattern | None
+            Expected_current_pattern. Specify if and only if
+            db_path is not None and you expect the database
+            to contain any patterns.
+        """
+        expected_pattern_names = list(expected_pattern_names)
+        expected_status_messages = list(expected_status_messages)
+        if app is None:
+            raise AssertionError(
+                "app is None but must be a FastAPI; "
+                "you must set the app class property in your subclass"
+            )
+        with tempfile.NamedTemporaryFile() as f:
+            argv = ["testutils", "mock", "--verbose"] + list(cls.extra_args)
+            if reset_db:
+                argv.append("--reset-db")
+            if db_path is None:
+                argv += ["--db-path", f.name]
+            else:
+                argv += ["--db-path", str(db_path)]
+            sys.argv = argv
+
+            with TestClient(app) as test_client:
+                with test_client.websocket_connect("/ws") as websocket:
+                    loom_server: BaseLoomServer = test_client.app.state.loom_server  # type: ignore
+                    assert loom_server.mock_loom is not None
+                    client = Client(
+                        test_client=test_client,
+                        websocket=websocket,
+                        loom_server=loom_server,
+                        mock_loom=loom_server.mock_loom,
+                    )
+
+                    if read_initial_state:
+                        seen_types: set[str] = set()
+                        expected_types = {
+                            "JumpEndNumber",
+                            "JumpPickNumber",
+                            "LoomConnectionState",
+                            "Mode",
+                            "PatternNames",
+                            "ShaftState",
+                            "ThreadDirection",
+                            "ThreadGroupSize",
+                            "WeaveDirection",
+                        }
+                        if expected_status_messages:
+                            expected_types |= {"StatusMessage"}
+                        if expected_current_pattern:
+                            expected_types |= {
+                                "ReducedPattern",
+                                "CurrentPickNumber",
+                                "CurrentEndNumber",
+                                "ThreadGroupSize",
+                            }
+                        good_connection_states = {
+                            ConnectionStateEnum.CONNECTING,
+                            ConnectionStateEnum.CONNECTED,
+                        }
+                        while True:
+                            reply_dict = client.receive_dict()
+                            reply = SimpleNamespace(**reply_dict)
+                            num_status_messages_seen = 0
+                            match reply.type:
+                                case "CurrentEndNumber":
+                                    assert expected_current_pattern is not None
+                                    assert (
+                                        reply.end_number0
+                                        == expected_current_pattern.end_number0
+                                    )
+                                    assert (
+                                        reply.end_repeat_number
+                                        == expected_current_pattern.end_repeat_number
+                                    )
+                                case "CurrentPickNumber":
+                                    assert expected_current_pattern is not None
+                                    assert (
+                                        reply.pick_number
+                                        == expected_current_pattern.pick_number
+                                    )
+                                    assert (
+                                        reply.pick_repeat_number
+                                        == expected_current_pattern.pick_repeat_number
+                                    )
+                                case "JumpEndNumber":
+                                    assert reply.end_number0 is None
+                                    assert reply.end_repeat_number is None
+                                case "JumpPickNumber":
+                                    assert reply.pick_number is None
+                                    assert reply.pick_repeat_number is None
+                                case "LoomConnectionState":
+                                    if reply.state not in good_connection_states:
+                                        raise AssertionError(
+                                            f"Unexpected state in {reply=}; "
+                                            f"should be in {good_connection_states}"
+                                        )
+                                    elif reply.state != ConnectionStateEnum.CONNECTED:
+                                        continue
+                                case "Mode":
+                                    assert reply.mode == ModeEnum.WEAVE
+                                case "PatternNames":
+                                    assert reply.names == expected_pattern_names
+                                case "ReducedPattern":
+                                    if not expected_pattern_names:
+                                        raise AssertionError(
+                                            f"Unexpected message type {reply.type} "
+                                            "because expected_current_pattern is None"
+                                        )
+
+                                    assert reply.name == expected_pattern_names[-1]
+                                case "ShaftState":
+                                    assert reply.state == ShaftStateEnum.DONE
+                                    assert reply.shaft_word == 0
+                                case "StatusMessage":
+                                    num_status_messages_seen += 1
+                                    assert (
+                                        reply.message
+                                        == expected_status_messages[
+                                            num_status_messages_seen - 1
+                                        ]
+                                    )
+                                    assert reply.severity == MessageSeverityEnum.INFO
+                                case "ThreadDirection":
+                                    assert reply.low_to_high
+                                case "ThreadGroupSize":
+                                    assert reply.group_size == DEFAULT_THREAD_GROUP_SIZE
+                                case "WeaveDirection":
+                                    assert reply.forward
+                                case _:
+                                    raise AssertionError(
+                                        f"Unexpected message type {reply.type}"
+                                    )
+                            seen_types.add(reply.type)
+                            if (
+                                seen_types == expected_types
+                                and num_status_messages_seen
+                                == len(expected_status_messages)
+                            ):
+                                break
+
+                    expected_names: list[str] = []
+                    for path in upload_patterns:
+                        expected_names.append(path.name)
+                        upload_pattern(client, path, expected_names)
+
+                    yield client

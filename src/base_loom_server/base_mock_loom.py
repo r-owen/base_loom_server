@@ -5,6 +5,7 @@ __all__ = ["BaseMockLoom"]
 import abc
 import asyncio
 import logging
+import threading
 from types import TracebackType
 from typing import Type
 
@@ -63,6 +64,10 @@ class BaseMockLoom(abc.ABC):
         # It is needed for testing looms that do not output
         # state information, such as Toika ES.
         self.command_event = asyncio.Event()
+
+        # A threading version for use with fastapi.testclient.TestClient
+        # which is, alas, synchronous.
+        self.command_threading_event = threading.Event()
 
     async def start(self) -> None:
         self.reader, self.writer = open_mock_connection(terminator=self.terminator)
@@ -153,11 +158,6 @@ class BaseMockLoom(abc.ABC):
                 f"Bug: {self.reader=} and {self.writer=} must both be mock streams"
             )
 
-    @classmethod
-    async def amain(cls, verbose: bool = True) -> None:
-        loom = cls(verbose=verbose)
-        await loom.done_task
-
     def connected(self) -> bool:
         return (
             self.reader is not None
@@ -185,6 +185,7 @@ class BaseMockLoom(abc.ABC):
                     # Connection has closed
                     break
                 self.command_event.set()
+                self.command_threading_event.set()
                 await self.handle_read_bytes(cmd_bytes)
 
         except Exception:

@@ -7,8 +7,12 @@ button {
     font-size: 80%;
 }
 
-button:hover {
+button:hover:enabled {
     background-color: #ddd
+}
+
+#weave_direction:disabled {
+    background-color: #0000;
 }
 
 /* Style the buttons that are used to open the tab content */

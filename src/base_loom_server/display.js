@@ -1,5 +1,9 @@
-// The following line is replaced by python code, so don't change it
-const TranslationDict = {}
+// value is replaced by python code
+const TranslationDict = { translation_dict }
+
+// value is replaced by python code
+const EnableSoftwareWeaveDirection = { enable_software_weave_direction }
+console.log("EnableSoftwareWeaveDirection", EnableSoftwareWeaveDirection)
 
 const MaxFiles = 10
 
@@ -225,7 +229,11 @@ class LoomClient {
         threadDirectionElt.addEventListener("click", this.handleToggleThreadDirection.bind(this))
 
         var weaveDirectionElt = document.getElementById("weave_direction")
-        weaveDirectionElt.addEventListener("click", this.handleToggleWeaveDirection.bind(this))
+        if (EnableSoftwareWeaveDirection) {
+            weaveDirectionElt.addEventListener("click", this.handleToggleWeaveDirection.bind(this))
+        } else {
+            weaveDirectionElt.disabled = true
+        }
         var patternMenu = document.getElementById("pattern_menu")
         patternMenu.addEventListener("change", this.handlePatternMenu.bind(this))
     }

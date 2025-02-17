@@ -81,9 +81,15 @@ class BaseLoomServer:
     db_path : pathlib.Path | None
         Path to pattern database.
         Intended for unit tests, to avoid stomping on the real database.
+    enable_software_weave_direction : bool
+        Can the software control the weave direction?
+        For Seguin always set True. For Toika the user must make a choice
+        between software or the loom.
     """
 
     baud_rate = 9600
+    loom_reports_motion = True
+    loom_reports_direction = True
 
     def __init__(
         self,
@@ -94,6 +100,7 @@ class BaseLoomServer:
         verbose: bool,
         name: str,
         db_path: pathlib.Path | None = None,
+        enable_software_weave_direction: bool = True,
     ) -> None:
         self.terminator = mock_loom_type.terminator
         self.log = logging.getLogger(LOG_NAME)
@@ -112,6 +119,7 @@ class BaseLoomServer:
         if reset_db:
             self.db_path.unlink(missing_ok=True)
         self.pattern_db = PatternDatabase(self.db_path)
+        self.enable_software_weave_direction = enable_software_weave_direction
         self.websocket: WebSocket | None = None
         self.loom_connecting = False
         self.loom_disconnecting = False

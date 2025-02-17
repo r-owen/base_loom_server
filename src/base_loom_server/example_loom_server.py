@@ -10,9 +10,6 @@ from .example_mock_loom import ExampleMockLoom
 class ExampleLoomServer(BaseLoomServer):
     """Example loom server.
 
-    The preferred way to create and run this is to call
-    the amain method.
-
     Parameters
     ----------
     mock_loom_type : Type[BaseMockLoom]

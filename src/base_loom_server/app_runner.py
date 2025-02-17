@@ -143,6 +143,8 @@ class AppRunner:
         async with self.server_class(
             **vars(args), translation_dict=self.translation_dict
         ) as self.loom_server:
+            # Store the server as state for unit tests
+            app.state.loom_server = self.loom_server
             yield
 
     def get_translation_dict(self) -> dict[str, str]:
@@ -176,17 +178,19 @@ class AppRunner:
 
     async def get(self) -> HTMLResponse:
         """Endpoint to get the main page."""
+        assert self.loom_server is not None  # make mypy happy
         display_html_template = PKG_FILES.joinpath("display.html_template").read_text()
 
         display_css = PKG_FILES.joinpath("display.css").read_text()
 
         display_js = PKG_FILES.joinpath("display.js").read_text()
-        js_translation_str = "const TranslationDict = " + json.dumps(
-            self.translation_dict, indent=4
+        js_translation_str = json.dumps(self.translation_dict, indent=4)
+        js_enable_swd_str = (
+            "true" if self.loom_server.enable_software_weave_direction else "false"
         )
         display_js = display_js.replace(
-            "const TranslationDict = {}", js_translation_str
-        )
+            "{ translation_dict }", js_translation_str
+        ).replace("{ enable_software_weave_direction }", js_enable_swd_str)
 
         assert self.loom_server is not None
         is_mock = self.loom_server.mock_loom is not None
