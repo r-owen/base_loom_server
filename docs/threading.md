@@ -22,7 +22,8 @@ There is one square button right of the pattern display which shows the directio
 A left-facing arrow indicates that you are threading right to left.
 
 You can press the button to change the threading direction.
-At this time the dobby direction control is ignored.
+
+**Warning** the dobby's direction control is always ignored while threading.
 
 ## Repeating
 

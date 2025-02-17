@@ -3,27 +3,29 @@
 A loom server is a package based on [base_loom_server](https://pypi.org/project/base-loom-server/) that allows you to control a dobby loom from a web browser (e.g. on a phone or tablet). Two examples are [seguin_loom_server](https://pypi.org/project/seguin-loom-server/)
 and [toika_loom_server](https://pypi.org/project/toika-loom-server/).
 
-A loom server supports two modes:
+This document explains how to use any of these loom servers (though there are a few loom-specific differences that are described in the documentation for the specific loom server package).
 
-* Weaving: the usual mode.
-* Threading: raise shafts for sequential groups of warp threads.
-
-In both cases the first steps are:
-
-* Connect to the loom server
-* Select the desired mode
-* Upload one or more pattern files
+The first step is to [install](Installation.md) the software. Once you have done that, read on:
 
 ## Connect to the Loom Server
 
 Connect to the loom server using any modern web browser (e.g. on a phone, tablet, or laptop).
-The address will be "http://*hostname*.local:8000" where *hostname* is the host name of the loom server computer
+The address will be `http://*hostname*.local:8000` where *hostname* is the host name
+of the loom server computer, as determined in [Installing](installing.md).
 
 ## Select the Mode
 
-The server has two modes, which are listed at the top: [Weaving](weaving.md) and [Threading](threading.md).
+The server has two modes, which are listed at the top of the web page: Weaving and Threading:
+
+* [Weaving](weaving.md) is used to weave fabric; this is by far the most common mode.
+
+* [Threading](threading.md) will help you thread the loom, by lifting shafts for groups of threads.
+
 Click on the word to select that mode.
 The bold word shows the current mode.
+
+The links above give detailed instructions for using each mode.
+But before you dive into that, read the next section about pattern files:
 
 ## Upload and Select Pattern Files
 
@@ -70,8 +72,3 @@ you might try reloading the page.
 
 If the loom seems confused, try turning off the loom, waiting a few seconds, then turning it on again.
 Then reload the web page, to force the web server to make a new connection to the loom.
-
-## Base Loom Server
-
-This documentation is for base_loom_server, a base package that can be used to write loom servers for specific looms. base_loom_server does most of the work, so this documentation tells you how to weave
-with any loom server based on this package.
