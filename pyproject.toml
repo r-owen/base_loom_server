@@ -37,7 +37,9 @@ dev = [
 run_example_loom = "base_loom_server.main:run_example_loom"
 
 [project.urls]
-Homepage = "https://github.com/r-owen/base_loom_server"
+Homepage = "https://pypi.org/project/base-loom-server/"
+Documentation = "https://r-owen.github.io/base_loom_server/"
+Source = "https://github.com/r-owen/base_loom_server"
 Issues = "https://github.com/r-owen/base_loom_server/issues"
 
 [tool.pytest.ini_options]
