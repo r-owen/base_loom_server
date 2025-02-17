@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Threading - Base Loom Server</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Base Loom Server</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../weaving/" class="nav-link">Weaving</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Threading</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../installing/" class="nav-link">Installing</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../coding/" class="nav-link">Coding</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../weaving/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../installing/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#threading" class="nav-link">Threading</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#threading-display" class="nav-link">Threading Display</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#repeating" class="nav-link">Repeating</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#group-size" class="nav-link">Group Size</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#jumping" class="nav-link">Jumping</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="threading">Threading</h1>
+<p>The threading mode helps you correctly thread warp strings through the heddles.
+Every time you press the pedal, the loom will raise the next group of shafts
+and a display will show you which threads belong on which shaft.</p>
+<p>This page assumes you have done all the <a href="../">basics</a>:</p>
+<ul>
+<li>Connected your web browser to the loom server</li>
+<li>Uploaded at least one pattern, and selected a pattern from the pattern menu</li>
+<li>Selected the Threading mode.</li>
+</ul>
+<h2 id="threading-display">Threading Display</h2>
+<p>Threading is displayed as a picture that shows a group of threads (vertical colored bars) and the shaft they go through (numbers that interrupt the colored bars).
+It also shows the one or a few warp thread numbers along the top.</p>
+<p>Warp end numbering goes up from 1 at the right (the typical US scheme when warping back to front).
+Warp end 0 is special: it has no threads and is what a pattern starts with and is also an intermediate step when repeating a threading sequence.</p>
+<p>There is one square button right of the pattern display which shows the direction.
+A left-facing arrow indicates that you are threading right to left.</p>
+<p>You can press the button to change the threading direction.
+At this time the dobby direction control is ignored.</p>
+<h2 id="repeating">Repeating</h2>
+<p>The software will automatically repeat threading if you thread beyond the end.
+However, you must advance twice when you reach an end, before the next set of shafts is raised.
+The first advance will lower all shafts (going to warp end 0), as a signal that you have finished threading one pattern repeat.
+The next advance will raise the desired shafts.</p>
+<h2 id="group-size">Group Size</h2>
+<p>The "Group size" menu selects how many warp ends are in a group
+(all shafts for a group are raised at once).</p>
+<p>You can change the group size whenever you like (the change takes effect for the next thread group).
+This can be convenient if threading a unit weave that also has sone non-unit-sized borders or other odd columns.</p>
+<h2 id="jumping">Jumping</h2>
+<p>You can jump to a different warp end and/or repeat number.
+The end number you specify will be the smaller warp end number,
+e.g. if group size is 4 and you jump to 21, the displayed group will be ends 21, 22, 23, 24, and 25.</p>
+<p>Jumping is a two-step process: first you request the jump, then you advance to it by pressing the loom's pedal.
+(Two steps are necessary because most looms will not accept an unsolicited command to raise shafts.)
+In detail:</p>
+<ul>
+<li>
+<p>Enter the desired warp end and/or repeat numbers in the boxes on the "Jump to end" line.
+    The box(es) will turn pink and the Jump button will be enabled.</p>
+</li>
+<li>
+<p>Press the "return" keyboard key or click the "Jump" button on the web page
+    to send the requested jump to the server.
+    You will see several changes:</p>
+<ul>
+<li>
+<p>The jump input boxes will have a white background and the jump button will be disabled.</p>
+</li>
+<li>
+<p>The pattern display will show the new thread group, with a dotted box around it.
+(But if you are only changing the repeat number, the box will be solid.)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Advance to the next group by pressing the loom's pedal.
+    Until you advance to the next group, you can request a different jump
+    (in case you got it wrong the first time) or cancel the jump in several ways:</p>
+<ul>
+<li>
+<p>Press the "Reset" button to the right of "Jump".</p>
+</li>
+<li>
+<p>Reload the page.</p>
+</li>
+<li>
+<p>Select a new pattern.</p>
+</li>
+</ul>
+</li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
