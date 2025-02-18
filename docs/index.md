@@ -3,7 +3,7 @@
 A loom server is a package based on [base_loom_server](https://pypi.org/project/base-loom-server/) that allows you to control a dobby loom from a web browser (e.g. on a phone or tablet). Two examples are [seguin_loom_server](https://pypi.org/project/seguin-loom-server/)
 and [toika_loom_server](https://pypi.org/project/toika-loom-server/).
 
-This document explains how to use any of these loom servers (though there are a few loom-specific differences that are described in the documentation for the specific loom server package).
+This document explains how to use any of these loom servers (though there may be a few loom-specific differences that are described in that package's documentation).
 
 The first step is to [install](Installation.md) the software. Once you have done that, read on:
 

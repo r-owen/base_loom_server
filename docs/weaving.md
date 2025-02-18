@@ -22,10 +22,24 @@ There are two rectangles to the right of the pattern display:
 
 * The square button below that shows the weave direction: whether you are weaving (green down arrow) or unweaving (red up arrow).
     The arrow points in the direction cloth is moving through the loom.
+
     How you change direction depends on the loom:
 
-    * Séguin looms allow you to change direction by pressing this arrow button or by pressing the UNW button on the dobby unit.
-    * Toika only allow you to change direction by pressing this arrow button.
+    * Séguin looms allow you to change direction by pressing the square
+      weave direction button and by pressing the UNW button on the dobby unit.
+      Both work. Use whichever you prefer.
+
+    * Toika looms can be operated in one of two ways, specified by
+      a command-line argument when you start the loom server:
+
+        * Software controls the weave direction. The square button showing weave
+          direction can be pressed to change the direction. The physical button
+          on the dobby head is ignored. This is the default.
+
+        * The loom controls the weave direction. You have to press the physical button
+          on the dobby head to change directions. The square button showing weave direction
+          is only a display (you can't click it). You run in this mode by starting the loom server with argument `--weave-direction loom`,
+    
     * For other looms, see the loom-specific documentation with the software package.
 
 ## Repeating
