@@ -37,7 +37,7 @@ There are two ways to upload files:
 * Push the "Upload" button.
 * Drag and drop the files onto the web page (making sure the web page is gray before dropping them).
 
-Once you have uploaded patterns, you can select one using the menu labeled "Pattern", just to the left of the "Upload" menu.
+Once you have uploaded patterns, you can select one using the menu labeled "Pattern" (next to the "Upload" button).
 
 The loom server remembers the 25 most recent patterns that you have uploaded,
 and this information is saved on disk, so should not be lost in a power failure.
