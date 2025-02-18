@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Coding - Base Loom Server</title>
+        <title>Translations - Base Loom Server</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/fontawesome.min.css" rel="stylesheet">
         <link href="../css/brands.min.css" rel="stylesheet">
@@ -47,10 +47,10 @@
                                 <a href="../installing/" class="nav-link">Installing</a>
                             </li>
                             <li class="nav-item">
-                                <a href="./" class="nav-link active" aria-current="page">Coding</a>
+                                <a href="../coding/" class="nav-link">Coding</a>
                             </li>
                             <li class="nav-item">
-                                <a href="../translations/" class="nav-link">Translations</a>
+                                <a href="./" class="nav-link active" aria-current="page">Translations</a>
                             </li>
                         </ul>
 
@@ -61,12 +61,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../installing/" class="nav-link">
+                                <a rel="prev" href="../coding/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../translations/" class="nav-link">
+                                <a rel="next" class="nav-link disabled">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -88,16 +88,8 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#coding" class="nav-link">Coding</a>
+            <li class="nav-item" data-bs-level="1"><a href="#translations" class="nav-link">Translations</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#installing-source-code" class="nav-link">Installing Source Code</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#writing-a-loom-server" class="nav-link">Writing a Loom Server</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
               </ul>
             </li>
         </ul>
@@ -105,104 +97,14 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="coding">Coding</h1>
-<h2 id="installing-source-code">Installing Source Code</h2>
-<ul>
-<li>
-<p>Install Python as explained in <a href="../installing/">Installing</a>.</p>
-</li>
-<li>
-<p>Download the source code from <a href="https://github.com/r-owen/base_loom_server.git">github</a>,
-  or make a fork and git clone that.</p>
-</li>
-<li>
-<p>Inside the directory, do the following:</p>
-<ul>
-<li>Make "editable installation" of the package.
-  An editable installation runs from the source code,
-  so changes you make to the source are used when you run or test the code,
-  without the need to reinstall the package:<pre><code>pip install -e .'[dev]'
-</code></pre>
-</li>
-</ul>
-<p>where the single quotes around <code>[dev]</code> are required in zsh, but not in bash.
-  <code>'[dev]'</code> installs development-related packages such as pytest
-  (see the file <code>pyproject.toml</code> for the full list).</p>
-<ul>
-<li>
-<p>Activate the pre-commit hooks:</p>
-<pre><code>pre-commit install
-</code></pre>
-</li>
-<li>
-<p>Run unit tests to test your installation:</p>
-<pre><code>pytest
-</code></pre>
-</li>
-</ul>
-</li>
-<li>
-<p>You may run an example loom server with:</p>
-<pre><code>run_example_loom mock
-</code></pre>
-</li>
-</ul>
-<p>Please only specify the <strong>mock</strong> serial port; connecting it to a real loom will not work
-  (<code>ExampleMockLoom</code> is loosely based on a Séguin loom, but is not compatible).</p>
-<p><code>run_example_loom mock</code> also accepts these command-line arguments:</p>
-<pre><code>* `--reset-db` Reset the pattern database. Try this if you think the database is corrupted.
-
-* `--verbose` Print more diagnostic information.
-</code></pre>
-<p>Note that the example loom server uses the same pattern database as
-  <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a>
-  and <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</p>
-<ul>
-<li>
-<p>To run mypy run:</p>
-<pre><code>MYPYPATH=src mypy .
-</code></pre>
-<p>This avoids complaints about module name ambiguity.</p>
-</li>
-<li>
-<p>In mock mode the web page shows a few extra controls for debugging.</p>
-</li>
-<li>
-<p>Warning: the web server's automatic reload feature, which reloads Python code whenever you save changes,
-  <em>does not work</em> with this software.
-  Instead you have to kill the web server by typing control-C several times, until you get a terminal prompt, then run the server again.
-  This may be a bug in uvicorn; see <a href="https://github.com/encode/uvicorn/discussions/2075">this discussion</a> for more information.</p>
-</li>
-</ul>
-<h2 id="writing-a-loom-server">Writing a Loom Server</h2>
-<ul>
-<li>
-<p>Install the <code>base_loom_server</code> package either using pip, or from source (as described above).
-  Source makes it easier to look through the code.</p>
-</li>
-<li>
-<p>Write a subclass of <code>BaseMockLoom</code> that emulates your loom.
-  Two examples are <code>ExampleMockLoom</code> in this package and <code>MockLoom</code>
-  in <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</p>
-</li>
-<li>
-<p>Write a subclass of <code>BaseLoomServer</code> that talks to the loom.
-  Two examples are <code>ExampleLoomServer</code> in this package and <code>LoomServer</code>
-  in <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</p>
-</li>
-<li>
-<p>Write a <code>main.py</code> like the one in this package, to run your loom server.</p>
-</li>
-<li>
-<p>Copy <code>tests/test_mock_loom.py</code> and modify it to suit your mock loom.</p>
-</li>
-<li>
-<p>The unit tests for your loom server should be able to use <code>testutils.BaseTestLoomServer</code>, as <code>tests/test_loom_server.py</code> does.</p>
-</li>
-<li>
-<p>Write a <code>pyproject.toml</code> like the one for <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</p>
-</li>
-</ul></div>
+<h1 id="translations">Translations</h1>
+<p><a href="https://pypi.org/project/base-loom-server/">base_loom_server</a> supports foreign language translations (for the web display, but not this documentation).</p>
+<p>At present only one translation available: is a rather poor French translation.
+Help from others to add and improve language support would be most welcome.</p>
+<p>Each language is supported by a separate yaml file in <code>src/locales</code>.</p>
+<p>Each translation file must have name <em>language_code</em>.js, where  <em>language_code</em> is a standard <a href="https://datatracker.ietf.org/doc/html/rfc1766.html">language code</a> as reported by the Python <code>locale</code> library.</p>
+<p>The file <code>src/locales/default.yaml</code> lists all the words and phrases for which translations are wanted. Note that the values are ignored in this file. Other than that the format is the same as for a language file. Thus a good way to start is to copy <code>src/locales/default.yaml</code> to the new language file, then replace each <code>null</code> with the translated string.</p>
+<p>It is possible to have two files for a given language: one that uses the more general language code and one that uses a more specific language code. If you do this, the more general file is read first, then the more specific file. Thus the more specific file need only have entries that differ from the general file.</p></div>
             </div>
         </div>
 

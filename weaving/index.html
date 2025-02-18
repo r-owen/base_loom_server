@@ -49,6 +49,9 @@
                             <li class="nav-item">
                                 <a href="../coding/" class="nav-link">Coding</a>
                             </li>
+                            <li class="nav-item">
+                                <a href="../translations/" class="nav-link">Translations</a>
+                            </li>
                         </ul>
 
                     <ul class="nav navbar-nav ms-md-auto">
@@ -127,12 +130,33 @@ and does not display multi-layer patterns (such as doubleweave) correctly.</p>
 </li>
 <li>
 <p>The square button below that shows the weave direction: whether you are weaving (green down arrow) or unweaving (red up arrow).
-    The arrow points in the direction cloth is moving through the loom.
-    How you change direction depends on the loom:</p>
+    The arrow points in the direction cloth is moving through the loom.</p>
+<p>How you change direction depends on the loom:</p>
 <ul>
-<li>Séguin looms allow you to change direction by pressing this arrow button or by pressing the UNW button on the dobby unit.</li>
-<li>Toika only allow you to change direction by pressing this arrow button.</li>
-<li>For other looms, see the loom-specific documentation with the software package.</li>
+<li>
+<p>Séguin looms allow you to change direction by pressing the square
+  weave direction button and by pressing the UNW button on the dobby unit.
+  Both work. Use whichever you prefer.</p>
+</li>
+<li>
+<p>Toika looms can be operated in one of two ways, specified by
+  a command-line argument when you start the loom server:</p>
+<ul>
+<li>
+<p>Software controls the weave direction. The square button showing weave
+  direction can be pressed to change the direction. The physical button
+  on the dobby head is ignored. This is the default.</p>
+</li>
+<li>
+<p>The loom controls the weave direction. You have to press the physical button
+  on the dobby head to change directions. The square button showing weave direction
+  is only a display (you can't click it). You run in this mode by starting the loom server with argument <code>--weave-direction loom</code>,</p>
+</li>
+</ul>
+</li>
+<li>
+<p>For other looms, see the loom-specific documentation with the software package.</p>
+</li>
 </ul>
 </li>
 </ul>
