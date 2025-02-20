@@ -1,6 +1,6 @@
 # Build and deploy mkdocs documentation
 # See https://github.com/mhausenblas/mkdocs-deploy-gh-pages?tab=readme-ov-file
-name: serve docs
+name: Serve Docs
 on:
   # push:
   #   branches:
