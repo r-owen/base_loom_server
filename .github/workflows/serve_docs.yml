@@ -2,9 +2,9 @@
 # See https://github.com/mhausenblas/mkdocs-deploy-gh-pages?tab=readme-ov-file
 name: serve docs
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
 
 jobs:
