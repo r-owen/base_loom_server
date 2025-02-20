@@ -103,8 +103,8 @@
 Help from others to add and improve language support would be most welcome.</p>
 <p>Each language is supported by a separate yaml file in <code>src/locales</code>.</p>
 <p>Each translation file must have name <em>language_code</em>.js, where  <em>language_code</em> is a standard <a href="https://datatracker.ietf.org/doc/html/rfc1766.html">language code</a> as reported by the Python <code>locale</code> library.</p>
-<p>The file <code>src/locales/default.yaml</code> lists all the words and phrases for which translations are wanted. Note that the values are ignored in this file. Other than that the format is the same as for a language file. Thus a good way to start is to copy <code>src/locales/default.yaml</code> to the new language file, then replace each <code>null</code> with the translated string.</p>
-<p>It is possible to have two files for a given language: one that uses the more general language code and one that uses a more specific language code. If you do this, the more general file is read first, then the more specific file. Thus the more specific file need only have entries that differ from the general file.</p></div>
+<p>The file <code>src/locales/default.yaml</code> lists all the words and phrases for which translations are wanted. Note that the values are ignored in this file. Other than that, the format is the same as for a language file. Thus a good way to start is to copy <code>src/locales/default.yaml</code> to the new language file, then replace each <code>null</code> with the translated string.</p>
+<p>It is possible to have two files for a given language: one that uses a more general language code, and the other that uses a more specific language code. If you do this, the more general file is read first, then the more specific file. Thus the more specific file need only have entries that differ from the general file.</p></div>
             </div>
         </div>
 
