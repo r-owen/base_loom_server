@@ -104,6 +104,14 @@ class BaseMockLoom(abc.ABC):
     async def report_shafts(self) -> None:
         raise NotImplementedError
 
+    async def basic_read(self) -> bytes:
+        """Read one command to the loom.
+
+        Perform no error checking, except that self.reader exists.
+        """
+        assert self.reader is not None  # make mypy happy
+        return await self.reader.readuntil(self.terminator)
+
     async def oob_command(self, cmd: str):
         """Run an oob_command, specified by cmd[0]"""
         if not cmd:
@@ -180,7 +188,7 @@ class BaseMockLoom(abc.ABC):
         try:
             while self.connected():
                 assert self.reader is not None  # make mypy happy
-                cmd_bytes = await self.reader.readuntil(self.terminator)
+                cmd_bytes = await self.basic_read()
                 if not cmd_bytes:
                     # Connection has closed
                     break
@@ -221,7 +229,7 @@ class BaseMockLoom(abc.ABC):
         if self.verbose:
             self.log.info(f"{self}: send reply {data!r}")
         if self.connected():
-            data_bytes: bytes = data.encode() if isinstance(data, str) else data
+            data_bytes: bytes = data.encode() if isinstance(data, str) else bytes(data)
             assert self.writer is not None
             self.writer.write(data_bytes + self.terminator)
             await self.writer.drain()

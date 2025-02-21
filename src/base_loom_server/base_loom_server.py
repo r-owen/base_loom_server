@@ -317,6 +317,14 @@ class BaseLoomServer:
             self.loom_disconnecting = False
             await self.report_loom_connection_state()
 
+    async def basic_read_loom(self) -> bytes:
+        """Read one reply from the loom.
+
+        Perform no error checking, except that self.loom_reader exists.
+        """
+        assert self.loom_reader is not None
+        return await self.loom_reader.readuntil(self.terminator)
+
     async def clear_jump_end(self, force_output=False):
         """Clear self.jump_end and report value if changed or force_output
 
@@ -624,7 +632,7 @@ class BaseLoomServer:
                 raise RuntimeError("No loom reader")
             await self.get_initial_loom_state()
             while True:
-                reply_bytes = await self.loom_reader.readuntil(self.terminator)
+                reply_bytes = await self.basic_read_loom()
                 if self.verbose:
                     self.log.info(f"{self}: read loom reply: {reply_bytes!r}")
                 if not reply_bytes:
@@ -823,7 +831,7 @@ class BaseLoomServer:
         """
         if self.loom_writer is None or self.loom_writer.is_closing():
             raise RuntimeError("Cannot write to the loom: no connection.")
-        data_bytes = data.encode() if isinstance(data, str) else data
+        data_bytes = data.encode() if isinstance(data, str) else bytes(data)
         if self.verbose:
             self.log.info(
                 f"{self}: sending command to loom: {data_bytes + self.terminator!r}"
