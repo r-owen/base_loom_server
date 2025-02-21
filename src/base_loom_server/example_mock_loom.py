@@ -49,9 +49,6 @@ class ExampleMockLoom(BaseMockLoom):
                     )
                     return
                 await self.set_weave_forward(weave_forward=cmd_data == "0")
-            case "#":
-                # Out of band command to the mock loom.
-                await self.oob_command(cmd_data)
             case _:
                 self.log.warning(f"MockLoom: unrecognized command: {cmd!r}")
 

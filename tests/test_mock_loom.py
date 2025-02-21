@@ -45,7 +45,7 @@ async def test_raise_shafts() -> None:
     async with create_loom() as (loom, reader, writer):
         for shaft_word in (0x0, 0x1, 0x5, 0xFE, 0xFF19, 0xFFFFFFFE, 0xFFFFFFFF):
             # Tell mock loom to request the next pick
-            await write_command(writer, "#n")
+            await loom.oob_command("n")
             reply = await read_reply(reader)
             assert reply == "p"
             # Send the requested shaft information
@@ -61,7 +61,7 @@ async def test_raise_shafts() -> None:
 async def test_oob_next_pick_and_toggle_direction() -> None:
     async with create_loom() as (loom, reader, writer):
         for expected_direction in (1, 0, 1, 0, 1):
-            await write_command(writer, "#d")
+            await loom.oob_command("d")
             reply = await read_reply(reader)
             assert reply == f"u{expected_direction}"
         assert not loom.done_task.done()
@@ -69,7 +69,7 @@ async def test_oob_next_pick_and_toggle_direction() -> None:
 
 async def test_oob_close_connection() -> None:
     async with create_loom() as (loom, reader, writer):
-        await write_command(writer, "#c")
+        await loom.oob_command("c")
         async with asyncio.timeout(1):
             await loom.done_task
         assert loom.writer is not None

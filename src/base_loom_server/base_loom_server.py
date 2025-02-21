@@ -467,7 +467,10 @@ class BaseLoomServer:
         await self.report_weave_direction()
 
     async def cmd_oobcommand(self, command: SimpleNamespace) -> None:
-        await self.write_to_loom(f"#{command.command}")
+        if self.mock_loom is not None:
+            await self.mock_loom.oob_command(command.command)
+        else:
+            self.log.warning(f"Ignoring oob command {command.command!r}: no mock loom")
 
     def get_threading_shaft_word(self) -> int:
         if self.current_pattern is None:
