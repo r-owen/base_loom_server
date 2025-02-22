@@ -174,7 +174,8 @@ class ReducedPattern:
                 new_end_number0 = self.end_number1
         else:
             if self.end_number0 == 0:
-                new_end_number0 = max(max_end_number - thread_group_size, 1)
+                new_end_number1 = max_end_number + 1
+                new_end_number0 = max(new_end_number1 - thread_group_size, 1)
                 new_end_repeat_number -= 1
             elif self.end_number0 == 1:
                 new_end_number0 = 0
@@ -205,6 +206,15 @@ class ReducedPattern:
             next_pick_number = 0
         self.pick_number = next_pick_number
         return next_pick_number
+
+    def compute_end_number1(self, end_number0: int, thread_group_size: int) -> int:
+        self.check_end_number(end_number0)
+        if thread_group_size < 1:
+            raise ValueError(f"{thread_group_size=} must be >= 1")
+        max_end_number = len(self.threading)
+        if end_number0 == 0:
+            return 0
+        return min(end_number0 + thread_group_size, max_end_number + 1)
 
     def set_current_end_number(
         self,
@@ -255,12 +265,9 @@ class ReducedPattern:
                 raise IndexError(f"{end_number1=} must be > {end_number0=}")
             self.end_number1 = end_number1
         else:
-            if end_number0 == 0:
-                self.end_number1 = 0
-            else:
-                self.end_number1 = min(
-                    end_number0 + thread_group_size, max_end_number + 1
-                )
+            self.end_number1 = self.compute_end_number1(
+                end_number0=end_number0, thread_group_size=thread_group_size
+            )
         self.end_number0 = end_number0
         if end_repeat_number is not None:
             self.end_repeat_number = end_repeat_number

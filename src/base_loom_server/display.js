@@ -282,6 +282,7 @@ class LoomClient {
             threadGroupSizeMenu.value = this.threadGroupSize
         } else if (datadict.type == "JumpEndNumber") {
             this.jumpEndNumber0 = datadict.end_number0
+            this.jumpEndNumber1 = datadict.end_number1
             this.jumpEndRepeatNumber = datadict.repeatNumber
             this.displayJumpEnd()
         } else if (datadict.type == "JumpPickNumber") {
@@ -565,7 +566,7 @@ class LoomClient {
         if (this.jumpEndNumber0 != null) {
             isJump = true
             endNumber0 = this.jumpEndNumber0
-            endNumber1 = Math.min(this.jumpEndNumber0 + this.threadGroupSize, this.currentPattern.threading.length) + 1
+            endNumber1 = this.jumpEndNumber1
         }
         const centerEndNumber = Math.round(Math.max(0, (endNumber0 + endNumber1 - 1) / 2))
         ctx.font = EndFont
@@ -591,20 +592,28 @@ class LoomClient {
         const centerSlotIndex = Math.round((numEndsToShow - 1) / 2)
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-        const maxColoredEndIndex = isJump ? endNumber0 - 2 : endNumber1 - 2
+        var minDarkEndIndex = endNumber0 - 1
+        var maxDarkEndIndex = endNumber1 - 2
 
-        // TODO: put a box about the current thread group
-
-        // Display 2 end numbers: endNumber0 and, if there is space, endNumber1,
-        // else endNumber0 + 2
-        const displayEndNumber = Math.max(endNumber1 - 1, endNumber0 + 2)
+        // Display end number above two ends:
+        // * The right-most in the range (endNumber0) if nonzero, else end 1
+        // * The left-most in the range (endNumber1-1) unless current group size < 4
+        //   (i.e. endNumber1 - endNumber0 < 4) because of crowding
+        var displayEndIndex0 = endNumber0 - 1
+        var displayEndIndex1 = endNumber1 - 2
+        if (endNumber0 == 0) {
+            displayEndIndex0 = 0
+            displayEndIndex1 = null
+        } else if (endNumber1 - endNumber0 < 4) {
+            displayEndIndex1 = null
+        }
         for (let slotIndex = 0; slotIndex < numEndsToShow; slotIndex++) {
             const endIndex = centerEndNumber + slotIndex - centerSlotIndex - 1
 
             if (endIndex < 0 || endIndex >= this.currentPattern.threading.length) {
                 continue
             }
-            if (endIndex > maxColoredEndIndex) {
+            if (isJump || (endIndex < minDarkEndIndex) || (endIndex > maxDarkEndIndex)) {
                 ctx.globalAlpha = 0.3
             } else {
                 ctx.globalAlpha = 1.0
@@ -615,19 +624,21 @@ class LoomClient {
             const xCenter = canvas.width - blockWidth * slotIndex - blockHalfWidth
             const yCenter = canvas.height - verticalDelta * (shaftIndex + 0.5) - fontMeas.actualBoundingBoxDescent
 
-            if (endIndex == endNumber0 - 1) {
+            if (endIndex == displayEndIndex0) {
                 ctx.fillStyle = "black"
                 ctx.fillText(endIndex + 1,
                     xCenter,
                     fontMeas.actualBoundingBoxAscent + 2,
                 )
-                ctx.strokeRect(
-                    xCenter + blockHalfWidth,
-                    blockHeight + 2,
-                    - blockWidth * (endNumber1 - endNumber0),
-                    canvas.height - blockHeight - 2,
-                )
-            } else if (endIndex == displayEndNumber - 1) {
+                if (endNumber0 > 0) {
+                    ctx.strokeRect(
+                        xCenter + blockHalfWidth,
+                        blockHeight + 2,
+                        - blockWidth * (endNumber1 - endNumber0),
+                        canvas.height - blockHeight - 2,
+                    )
+                }
+            } else if (endIndex == displayEndIndex1) {
                 ctx.fillStyle = "black"
                 ctx.fillText(endIndex + 1,
                     xCenter,

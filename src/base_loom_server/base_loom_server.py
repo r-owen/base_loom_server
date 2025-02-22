@@ -411,9 +411,12 @@ class BaseLoomServer:
                     self.t("invalid end number")
                     + f" {command.end_number0} > {max_end_number}"
                 )
-
+        end_number1 = self.current_pattern.compute_end_number1(
+            end_number0=command.end_number0, thread_group_size=self.thread_group_size
+        )
         self.jump_end = client_replies.JumpEndNumber(
             end_number0=command.end_number0,
+            end_number1=end_number1,
             end_repeat_number=command.end_repeat_number,
         )
         await self.report_jump_end()
@@ -508,6 +511,7 @@ class BaseLoomServer:
                 if self.jump_end.end_number0 is not None:
                     self.current_pattern.set_current_end_number(
                         end_number0=self.jump_end.end_number0,
+                        end_number1=self.jump_end.end_number1,
                         thread_group_size=self.thread_group_size,
                     )
                 else:

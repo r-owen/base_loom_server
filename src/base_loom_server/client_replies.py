@@ -73,6 +73,7 @@ class JumpEndNumber:
 
     type: str = dataclasses.field(init=False, default="JumpEndNumber")
     end_number0: int | None = None
+    end_number1: int | None = None
     end_repeat_number: int | None = None
 
 

@@ -275,15 +275,12 @@ def test_end_number() -> None:
                     thread_group_size=thread_group_size, thread_low_to_high=False
                 )
                 if initial_end_number0 == 0:
-                    # The next group starts at num_ends
-                    # (and repeat_number is decremented)
+                    # The next group starts end at num_ends + 1
+                    # and repeat_number is decremented,
                     # regardless of thread_group_size
+                    assert reduced_pattern.end_number1 == num_ends + 1
                     assert reduced_pattern.end_number0 == max(
-                        num_ends - thread_group_size, 1
-                    )
-                    assert reduced_pattern.end_number1 == min(
-                        reduced_pattern.end_number0 + thread_group_size,
-                        num_ends + 1,
+                        reduced_pattern.end_number1 - thread_group_size, 1
                     )
                     assert reduced_pattern.end_repeat_number == 0
                 elif initial_end_number0 == 1:
