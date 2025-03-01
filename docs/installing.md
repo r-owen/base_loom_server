@@ -18,8 +18,10 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
 
     The link has installers for common operating systems.
 
-    Installing Python on Raspberry Pi is more difficult, though a new enough operating system may include a new enough Python.
-    An easy way to install Python on Raspberry Pi is to use [this script](https://itheo.tech/installing-python-313-on-raspberry-pi-and-ubuntu).
+    If you have a Raspberry Pi and the version of Python is too old,
+    try `sudo apt update` followed by `sodu atp upgrade python3`.
+    If that doesn't work, you may need to build Python from source
+    (or install a newer version of the Raspberry Pi operating system).
 
 3. Determine your computer's host name. In a terminal run:
 
@@ -57,7 +59,7 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
 
     You should see the server start and you can connect to it with a web browser and try a few things out.
     Connect to the loom at `https://hostname.local/8000` where `hostname` is the host name you determined above
-    (if the name already includes ".local", don't duplicate that).
+    (if the hostname ends with ".local", don't duplicate that).
 
     To control the real loom, specify the name of the USB port you found above:
 
