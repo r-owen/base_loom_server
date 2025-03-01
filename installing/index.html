@@ -114,8 +114,10 @@ A Windows computer or unix box should also work.</p>
 <li>
 <p>Install <a href="https://www.python.org/downloads/">Python</a> 3.11 or later.</p>
 <p>The link has installers for common operating systems.</p>
-<p>Installing Python on Raspberry Pi is more difficult, though a new enough operating system may include a new enough Python.
-An easy way to install Python on Raspberry Pi is to use <a href="https://itheo.tech/installing-python-313-on-raspberry-pi-and-ubuntu">this script</a>.</p>
+<p>If you have a Raspberry Pi and the version of Python is too old,
+try <code>sudo apt update</code> followed by <code>sodu atp upgrade python3</code>.
+If that doesn't work, you may need to build Python from source
+(or install a newer version of the Raspberry Pi operating system).</p>
 </li>
 <li>
 <p>Determine your computer's host name. In a terminal run:</p>
@@ -158,7 +160,7 @@ Definitely use <code>sudo</code> on Raspberry Pi.</p>
 </code></pre>
 <p>You should see the server start and you can connect to it with a web browser and try a few things out.
 Connect to the loom at <code>https://hostname.local/8000</code> where <code>hostname</code> is the host name you determined above
-(if the name already includes ".local", don't duplicate that).</p>
+(if the hostname ends with ".local", don't duplicate that).</p>
 <p>To control the real loom, specify the name of the USB port you found above:</p>
 <pre><code>run_toika_server usb_port_name
 </code></pre>
