@@ -107,7 +107,7 @@ that is based on <a href="https://pypi.org/project/base-loom-server/">base_loom_
 <li>
 <p>Pick your Computer</p>
 <p>Decide which computer you will use to run the loom server.
-A macOS compute will work, and a used Mac Mini is a great choice (especially if you have a spare keyboard and monitor to get it set up).
+A macOS computer will work, and a used Mac Mini is a great choice (especially if you have a spare keyboard and monitor to get it set up).
 A Raspberry Pi (model 4 or better) will work, though it will be a bit slow when uploading patterns.
 A Windows computer or unix box should also work.</p>
 </li>
@@ -115,9 +115,9 @@ A Windows computer or unix box should also work.</p>
 <p>Install <a href="https://www.python.org/downloads/">Python</a> 3.11 or later.</p>
 <p>The link has installers for common operating systems.</p>
 <p>If you have a Raspberry Pi and the version of Python is too old,
-try <code>sudo apt update</code> followed by <code>sodu atp upgrade python3</code>.
+try <code>sudo apt update</code> followed by <code>sodu apt upgrade python3</code>.
 If that doesn't work, you may need to build Python from source
-(or install a newer version of the Raspberry Pi operating system).</p>
+or install a newer version of the Raspberry Pi operating system.</p>
 <p>If you are a Python programmer and know what a virtual environment is,
 I suggest you set up a virtual environment for the loom server.
 Otherwise don't bother.</p>
@@ -139,9 +139,7 @@ Otherwise don't bother.</p>
 
         ls /dev/tty.usb*
 
-* Connect your computer to the loom with a USB cable.
-
-* Turn on the loom and wait a few seconds to let it connect.
+* Connect your computer to the loom with a USB cable, turn on the loom, and wait a few seconds to let it connect.
 
 * Run the same command again. There should be one new entry,
   which is the name of the port connected to the loom.
@@ -152,9 +150,7 @@ On Windows this may work:
 
 * Expand the "Universal Serial Bus controllers" section.
 
-* Connect your computer to the loom with a USB cable.
-
-* Turn on the loom and wait a few seconds to let it connect.
+* Connect your computer to the loom with a USB cable, turn on the loom, and wait a few seconds to let it connect.
 
 * Check for the new connection by clicking "Action" &gt; "Scan for hardware changes".
 </code></pre>
