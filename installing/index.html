@@ -129,32 +129,39 @@ Otherwise don't bother.</p>
 </li>
 <li>
 <p>Determine the name of the port that your computer is using to connect to the loom.</p>
-</li>
-</ol>
 <p>The first step is to make sure the loom is <strong>not</strong> connected (unplug the USB cable or turn off the loom).
-   The next step depends on the operating system:</p>
-<pre><code>On macOS or linux:
-
-* Run this terminal command to see which USB ports already in use, if any:
-
-        ls /dev/tty.usb*
-
-* Connect your computer to the loom with a USB cable, turn on the loom, and wait a few seconds to let it connect.
-
-* Run the same command again. There should be one new entry,
-  which is the name of the port connected to the loom.
-
-On Windows this may work:
-
-* Open "Device Manager"
-
-* Expand the "Universal Serial Bus controllers" section.
-
-* Connect your computer to the loom with a USB cable, turn on the loom, and wait a few seconds to let it connect.
-
-* Check for the new connection by clicking "Action" &gt; "Scan for hardware changes".
+The next step depends on the operating system:</p>
+<p>On macOS or linux:</p>
+<ul>
+<li>
+<p>Run this terminal command to see which USB ports already in use, if any:</p>
+<pre><code>ls /dev/tty.usb*
 </code></pre>
-<ol>
+</li>
+<li>
+<p>Connect your computer to the loom with a USB cable, turn on the loom, and wait a few seconds to let it connect.</p>
+</li>
+<li>
+<p>Run the same command again. There should be one new entry,
+  which is the name of the port connected to the loom.</p>
+</li>
+</ul>
+<p>On Windows this may work:</p>
+<ul>
+<li>
+<p>Open "Device Manager"</p>
+</li>
+<li>
+<p>Expand the "Universal Serial Bus controllers" section.</p>
+</li>
+<li>
+<p>Connect your computer to the loom with a USB cable, turn on the loom, and wait a few seconds to let it connect.</p>
+</li>
+<li>
+<p>Check for the new connection by clicking "Action" &gt; "Scan for hardware changes".</p>
+</li>
+</ul>
+</li>
 <li>
 <p>Install the loom server software.</p>
 <p>From here on I will assume you are installing <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.
