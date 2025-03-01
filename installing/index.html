@@ -118,6 +118,9 @@ A Windows computer or unix box should also work.</p>
 try <code>sudo apt update</code> followed by <code>sodu atp upgrade python3</code>.
 If that doesn't work, you may need to build Python from source
 (or install a newer version of the Raspberry Pi operating system).</p>
+<p>If you are a Python programmer and know what a virtual environment is,
+I suggest you set up a virtual environment for the loom server.
+Otherwise don't bother.</p>
 </li>
 <li>
 <p>Determine your computer's host name. In a terminal run:</p>
@@ -126,42 +129,75 @@ If that doesn't work, you may need to build Python from source
 </li>
 <li>
 <p>Determine the name of the port that your computer is using to connect to the loom.</p>
-<p>On macOS or linux:</p>
-<ul>
-<li>
-<p>Run this command to see which USB ports already in use, if any:</p>
-<pre><code>ls /dev/tty.usb*
+</li>
+</ol>
+<p>The first step is to make sure the loom is <strong>not</strong> connected (unplug the USB cable or turn off the loom).
+   The next step depends on the operating system:</p>
+<pre><code>On macOS or linux:
+
+* Run this terminal command to see which USB ports already in use, if any:
+
+        ls /dev/tty.usb*
+
+* Connect your computer to the loom with a USB cable.
+
+* Turn on the loom and wait a few seconds to let it connect.
+
+* Run the same command again. There should be one new entry,
+  which is the name of the port connected to the loom.
+
+On Windows this may work:
+
+* Open "Device Manager"
+
+* Expand the "Universal Serial Bus controllers" section.
+
+* Connect your computer to the loom with a USB cable.
+
+* Turn on the loom and wait a few seconds to let it connect.
+
+* Check for the new connection by clicking "Action" &gt; "Scan for hardware changes".
 </code></pre>
-</li>
-<li>
-<p>Connect your computer to the loom with a USB cable.</p>
-</li>
-<li>
-<p>Turn on the loom and wait a few seconds to let it connect.</p>
-</li>
-<li>
-<p>Run the same command again. There should be one new entry,
-  which is the name of the port connected to the loom.</p>
-</li>
-</ul>
-</li>
+<ol>
 <li>
 <p>Install the loom server software.</p>
-<p>From here on I will assume you are installing <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>. For <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a> replace "toika" with "seguin".</p>
-<pre><code>sudo pip install toika_loom_server
+<p>From here on I will assume you are installing <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.
+For <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a> replace "toika" with "seguin".
+On the command line:</p>
+<pre><code>python -m pip install toika_loom_server
 </code></pre>
-<p>On some operating systems (including macOS) you can omit <code>sudo</code>.
-Definitely use <code>sudo</code> on Raspberry Pi.</p>
+<p>On Raspberry Pi, and perhaps some other flavors of linux, use <code>sudo</code> to avoid having to hunt for the loom server executable in <code>~/.local/bin</code>:</p>
+<pre><code>sudo python -m pip install toika_loom_server
+</code></pre>
 </li>
 <li>
 <p>Test the installation.</p>
-<p>First you may want to try the mock loom (since it does talk to your loom, and so avoids some complications):</p>
+<p>Start with the mock loom (since it does talk to your loom, and so avoids some complications).
+In a terminal:</p>
 <pre><code>run_toika_server mock
 </code></pre>
 <p>You should see the server start and you can connect to it with a web browser and try a few things out.
 Connect to the loom at <code>https://hostname.local/8000</code> where <code>hostname</code> is the host name you determined above
-(if the hostname ends with ".local", don't duplicate that).</p>
-<p>To control the real loom, specify the name of the USB port you found above:</p>
+(if the hostname ends with ".local", <em>don't</em> duplicate that).</p>
+<p>If <code>run_toika_server</code> is not found, the next step is to find out where pip installed it, and include the path as a prefix to the command:</p>
+<ul>
+<li>
+<p>On Raspberry Pi: if you did not install with <code>sudo</code> then it is probably in <code>~/.local/bin</code>:</p>
+<p>~/.local/bin/run_toika_server mock</p>
+</li>
+<li>
+<p>On Windows pip apparently installs executables in the Scripts sub-folder of the Python installation.
+  To find Python you can try this command:</p>
+<p>where python</p>
+</li>
+</ul>
+<p>or this:</p>
+<pre><code>python -c "import os, sys; print(os.path.dirname(sys.executable))"
+</code></pre>
+<p>Then look inside the Scripts subfolder of the reported path. The result may be something like this:</p>
+<pre><code>C:\Python312\Scripts\run_toika_server mock
+</code></pre>
+<p>To control the real loom, specify the name of the USB port you found above, with any necessary path prefix:</p>
 <pre><code>run_toika_server usb_port_name
 </code></pre>
 </li>
