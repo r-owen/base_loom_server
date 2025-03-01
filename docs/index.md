@@ -5,7 +5,7 @@ and [toika_loom_server](https://pypi.org/project/toika-loom-server/).
 
 This document explains how to use any of these loom servers (though there may be a few loom-specific differences that are described in that package's documentation).
 
-The first step is to [install](Installation.md) the software. Once you have done that, read on:
+The first step is to [install](installing.md) the software. Once you have done that, read on:
 
 ## Connect to the Loom Server
 
