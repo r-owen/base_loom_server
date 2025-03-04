@@ -109,20 +109,37 @@ class AppRunner:
             "-r",
             "--reset-db",
             action="store_true",
-            help="reset pattern database?",
+            help="Reset the pattern database, erasing all patterns.",
         )
         parser.add_argument(
             "-v",
             "--verbose",
             action="store_true",
-            help="print diagnostic information to stdout",
+            help="Log extra diagnostic information.",
         )
         parser.add_argument(
             "--db-path",
             default=DEFAULT_DATABASE_PATH,
             type=pathlib.Path,
-            help="Path for pattern database. "
-            "Settable so unit tests can avoid changing the real database.",
+            help="Path for the pattern database. "
+            "Specify this if you plan to run more than one loom server on this computer.",
+        )
+        parser.add_argument(
+            "--host",
+            default="0.0.0.0",
+            help="Server host. 0.0.0.0 is standard. Don't change this unless you know what you are doing.",
+        )
+        parser.add_argument(
+            "--port",
+            type=int,
+            default=8000,
+            help="Server port. Specify this if you wish to run more than one web server on this computer.",
+        )
+        parser.add_argument(
+            "--log-level",
+            choices=("critical", "error", "warning", "info", "debug", "trace"),
+            default="info",
+            help="Logging level.",
         )
         return parser
 
@@ -139,9 +156,13 @@ class AppRunner:
 
         parser = self.create_argument_parser()
         args = parser.parse_args()
+        for extra_arg in ("host", "port", "log_level"):
+            if getattr(args, extra_arg, None) is not None:
+                delattr(args, extra_arg)
 
         async with self.server_class(
-            **vars(args), translation_dict=self.translation_dict
+            **vars(args),
+            translation_dict=self.translation_dict,
         ) as self.loom_server:
             # Store the server as state for unit tests
             app.state.loom_server = self.loom_server
@@ -214,16 +235,16 @@ class AppRunner:
         assert self.loom_server is not None
         await self.loom_server.run_client(websocket=websocket)
 
-    def run(self, host="0.0.0.0", port=8000, log_level="info", reload=True) -> None:
+    def run(self) -> None:
         """Parse command-line arguments and run the web server."""
         # Handle the help argument and also catch parsing errors right away
         arg_parser = self.create_argument_parser()
-        arg_parser.parse_args()
+        args = arg_parser.parse_args()
 
         uvicorn.run(
             self.app_package_name,
-            host=host,
-            port=port,
-            log_level=log_level,
-            reload=reload,
+            host=args.host,
+            port=args.port,
+            log_level=args.log_level,
+            reload=False,
         )
