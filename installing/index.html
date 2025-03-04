@@ -99,10 +99,10 @@
 
 <h1 id="installing">Installing</h1>
 <p>This page gives instructions for installing a loom driver such as
-such as <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a>
-or <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>
-that is based on <a href="https://pypi.org/project/base-loom-server/">base_loom_server</a>.</p>
-<p>See <a href="../coding/">Coding</a> if you want to work on <a href="https://pypi.org/project/base-loom-server/">base_loom_server</a> or use it to develop a new loom driver.</p>
+such as <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_loom</a>
+or <a href="https://pypi.org/project/toika-loom-server/">toika_loom_loom</a>
+that is based on <a href="https://pypi.org/project/base-loom-server/">base_loom_loom</a>.</p>
+<p>See <a href="../coding/">Coding</a> if you want to work on <a href="https://pypi.org/project/base-loom-server/">base_loom_loom</a> or use it to develop a new loom driver.</p>
 <ol>
 <li>
 <p>Pick your Computer</p>
@@ -164,45 +164,83 @@ The next step depends on the operating system:</p>
 </li>
 <li>
 <p>Install the loom server software.</p>
-<p>From here on I will assume you are installing <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.
-For <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a> replace "toika" with "seguin".
+<p>From here on I will assume you are installing <a href="https://pypi.org/project/toika-loom-server/">toika_loom_loom</a>.
+For <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_loom</a> replace "toika" with "seguin".
 On the command line:</p>
-<pre><code>python -m pip install toika_loom_server
+<pre><code>python -m pip install toika_loom_loom
 </code></pre>
 <p>Use <code>sudo</code> on Raspberry Pi to avoid having to hunt for the loom server executable in <code>~/.local/bin</code>:</p>
-<pre><code>sudo python -m pip install toika_loom_server
+<pre><code>sudo python -m pip install toika_loom_loom
 </code></pre>
 </li>
 <li>
-<p>Test the installation.</p>
-<p>Start with the mock loom (since it does not talk to your loom, and so avoids some complications).
-In a terminal:</p>
-<pre><code>run_toika_server mock
-</code></pre>
-<p>You should see the server start and you can connect to it with a web browser and try a few things out.
-Connect to the loom at <code>https://hostname.local/8000</code> where <code>hostname</code> is the host name you determined above
-(if the hostname ends with ".local", <em>don't</em> duplicate that).</p>
-<p>If <code>run_toika_server</code> is not found, the next step is to find out where pip installed it, and include the path as a prefix to the command:</p>
+<p>Find the installed loom server executable:</p>
 <ul>
 <li>
-<p>On Raspberry Pi: if you did not install with <code>sudo</code> then it is probably in <code>~/.local/bin</code>:</p>
-<p>~/.local/bin/run_toika_server mock</p>
+<p>On macOS, Raspberry Pi (if you installed with <code>sudo</code>)  and most unix you can probably run the executable directly:</p>
+<pre><code>run_toika_loom mock
+</code></pre>
 </li>
 <li>
-<p>On Windows pip apparently installs executables in the Scripts sub-folder of the Python installation.
-  To find Python you can try this command:</p>
-<p>where python</p>
+<p>On Raspberry Pi if you did not install with <code>sudo</code> then try this:</p>
+<pre><code>~/.local/bin/run_toika_loom mock
+</code></pre>
 </li>
-</ul>
-<p>or this:</p>
+<li>
+<p>On Windows the executable will be buried in the Scripts subdirectory of your python installation.
+    To find that directory first try this terminal command:</p>
+<pre><code>where python
+</code></pre>
+<p>If that fails, try this:</p>
 <pre><code>python -c "import os, sys; print(os.path.dirname(sys.executable))"
 </code></pre>
-<p>Then look inside the Scripts subfolder of the reported path. The result may be something like this:</p>
-<pre><code>C:\Python312\Scripts\run_toika_server mock
+<p>Then look in the Scripts subdirectory of that directory for <code>run_toika_loom</code> and run it with the <code>mock</code> USB port.</p>
+</li>
+</ul>
+<p>If the path to the executable is long, consider adding the directory containing the executable to your PATH.
+Once you do that you can run the loom server without a path prefix, just plain old <code>run_toika_loom mock</code>.
+How you add directories to your PATH depends on the operating system.
+Here are <a href="https://stackoverflow.com/q/44272416/1653413">instructions for Windows 10</a>.</p>
+</li>
+<li>
+<p>Test the loom server with the <code>mock</code> port:</p>
+<p>Once you have found and started the server, as above, make sure you can connect to it.
+Point your web browser to <code>https://hostname.local/8000</code> where <code>hostname</code> is the host name you determined above
+(if the hostname ends with ".local", <em>don't</em> duplicate that).</p>
+<p>Try a few things:</p>
+<ul>
+<li>
+<p>Load one or a few weaving pattern files (which will still be there when you run with the real loom).</p>
+</li>
+<li>
+<p>When using the mock loom there are extra debug controls shown at the bottom of the page.
+  One of those is a button that lets you advance to the next pick. Try that.
+  Try changing weave direction. Try the threading panel.</p>
+</li>
+<li>
+<p>If you plan to weave any of the patterns you uploaded, go to the beginning before you disconnect,
+  because the pattern database remembers where you left off weaving and threading.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Run the loom server.</p>
+<p>Once you know how to run the loom server, run it with the real USB port for your loom,
+using the path you found above:</p>
+<pre><code>&lt;path-to-executable&gt;/run_toika_loom &lt;usb_port_name&gt;
 </code></pre>
-<p>To control the real loom, specify the name of the USB port you found above (prefixing the run command with any necessary path prefix):</p>
-<pre><code>run_toika_server usb_port_name
-</code></pre>
+<p>This command also has extra options to specify the loom name, server port, etc.
+One option of note:</p>
+<ul>
+<li><code>--reset-db</code>: clear all save weaving patterns. Only use this when you want a fresh start.</li>
+</ul>
+<p>To run more than one loom server on the same computer,
+specify different loom-specific values for each of the following options:</p>
+<ul>
+<li><code>--db-path</code>: path of the pattern database</li>
+<li><code>--port</code>: server port</li>
+</ul>
+<p>For a full list of options, run the command <code>--help</code>.</p>
 </li>
 </ol></div>
             </div>
