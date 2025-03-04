@@ -119,7 +119,7 @@ async def test_invalid_operations() -> None:
             # then the data sent must be correctly terminated
             incorrectly_terminated_data = b"some data"
             with pytest.raises(AssertionError):
-                await writer.write(incorrectly_terminated_data)
+                writer.write(incorrectly_terminated_data)
 
 
 async def check_reader_writer(
