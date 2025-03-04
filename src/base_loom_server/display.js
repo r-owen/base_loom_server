@@ -542,9 +542,9 @@ class LoomClient {
     displayThreadDirection() {
         var threadDirectionElt = document.getElementById("thread_direction")
         if (this.threadLowToHigh) {
-            threadDirectionElt.textContent = "←"
+            threadDirectionElt.textContent = "\u2190"  // leftwards arrow
         } else {
-            threadDirectionElt.textContent = "→"
+            threadDirectionElt.textContent = "\u2192"  // rightwards arrow
         }
     }
 
@@ -683,10 +683,10 @@ class LoomClient {
     displayWeaveDirection() {
         var weaveDirectionElt = document.getElementById("weave_direction")
         if (this.weaveForward) {
-            weaveDirectionElt.textContent = "↓"
+            weaveDirectionElt.textContent = "\u2193"  // downwards arrow
             weaveDirectionElt.style.color = "green"
         } else {
-            weaveDirectionElt.textContent = "↑"
+            weaveDirectionElt.textContent = "\u2191"  // upwards arrow
             weaveDirectionElt.style.color = "red"
         }
     }
@@ -1072,11 +1072,11 @@ class LoomClient {
     /*
     Handle thread_direction button clicks.
     
-    Send the weave_direction command to the loom server.
+    Send the thread_direction command to the loom server.
     */
     async handleToggleThreadDirection(event) {
         var threadDirectionElt = document.getElementById("thread_direction")
-        var newLowToHigh = (threadDirectionElt.textContent == "→") ? true : false
+        var newLowToHigh = (threadDirectionElt.textContent == "\u2192") ? true : false
         var command = { "type": "thread_direction", "low_to_high": newLowToHigh }
         await this.sendCommand(command)
     }
@@ -1088,7 +1088,7 @@ class LoomClient {
     */
     async handleToggleWeaveDirection(event) {
         var weaveDirectionElt = document.getElementById("weave_direction")
-        var newForward = (weaveDirectionElt.textContent == "↑") ? true : false
+        var newForward = (weaveDirectionElt.textContent == "\u2191") ? true : false
         var command = { "type": "weave_direction", "forward": newForward }
         await this.sendCommand(command)
     }
