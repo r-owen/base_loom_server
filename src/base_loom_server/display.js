@@ -308,11 +308,11 @@ class LoomClient {
         } else if (datadict.type == "PatternNames") {
             /*
             Why this code is so odd:
-            • The <hr> separator is not part of option list, and there is no good way
+            * The <hr> separator is not part of option list, and there is no good way
               to add a separator in javascript, so I preserve the old one.
-            • The obvious solution is to remove the old names, then insert new ones.
+            * The obvious solution is to remove the old names, then insert new ones.
               Unfortunately that loses the <hr> separator.
-            • So I insert the new names, then remove the old ones. Ugly, but at least
+            * So I insert the new names, then remove the old ones. Ugly, but at least
               on macOS Safari 18.1.1 this preserves the separator. If the separator
               is lost on other systems, the menu is still usable.
      
