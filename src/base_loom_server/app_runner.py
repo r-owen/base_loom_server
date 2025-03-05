@@ -171,7 +171,9 @@ class AppRunner:
     def get_translation_dict(self) -> dict[str, str]:
         """Get the translation dict for the current locale"""
         # Read a dict of key: None and turn into a dict of key: key
-        default_dict = json.loads(LOCALE_FILES.joinpath("default.json").read_text())
+        default_dict = json.loads(
+            LOCALE_FILES.joinpath("default.json").read_text(encoding="utf_8")
+        )
         translation_dict = {key: key for key in default_dict}
 
         language_code = locale.getlocale(locale.LC_CTYPE)[0]
@@ -183,7 +185,9 @@ class AppRunner:
                 translation_file = LOCALE_FILES.joinpath(translation_name)
                 if translation_file.is_file():
                     self.log.info(f"Loading translation file {translation_name!r}")
-                    locale_dict = json.loads(translation_file.read_text())
+                    locale_dict = json.loads(
+                        translation_file.read_text(encoding="utf_8")
+                    )
                     purged_locale_dict = {
                         key: value
                         for key, value in locale_dict.items()
@@ -200,11 +204,13 @@ class AppRunner:
     async def get(self) -> HTMLResponse:
         """Endpoint to get the main page."""
         assert self.loom_server is not None  # make mypy happy
-        display_html_template = PKG_FILES.joinpath("display.html_template").read_text()
+        display_html_template = PKG_FILES.joinpath("display.html_template").read_text(
+            encoding="utf_8"
+        )
 
-        display_css = PKG_FILES.joinpath("display.css").read_text()
+        display_css = PKG_FILES.joinpath("display.css").read_text(encoding="utf_8")
 
-        display_js = PKG_FILES.joinpath("display.js").read_text()
+        display_js = PKG_FILES.joinpath("display.js").read_text(encoding="utf_8")
         js_translation_str = json.dumps(self.translation_dict, indent=4)
         js_enable_swd_str = (
             "true" if self.loom_server.enable_software_weave_direction else "false"
