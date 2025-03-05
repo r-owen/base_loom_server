@@ -308,11 +308,11 @@ class LoomClient {
         } else if (datadict.type == "PatternNames") {
             /*
             Why this code is so odd:
-            • The <hr> separator is not part of option list, and there is no good way
+            * The <hr> separator is not part of option list, and there is no good way
               to add a separator in javascript, so I preserve the old one.
-            • The obvious solution is to remove the old names, then insert new ones.
+            * The obvious solution is to remove the old names, then insert new ones.
               Unfortunately that loses the <hr> separator.
-            • So I insert the new names, then remove the old ones. Ugly, but at least
+            * So I insert the new names, then remove the old ones. Ugly, but at least
               on macOS Safari 18.1.1 this preserves the separator. If the separator
               is lost on other systems, the menu is still usable.
      
@@ -542,9 +542,9 @@ class LoomClient {
     displayThreadDirection() {
         var threadDirectionElt = document.getElementById("thread_direction")
         if (this.threadLowToHigh) {
-            threadDirectionElt.textContent = "←"
+            threadDirectionElt.textContent = "\u2190"  // leftwards arrow
         } else {
-            threadDirectionElt.textContent = "→"
+            threadDirectionElt.textContent = "\u2192"  // rightwards arrow
         }
     }
 
@@ -683,10 +683,10 @@ class LoomClient {
     displayWeaveDirection() {
         var weaveDirectionElt = document.getElementById("weave_direction")
         if (this.weaveForward) {
-            weaveDirectionElt.textContent = "↓"
+            weaveDirectionElt.textContent = "\u2193"  // downwards arrow
             weaveDirectionElt.style.color = "green"
         } else {
-            weaveDirectionElt.textContent = "↑"
+            weaveDirectionElt.textContent = "\u2191"  // upwards arrow
             weaveDirectionElt.style.color = "red"
         }
     }
@@ -1072,11 +1072,11 @@ class LoomClient {
     /*
     Handle thread_direction button clicks.
     
-    Send the weave_direction command to the loom server.
+    Send the thread_direction command to the loom server.
     */
     async handleToggleThreadDirection(event) {
         var threadDirectionElt = document.getElementById("thread_direction")
-        var newLowToHigh = (threadDirectionElt.textContent == "→") ? true : false
+        var newLowToHigh = (threadDirectionElt.textContent == "\u2192") ? true : false
         var command = { "type": "thread_direction", "low_to_high": newLowToHigh }
         await this.sendCommand(command)
     }
@@ -1088,7 +1088,7 @@ class LoomClient {
     */
     async handleToggleWeaveDirection(event) {
         var weaveDirectionElt = document.getElementById("weave_direction")
-        var newForward = (weaveDirectionElt.textContent == "↑") ? true : false
+        var newForward = (weaveDirectionElt.textContent == "\u2191") ? true : false
         var command = { "type": "weave_direction", "forward": newForward }
         await this.sendCommand(command)
     }

@@ -1,11 +1,11 @@
 # Installing
 
 This page gives instructions for installing a loom driver such as
-such as [seguin_loom_server](https://pypi.org/project/seguin-loom-server/)
-or [toika_loom_server](https://pypi.org/project/toika-loom-server/)
-that is based on [base_loom_server](https://pypi.org/project/base-loom-server/).
+such as [seguin_loom_loom](https://pypi.org/project/seguin-loom-server/)
+or [toika_loom_loom](https://pypi.org/project/toika-loom-server/)
+that is based on [base_loom_loom](https://pypi.org/project/base-loom-server/).
 
-See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.org/project/base-loom-server/) or use it to develop a new loom driver.
+See [Coding](coding.md) if you want to work on [base_loom_loom](https://pypi.org/project/base-loom-server/) or use it to develop a new loom driver.
 
 1. Pick your Computer
 
@@ -59,47 +59,76 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
 
 3. Install the loom server software.
 
-    From here on I will assume you are installing [toika_loom_server](https://pypi.org/project/toika-loom-server/).
-    For [seguin_loom_server](https://pypi.org/project/seguin-loom-server/) replace "toika" with "seguin".
+    From here on I will assume you are installing [toika_loom_loom](https://pypi.org/project/toika-loom-server/).
+    For [seguin_loom_loom](https://pypi.org/project/seguin-loom-server/) replace "toika" with "seguin".
     On the command line:
     
-        python -m pip install toika_loom_server
+        python -m pip install toika_loom_loom
 
     Use `sudo` on Raspberry Pi to avoid having to hunt for the loom server executable in `~/.local/bin`:
 
-        sudo python -m pip install toika_loom_server
+        sudo python -m pip install toika_loom_loom
 
+5. Find the installed loom server executable:
 
-4. Test the installation.
+    * On macOS, Raspberry Pi (if you installed with `sudo`)  and most unix you can probably run the executable directly:
 
-    Start with the mock loom (since it does not talk to your loom, and so avoids some complications).
-    In a terminal:
+            run_toika_loom mock
+    
+    * On Raspberry Pi if you did not install with `sudo` then try this:
 
-        run_toika_server mock
+            ~/.local/bin/run_toika_loom mock
+    
+    * On Windows the executable will be buried in the Scripts subdirectory of your python installation.
+        To find that directory first try this terminal command:
 
-    You should see the server start and you can connect to it with a web browser and try a few things out.
-    Connect to the loom at `https://hostname.local/8000` where `hostname` is the host name you determined above
+            where python
+    
+        If that fails, try this:
+
+            python -c "import os, sys; print(os.path.dirname(sys.executable))"
+    
+        Then look in the Scripts subdirectory of that directory for `run_toika_loom` and run it with the `mock` USB port.
+
+    If the path to the executable is long, consider adding the directory containing the executable to your PATH.
+    Once you do that you can run the loom server without a path prefix, just plain old `run_toika_loom mock`.
+    How you add directories to your PATH depends on the operating system.
+    Here are [instructions for Windows 10](https://stackoverflow.com/q/44272416/1653413).
+
+6. Test the loom server with the `mock` port:
+
+    Once you have found and started the server, as above, make sure you can connect to it.
+    Point your web browser to `https://hostname.local/8000` where `hostname` is the host name you determined above
     (if the hostname ends with ".local", *don't* duplicate that).
+
+    Try a few things:
     
-    If `run_toika_server` is not found, the next step is to find out where pip installed it, and include the path as a prefix to the command:
+    * Load one or a few weaving pattern files (which will still be there when you run with the real loom).
 
-    * On Raspberry Pi: if you did not install with `sudo` then it is probably in `~/.local/bin`:
+    * When using the mock loom there are extra debug controls shown at the bottom of the page.
+      One of those is a button that lets you advance to the next pick. Try that.
+      Try changing weave direction. Try the threading panel.
 
-        ~/.local/bin/run_toika_server mock
+    * If you plan to weave any of the patterns you uploaded, go to the beginning before you disconnect,
+      because the pattern database remembers where you left off weaving and threading.
 
-    * On Windows pip apparently installs executables in the Scripts sub-folder of the Python installation.
-      To find Python you can try this command:
-      
-        where python
+
+4. Run the loom server.
+
+    Once you know how to run the loom server, run it with the real USB port for your loom,
+    using the path you found above:
+
+        <path-to-executable>/run_toika_loom <usb_port_name>
+
+    This command also has extra options to specify the loom name, server port, etc.
+    One option of note:
+
+    * `--reset-db`: clear all save weaving patterns. Only use this when you want a fresh start.
     
-    or this:
+    To run more than one loom server on the same computer,
+    specify different loom-specific values for each of the following options:
 
-        python -c "import os, sys; print(os.path.dirname(sys.executable))"
-    
-    Then look inside the Scripts subfolder of the reported path. The result may be something like this:
+    * `--db-path`: path of the pattern database
+    * `--port`: server port
 
-        C:\Python312\Scripts\run_toika_server mock
-
-    To control the real loom, specify the name of the USB port you found above (prefixing the run command with any necessary path prefix):
-
-        run_toika_server usb_port_name
+    For a full list of options, run the command `--help`.

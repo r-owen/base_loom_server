@@ -12,8 +12,6 @@ class ExampleLoomServer(BaseLoomServer):
 
     Parameters
     ----------
-    mock_loom_type : Type[BaseMockLoom]
-        Base mock loom class
     serial_port : str
         The name of the serial port, e.g. "/dev/tty0".
         If the name is "mock" then use a mock loom.
