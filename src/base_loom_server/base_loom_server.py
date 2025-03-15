@@ -65,6 +65,8 @@ class BaseLoomServer:
     ----------
     mock_loom_type : Type[BaseMockLoom]
         Base mock loom class
+    num_shafts : int
+        The number of shafts that the loom has.
     serial_port : str
         The name of the serial port, e.g. "/dev/tty0".
         If the name is "mock" then use a mock loom.
@@ -88,31 +90,37 @@ class BaseLoomServer:
     """
 
     baud_rate = 9600
+    default_name = "base"
     loom_reports_motion = True
     loom_reports_direction = True
+    mock_loom_type: type[BaseMockLoom] | None = None
 
     def __init__(
         self,
-        mock_loom_type: Type[BaseMockLoom],
+        *,
+        num_shafts: int,
         serial_port: str,
         translation_dict: dict[str, str],
         reset_db: bool,
         verbose: bool,
-        name: str,
+        name: str | None = None,
         db_path: pathlib.Path | None = None,
         enable_software_weave_direction: bool = True,
     ) -> None:
-        self.terminator = mock_loom_type.terminator
+        if self.mock_loom_type is None:
+            raise RuntimeError("Subclasses must set class variable 'mock_loom_type'")
+        self.terminator = self.mock_loom_type.terminator
         self.log = logging.getLogger(LOG_NAME)
         if verbose:
             self.log.info(
                 f"{self}({serial_port=!r}, {reset_db=!r}, {verbose=!r}, {db_path=!r})"
             )
-        self.mock_loom_type = mock_loom_type
+        if name is None:
+            name = self.default_name
         self.serial_port = serial_port
         self.translation_dict = translation_dict
         self.verbose = verbose
-        self.name = name
+        self.loom_info = client_replies.LoomInfo(name=name, num_shafts=num_shafts)
         self.db_path: pathlib.Path = (
             DEFAULT_DATABASE_PATH if db_path is None else db_path
         )
@@ -240,7 +248,10 @@ class BaseLoomServer:
             self.loom_connecting = True
             await self.report_loom_connection_state()
             if self.serial_port == MOCK_PORT_NAME:
-                self.mock_loom = self.mock_loom_type(verbose=self.verbose)
+                assert self.mock_loom_type is not None  # make mypy happy
+                self.mock_loom = self.mock_loom_type(
+                    num_shafts=self.loom_info.num_shafts, verbose=self.verbose
+                )
                 assert self.mock_loom is not None  # make mypy happy
                 self.loom_reader, self.loom_writer = (
                     await self.mock_loom.open_client_connection()
@@ -387,11 +398,24 @@ class BaseLoomServer:
             pattern = reduced_pattern_from_pattern_data(
                 name=command.name, data=pattern_data
             )
+            # num_shafts needs +1 because pattern.threading is 0-based
+            num_shafts_in_pattern = max(pattern.threading) + 1
+            if num_shafts_in_pattern > self.loom_info.num_shafts:
+                raise CommandError(
+                    f"Rejecting pattern {filename!r}: it uses {num_shafts_in_pattern} shafts, "
+                    f"but the loom only has {self.loom_info.num_shafts}"
+                )
             await self.add_pattern(pattern)
 
-        except Exception as e:
+        except CommandError as e:
             await self.report_command_problem(
-                message=f"Failed to read pattern {filename!r}: {e!r}",
+                message=str(e),
+                severity=MessageSeverityEnum.WARNING,
+            )
+        except Exception as e:
+            self.log.exception(f"Failed to read pattern {filename!r}")
+            await self.report_command_problem(
+                message=f"Failed to read pattern {filename!r}: {e!s}",
                 severity=MessageSeverityEnum.WARNING,
             )
 
@@ -674,6 +698,7 @@ class BaseLoomServer:
         Called just after a client connects to the server.
         """
         await self.report_loom_connection_state()
+        await self.write_to_client(self.loom_info)
         await self.report_mode()
         await self.report_pattern_names()
         await self.report_thread_direction()

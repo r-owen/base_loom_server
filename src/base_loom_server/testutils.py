@@ -7,6 +7,7 @@ import random
 import sys
 import tempfile
 from collections.abc import Generator, Iterable
+from importlib.resources.abc import Traversable
 from types import SimpleNamespace
 from typing import Any, TypeAlias
 
@@ -221,7 +222,10 @@ def select_pattern(
 
 
 def upload_pattern(
-    client: Client, filepath: pathlib.Path, expected_names: Iterable[str]
+    client: Client,
+    filepath: Traversable,
+    expected_names: Iterable[str],
+    should_fail=False,
 ) -> None:
     """Upload a pattern to the loom server.
 
@@ -235,12 +239,17 @@ def upload_pattern(
         Path to pattern file
     expected_names : Iterable[str]
         Expected pattern names.
+    sound_fail: bool
+        If True then upload should fail.
+        Expected_names is ignored.
     """
-    with open(filepath, "r") as f:
-        data = f.read()
+    data = filepath.read_text()
     client.send_dict(dict(type="file", name=filepath.name, data=data))
     reply_dict = client.receive_dict()
-    assert reply_dict == dict(type="PatternNames", names=list(expected_names))
+    if should_fail:
+        assert reply_dict["type"] == "CommandProblem"
+    else:
+        assert reply_dict == dict(type="PatternNames", names=list(expected_names))
 
 
 class BaseTestLoomServer:
@@ -261,6 +270,8 @@ class BaseTestLoomServer:
 
         with self.create_test_client(
             app=self.app,
+            name="test name",
+            num_shafts=32,
             upload_patterns=ALL_PATTERN_PATHS[2:5],
         ) as client:
             pattern = select_pattern(client=client, pattern_name=pattern_name)
@@ -449,6 +460,18 @@ class BaseTestLoomServer:
         ) as _:
             pass
 
+    def test_upload_too_many_shafts(self) -> None:
+        # Pick a file with 18 shafts
+        filename = "eighteen shaft liftplan.wif"
+        filepath = TEST_DATA_FILES / filename
+        with self.create_test_client(
+            app=self.app,
+            num_shafts=16,
+        ) as client:
+            upload_pattern(
+                client=client, filepath=filepath, expected_names=[""], should_fail=True
+            )
+
     def test_weave_direction(self) -> None:
         pattern_name = ALL_PATTERN_PATHS[1].name
 
@@ -471,8 +494,10 @@ class BaseTestLoomServer:
     def create_test_client(
         cls,
         app: FastAPI | None,
+        num_shafts: int = 24,
         read_initial_state: bool = True,
         upload_patterns: Iterable[pathlib.Path] = (),
+        name: str | None = None,
         reset_db: bool = False,
         db_path: pathlib.Path | str | None = None,
         expected_status_messages: Iterable[str] = (),
@@ -487,6 +512,10 @@ class BaseTestLoomServer:
             Server application to test.
             If None then raises an error (BaseTestLoomServer needs
             this be be able to be None).
+        name : str | None
+            Loom name
+        num_shafts : int
+            The number of shafts that the loom has.
         read_initial_state : bool
             If true, read and check the initial server replies
             from the websocket. This is the most common case.
@@ -520,19 +549,28 @@ class BaseTestLoomServer:
                 "you must set the app class property in your subclass"
             )
         with tempfile.NamedTemporaryFile() as f:
-            argv = ["testutils", "mock", "--verbose"] + list(cls.extra_args)
+            argv = ["testutils", str(num_shafts), "mock", "--verbose"] + list(
+                cls.extra_args
+            )
             if reset_db:
                 argv.append("--reset-db")
             if db_path is None:
                 argv += ["--db-path", f.name]
             else:
                 argv += ["--db-path", str(db_path)]
+            if name is not None:
+                argv += ["--name", name]
             sys.argv = argv
 
             with TestClient(app) as test_client:
                 with test_client.websocket_connect("/ws") as websocket:
                     loom_server: BaseLoomServer = test_client.app.state.loom_server  # type: ignore
                     assert loom_server.mock_loom is not None
+                    expected_name = (
+                        name if name is not None else loom_server.default_name
+                    )
+                    assert loom_server.loom_info.name == expected_name
+                    assert loom_server.loom_info.num_shafts == num_shafts
                     client = Client(
                         test_client=test_client,
                         websocket=websocket,
@@ -546,6 +584,7 @@ class BaseTestLoomServer:
                             "JumpEndNumber",
                             "JumpPickNumber",
                             "LoomConnectionState",
+                            "LoomInfo",
                             "Mode",
                             "PatternNames",
                             "ShaftState",
@@ -605,6 +644,9 @@ class BaseTestLoomServer:
                                         )
                                     elif reply.state != ConnectionStateEnum.CONNECTED:
                                         continue
+                                case "LoomInfo":
+                                    assert reply.name == expected_name
+                                    assert reply.num_shafts == num_shafts
                                 case "Mode":
                                     assert reply.mode == ModeEnum.WEAVE
                                 case "PatternNames":
@@ -648,8 +690,12 @@ class BaseTestLoomServer:
                                 break
 
                     expected_names: list[str] = []
-                    for path in upload_patterns:
-                        expected_names.append(path.name)
-                        upload_pattern(client, path, expected_names)
+                    for filepath in upload_patterns:
+                        expected_names.append(filepath.name)
+                        upload_pattern(
+                            client=client,
+                            filepath=filepath,
+                            expected_names=expected_names,
+                        )
 
                     yield client

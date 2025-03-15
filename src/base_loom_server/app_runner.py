@@ -95,6 +95,9 @@ class AppRunner:
         """
         parser = argparse.ArgumentParser()
         parser.add_argument(
+            "num_shafts", type=int, help="The number of shafts the loom has."
+        )
+        parser.add_argument(
             "serial_port",
             help="Serial port connected to the loom, "
             "typically of the form /dev/tty... "

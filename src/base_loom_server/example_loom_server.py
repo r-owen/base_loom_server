@@ -1,7 +1,5 @@
 __all__ = ["ExampleLoomServer"]
 
-import pathlib
-
 from .base_loom_server import BaseLoomServer
 from .client_replies import MessageSeverityEnum, ShaftStateEnum
 from .example_mock_loom import ExampleMockLoom
@@ -12,6 +10,8 @@ class ExampleLoomServer(BaseLoomServer):
 
     Parameters
     ----------
+    num_shafts : int
+        The number of shafts that the loom has.
     serial_port : str
         The name of the serial port, e.g. "/dev/tty0".
         If the name is "mock" then use a mock loom.
@@ -29,24 +29,8 @@ class ExampleLoomServer(BaseLoomServer):
         Intended for unit tests, to avoid stomping on the real database.
     """
 
-    def __init__(
-        self,
-        serial_port: str,
-        translation_dict: dict[str, str],
-        reset_db: bool,
-        verbose: bool,
-        name: str = "example",
-        db_path: pathlib.Path | None = None,
-    ) -> None:
-        super().__init__(
-            mock_loom_type=ExampleMockLoom,
-            serial_port=serial_port,
-            translation_dict=translation_dict,
-            reset_db=reset_db,
-            verbose=verbose,
-            name=name,
-            db_path=db_path,
-        )
+    default_name = "example"
+    mock_loom_type = ExampleMockLoom
 
     async def write_shafts_to_loom(self, shaft_word: int) -> None:
         """Send a shaft_word to the loom"""

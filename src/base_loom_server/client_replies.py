@@ -96,6 +96,15 @@ class LoomConnectionState:
 
 
 @dataclasses.dataclass
+class LoomInfo:
+    """Information about the loom"""
+
+    type: str = dataclasses.field(init=False, default="LoomInfo")
+    name: str
+    num_shafts: int
+
+
+@dataclasses.dataclass
 class Mode:
     """The mode of the server"""
 
