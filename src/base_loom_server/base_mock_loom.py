@@ -26,6 +26,8 @@ class BaseMockLoom(abc.ABC):
 
     Parameters
     ----------
+    num_shafts : int
+        The number of shafts; must be positive
     verbose : bool
         If True, log diagnostic information.
 
@@ -42,7 +44,10 @@ class BaseMockLoom(abc.ABC):
     terminator = b"\n"
     motion_duration: float = 1  # seconds
 
-    def __init__(self, verbose: bool = True) -> None:
+    def __init__(self, num_shafts: int, verbose: bool = True) -> None:
+        if num_shafts <= 0:
+            raise ValueError(f"{num_shafts=} must be positive")
+        self.num_shafts = num_shafts
         self.log = logging.getLogger(LOG_NAME)
         self.verbose = verbose
         self.moving = False
