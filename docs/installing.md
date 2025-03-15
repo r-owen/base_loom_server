@@ -75,13 +75,14 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
 
     * On macOS, Raspberry Pi (if you installed with `sudo`) and most unix you can probably run the executable directly:
 
-            run_toika_loom mock
+            run_toika_loom <num_shafts> mock
 
+        where <num_shafts> is the number of shafts you wish the mock loom to have.
         If that does not work, look at pip's output to see where it was installed.
     
     * On Raspberry Pi if you did not install with `sudo` then it is probably here (if not, look at pip's output):
 
-            ~/.local/bin/run_toika_loom mock
+            ~/.local/bin/run_toika_loom <num_shafts> mock
 
     * On Windows the executable will probably be buried in the Scripts subdirectory of your python installation.
         Again, pip's output should tell you where.
@@ -114,21 +115,27 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
     Once you know how to run the loom server, run it with the real USB port for your loom.
     On macOS or unix:
 
-        run_toika_loom <usb_port_name>
+        run_toika_loom <num_shafts> <usb_port_name>
     
     or, if it is not on the PATH:
 
-        <path-to-executable>/run_toika_loom <usb_port_name>
+        <path-to-executable>/run_toika_loom <num_shafts> <usb_port_name>
     
     On Windows:
 
-        run_toika_loom.exe <usb_port_name>
+        run_toika_loom.exe <num_shafts> <usb_port_name>
 
     or, if it is not on the PATH:
 
-        <path-to-executable>/run_toika_loom.exe <usb_port_name>
+        <path-to-executable>/run_toika_loom.exe <num_shafts> <usb_port_name>
 
-    In any case the command accepts additional options to specify the loom name, server port, etc.
+    <num_shafts> is the number of shafts your loom has. This is used in two ways:
+
+    * Pattern files that have too many shafts are rejected.
+    * The data format used by Toika ES dobby heads varies depending on the number of shafts.
+      If you specify the wrong value, the loom will not work correctly.
+
+    The run command accepts additional options to specify the loom name, server port, etc.
     One option of note:
 
     * `--reset-db`: clear all save weaving patterns. Only use this when you want a fresh start.

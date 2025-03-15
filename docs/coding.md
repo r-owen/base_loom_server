@@ -30,12 +30,12 @@
 
 * You may run an example loom server with:
 
-        run_example_loom mock
+        run_example_loom <num_shafts> mock
   
   Please only specify the **mock** serial port; connecting it to a real loom will not work
   (`ExampleMockLoom` is loosely based on a Séguin loom, but is not compatible).
 
-  `run_example_loom mock` also accepts these command-line arguments:
+  `run_example_loom <num_shafts> mock` also accepts these command-line arguments:
 
     * `--reset-db` Reset the pattern database. Try this if you think the database is corrupted.
 
