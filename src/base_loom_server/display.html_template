@@ -5,18 +5,18 @@
     <style>
         {display_css}
     </style>
-    <title>Loom Control</title>
+    <title>{loom_name} {loom_num_shafts}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-    <div class="flex-container">
-    <div class="tabbar">
-        <button class="tabchoices" id="mode_weaving">{Weaving}</button>
-        <button class="tabchoices" id="mode_threading"">{Threading}</button>
+    <div id="loom_name"><label >{loom_name} {loom_num_shafts}</label></div>
+    <div class="flex-container" id="mode">
+        <div class="tabbar">
+            <button class="tabchoices" id="mode_weaving">{Weaving}</button>
+            <button class="tabchoices" id="mode_threading"">{Threading}</button>
+        </div>
     </div>
-    </div>
-    <p>
     <div class="flex-container" id="pattern_select_grid">
         <div>
             <label>{Pattern}</label>
@@ -31,8 +31,7 @@
             <input type="button" value="{Upload}"  id="upload_patterns" onclick="document.getElementById('file_input').click()"/>
         </form>
     </div>
-    <p/>
-
+    
     <div class="flex-container weaving" id="pattern_display_grid">
         <div>
             <!-- For best results, the canvas height should be odd. -->

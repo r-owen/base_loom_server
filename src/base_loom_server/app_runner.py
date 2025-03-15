@@ -230,6 +230,8 @@ class AppRunner:
             display_css=display_css,
             display_js=display_js,
             display_debug_controls=display_debug_controls,
+            loom_name=self.loom_server.loom_info.name,
+            loom_num_shafts=self.loom_server.loom_info.num_shafts,
             **self.translation_dict,
         )
 

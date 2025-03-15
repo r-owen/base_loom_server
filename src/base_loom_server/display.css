@@ -11,6 +11,10 @@ button:hover:enabled {
     background-color: #ddd
 }
 
+#loom_name {
+    margin-bottom: 5px;
+}
+
 #weave_direction:disabled {
     background-color: #0000;
 }
@@ -22,13 +26,14 @@ button:hover:enabled {
     font-size: 90%;
 }
 
+#mode {
+    margin-bottom: 5px;
+}
+
 /* Create an active/current tablink class */
 .tabbar button.active {
     font-weight: bold;
 }
-
-
-/* Pattern select area at top */
 
 div.flex-container {
     display: flex;
@@ -36,6 +41,10 @@ div.flex-container {
     flex-wrap: nowrap;
     align-items: start;
     gap: 5px;
+}
+
+#pattern_select_grid {
+    margin-bottom: 5px;
 }
 
 #pattern_menu {
