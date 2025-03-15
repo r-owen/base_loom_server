@@ -179,13 +179,14 @@ On the command line:</p>
 <ul>
 <li>
 <p>On macOS, Raspberry Pi (if you installed with <code>sudo</code>) and most unix you can probably run the executable directly:</p>
-<pre><code>run_toika_loom mock
+<pre><code>run_toika_loom &lt;num_shafts&gt; mock
 </code></pre>
-<p>If that does not work, look at pip's output to see where it was installed.</p>
+<p>where <num_shafts> is the number of shafts you wish the mock loom to have.
+If that does not work, look at pip's output to see where it was installed.</p>
 </li>
 <li>
 <p>On Raspberry Pi if you did not install with <code>sudo</code> then it is probably here (if not, look at pip's output):</p>
-<pre><code>~/.local/bin/run_toika_loom mock
+<pre><code>~/.local/bin/run_toika_loom &lt;num_shafts&gt; mock
 </code></pre>
 </li>
 <li>
@@ -223,18 +224,24 @@ Point your web browser to <code>https://hostname.local/8000</code> where <code>h
 <p>Run the loom server.</p>
 <p>Once you know how to run the loom server, run it with the real USB port for your loom.
 On macOS or unix:</p>
-<pre><code>run_toika_loom &lt;usb_port_name&gt;
+<pre><code>run_toika_loom &lt;num_shafts&gt; &lt;usb_port_name&gt;
 </code></pre>
 <p>or, if it is not on the PATH:</p>
-<pre><code>&lt;path-to-executable&gt;/run_toika_loom &lt;usb_port_name&gt;
+<pre><code>&lt;path-to-executable&gt;/run_toika_loom &lt;num_shafts&gt; &lt;usb_port_name&gt;
 </code></pre>
 <p>On Windows:</p>
-<pre><code>run_toika_loom.exe &lt;usb_port_name&gt;
+<pre><code>run_toika_loom.exe &lt;num_shafts&gt; &lt;usb_port_name&gt;
 </code></pre>
 <p>or, if it is not on the PATH:</p>
-<pre><code>&lt;path-to-executable&gt;/run_toika_loom.exe &lt;usb_port_name&gt;
+<pre><code>&lt;path-to-executable&gt;/run_toika_loom.exe &lt;num_shafts&gt; &lt;usb_port_name&gt;
 </code></pre>
-<p>In any case the command accepts additional options to specify the loom name, server port, etc.
+<p><num_shafts> is the number of shafts your loom has. This is used in two ways:</p>
+<ul>
+<li>Pattern files that have too many shafts are rejected.</li>
+<li>The data format used by Toika ES dobby heads varies depending on the number of shafts.
+  If you specify the wrong value, the loom will not work correctly.</li>
+</ul>
+<p>The run command accepts additional options to specify the loom name, server port, etc.
 One option of note:</p>
 <ul>
 <li><code>--reset-db</code>: clear all save weaving patterns. Only use this when you want a fresh start.</li>

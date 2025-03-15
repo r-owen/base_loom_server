@@ -143,13 +143,13 @@
 </li>
 <li>
 <p>You may run an example loom server with:</p>
-<pre><code>run_example_loom mock
+<pre><code>run_example_loom &lt;num_shafts&gt; mock
 </code></pre>
 </li>
 </ul>
 <p>Please only specify the <strong>mock</strong> serial port; connecting it to a real loom will not work
   (<code>ExampleMockLoom</code> is loosely based on a Séguin loom, but is not compatible).</p>
-<p><code>run_example_loom mock</code> also accepts these command-line arguments:</p>
+<p><code>run_example_loom &lt;num_shafts&gt; mock</code> also accepts these command-line arguments:</p>
 <pre><code>* `--reset-db` Reset the pattern database. Try this if you think the database is corrupted.
 
 * `--verbose` Print more diagnostic information.
