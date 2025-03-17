@@ -35,6 +35,16 @@ class ShaftStateEnum(enum.IntEnum):
 
 
 @dataclasses.dataclass
+class CommandDone:
+    """Report completion or failure of a command"""
+
+    type: str = dataclasses.field(init=False, default="CommandDone")
+    cmd_type: str
+    success: bool
+    message: str
+
+
+@dataclasses.dataclass
 class CommandProblem:
     """A problem with a command from the client"""
 

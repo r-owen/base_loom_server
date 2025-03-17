@@ -73,16 +73,19 @@ def change_weave_direction(client: Client):
     client.mock_loom.command_threading_event.set()
     if client.loom_server.enable_software_weave_direction:
         weave_forward = not client.loom_server.weave_forward
-        client.send_dict(dict(type="weave_direction", forward=weave_forward))
+        replies = send_command(
+            client, dict(type="weave_direction", forward=weave_forward)
+        )
     else:
         expected_weave_direction_reply = client.loom_server.loom_reports_direction
         weave_forward = not client.mock_loom.weave_forward
-        client.send_dict(dict(type="oobcommand", command="d"))
+        replies = send_command(client, dict(type="oobcommand", command="d"))
 
     if expected_weave_direction_reply:
-        reply = client.receive_dict()
-        assert reply == dict(type="WeaveDirection", forward=weave_forward)
+        assert len(replies) == 2
+        assert replies[0] == dict(type="WeaveDirection", forward=weave_forward)
     else:
+        assert len(replies) == 1
         # Give the loom client time to process the command
         client.mock_loom.command_threading_event.wait(timeout=1)
 
@@ -111,7 +114,8 @@ def command_next_pick(
     jump_pending : bool
         Is a jump pending?
     """
-    client.send_dict(dict(type="oobcommand", command="n"))
+    replies = send_command(client, dict(type="oobcommand", command="n"))
+    assert len(replies) == 1
     expected_replies: list[dict[str, Any]] = []
     if (
         not client.loom_server.enable_software_weave_direction
@@ -195,16 +199,15 @@ def select_pattern(
     pick_repeat_number : int
         Expected current repeat number.
     """
-    client.send_dict(dict(type="select_pattern", name=pattern_name))
-    reply_dict = client.receive_dict()
-    assert reply_dict["type"] == "ReducedPattern"
-    pattern = ReducedPattern.from_dict(reply_dict)
+    replies = send_command(client, dict(type="select_pattern", name=pattern_name))
+    assert len(replies) == 4
+    pattern_reply = replies[0]
+    assert pattern_reply["type"] == "ReducedPattern"
+    pattern = ReducedPattern.from_dict(pattern_reply)
     assert pattern.pick_number == pick_number
     assert pattern.pick_repeat_number == pick_repeat_number
     seen_types: set[str] = set()
-    expected_types = {"CurrentPickNumber", "CurrentEndNumber"}
-    while True:
-        reply_dict = client.receive_dict()
+    for reply_dict in replies[1:3]:
         reply = SimpleNamespace(**reply_dict)
         match reply.type:
             case "CurrentPickNumber":
@@ -216,9 +219,26 @@ def select_pattern(
             case _:
                 raise AssertionError(f"Unexpected message type {reply.type}")
         seen_types.add(reply.type)
-        if seen_types == expected_types:
-            break
+    assert len(seen_types) == 2
     return pattern
+
+
+def send_command(
+    client: Client, cmd_dict: dict[str, Any], should_fail: bool = False
+) -> list[dict[str, Any]]:
+    """Issue a command and return all replies.
+
+    The final reply will be CommandDone and its success flag is checked
+    """
+    client.send_dict(cmd_dict)
+    replies = []
+    while True:
+        reply = client.receive_dict()
+        replies.append(reply)
+        if reply["type"] == "CommandDone":
+            assert reply["success"] != should_fail
+            break
+    return replies
 
 
 def upload_pattern(
@@ -244,12 +264,16 @@ def upload_pattern(
         Expected_names is ignored.
     """
     data = filepath.read_text()
-    client.send_dict(dict(type="file", name=filepath.name, data=data))
-    reply_dict = client.receive_dict()
+    replies = send_command(
+        client,
+        dict(type="file", name=filepath.name, data=data),
+        should_fail=should_fail,
+    )
     if should_fail:
-        assert reply_dict["type"] == "CommandProblem"
+        assert len(replies) == 1
     else:
-        assert reply_dict == dict(type="PatternNames", names=list(expected_names))
+        assert len(replies) == 2
+        assert replies[0] == dict(type="PatternNames", names=list(expected_names))
 
 
 class BaseTestLoomServer:
@@ -279,15 +303,16 @@ class BaseTestLoomServer:
 
             for pick_number in (0, 1, num_picks_in_pattern // 3, num_picks_in_pattern):
                 for pick_repeat_number in (-1, 0, 1):
-                    client.send_dict(
+                    replies = send_command(
+                        client,
                         dict(
                             type="jump_to_pick",
                             pick_number=pick_number,
                             pick_repeat_number=pick_repeat_number,
-                        )
+                        ),
                     )
-                    reply = client.receive_dict()
-                    assert reply == dict(
+                    assert len(replies) == 2
+                    assert replies[0] == dict(
                         type="JumpPickNumber",
                         pick_number=pick_number,
                         pick_repeat_number=pick_repeat_number,
@@ -371,15 +396,16 @@ class BaseTestLoomServer:
                     pattern_list.append(pattern)
                     pattern.pick_number = rnd.randrange(2, len(pattern.picks))
                     pattern.pick_repeat_number = rnd.randrange(-10, 10)
-                    client.send_dict(
+                    replies = send_command(
+                        client,
                         dict(
                             type="jump_to_pick",
                             pick_number=pattern.pick_number,
                             pick_repeat_number=pattern.pick_repeat_number,
-                        )
+                        ),
                     )
-                    reply = client.receive_dict()
-                    assert reply == dict(
+                    assert len(replies) == 2
+                    assert replies[0] == dict(
                         type="JumpPickNumber",
                         pick_number=pattern.pick_number,
                         pick_repeat_number=pattern.pick_repeat_number,
@@ -485,9 +511,11 @@ class BaseTestLoomServer:
             select_pattern(client=client, pattern_name=pattern_name)
 
             for forward in (False, True):
-                client.send_dict(dict(type="weave_direction", forward=forward))
-                reply = client.receive_dict()
-                assert reply == dict(type="WeaveDirection", forward=forward)
+                replies = send_command(
+                    client, dict(type="weave_direction", forward=forward)
+                )
+                assert len(replies) == 2
+                assert replies[0] == dict(type="WeaveDirection", forward=forward)
 
     @classmethod
     @contextlib.contextmanager

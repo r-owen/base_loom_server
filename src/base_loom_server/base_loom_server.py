@@ -380,44 +380,30 @@ class BaseLoomServer:
 
     async def cmd_file(self, command: SimpleNamespace) -> None:
         filename = command.name
-        try:
-            if self.verbose:
-                self.log.info(
-                    f"{self}: read weaving pattern {filename!r}: data={command.data[0:40]!r}...",
-                )
-            if filename.lower().endswith(".dtx"):
-                with io.StringIO(command.data) as dtx_file:
-                    pattern_data = read_dtx(dtx_file)
-            elif filename.lower().endswith(".wif"):
-                with io.StringIO(command.data) as wif_file:
-                    pattern_data = read_wif(wif_file)
-            else:
-                raise CommandError(
-                    f"Cannot load pattern {filename!r}: unsupported file type"
-                )
-            pattern = reduced_pattern_from_pattern_data(
-                name=command.name, data=pattern_data
+        if self.verbose:
+            self.log.info(
+                f"{self}: read weaving pattern {filename!r}: data={command.data[0:40]!r}...",
             )
-            # num_shafts needs +1 because pattern.threading is 0-based
-            num_shafts_in_pattern = max(pattern.threading) + 1
-            if num_shafts_in_pattern > self.loom_info.num_shafts:
-                raise CommandError(
-                    f"Rejecting pattern {filename!r}: it uses {num_shafts_in_pattern} shafts, "
-                    f"but the loom only has {self.loom_info.num_shafts}"
-                )
-            await self.add_pattern(pattern)
-
-        except CommandError as e:
-            await self.report_command_problem(
-                message=str(e),
-                severity=MessageSeverityEnum.WARNING,
+        if filename.lower().endswith(".dtx"):
+            with io.StringIO(command.data) as dtx_file:
+                pattern_data = read_dtx(dtx_file)
+        elif filename.lower().endswith(".wif"):
+            with io.StringIO(command.data) as wif_file:
+                pattern_data = read_wif(wif_file)
+        else:
+            raise CommandError(
+                f"Cannot load pattern {filename!r}: unsupported file type"
             )
-        except Exception as e:
-            self.log.exception(f"Failed to read pattern {filename!r}")
-            await self.report_command_problem(
-                message=f"Failed to read pattern {filename!r}: {e!s}",
-                severity=MessageSeverityEnum.WARNING,
+        pattern = reduced_pattern_from_pattern_data(
+            name=command.name, data=pattern_data
+        )
+        # max_shaft_num needs +1 because pattern.threading is 0-based
+        max_shaft_num = max(pattern.threading) + 1
+        if max_shaft_num > self.loom_info.num_shafts:
+            raise CommandError(
+                f"Pattern {filename!r} max shaft {max_shaft_num} > {self.loom_info.num_shafts}"
             )
+        await self.add_pattern(pattern)
 
     async def cmd_jump_to_end(self, command: SimpleNamespace) -> None:
         if self.current_pattern is None:
@@ -611,32 +597,31 @@ class BaseLoomServer:
                     cmd_handler = self.command_dispatch_table.get(cmd_type)
                 except Exception as e:
                     message = f"command {data} failed: {e!r}"
-                    self.log.exception(f"Loom Server: {message}")
-                    await self.report_command_problem(
-                        message=message,
-                        severity=MessageSeverityEnum.ERROR,
+                    self.log.exception(f"{self}: {message}")
+                    await self.report_command_done(
+                        cmd_type=cmd_type, success=False, message=message
                     )
 
                 # Execute the command
                 try:
                     if cmd_handler is None:
-                        await self.report_command_problem(
-                            message=f"Invalid command; unknown type {command.type!r}",
-                            severity=MessageSeverityEnum.ERROR,
+                        await self.report_command_done(
+                            cmd_type=cmd_type,
+                            success=False,
+                            message=f"Invalid command; unknown type {cmd_type!r}",
                         )
                         continue
                     await cmd_handler(command)
+                    await self.report_command_done(cmd_type=cmd_type, success=True)
                 except CommandError as e:
-                    await self.report_command_problem(
-                        message=str(e),
-                        severity=MessageSeverityEnum.ERROR,
+                    await self.report_command_done(
+                        cmd_type=cmd_type, success=False, message=str(e)
                     )
                 except Exception as e:
                     message = f"command {command} unexpectedly failed: {e!r}"
                     self.log.exception(f"{self}: {message}")
-                    await self.report_command_problem(
-                        message=message,
-                        severity=MessageSeverityEnum.ERROR,
+                    await self.report_command_done(
+                        cmd_type=cmd_type, success=False, message=message
                     )
 
         except asyncio.CancelledError:
@@ -682,7 +667,18 @@ class BaseLoomServer:
             )
             await self.disconnect_from_loom()
 
-    async def report_command_problem(self, message: str, severity: MessageSeverityEnum):
+    async def report_command_done(
+        self, cmd_type: str, success: bool, message: str = ""
+    ) -> None:
+        """Report completion of a command"""
+        reply = client_replies.CommandDone(
+            cmd_type=cmd_type, success=success, message=message
+        )
+        await self.write_to_client(reply)
+
+    async def report_command_problem(
+        self, message: str, severity: MessageSeverityEnum
+    ) -> None:
         """Report a CommandProblem to the client."""
         reply = client_replies.CommandProblem(message=message, severity=severity)
         await self.write_to_client(reply)
