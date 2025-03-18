@@ -537,7 +537,7 @@ class BaseTestLoomServer:
         expected_status_messages: Iterable[str] = (),
         expected_pattern_names: Iterable[str] = (),
         expected_current_pattern: ReducedPattern | None = None,
-    ) -> Generator[Client, None]:
+    ) -> Generator[Client]:
         """Create a test client fixture.
 
         Parameters
