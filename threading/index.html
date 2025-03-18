@@ -134,9 +134,21 @@ A left-facing arrow indicates that you are threading right to left.</p>
 <p><strong>Warning</strong> the dobby's direction control is always ignored while threading.</p>
 <h2 id="repeating">Repeating</h2>
 <p>The software will automatically repeat threading if you thread beyond the end.
-However, you must advance twice when you reach an end, before the next set of shafts is raised.
-The first advance will lower all shafts (going to warp end 0), as a signal that you have finished threading one pattern repeat.
-The next advance will raise the desired shafts.</p>
+However, like <a href="../weaving/">Weaving</a>, the transition depends on the <code>Separate repeats</code> checkbox:</p>
+<ul>
+<li>
+<p>"On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
+  The first advance will lower all shafts, as a signal that you have finished threading or unthreading one pattern repeat. That is the "separator".</p>
+</li>
+<li>
+<p>"Off" (unchecked): there is no indication that you have reached the aend of threading.
+  The next advance will start the next repeat of threading or unthreading.</p>
+</li>
+</ul>
+<p>The default value of <code>Separate repeats</code> is "on" if the pattern has more than 20 warp threads, "off" otherwise.
+The idea behind this is that frequent separator picks is annoying for short threading sequences, but having a separator pick is useful for long sequences.</p>
+<p>Note that the value of the Weaving and Threading <code>Separate repeats</code> checkboxes are independent of each other,
+and may also be different for different patterns. They are saved in the pattern database.</p>
 <h2 id="group-size">Group Size</h2>
 <p>The "Group size" menu selects how many warp ends are in a group
 (all shafts for a group are raised at once).</p>
