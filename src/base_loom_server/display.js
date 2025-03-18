@@ -40,6 +40,12 @@ const SeverityColors = {
     3: "red",
 }
 
+const SeverityEnum = {
+    "INFO": 1,
+    "WARNING": 2,
+    "ERROR": 3,
+}
+
 const ShaftStateTranslationDict = {
     0: "?",
     1: "done",
@@ -56,6 +62,7 @@ Object.freeze(ConnectionStateEnum)
 
 const numericCollator = new Intl.Collator(undefined, { numeric: true })
 
+/* Translate a phrase using TranslationDict */
 function t(phrase) {
     if (!(phrase in TranslationDict)) {
         console.log("Missing translation key:", phrase)
@@ -63,6 +70,53 @@ function t(phrase) {
     }
     return TranslationDict[phrase]
 }
+
+/*
+A class similar to Python asyncio.Future, but with an optional timeout
+
+The main design is from https://stackoverflow.com/a/72280546/1653413
+*/
+class Future {
+    constructor(timeoutMs = 0) {
+        this.result = undefined
+        this.exception = undefined
+        this.done = false
+        this.success = () => { }
+        this.fail = () => { }
+        if (timeoutMs > 0) {
+            setTimeout(this.timeout.bind(this), timeoutMs)
+        }
+    }
+    setResult(result) {
+        if (this.done) {
+            throw Error("Already done")
+        }
+        this.result = result
+        this.done = true
+
+        this.success(this.result)
+    }
+    setException(exception) {
+        if (this.done) {
+            throw Error("Already done")
+        }
+        this.exception = exception
+        this.done = true
+
+        this.fail(this.exception)
+    }
+    then(success, fail) {
+        this.success = success
+        this.fail = fail
+    }
+    timeout() {
+        if (this.done) {
+            return
+        }
+        this.setException(Error("timed out"))
+    }
+}
+
 
 /*
 A minimal weaving pattern, including display code.
@@ -132,6 +186,8 @@ The result might be a nice -- each assignment would be a single line.
 class LoomClient {
     constructor() {
         this.ws = new WebSocket("ws")
+        // Dict of command type: Future for commands that were run with sendCommandAndWait
+        this.commandFutures = {}
         this.currentPattern = null
         this.weaveForward = true
         this.loomConnectionState = ConnectionStateEnum.disconnected
@@ -348,6 +404,16 @@ class LoomClient {
                 menuOptions.remove(patternNames.length)
             }
             patternMenu.value = currentName
+        } else if (datadict.type == "CommandDone") {
+            if (!datadict.success) {
+                resetCommandProblemMessage = false
+                commandProblemElt.textContent = datadict.message
+                commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
+            }
+            var cmdFuture = this.commandFutures[datadict.cmd_type]
+            if ((cmdFuture != null) && (!cmdFuture.done)) {
+                cmdFuture.setResult(datadict)
+            }
         } else if (datadict.type == "CommandProblem") {
             resetCommandProblemMessage = false
             var color = SeverityColors[datadict.severity]
@@ -356,6 +422,7 @@ class LoomClient {
             }
             commandProblemElt.textContent = datadict.message
             commandProblemElt.style.color = color
+        } else if (datadict.type == "LoomInfo") {
         } else if (datadict.type == "WeaveDirection") {
             this.weaveForward = datadict.forward
             this.displayWeaveDirection()
@@ -875,30 +942,43 @@ class LoomClient {
         if (fileList.length == 0) {
             return
         }
+        try {
 
-        // Sort the file names; this requires a bit of extra work
-        // because FileList doesn't support sort.
+            // Sort the file names; this requires a bit of extra work
+            // because FileList doesn't support sort.
 
-        var fileArray = Array.from(fileList)
-        fileArray.sort(compareFiles)
+            var fileArray = Array.from(fileList)
+            fileArray.sort(compareFiles)
 
-        for (var file of fileArray) {
-            var data = await readTextFile(file)
-            var fileCommand = { "type": "file", "name": file.name, "data": data }
-            await this.sendCommand(fileCommand)
+            var isFirst = true
+            for (var file of fileArray) {
+                const data = await readTextFile(file)
+                const fileCommand = { "type": "file", "name": file.name, "data": data }
+                var replyDict = await this.sendCommandAndWait(fileCommand)
+                if (!replyDict.success) {
+                    return
+                }
+                if (isFirst) {
+                    isFirst = false
+                    const selectPatternCommand = { "type": "select_pattern", "name": file.name }
+                    replyDict = await this.sendCommandAndWait(selectPatternCommand)
+                    if (!replyDict.success) {
+                        return
+                    }
+                }
+            }
+        } catch (error) {
+            var commandProblemElt = document.getElementById("command_problem")
+            commandProblemElt.textContent = `${error}`
+            commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
         }
-
-        // Select the first file uploaded
-        var file = fileArray[0]
-        var selectPatternCommand = { "type": "select_pattern", "name": file.name }
-        await this.sendCommand(selectPatternCommand)
     }
 
     /*
     Handle the thread group size select menu
     */
     async handleThreadGroupSize(event) {
-        var patternMenu = document.getElementById("thread_group_size")
+        const patternMenu = document.getElementById("thread_group_size")
         const command = { "type": "thread_group_size", "group_size": Number(patternMenu.value) }
         await this.sendCommand(command)
     }
@@ -1093,6 +1173,9 @@ class LoomClient {
         await this.sendCommand(command)
     }
 
+    /*
+    Send a command to the loom server.
+    */
     async sendCommand(commandDict) {
         var commandElt = document.getElementById("sent_command")
         var commandStr = JSON.stringify(commandDict)
@@ -1102,6 +1185,22 @@ class LoomClient {
             commandElt.textContent = commandStr.substring(0, 80) + "..."
         }
         await this.ws.send(commandStr)
+    }
+
+    /*
+    Send a command to the loom server and wait for the command to finish.
+
+    Return the CommandDone reply dict.
+    */
+    async sendCommandAndWait(commandDict, timeoutMs = 5000) {
+        var oldFuture = this.commandFutures[commandDict.type]
+        if ((oldFuture != null) && (!oldFuture.done)) {
+            oldFuture.setException(Error("superseded"))
+        }
+        var newFuture = new Future(timeoutMs)
+        this.commandFutures[commandDict.type] = newFuture
+        await this.sendCommand(commandDict)
+        return newFuture
     }
 }
 
