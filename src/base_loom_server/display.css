@@ -11,10 +11,6 @@ button:hover:enabled {
     background-color: #ddd
 }
 
-#loom_name {
-    margin-bottom: 5px;
-}
-
 #weave_direction:disabled {
     background-color: #0000;
 }

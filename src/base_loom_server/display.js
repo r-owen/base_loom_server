@@ -205,6 +205,7 @@ class LoomClient {
         this.jumpPickRepeatNumber = null
         this.threadGroupSize = 4
         this.threadLowToHigh = true
+        this.loomInfo = null
 
         // this.init()
     }
@@ -431,6 +432,8 @@ class LoomClient {
             commandProblemElt.textContent = datadict.message
             commandProblemElt.style.color = color
         } else if (datadict.type == "LoomInfo") {
+            this.loomInfo = datadict
+            this.displayLoomInfo()
         } else if (datadict.type == "WeaveDirection") {
             this.weaveForward = datadict.forward
             this.displayWeaveDirection()
@@ -751,6 +754,15 @@ class LoomClient {
                 xCenter,
                 yCenter
             )
+        }
+    }
+
+    displayLoomInfo() {
+        var loominfoElt = document.getElementById("loom_info")
+        if (this.loomInfo == null) {
+            loominfoElt.textContent = ""
+        } else {
+            loominfoElt.textContent = `${this.loomInfo.name} ${this.loomInfo.num_shafts}`
         }
     }
 

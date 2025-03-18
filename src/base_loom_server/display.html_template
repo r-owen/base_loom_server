@@ -10,7 +10,6 @@
 </head>
 
 <body>
-    <div id="loom_name"><label >{loom_name} {loom_num_shafts}</label></div>
     <div class="flex-container" id="mode">
         <div class="tabbar">
             <button class="tabchoices" id="mode_weaving">{Weaving}</button>
@@ -45,7 +44,7 @@
         </div>
     </div>
 
-    <div class="flex-container threading" id="threading_display_grid">
+    <div class="flex-container threading" id="threading_display_grid" style="display: none;">
         <div>
             <!-- For best results, the canvas height should be odd. -->
             <!-- Size of canvas must be set in html or javascript, not css. -->
@@ -61,7 +60,7 @@
         <label id="shaft_state"/>
     </div>
 
-    <div class="flex-container threading" id="end_number_div">
+    <div class="flex-container threading" id="end_number_div" style="display: none;">
         <label>{End}</label>
         <label id="end_number0"></label>
         <label> - </label>
@@ -81,7 +80,7 @@
         <label id="pick_repeat_number"></label>
     </div>
 
-    <form action="" class="threading" id="jump_to_end_form">
+    <form action="" class="threading" id="jump_to_end_form" style="display: none;">
         <div class="flex-container">
             <label>{Jump to end}</label>
             <input size="5" id="jump_end_number0" inpumode="decimal"></input>
@@ -103,7 +102,7 @@
         </div>
     </form>
 
-    <div class="flex-container threading" id="thread_group_size_grid">
+    <div class="flex-container threading" id="thread_group_size_grid" style="display: none;">
         <div>
             <label>{Group size}</label>
             <select name="thread_group_size" id="thread_group_size">
@@ -120,7 +119,7 @@
     </div>
 
     <div class="flex-container">
-        <label>{Status}:</label>
+        <label id="loom_info"></label>
         <label id="status">disconnected</label>
     </div>
 
