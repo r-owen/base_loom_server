@@ -290,6 +290,12 @@ class LoomClient {
         var oobNextPickButton = document.getElementById("oob_next_pick")
         oobNextPickButton.addEventListener("click", this.handleOOBNextPick.bind(this))
 
+        var separateThreadingRepeatsCheckbox = document.getElementById("separate_threading_repeats")
+        separateThreadingRepeatsCheckbox.addEventListener("change", this.handleSeparateRepeats.bind(this, true))
+
+        var separateWeavingRepeatsCheckbox = document.getElementById("separate_weaving_repeats")
+        separateWeavingRepeatsCheckbox.addEventListener("change", this.handleSeparateRepeats.bind(this, false))
+
         var threadDirectionElt = document.getElementById("thread_direction")
         threadDirectionElt.addEventListener("click", this.handleToggleThreadDirection.bind(this))
 
@@ -317,7 +323,25 @@ class LoomClient {
 
         const datadict = JSON.parse(event.data)
         var resetCommandProblemMessage = true
-        if (datadict.type == "CurrentEndNumber") {
+        if (datadict.type == "CommandDone") {
+            if (!datadict.success) {
+                resetCommandProblemMessage = false
+                commandProblemElt.textContent = datadict.message
+                commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
+            }
+            var cmdFuture = this.commandFutures[datadict.cmd_type]
+            if ((cmdFuture != null) && (!cmdFuture.done)) {
+                cmdFuture.setResult(datadict)
+            }
+        } else if (datadict.type == "CommandProblem") {
+            resetCommandProblemMessage = false
+            var color = SeverityColors[datadict.severity]
+            if (color == null) {
+                color = "#ffffff"
+            }
+            commandProblemElt.textContent = datadict.message
+            commandProblemElt.style.color = color
+        } else if (datadict.type == "CurrentEndNumber") {
             if (!this.currentPattern) {
                 console.log("Ignoring CurrentEndNumber: no pattern loaded")
             }
@@ -334,17 +358,6 @@ class LoomClient {
             this.currentPattern.pick_repeat_number = datadict.pick_repeat_number
             this.displayWeavingPattern()
             this.displayPick()
-        } else if (datadict.type == "Mode") {
-            this.mode = datadict.mode
-            this.displayMode()
-        } else if (datadict.type == "ThreadDirection") {
-            this.threadLowToHigh = datadict.low_to_high
-            this.displayThreadingPattern()
-            this.displayThreadDirection()
-        } else if (datadict.type == "ThreadGroupSize") {
-            this.threadGroupSize = datadict.group_size
-            var threadGroupSizeMenu = document.getElementById("thread_group_size")
-            threadGroupSizeMenu.value = this.threadGroupSize
         } else if (datadict.type == "JumpEndNumber") {
             this.jumpEndNumber0 = datadict.end_number0
             this.jumpEndNumber1 = datadict.end_number1
@@ -358,18 +371,12 @@ class LoomClient {
             this.loomConnectionState = datadict
             this.loomConnectionState.state = ConnectionStateTranslationDict[datadict.state]
             this.displayStatusMessage()
-        } else if (datadict.type == "ShaftState") {
-            this.displayShaftState(datadict)
-        } else if (datadict.type == "StatusMessage") {
-            resetCommandProblemMessage = false
-            this.statusMessage = datadict
-            this.displayStatusMessage()
-        } else if (datadict.type == "ReducedPattern") {
-            this.currentPattern = new ReducedPattern(datadict)
-            this.displayWeavingPattern()
-            this.displayThreadingPattern()
-            var patternMenu = document.getElementById("pattern_menu")
-            patternMenu.value = this.currentPattern.name
+        } else if (datadict.type == "LoomInfo") {
+            this.loomInfo = datadict
+            this.displayLoomInfo()
+        } else if (datadict.type == "Mode") {
+            this.mode = datadict.mode
+            this.displayMode()
         } else if (datadict.type == "PatternNames") {
             /*
             Why this code is so odd:
@@ -413,32 +420,37 @@ class LoomClient {
                 menuOptions.remove(patternNames.length)
             }
             patternMenu.value = currentName
-        } else if (datadict.type == "CommandDone") {
-            if (!datadict.success) {
-                resetCommandProblemMessage = false
-                commandProblemElt.textContent = datadict.message
-                commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
-            }
-            var cmdFuture = this.commandFutures[datadict.cmd_type]
-            if ((cmdFuture != null) && (!cmdFuture.done)) {
-                cmdFuture.setResult(datadict)
-            }
-        } else if (datadict.type == "CommandProblem") {
+        } else if (datadict.type == "ReducedPattern") {
+            this.currentPattern = new ReducedPattern(datadict)
+            this.displayWeavingPattern()
+            this.displayThreadingPattern()
+            var patternMenu = document.getElementById("pattern_menu")
+            patternMenu.value = this.currentPattern.name
+        } else if (datadict.type == "SeparateThreadingRepeats") {
+            var separateThreadingRepeatsCheckbox = document.getElementById("separate_threading_repeats")
+            separateThreadingRepeatsCheckbox.checked = datadict.separate
+        } else if (datadict.type == "SeparateWeavingRepeats") {
+            var separateWeavingRepeatsCheckbox = document.getElementById("separate_weaving_repeats")
+            separateWeavingRepeatsCheckbox.checked = datadict.separate
+        } else if (datadict.type == "ShaftState") {
+            this.displayShaftState(datadict)
+        } else if (datadict.type == "StatusMessage") {
             resetCommandProblemMessage = false
-            var color = SeverityColors[datadict.severity]
-            if (color == null) {
-                color = "#ffffff"
-            }
-            commandProblemElt.textContent = datadict.message
-            commandProblemElt.style.color = color
-        } else if (datadict.type == "LoomInfo") {
-            this.loomInfo = datadict
-            this.displayLoomInfo()
+            this.statusMessage = datadict
+            this.displayStatusMessage()
+        } else if (datadict.type == "ThreadDirection") {
+            this.threadLowToHigh = datadict.low_to_high
+            this.displayThreadingPattern()
+            this.displayThreadDirection()
+        } else if (datadict.type == "ThreadGroupSize") {
+            this.threadGroupSize = datadict.group_size
+            var threadGroupSizeMenu = document.getElementById("thread_group_size")
+            threadGroupSizeMenu.value = this.threadGroupSize
         } else if (datadict.type == "WeaveDirection") {
             this.weaveForward = datadict.forward
             this.displayWeaveDirection()
         } else {
-            console.log(`Unknown message type ${datadict.type}`)
+            console.log(`Unknown message type ${datadict.type}`, datadict)
         }
         if (resetCommandProblemMessage) {
             commandProblemElt.textContent = ""
@@ -1160,12 +1172,22 @@ class LoomClient {
     }
 
     /*
+    Handle a "Separate repeats" checkbox
+    */
+    async handleSeparateRepeats(isThreading, event) {
+        const name = isThreading ? "threading" : "weaving"
+        const command = { "type": `separate_${name}_repeats`, "separate": event.target.checked }
+        await this.sendCommand(command)
+        event.preventDefault()
+    }
+
+    /*
     Handle the mode tab bar buttons
 
     Mode us a ModeEnum value
     */
     async handleMode(mode, event) {
-        var command = { "type": "mode", "mode": mode }
+        const command = { "type": "mode", "mode": mode }
         await this.sendCommand(command)
         event.preventDefault()
     }
