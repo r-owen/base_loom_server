@@ -147,18 +147,6 @@ class BaseLoomServer:
         self.weave_forward = True
         self.thread_low_to_high = True
         self.thread_group_size = DEFAULT_THREAD_GROUP_SIZE
-        self.command_dispatch_table = dict(
-            clear_pattern_names=self.cmd_clear_pattern_names,
-            file=self.cmd_file,
-            jump_to_end=self.cmd_jump_to_end,
-            jump_to_pick=self.cmd_jump_to_pick,
-            mode=self.cmd_mode,
-            select_pattern=self.cmd_select_pattern,
-            thread_direction=self.cmd_thread_direction,
-            thread_group_size=self.cmd_thread_group_size,
-            weave_direction=self.cmd_weave_direction,
-            oobcommand=self.cmd_oobcommand,
-        )
 
     @abc.abstractmethod
     async def handle_loom_reply(self, reply_bytes: bytes) -> None:
@@ -465,6 +453,26 @@ class BaseLoomServer:
         await self.select_pattern(name)
         await self.clear_jumps()
 
+    async def cmd_separate_threading_repeats(self, command: SimpleNamespace) -> None:
+        if self.current_pattern is None:
+            return
+        await self.pattern_db.update_separate_threading_repeats(
+            pattern_name=self.current_pattern.name,
+            separate_threading_repeats=bool(command.separate),
+        )
+        self.current_pattern.separate_threading_repeats = command.separate
+        await self.report_separate_threading_repeats()
+
+    async def cmd_separate_weaving_repeats(self, command: SimpleNamespace) -> None:
+        if self.current_pattern is None:
+            return
+        await self.pattern_db.update_separate_weaving_repeats(
+            pattern_name=self.current_pattern.name,
+            separate_weaving_repeats=bool(command.separate),
+        )
+        self.current_pattern.separate_weaving_repeats = command.separate
+        await self.report_separate_weaving_repeats()
+
     async def cmd_thread_direction(self, command: SimpleNamespace) -> None:
         self.thread_low_to_high = command.low_to_high
         await self.report_thread_direction()
@@ -594,7 +602,7 @@ class BaseLoomServer:
                         if len(msg_summary) > 80:
                             msg_summary = msg_summary[0:80] + "..."
                         self.log.info(f"{self}: read command {msg_summary}")
-                    cmd_handler = self.command_dispatch_table.get(cmd_type)
+                    cmd_handler = getattr(self, f"cmd_{cmd_type}", None)
                 except Exception as e:
                     message = f"command {data} failed: {e!r}"
                     self.log.exception(f"{self}: {message}")
@@ -704,6 +712,9 @@ class BaseLoomServer:
         await self.report_current_pattern()
         await self.report_current_end_numbers()
         await self.report_current_pick_number()
+        print("report separate repeats")
+        await self.report_separate_threading_repeats()
+        await self.report_separate_weaving_repeats()
         await self.report_shaft_state()
 
     async def report_loom_connection_state(self, reason: str = "") -> None:
@@ -782,6 +793,24 @@ class BaseLoomServer:
         """Report the current mode to the client."""
         await self.write_to_client(client_replies.Mode(mode=self.mode))
 
+    async def report_separate_threading_repeats(self) -> None:
+        if self.current_pattern is None:
+            return
+        await self.write_to_client(
+            client_replies.SeparateThreadingRepeats(
+                separate=self.current_pattern.separate_threading_repeats
+            )
+        )
+
+    async def report_separate_weaving_repeats(self) -> None:
+        if self.current_pattern is None:
+            return
+        await self.write_to_client(
+            client_replies.SeparateWeavingRepeats(
+                separate=self.current_pattern.separate_weaving_repeats
+            )
+        )
+
     async def report_status_message(
         self, message: str, severity: MessageSeverityEnum
     ) -> None:
@@ -816,6 +845,8 @@ class BaseLoomServer:
         await self.report_current_pattern()
         await self.report_current_end_numbers()
         await self.report_current_pick_number()
+        await self.report_separate_threading_repeats()
+        await self.report_separate_weaving_repeats()
 
     def t(self, phrase: str) -> str:
         """Translate a phrase, if possible."""

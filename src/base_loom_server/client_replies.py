@@ -123,6 +123,22 @@ class Mode:
 
 
 @dataclasses.dataclass
+class SeparateThreadingRepeats:
+    """Separate weaving repeats?"""
+
+    type: str = dataclasses.field(init=False, default="SeparateThreadingRepeats")
+    separate: bool
+
+
+@dataclasses.dataclass
+class SeparateWeavingRepeats:
+    """Separate weaving repeats?"""
+
+    type: str = dataclasses.field(init=False, default="SeparateWeavingRepeats")
+    separate: bool
+
+
+@dataclasses.dataclass
 class ShaftState:
     """Shaft status
 

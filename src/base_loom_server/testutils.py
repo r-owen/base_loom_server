@@ -200,14 +200,14 @@ def select_pattern(
         Expected current repeat number.
     """
     replies = send_command(client, dict(type="select_pattern", name=pattern_name))
-    assert len(replies) == 4
+    assert len(replies) == 6
     pattern_reply = replies[0]
     assert pattern_reply["type"] == "ReducedPattern"
     pattern = ReducedPattern.from_dict(pattern_reply)
     assert pattern.pick_number == pick_number
     assert pattern.pick_repeat_number == pick_repeat_number
     seen_types: set[str] = set()
-    for reply_dict in replies[1:3]:
+    for reply_dict in replies[1:5]:
         reply = SimpleNamespace(**reply_dict)
         match reply.type:
             case "CurrentPickNumber":
@@ -216,10 +216,14 @@ def select_pattern(
             case "CurrentEndNumber":
                 assert reply.end_number0 == pattern.end_number0
                 assert reply.end_repeat_number == pattern.end_repeat_number
+            case "SeparateThreadingRepeats":
+                assert reply.separate == pattern.separate_threading_repeats
+            case "SeparateWeavingRepeats":
+                assert reply.separate == pattern.separate_weaving_repeats
             case _:
                 raise AssertionError(f"Unexpected message type {reply.type}")
         seen_types.add(reply.type)
-    assert len(seen_types) == 2
+    assert len(seen_types) == 4
     return pattern
 
 
@@ -336,7 +340,7 @@ class BaseTestLoomServer:
                 i += 1
                 expected_pick_number += 1
                 if expected_pick_number > num_picks_in_pattern:
-                    expected_pick_number -= num_picks_in_pattern + 1
+                    expected_pick_number = 0 if pattern.separate_weaving_repeats else 1
                     expected_repeat_number += 1
                 expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
                 command_next_pick(
@@ -354,8 +358,10 @@ class BaseTestLoomServer:
                 expected_pick_number == end_pick_number and expected_repeat_number == 0
             ):
                 expected_pick_number -= 1
-                if expected_pick_number < 0:
-                    expected_pick_number += num_picks_in_pattern + 1
+                if (expected_pick_number < 0) or (
+                    expected_pick_number == 0 and not pattern.separate_weaving_repeats
+                ):
+                    expected_pick_number = num_picks_in_pattern
                     expected_repeat_number -= 1
                 expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
                 command_next_pick(
@@ -624,9 +630,11 @@ class BaseTestLoomServer:
                             expected_types |= {"StatusMessage"}
                         if expected_current_pattern:
                             expected_types |= {
-                                "ReducedPattern",
                                 "CurrentPickNumber",
                                 "CurrentEndNumber",
+                                "ReducedPattern",
+                                "SeparateWeavingRepeats",
+                                "SeparateThreadingRepeats",
                                 "ThreadGroupSize",
                             }
                         good_connection_states = {
@@ -687,6 +695,18 @@ class BaseTestLoomServer:
                                         )
 
                                     assert reply.name == expected_pattern_names[-1]
+                                case "SeparateThreadingRepeats":
+                                    assert expected_current_pattern is not None
+                                    assert (
+                                        reply.separate
+                                        == expected_current_pattern.separate_threading_repeats
+                                    )
+                                case "SeparateWeavingRepeats":
+                                    assert expected_current_pattern is not None
+                                    assert (
+                                        reply.separate
+                                        == expected_current_pattern.separate_weaving_repeats
+                                    )
                                 case "ShaftState":
                                     assert reply.state == ShaftStateEnum.DONE
                                     assert reply.shaft_word == 0
