@@ -29,12 +29,15 @@
   "ready": "prêt",
   "repeat": "répéter",
   "Reset": "Restaurer",
+  "Select": "Choisir",
   "Sent command": "Commande envoyée",
   "Shafts": "Arbres",
   "Status": "Statut",
   "Submit": "Envoyer",
   "Threading": "Filetage",
+  "timed out": "délai d’expiration",
   "Toggle Error": "Erreur de Basculement",
+  "Too many files": "Trop de fichiers",
   "Upload": "Télécharger",
   "Weaving": "Tissage"
 }

@@ -30,11 +30,14 @@
   "repeat": null,
   "Reset": null,
   "Sent command": null,
+  "Select": null,
   "Shafts": null,
   "Status": null,
   "Submit": null,
   "Threading": null,
+  "timed out": null,
   "Toggle Error": null,
+  "Too many files": null,
   "Upload": null,
   "Weaving": null
 }

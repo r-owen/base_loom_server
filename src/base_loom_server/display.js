@@ -3,7 +3,7 @@ const TranslationDict = { translation_dict }
 
 // value is replaced by python code
 const EnableSoftwareWeaveDirection = { enable_software_weave_direction }
-console.log("EnableSoftwareWeaveDirection", EnableSoftwareWeaveDirection)
+console.log(`EnableSoftwareWeaveDirection=${EnableSoftwareWeaveDirection}`)
 
 const MaxFiles = 10
 
@@ -65,10 +65,17 @@ const numericCollator = new Intl.Collator(undefined, { numeric: true })
 /* Translate a phrase using TranslationDict */
 function t(phrase) {
     if (!(phrase in TranslationDict)) {
-        console.log("Missing translation key:", phrase)
+        console.log(`Missing translation key: "${phrase}"`)
         return phrase
     }
     return TranslationDict[phrase]
+}
+
+class TimeoutError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = "TimeoutError"
+    }
 }
 
 /*
@@ -77,7 +84,8 @@ A class similar to Python asyncio.Future, but with an optional timeout
 The main design is from https://stackoverflow.com/a/72280546/1653413
 */
 class Future {
-    constructor(timeoutMs = 0) {
+    constructor(description, timeoutMs = 0) {
+        this.description = description
         this.result = undefined
         this.exception = undefined
         this.done = false
@@ -113,7 +121,7 @@ class Future {
         if (this.done) {
             return
         }
-        this.setException(Error("timed out"))
+        this.setException(new TimeoutError(`${this.description} timed out`))
     }
 }
 
@@ -427,7 +435,7 @@ class LoomClient {
             this.weaveForward = datadict.forward
             this.displayWeaveDirection()
         } else {
-            console.log("Unknown message type", datadict.type)
+            console.log(`Unknown message type ${datadict.type}`)
         }
         if (resetCommandProblemMessage) {
             commandProblemElt.textContent = ""
@@ -935,8 +943,10 @@ class LoomClient {
     Send the "file" and "select_pattern" commands.
     */
     async handleFileList(fileList) {
+        var commandProblemElt = document.getElementById("command_problem")
         if (fileList.length > MaxFiles) {
-            console.log("Cannot upload more than", MaxFiles, "files at once")
+            commandProblemElt.textContent = t("Too many files") + `: ${fileList.length} > ${MaxFiles}`
+            commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
             return
         }
         if (fileList.length == 0) {
@@ -954,22 +964,21 @@ class LoomClient {
             for (var file of fileArray) {
                 const data = await readTextFile(file)
                 const fileCommand = { "type": "file", "name": file.name, "data": data }
-                var replyDict = await this.sendCommandAndWait(fileCommand)
+                var replyDict = await this.sendCommandAndWait(fileCommand, t("Upload") + ` "${file.name}"`)
                 if (!replyDict.success) {
                     return
                 }
                 if (isFirst) {
                     isFirst = false
                     const selectPatternCommand = { "type": "select_pattern", "name": file.name }
-                    replyDict = await this.sendCommandAndWait(selectPatternCommand)
+                    replyDict = await this.sendCommandAndWait(selectPatternCommand, t("Select") + ` "${file.name}"`)
                     if (!replyDict.success) {
                         return
                     }
                 }
             }
         } catch (error) {
-            var commandProblemElt = document.getElementById("command_problem")
-            commandProblemElt.textContent = `${error}`
+            commandProblemElt.textContent = `${error.message}`
             commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
         }
     }
@@ -1192,12 +1201,15 @@ class LoomClient {
 
     Return the CommandDone reply dict.
     */
-    async sendCommandAndWait(commandDict, timeoutMs = 5000) {
+    async sendCommandAndWait(commandDict, description, timeoutMs = 5000) {
+        if (description == null) {
+            description = commandDict.type
+        }
         var oldFuture = this.commandFutures[commandDict.type]
         if ((oldFuture != null) && (!oldFuture.done)) {
             oldFuture.setException(Error("superseded"))
         }
-        var newFuture = new Future(timeoutMs)
+        var newFuture = new Future(description, timeoutMs)
         this.commandFutures[commandDict.type] = newFuture
         await this.sendCommand(commandDict)
         return newFuture
