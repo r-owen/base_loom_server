@@ -18,6 +18,8 @@ FIELD_TYPE_DICT = dict(
     end_number0="integer",
     end_number1="integer",
     end_repeat_number="integer",
+    separate_weaving_repeats="integer",
+    separate_threading_repeats="integer",
     timestamp_sec="real",
 )
 
@@ -33,20 +35,14 @@ def make_insert_str(field_type_dict):
 
 INSERT_STR = make_insert_str(FIELD_TYPE_DICT)
 
-# Dict of cache field name: default value
-CACHE_DEFAULT_DICT = dict(
-    pick_number=0,
-    pick_repeat_number=1,
-    end_number0=0,
-    end_number1=0,
-    end_repeat_number=1,
-)
-
-# Tuple of default cache values, in the same order as the fields
-CACHE_DEFAULT_VALUES_TUPLE = tuple(
-    CACHE_DEFAULT_DICT[field]
-    for field in FIELD_TYPE_DICT
-    if field in CACHE_DEFAULT_DICT
+CACHE_FIELD_NAMES = (
+    "pick_number",
+    "pick_repeat_number",
+    "end_number0",
+    "end_number1",
+    "end_repeat_number",
+    "separate_weaving_repeats",
+    "separate_threading_repeats",
 )
 
 
@@ -90,6 +86,8 @@ class PatternDatabase:
             * end_number0
             * end_number1
             * end_repeat_number
+            * separate_weaving_repeats
+            * separate_threading_repeats
 
         max_patterns : int
             Maximum number of patterns to keep; if 0 then no limit.
@@ -102,6 +100,7 @@ class PatternDatabase:
         """
 
         pattern_json = json.dumps(dataclasses.asdict(pattern))
+        cache_values = tuple(getattr(pattern, field) for field in CACHE_FIELD_NAMES)
         current_time = time.time()
         async with aiosqlite.connect(self.dbpath) as db:
             await db.execute(
@@ -114,9 +113,7 @@ class PatternDatabase:
                 max_entries = max(max_entries, 2)
             await db.execute(
                 INSERT_STR,
-                (pattern.name, pattern_json)
-                + CACHE_DEFAULT_VALUES_TUPLE
-                + (current_time,),
+                (pattern.name, pattern_json) + cache_values + (current_time,),
             )
             await db.commit()
 
@@ -148,7 +145,7 @@ class PatternDatabase:
             raise LookupError(f"{pattern_name} not found")
         pattern_dict = json.loads(row["pattern_json"])
         pattern = ReducedPattern.from_dict(pattern_dict)
-        for field_name in CACHE_DEFAULT_DICT:
+        for field_name in CACHE_FIELD_NAMES:
             setattr(pattern, field_name, row[field_name])
         return pattern
 
@@ -194,6 +191,36 @@ class PatternDatabase:
                     time.time(),
                     pattern_name,
                 ),
+            )
+            await db.commit()
+
+    async def update_separate_threading_repeats(
+        self,
+        pattern_name: str,
+        separate_threading_repeats: bool,
+    ) -> None:
+        """Update separate_threading_repeats for the specified pattern."""
+        async with aiosqlite.connect(self.dbpath) as db:
+            await db.execute(
+                "update patterns "
+                "set separate_threading_repeats = ?, timestamp_sec = ?"
+                "where pattern_name = ?",
+                (separate_threading_repeats, time.time(), pattern_name),
+            )
+            await db.commit()
+
+    async def update_separate_weaving_repeats(
+        self,
+        pattern_name: str,
+        separate_weaving_repeats: bool,
+    ) -> None:
+        """Update separate_weaving_repeats for the specified pattern."""
+        async with aiosqlite.connect(self.dbpath) as db:
+            await db.execute(
+                "update patterns "
+                "set separate_weaving_repeats = ?, timestamp_sec = ?"
+                "where pattern_name = ?",
+                (separate_weaving_repeats, time.time(), pattern_name),
             )
             await db.commit()
 

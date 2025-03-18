@@ -4,10 +4,7 @@ import time
 
 import pytest
 
-from base_loom_server.pattern_database import (
-    CACHE_DEFAULT_DICT,
-    create_pattern_database,
-)
+from base_loom_server.pattern_database import create_pattern_database
 from base_loom_server.reduced_pattern import (
     ReducedPattern,
     read_full_pattern,
@@ -32,28 +29,13 @@ async def test_add_and_get_pattern() -> None:
 
         pattern1 = read_reduced_pattern(patternpath1)
 
-        # Check that adding a pattern ignores cache values:
-        # * pick_number
-        # * pick_repeat_number
-        # * end_number0
-        # * end_repeat_number
-        pattern1.pick_number = 20
-        pattern1.pick_repeat_number = 21
-        pattern1.end_number0 = 22
-        pattern1.end_repeat_number = 25
         await db.add_pattern(pattern1)
         pattern_names = await db.get_pattern_names()
         assert pattern_names == [pattern1.name]
         returned_pattern1 = await db.get_pattern(pattern1.name)
 
-        # Cached values should be set to defaults
-        # when reading a newly added pattern
-        for field_name, value in CACHE_DEFAULT_DICT.items():
-            assert getattr(returned_pattern1, field_name) == value
-
-        # Non-cached values should match the original
-        non_cached_fields = set(vars(returned_pattern1)) - set(CACHE_DEFAULT_DICT)
-        for field_name in non_cached_fields:
+        # All attributes should match the original
+        for field_name in vars(returned_pattern1):
             assert getattr(pattern1, field_name) == getattr(
                 returned_pattern1, field_name
             )
@@ -214,3 +196,42 @@ async def test_update_pick_number() -> None:
             assert pattern.name == pattern_name
             assert pattern.pick_number == pick_number
             assert pattern.pick_repeat_number == pick_repeat_number
+
+
+async def test_update_separate_threading_repeats() -> None:
+    with tempfile.NamedTemporaryFile() as f:
+        dbpath = pathlib.Path(f.name)
+        db = await create_pattern_database(dbpath)
+        initial_pattern_names = await db.get_pattern_names()
+        assert initial_pattern_names == []
+
+        num_to_add = 3
+        for patternpath in ALL_PATTERN_PATHS[0:num_to_add]:
+            pattern = read_reduced_pattern(patternpath)
+            await db.add_pattern(pattern)
+            pattern_names = await db.get_pattern_names()
+
+        expected_pattern_names = [
+            patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]
+        ]
+        assert pattern_names == expected_pattern_names
+
+        for pattern_name, separate_threading_repeats in (
+            (pattern_names[0], True),
+            (pattern_names[1], False),
+            (pattern_names[0], True),
+            (pattern_names[2], False),
+        ):
+            separate_weaving_repeats = not separate_threading_repeats
+            await db.update_separate_threading_repeats(
+                pattern_name=pattern_name,
+                separate_threading_repeats=separate_threading_repeats,
+            )
+            await db.update_separate_weaving_repeats(
+                pattern_name=pattern_name,
+                separate_weaving_repeats=not separate_threading_repeats,
+            )
+            pattern = await db.get_pattern(pattern_name)
+            assert pattern.name == pattern_name
+            assert pattern.separate_threading_repeats == separate_threading_repeats
+            assert pattern.separate_weaving_repeats == separate_weaving_repeats

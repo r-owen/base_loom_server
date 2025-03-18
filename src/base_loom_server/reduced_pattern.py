@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 __all__ = [
+    "NumItemsForRepeatSeparator",
     "Pick",
     "ReducedPattern",
     "reduced_pattern_from_pattern_data",
@@ -14,6 +15,10 @@ from collections.abc import Iterable
 from typing import Any
 
 import dtx_to_wif
+
+# The number of picks or warp threads above which
+# the repeat separator is, by default, enabled
+NumItemsForRepeatSeparator = 20
 
 
 def pop_and_check_type_field(typename: str, datadict: dict[str, Any]) -> None:
@@ -71,6 +76,8 @@ class ReducedPattern:
     end_number0: int = 0
     end_number1: int = 0
     end_repeat_number: int = 1
+    separate_weaving_repeats: bool = False
+    separate_threading_repeats: bool = False
 
     @classmethod
     def from_dict(cls, datadict: dict[str, Any]) -> ReducedPattern:
@@ -168,12 +175,14 @@ class ReducedPattern:
             if self.end_number0 == 0:
                 new_end_number0 = 1
             elif self.end_number1 > max_end_number:
-                new_end_number0 = 0
+                new_end_number0 = 0 if self.separate_threading_repeats else 1
                 new_end_repeat_number += 1
             else:
                 new_end_number0 = self.end_number1
         else:
-            if self.end_number0 == 0:
+            if self.end_number0 == 0 or (
+                self.end_number0 == 1 and not self.separate_threading_repeats
+            ):
                 new_end_number1 = max_end_number + 1
                 new_end_number0 = max(new_end_number1 - thread_group_size, 1)
                 new_end_repeat_number -= 1
@@ -198,12 +207,15 @@ class ReducedPattern:
         """
         self.check_pick_number(self.pick_number)
         next_pick_number = self.pick_number + (1 if weave_forward else -1)
-        if next_pick_number < 0:
+
+        if next_pick_number < 0 or (
+            next_pick_number == 0 and not self.separate_weaving_repeats
+        ):
             self.pick_repeat_number -= 1
             next_pick_number = len(self.picks)
         elif next_pick_number > len(self.picks):
             self.pick_repeat_number += 1
-            next_pick_number = 0
+            next_pick_number = 0 if self.separate_weaving_repeats else 1
         self.pick_number = next_pick_number
         return next_pick_number
 
@@ -393,6 +405,8 @@ def reduced_pattern_from_pattern_data(
         threading=threading,
         picks=picks,
         pick0=Pick(shaft_word=0, color=default_weft_color),
+        separate_weaving_repeats=len(picks) > NumItemsForRepeatSeparator,
+        separate_threading_repeats=len(threading) > NumItemsForRepeatSeparator,
     )
     return result
 

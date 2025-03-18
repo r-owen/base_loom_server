@@ -4,6 +4,7 @@ import dataclasses
 import pytest
 
 from base_loom_server.reduced_pattern import (
+    NumItemsForRepeatSeparator,
     Pick,
     ReducedPattern,
     read_full_pattern,
@@ -11,6 +12,15 @@ from base_loom_server.reduced_pattern import (
     shaft_set_from_shaft_word,
 )
 from base_loom_server.testutils import ALL_PATTERN_PATHS
+
+# Dict of field name: default value
+EXPECTED_DEFAULTS = dict(
+    pick_number=0,
+    pick_repeat_number=1,
+    end_number0=0,
+    end_number1=0,
+    end_repeat_number=1,
+)
 
 
 def shaft_set_from_reduced(
@@ -32,6 +42,16 @@ def test_basics() -> None:
         assert reduced_pattern.name == filepath.name
         assert reduced_pattern.pick_number == 0
         assert reduced_pattern.pick_repeat_number == 1
+
+        # Check default values for specific fields
+        for field_name, value in EXPECTED_DEFAULTS.items():
+            assert getattr(reduced_pattern, field_name) == value
+        assert reduced_pattern.separate_weaving_repeats == (
+            len(reduced_pattern.picks) > NumItemsForRepeatSeparator
+        )
+        assert reduced_pattern.separate_threading_repeats == (
+            len(reduced_pattern.threading) > NumItemsForRepeatSeparator
+        )
 
         for pick_number, weft_color in full_pattern.weft_colors.items():
             assert weft_color - 1 == reduced_pattern.picks[pick_number - 1].color
@@ -153,11 +173,15 @@ def test_from_dict() -> None:
 
 def test_end_number() -> None:
     GROUP_SIZE_NUMBERS = (1, 2, 5)
+    # Test with and without separating threading repeats; alternate cases
+    separate_repeats = False
     for filepath in ALL_PATTERN_PATHS:
         full_pattern = read_full_pattern(filepath)
         reduced_pattern = reduced_pattern_from_pattern_data(
             name=filepath.name, data=full_pattern
         )
+        separate_repeats = not separate_repeats
+        reduced_pattern.separate_threading_repeats = separate_repeats
         num_ends = len(reduced_pattern.threading)
         NUM_ITER = 2
         assert num_ends > NUM_ITER  # for some tests below to work
@@ -255,8 +279,9 @@ def test_end_number() -> None:
                     assert reduced_pattern.end_number0 == 1
                     assert reduced_pattern.end_repeat_number == 1
                 elif initial_end_number0 + thread_group_size > num_ends:
-                    # The group extends past the end, so reset to 0
-                    assert reduced_pattern.end_number0 == 0
+                    # The group extends past the end, so reset to 0 or 1
+                    # depending on separate_threading_repeats
+                    assert reduced_pattern.end_number0 == 0 if separate_repeats else 1
                     assert reduced_pattern.end_repeat_number == 2
                 else:
                     assert (
@@ -274,8 +299,10 @@ def test_end_number() -> None:
                 reduced_pattern.increment_end_number(
                     thread_group_size=thread_group_size, thread_low_to_high=False
                 )
-                if initial_end_number0 == 0:
-                    # The next group starts end at num_ends + 1
+                if initial_end_number0 == 0 or (
+                    initial_end_number0 == 1 and not separate_repeats
+                ):
+                    # The next group ends at num_ends + 1
                     # and repeat_number is decremented,
                     # regardless of thread_group_size
                     assert reduced_pattern.end_number1 == num_ends + 1
@@ -320,11 +347,15 @@ def test_end_number() -> None:
 
 
 def test_pick_number() -> None:
+    # Test with and without separating weaving repeats; alternate cases
+    separate_repeats = False
     for filepath in ALL_PATTERN_PATHS:
         full_pattern = read_full_pattern(filepath)
         reduced_pattern = reduced_pattern_from_pattern_data(
             name=filepath.name, data=full_pattern
         )
+        separate_repeats = not separate_repeats
+        reduced_pattern.separate_weaving_repeats = separate_repeats
         num_picks = len(reduced_pattern.picks)
         NUM_ITER = 3
         assert num_picks > NUM_ITER  # for some tests below to work
@@ -343,6 +374,9 @@ def test_pick_number() -> None:
             assert reduced_pattern.pick_number == pick_number
             assert reduced_pattern.pick_repeat_number == 1
 
+        # Go forward, but not past the end,
+        # then back up to the beginning (0 if separating repeats, else 1)
+        # then back up past the beginning
         reduced_pattern.set_current_pick_number(0)
         for i in range(NUM_ITER):
             returned_pick_number = reduced_pattern.increment_pick_number(
@@ -351,7 +385,8 @@ def test_pick_number() -> None:
             assert returned_pick_number == i + 1
             assert reduced_pattern.pick_number == returned_pick_number
             assert reduced_pattern.pick_repeat_number == 1
-        for i in range(NUM_ITER, 0, -1):
+        end_num = 0 if separate_repeats else 1
+        for i in range(NUM_ITER, end_num, -1):
             reduced_pattern.increment_pick_number(weave_forward=False)
             assert reduced_pattern.pick_number == i - 1
             assert reduced_pattern.pick_repeat_number == 1
@@ -360,6 +395,9 @@ def test_pick_number() -> None:
             assert reduced_pattern.pick_number == num_picks - i
             assert reduced_pattern.pick_repeat_number == 0
 
+        # Go backwards from the end, but not past the beginning,
+        # then go fowards to the end,
+        # then go past the end
         reduced_pattern.set_current_pick_number(num_picks)
         for i in range(NUM_ITER):
             returned_pick_number = reduced_pattern.increment_pick_number(
@@ -372,7 +410,8 @@ def test_pick_number() -> None:
             reduced_pattern.increment_pick_number(weave_forward=True)
             assert reduced_pattern.pick_number == 1 + num_picks - i
             assert reduced_pattern.pick_repeat_number == 0
+        offset = 0 if separate_repeats else 1
         for i in range(NUM_ITER):
             reduced_pattern.increment_pick_number(weave_forward=True)
-            assert reduced_pattern.pick_number == i
+            assert reduced_pattern.pick_number == i + offset
             assert reduced_pattern.pick_repeat_number == 1
