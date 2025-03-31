@@ -10,9 +10,13 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
 1. Pick your Computer
 
     Decide which computer you will use to run the loom server.
-    A macOS computer will work, and a used Mac Mini is a great choice (especially if you have a spare keyboard and monitor to get it set up).
-    A Raspberry Pi (model 4 or better) will work, though it will be a bit slow when uploading patterns.
-    A Windows computer or unix box should also work.
+    Any macOS, Windows, or linux computer will work.
+    The software uses minimal resources, so an old, slow computer is fine.
+    A Raspberry Pi (model 4 or better) will work, but will be a bit slow when uploading patterns.
+    A used Mac Mini is a great choice if you have a spare keyboard and monitor to get it set up.
+
+    (You may also run your web browser on the same computer. This avoids the need for wifi,
+    but may make it harder to put the display where it can easily be seen.)
 
 2. Install [Python](https://www.python.org/downloads/) 3.11 or later.
 
@@ -38,14 +42,14 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
   
     On macOS or linux:
 
-    * Run this terminal command to see which USB ports already in use, if any:
+    * Run this terminal command to see which USB ports are already in use, if any:
 
-            ls /dev/tty.usb* 
+            ls /dev | grep -i "tty.*usb.*"
 
     * Connect your computer to the loom with a USB cable, turn on the loom, and wait a few seconds to let it connect.
 
-    * Run the same command again. There should be one new entry,
-      which is the name of the port connected to the loom.
+    * Run the same command again. There should be one new entry, which is the name of the port connected to the loom.
+      If not, wait a bit longer and try again.
     
     On Windows this may work:
 
