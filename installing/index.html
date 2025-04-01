@@ -129,7 +129,7 @@ The next step depends on the operating system:</p>
 <ul>
 <li>
 <p>Run this terminal command to see which USB ports are already in use, if any:</p>
-<pre><code>ls /dev/tty*usb*
+<pre><code>ls /dev | grep -i "tty.*usb.*"
 </code></pre>
 </li>
 <li>
