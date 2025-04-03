@@ -11,7 +11,6 @@ import abc
 import asyncio
 import dataclasses
 import enum
-import io
 import json
 import logging
 import pathlib
@@ -19,7 +18,7 @@ import tempfile
 from types import SimpleNamespace, TracebackType
 from typing import Any, Type
 
-from dtx_to_wif import read_dtx, read_wif
+from dtx_to_wif import read_pattern_data
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.websockets import WebSocketState
 from serial_asyncio import open_serial_connection  # type: ignore
@@ -367,21 +366,12 @@ class BaseLoomServer:
             await self.report_pattern_names()
 
     async def cmd_file(self, command: SimpleNamespace) -> None:
-        filename = command.name
+        suffix = command.name[-4:]
         if self.verbose:
             self.log.info(
-                f"{self}: read weaving pattern {filename!r}: data={command.data[0:40]!r}...",
+                f"{self}: read weaving pattern {command.name!r}: data={command.data[0:80]!r}...",
             )
-        if filename.lower().endswith(".dtx"):
-            with io.StringIO(command.data) as dtx_file:
-                pattern_data = read_dtx(dtx_file)
-        elif filename.lower().endswith(".wif"):
-            with io.StringIO(command.data) as wif_file:
-                pattern_data = read_wif(wif_file)
-        else:
-            raise CommandError(
-                f"Cannot load pattern {filename!r}: unsupported file type"
-            )
+        pattern_data = read_pattern_data(command.data, suffix=suffix, name=command.name)
         pattern = reduced_pattern_from_pattern_data(
             name=command.name, data=pattern_data
         )
@@ -389,7 +379,7 @@ class BaseLoomServer:
         max_shaft_num = max(pattern.threading) + 1
         if max_shaft_num > self.loom_info.num_shafts:
             raise CommandError(
-                f"Pattern {filename!r} max shaft {max_shaft_num} > {self.loom_info.num_shafts}"
+                f"Pattern {command.name!r} max shaft {max_shaft_num} > {self.loom_info.num_shafts}"
             )
         await self.add_pattern(pattern)
 

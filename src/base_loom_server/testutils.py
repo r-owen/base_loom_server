@@ -1,7 +1,7 @@
+import base64
 import contextlib
 import dataclasses
 import importlib.resources
-import io
 import pathlib
 import random
 import sys
@@ -12,7 +12,7 @@ from types import SimpleNamespace
 from typing import Any, TypeAlias
 
 import pytest
-from dtx_to_wif import read_dtx, read_wif
+from dtx_to_wif import read_pattern_file
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from fastapi.websockets import WebSocket
@@ -34,8 +34,10 @@ _PKG_NAME = "base_loom_server"
 TEST_DATA_FILES = importlib.resources.files(_PKG_NAME).joinpath("test_data")
 
 # in Python 3.11 mypy complains: "Traversable" has no attribute "glob"
-ALL_PATTERN_PATHS = list(TEST_DATA_FILES.glob("*.wif")) + list(  # type: ignore
-    TEST_DATA_FILES.glob("*.dtx")  # type: ignore
+ALL_PATTERN_PATHS = (
+    list(TEST_DATA_FILES.glob("*.wif"))  # type: ignore
+    + list(TEST_DATA_FILES.glob("*.dtx"))  # type: ignore
+    + list(TEST_DATA_FILES.glob("*.wpo"))  # type: ignore
 )
 
 
@@ -259,7 +261,7 @@ def upload_pattern(
     ----------
     client: Client
         Test client
-    filepath : pathlib.Path
+    filepath : Traversable
         Path to pattern file
     expected_names : Iterable[str]
         Expected pattern names.
@@ -267,7 +269,12 @@ def upload_pattern(
         If True then upload should fail.
         Expected_names is ignored.
     """
-    data = filepath.read_text()
+    suffix = pathlib.Path(str(filepath)).suffix
+    if suffix == ".wpo":
+        raw_data = filepath.read_bytes()
+        data = base64.b64encode(raw_data).decode("ascii")
+    else:
+        data = filepath.read_text()
     replies = send_command(
         client,
         dict(type="file", name=filepath.name, data=data),
@@ -463,26 +470,18 @@ class BaseTestLoomServer:
     def test_select_pattern(self) -> None:
         # Read a pattern file in and convert the data to a ReducedPattern
         pattern_path = ALL_PATTERN_PATHS[1]
-        pattern_name = ALL_PATTERN_PATHS[1].name
-        with open(pattern_path, "r") as f:
-            raw_pattern_data = f.read()
-        if pattern_name.endswith(".dtx"):
-            with io.StringIO(raw_pattern_data) as dtx_file:
-                pattern_data = read_dtx(dtx_file)
-        elif pattern_name.endswith(".wif"):
-            with io.StringIO(raw_pattern_data) as wif_file:
-                pattern_data = read_wif(wif_file)
-        else:
-            raise AssertionError("Unexpected unsupported file type: {pattern_path!s}")
+        pattern_data = read_pattern_file(pattern_path)
         reduced_pattern = reduced_pattern_from_pattern_data(
-            name=pattern_name, data=pattern_data
+            name=pattern_path.name, data=pattern_data
         )
 
         with self.create_test_client(
             app=self.app,
             upload_patterns=ALL_PATTERN_PATHS[0:3],
         ) as client:
-            returned_pattern = select_pattern(client=client, pattern_name=pattern_name)
+            returned_pattern = select_pattern(
+                client=client, pattern_name=pattern_path.name
+            )
             assert returned_pattern == reduced_pattern
 
     def test_upload(self) -> None:

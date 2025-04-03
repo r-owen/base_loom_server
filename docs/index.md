@@ -30,7 +30,7 @@ But before you dive into that, read the next section about pattern files:
 ## Upload and Select Pattern Files
 
 Before you can weave or thread, you must upload one or more pattern files to the loom server.
-The server accepts both WIF (.wif) and Fiberworks (.dtx) files.
+The server accepts WIF (.wif), Fiberworks (.dtx), and WeavePoint (.wpo) files.
 
 There are two ways to upload files:
 

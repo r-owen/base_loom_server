@@ -2,12 +2,12 @@ import copy
 import dataclasses
 
 import pytest
+from dtx_to_wif import read_pattern_file
 
 from base_loom_server.reduced_pattern import (
     NumItemsForRepeatSeparator,
     Pick,
     ReducedPattern,
-    read_full_pattern,
     reduced_pattern_from_pattern_data,
     shaft_set_from_shaft_word,
 )
@@ -33,7 +33,7 @@ def shaft_set_from_reduced(
 
 def test_basics() -> None:
     for filepath in ALL_PATTERN_PATHS:
-        full_pattern = read_full_pattern(filepath)
+        full_pattern = read_pattern_file(filepath)
         reduced_pattern = reduced_pattern_from_pattern_data(
             name=filepath.name, data=full_pattern
         )
@@ -53,11 +53,17 @@ def test_basics() -> None:
             len(reduced_pattern.threading) > NumItemsForRepeatSeparator
         )
 
-        for pick_number, weft_color in full_pattern.weft_colors.items():
-            assert weft_color - 1 == reduced_pattern.picks[pick_number - 1].color
+        for i, pick in enumerate(reduced_pattern.picks):
+            assert (
+                full_pattern.weft_colors.get(i + 1, full_pattern.weft.color)
+                == pick.color + 1
+            )
 
-        for end_number0, warp_color in full_pattern.warp_colors.items():
-            assert warp_color - 1 == reduced_pattern.warp_colors[end_number0 - 1]
+        for i, color in enumerate(reduced_pattern.warp_colors):
+            assert (
+                full_pattern.warp_colors.get(i + 1, full_pattern.warp.color)
+                == color + 1
+            )
 
         for end_number0, shaft_set in full_pattern.threading.items():
             shaft_set -= {0}
@@ -87,7 +93,7 @@ def test_basics() -> None:
 
 def test_color_table() -> None:
     for filepath in ALL_PATTERN_PATHS:
-        full_pattern = read_full_pattern(filepath)
+        full_pattern = read_pattern_file(filepath)
         reduced_pattern = reduced_pattern_from_pattern_data(
             name=filepath.name, data=full_pattern
         )
@@ -124,7 +130,7 @@ def test_color_table() -> None:
 
 def test_from_dict() -> None:
     for filepath in ALL_PATTERN_PATHS:
-        full_pattern = read_full_pattern(filepath)
+        full_pattern = read_pattern_file(filepath)
         reduced_pattern = reduced_pattern_from_pattern_data(
             name=filepath.name, data=full_pattern
         )
@@ -176,7 +182,7 @@ def test_end_number() -> None:
     # Test with and without separating threading repeats; alternate cases
     separate_repeats = False
     for filepath in ALL_PATTERN_PATHS:
-        full_pattern = read_full_pattern(filepath)
+        full_pattern = read_pattern_file(filepath)
         reduced_pattern = reduced_pattern_from_pattern_data(
             name=filepath.name, data=full_pattern
         )
@@ -350,7 +356,7 @@ def test_pick_number() -> None:
     # Test with and without separating weaving repeats; alternate cases
     separate_repeats = False
     for filepath in ALL_PATTERN_PATHS:
-        full_pattern = read_full_pattern(filepath)
+        full_pattern = read_pattern_file(filepath)
         reduced_pattern = reduced_pattern_from_pattern_data(
             name=filepath.name, data=full_pattern
         )

@@ -26,7 +26,7 @@
             </select>
         </div>
         <form class="upload-form">
-            <input type="file" id="file_input" multiple accept=".wif,.dtx" style="display:none;">
+            <input type="file" id="file_input" multiple accept=".dtx,.wif,.wpo" style="display:none;">
             <input type="button" value="{Upload}"  id="upload_patterns" onclick="document.getElementById('file_input').click()"/>
         </form>
     </div>

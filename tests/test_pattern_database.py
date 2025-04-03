@@ -3,18 +3,18 @@ import tempfile
 import time
 
 import pytest
+from dtx_to_wif import read_pattern_file
 
 from base_loom_server.pattern_database import create_pattern_database
 from base_loom_server.reduced_pattern import (
     ReducedPattern,
-    read_full_pattern,
     reduced_pattern_from_pattern_data,
 )
 from base_loom_server.testutils import ALL_PATTERN_PATHS
 
 
 def read_reduced_pattern(path: pathlib.Path) -> ReducedPattern:
-    full_pattern = read_full_pattern(path)
+    full_pattern = read_pattern_file(path)
     return reduced_pattern_from_pattern_data(name=path.name, data=full_pattern)
 
 

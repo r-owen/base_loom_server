@@ -5,12 +5,10 @@ __all__ = [
     "Pick",
     "ReducedPattern",
     "reduced_pattern_from_pattern_data",
-    "read_full_pattern",
 ]
 
 import copy
 import dataclasses
-import pathlib
 from collections.abc import Iterable
 from typing import Any
 
@@ -409,16 +407,6 @@ def reduced_pattern_from_pattern_data(
         separate_threading_repeats=len(threading) > NumItemsForRepeatSeparator,
     )
     return result
-
-
-def read_full_pattern(path: pathlib.Path) -> dtx_to_wif.PatternData:
-    readfunc = {
-        ".wif": dtx_to_wif.read_wif,
-        ".dtx": dtx_to_wif.read_dtx,
-    }[path.suffix]
-    with open(path, "r") as f:
-        full_pattern = readfunc(f)
-    return full_pattern
 
 
 def shaft_word_from_shaft_set(shaft_set: Iterable[int]) -> int:

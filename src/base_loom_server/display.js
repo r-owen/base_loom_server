@@ -183,6 +183,19 @@ function compareFiles(a, b) {
 }
 
 /*
+Return a truncated version of a string with appended "..."
+
+or the original string if it is short enough.
+*/
+function truncateStr(value, maxLength = 100) {
+    if (value.length > maxLength) {
+        return value.slice(0, maxLength - 3) + "..."
+    } else {
+        return value
+    }
+}
+
+/*
 This version does not work, because "this" is the wrong thing in callbacks.
 But it could probably be easily made to work by adding a
 "addEventListener method that takes an id, an event name, and a function
@@ -326,7 +339,7 @@ class LoomClient {
         if (datadict.type == "CommandDone") {
             if (!datadict.success) {
                 resetCommandProblemMessage = false
-                commandProblemElt.textContent = datadict.message
+                commandProblemElt.textContent = truncateStr(datadict.message)
                 commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
             }
             var cmdFuture = this.commandFutures[datadict.cmd_type]
@@ -339,7 +352,8 @@ class LoomClient {
             if (color == null) {
                 color = "#ffffff"
             }
-            commandProblemElt.textContent = datadict.message
+            console.log("CommandProblem")
+            commandProblemElt.textContent = truncateStr(datadict.message)
             commandProblemElt.style.color = color
         } else if (datadict.type == "CurrentEndNumber") {
             if (!this.currentPattern) {
@@ -986,7 +1000,17 @@ class LoomClient {
 
             var isFirst = true
             for (var file of fileArray) {
-                const data = await readTextFile(file)
+                const fileExt = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2)
+                // .wpo WeavePoint files are binary. Decode them as latin-1 strings
+                // so that the data can reliably be encoded at the other end
+                // (latin-1 encodes any possible byte to a corresponding 8-bit char).
+                // All other files are text; assume utf-8.
+                var data
+                if (fileExt == "wpo") {
+                    data = await readAndEncodeBinaryFile(file)
+                } else {
+                    data = await readTextFile(file, "utf-8")
+                }
                 const fileCommand = { "type": "file", "name": file.name, "data": data }
                 var replyDict = await this.sendCommandAndWait(fileCommand, t("Upload") + ` "${file.name}"`)
                 if (!replyDict.success) {
@@ -1002,7 +1026,7 @@ class LoomClient {
                 }
             }
         } catch (error) {
-            commandProblemElt.textContent = `${error.message}`
+            commandProblemElt.textContent = truncateStr(datadict.message)
             commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
         }
     }
@@ -1281,7 +1305,7 @@ function preventDefaults(event) {
 
 // Async wrapper around FileReader.readAsText
 // from https://masteringjs.io/tutorials/fundamentals/filereader#:~:text=The%20FileReader%20class%27%20async%20API%20isn%27t%20ideal,for%20usage%20with%20async%2Fawait%20or%20promise%20chaining.
-function readTextFile(file) {
+function readTextFile(file, encoding = "utf-8") {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
 
@@ -1291,6 +1315,21 @@ function readTextFile(file) {
         reader.onerror = err => reject(err)
 
         reader.readAsText(file)
+    })
+}
+
+// Read a binary file and encode it using base64
+// The encoding algorithm is from https://stackoverflow.com/a/58339391/1653413
+function readAndEncodeBinaryFile(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+
+        reader.onload = res => {
+            resolve(res.target.result.split(',')[1])
+        }
+        reader.onerror = err => reject(err)
+
+        reader.readAsDataURL(file)
     })
 }
 
