@@ -755,10 +755,10 @@ class LoomClient {
             const xEnd = xCenter + ThreadHalfWidth
             const endColor = this.currentPattern.color_table[this.currentPattern.warp_colors[endIndex]]
             var endGradient = ctx.createLinearGradient(xStart, 0, xEnd, 0)
-            endGradient.addColorStop(0, "white")
+            endGradient.addColorStop(0, "lightgray")
             endGradient.addColorStop(0.2, endColor)
             endGradient.addColorStop(0.8, endColor)
-            endGradient.addColorStop(1, "gray")
+            endGradient.addColorStop(1, "darkgray")
 
             ctx.fillStyle = endGradient
             ctx.fillRect(
@@ -854,10 +854,10 @@ class LoomClient {
                 const threadColor = this.currentPattern.color_table[this.currentPattern.warp_colors[i]]
                 const xStart = canvas.width - blockSize * (i + 1)
                 var warpGradient = ctx.createLinearGradient(xStart + ThreadDisplayGap, 0, xStart + blockSize - (2 * ThreadDisplayGap), 0)
-                warpGradient.addColorStop(0, "white")
+                warpGradient.addColorStop(0, "lightgray")
                 warpGradient.addColorStop(0.2, threadColor)
                 warpGradient.addColorStop(0.8, threadColor)
-                warpGradient.addColorStop(1, "gray")
+                warpGradient.addColorStop(1, "darkgray")
                 this.currentPattern.warpGradients[i] = warpGradient
             }
         }
@@ -883,7 +883,7 @@ class LoomClient {
             const yStart = canvas.height - (yOffset + (blockSize * (pickOffset + 1)))
             var pickGradient = ctx.createLinearGradient(0, yStart + ThreadDisplayGap, 0, yStart + blockSize - (2 * ThreadDisplayGap))
             const pickColor = this.currentPattern.color_table[this.currentPattern.picks[pickIndex].color]
-            pickGradient.addColorStop(0, "white")
+            pickGradient.addColorStop(0, "lightgray")
             pickGradient.addColorStop(0.2, pickColor)
             pickGradient.addColorStop(0.8, pickColor)
             pickGradient.addColorStop(1, "gray")
