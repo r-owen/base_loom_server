@@ -495,7 +495,7 @@ class LoomClient {
                 bitmask >>= 1n
                 shaft_number++
             }
-            text = raisedShaftList.join(", ")
+            text = raisedShaftList.join(" ")
         } else {
             text = t(ShaftStateTranslationDict[datadict.state])
             if (datadict.state == 3) {

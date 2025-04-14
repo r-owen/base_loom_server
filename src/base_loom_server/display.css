@@ -1,5 +1,6 @@
 body {
     font-size: 100%;
+    font-family: "georgia";
 }
 
 button {
@@ -37,10 +38,7 @@ div.flex-container {
     flex-wrap: nowrap;
     align-items: start;
     gap: 5px;
-}
-
-#pattern_select_grid {
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 #pattern_menu {
