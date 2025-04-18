@@ -15,50 +15,34 @@ The pattern is displayed as a picture that shows woven fabric below and potentia
 Note that the display is a bit naive, in that it shows all threads as the same thickness
 and does not display multi-layer patterns (such as doubleweave) correctly.
 
-There are two rectangles to the right of the pattern display:
+## Weave Direction
 
-* The short upper rectangle shows the color of the current pick (blank if pick 0),
-    or, if you have specified a pick to jump to, then it is the color of that pick.
+The square button labeled Direction shows the weave direction: a green down arrow if you are weaving, a red up-arrow if you are unweaving.
+  The arrow points in the direction cloth is moving through the loom.
 
-* The square button below that shows the weave direction: whether you are weaving (green down arrow) or unweaving (red up arrow).
-    The arrow points in the direction cloth is moving through the loom.
+  How you change direction depends on the loom:
 
-    How you change direction depends on the loom:
+  * Séguin looms allow you to change direction by pressing the square
+    weave direction button or pressing the UNW button on the dobby unit.
+    Both work. Use whichever you prefer.
 
-    * Séguin looms allow you to change direction by pressing the square
-      weave direction button and by pressing the UNW button on the dobby unit.
-      Both work. Use whichever you prefer.
+  * Toika looms can be operated in one of two ways, specified by
+    a command-line argument when you start the loom server:
 
-    * Toika looms can be operated in one of two ways, specified by
-      a command-line argument when you start the loom server:
+      * Software controls the weave direction. The square button showing weave
+        direction can be pressed to change the direction. <b>The physical REVERSE button
+        on the dobby head is ignored</b>. This is the default.
 
-        * Software controls the weave direction. The square button showing weave
-          direction can be pressed to change the direction. The physical button
-          on the dobby head is ignored. This is the default.
+      * The loom controls the weave direction. You have to press the physical REVERSE button
+        on the dobby head to change direction. The square button showing weave direction
+        is only a display (you can't click it). You run in this mode by starting the loom server with argument `--weave-direction loom`.
+  
+  * For other looms, see the loom-specific documentation with the software package.
 
-        * The loom controls the weave direction. You have to press the physical button
-          on the dobby head to change directions. The square button showing weave direction
-          is only a display (you can't click it). You run in this mode by starting the loom server with argument `--weave-direction loom`,
-    
-    * For other looms, see the loom-specific documentation with the software package.
+## Pick Color
 
-## Repeating
-
-The software will automatically repeat patterns if you weave or unweave beyond the end.
-The exact behavior is controlled by the `Separate repeats` checkbox:
-
-* "On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
-  The first advance will lower all shafts, as a signal that you have finished weaving or unweaving one pattern repeat. That is the "separator".
-
-* "Off" (unchecked): there is no indication that you have reached the end of the pattern.
-  The next pick will be pick 1 of the pattern, if weaving, or the last pick, if unweaving.
-
-The default value of `Separate repeats` is "on" if the pattern has more than 20 picks, "off" otherwise.
-The idea behind this is that frequent separator picks is annoying for short patterns, but having a separator pick is useful for long patterns.
-
-[Threading](threading.md) has a checkbox with the same name that does the same basic thing.
-However, the value of the Weaving and Threading `Separate repeats` checkboxes are independent of each other,
-and may also be different for different patterns. They are saved in the pattern database.
+The long colored rectangle to the right the Pick row shows the color of the current pick (blank for pick 0),
+or, if you have specified a pick to jump to, then it is the color of that pending pick.
 
 ## Jumping
 
@@ -88,3 +72,21 @@ In detail:
     * Reload the page.
 
     * Select a new pattern.
+
+## Repeating
+
+The software will automatically repeat patterns if you weave or unweave beyond the end.
+The exact behavior is controlled by the `Separate repeats` checkbox:
+
+* "On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
+  The first advance will lower all shafts, as a signal that you have finished weaving or unweaving one pattern repeat. That is the "separator".
+
+* "Off" (unchecked): there is no indication that you have reached the end of the pattern.
+  The next pick will be pick 1 of the pattern, if weaving, or the last pick, if unweaving.
+
+The default value of `Separate repeats` is "on" if the pattern has more than 20 picks, "off" otherwise.
+The idea behind this is that frequent separator picks are annoying for short patterns, but having a separator pick is useful for long patterns.
+
+[Threading](threading.md) has a checkbox with the same name that does the same basic thing.
+However, the value of the Weaving and Threading `Separate repeats` checkboxes are independent of each other,
+and may also be different for different patterns. They are saved in the pattern database.

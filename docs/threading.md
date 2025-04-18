@@ -16,45 +16,21 @@ Threading is displayed as a picture that shows a group of threads (vertical colo
 It also shows the one or a few warp thread numbers along the top.
 
 Warp end numbering goes up from 1 at the right (the typical US scheme when warping back to front).
-Warp end 0 is special: it has no threads and is what a pattern starts with and is also an intermediate step when repeating a threading sequence.
+Warp end 0 is special: it has no shafts and no warp thread. It is the first pick when starting to thread a pattern.
+It is also an intermediate step when repeating a threading sequence, unless "Separate repeats" is unchecked.
 
-There is one square button right of the pattern display which shows the direction.
-A left-facing arrow indicates that you are threading right to left.
+## Threading Direction
 
-You can press the button to change the threading direction.
+The square button labeled "Direction" shows and changes the direction you are threading: a left-facing arrow indicates that you are threading right to left. Press the button to change the threading direction.
 
-**Warning** the dobby's direction control is always ignored while threading.
-
-## Repeating
-
-The software will automatically repeat threading if you thread beyond the end.
-However, like [Weaving](weaving.md), the transition depends on the `Separate repeats` checkbox:
-
-* "On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
-  The first advance will lower all shafts, as a signal that you have finished threading or unthreading one pattern repeat. That is the "separator".
-
-* "Off" (unchecked): there is no indication that you have reached the aend of threading.
-  The next advance will start the next repeat of threading or unthreading.
-
-The default value of `Separate repeats` is "on" if the pattern has more than 20 warp threads, "off" otherwise.
-The idea behind this is that frequent separator picks is annoying for short threading sequences, but having a separator pick is useful for long sequences.
-
-Note that the value of the Weaving and Threading `Separate repeats` checkboxes are independent of each other,
-and may also be different for different patterns. They are saved in the pattern database.
-
-## Group Size
-
-The "Group size" menu selects how many warp ends are in a group
-(all shafts for a group are raised at once).
-
-You can change the group size whenever you like (the change takes effect for the next thread group).
-This can be convenient if threading a unit weave that also has sone non-unit-sized borders or other odd columns.
+**Warning** the dobby's direction control button (e.g. REVERSE or UNW) is always ignored while threading.
 
 ## Jumping
 
 You can jump to a different warp end and/or repeat number.
-The end number you specify will be the smaller warp end number,
-e.g. if group size is 4 and you jump to 21, the displayed group will be ends 21, 22, 23, 24, and 25.
+The end number you specify is be the smaller warp end number,
+e.g. if group size is 4 and you jump to 21, the displayed group will be ends 21, 22, 23, 24, and 25
+(or fewer, if the warp has fewer than 25 threads).
 
 Jumping is a two-step process: first you request the jump, then you advance to it by pressing the loom's pedal.
 (Two steps are necessary because most looms will not accept an unsolicited command to raise shafts.)
@@ -81,3 +57,26 @@ In detail:
     * Reload the page.
 
     * Select a new pattern.
+
+## Group Size
+
+The "Group size" menu selects how many warp ends are in a group, All shafts for a group are raised at once.
+
+You can change the group size whenever you like; the change takes effect for the next thread group (next time you push the pedal to advance).
+
+## Repeating
+
+The software will automatically repeat threading if you thread beyond the end.
+However, like [Weaving](weaving.md), the transition depends on the `Separate repeats` checkbox:
+
+* "On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
+  The first advance will lower all shafts, as a signal that you have finished threading or unthreading one pattern repeat. That is the "separator".
+
+* "Off" (unchecked): there is no indication that you have reached the end of threading.
+  The next advance will start the next repeat of threading or unthreading.
+
+The default value of `Separate repeats` is "on" if the pattern has more than 20 warp threads, "off" otherwise.
+The idea behind this is that frequent separator picks are annoying for short threading sequences, but having a separator pick is useful for long sequences.
+
+Note that the value of the Weaving and Threading `Separate repeats` checkboxes are independent of each other,
+and may also be different for different patterns. They are saved in the pattern database.
