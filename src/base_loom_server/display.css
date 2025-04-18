@@ -1,5 +1,9 @@
 body {
-    font-size: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    font-size: 120%;
     font-family: "georgia";
 }
 
@@ -21,6 +25,7 @@ button:hover:enabled {
     border: 2px;
     padding: 2px 2px;
     font-size: 90%;
+    font-family: "georgia";
 }
 
 #mode {
@@ -32,58 +37,49 @@ button:hover:enabled {
     font-weight: bold;
 }
 
-div.flex-container {
+div.flex-row-start {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    align-items: start;
+    justify-content: start;
+    align-items: center;
     gap: 5px;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
 }
 
 #pattern_menu {
-    width: 200px;
+    max-width: 220px;
     /* the following doesn't seem to do anything, at least on on macOS Safari */
     text-overflow: ellipsis;
 }
 
-/* Pattern canvas and the buttons to the right */
-
-#pattern_display_grid {
-    align-items: center;
-}
-
-#pattern_controls_grid {
-    flex-direction: column;
-}
-
-#threading_display_grid {
-    align-items: center;
-}
-
-#threading_controls_grid {
-    flex-direction: column;
+div.canvas-grid {
+    display: grid;
+    flex: 1;
+    gap: 5px;
+    margin: 5px;
+    margin-right: 20px;
 }
 
 canvas {
     border: 1px solid #000000;
-    /* Setting height and width here affects the displayed size, but not the coordinate system
-      and thus not the width and height reported to JavaScript. This is a notorious misfeature.
-      I want the displayed size and coordinate system to match, so I set the canvas dimensions
-      in display.html_template. */
 }
 
-#goto_next_pick_spacer {
-    height: 20px;
-    opacity: 0;
+#debug_div {
+    margin-right: 20px;
+}
+
+#bottom_spacer {
+    height: 40px;
 }
 
 #pick_color {
-    width: 30px;
+    flex: 1;
     height: 10px;
     background-color: rgba(0, 0, 0, 0);
     border-style: solid;
     border-width: 1px;
+    margin-right: 20px;
 }
 
 #toggle_weave_direction {

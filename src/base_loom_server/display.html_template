@@ -10,13 +10,13 @@
 </head>
 
 <body>
-    <div class="flex-container" id="mode">
+    <div class="flex-row-start" id="mode">
         <div class="tabbar">
             <button class="tabchoices" id="mode_weaving">{Weaving}</button>
             <button class="tabchoices" id="mode_threading"">{Threading}</button>
         </div>
     </div>
-    <div class="flex-container" id="pattern_select_grid">
+    <div class="flex-row-start">
         <div>
             <label>{Pattern}</label>
             <select name="pattern_menu" id="pattern_menu">
@@ -31,36 +31,39 @@
         </form>
     </div>
     
-    <div class="flex-container weaving" id="pattern_display_grid">
-        <div>
-            <!-- For best results, the canvas height should be odd. -->
-            <!-- Size of canvas must be set in html or javascript, not css. -->
-            <canvas id="pattern_canvas" height="151" width="265"/>
-        </div>
-        <div class="flex-container" id="pattern_controls_grid">
-            <div id="goto_next_pick_spacer"></div>
-            <div><button type="button" id="pick_color"></button></div>
-            <div><button type="button" id="weave_direction">?</button></div>
+    <div class="canvas-grid weaving-grid">
+        <div id="pattern_canvas_container">
+            <div>
+                <canvas id="pattern_canvas"/>
+            </div>
         </div>
     </div>
 
-    <div class="flex-container threading" id="threading_display_grid" style="display: none;">
-        <div>
-            <!-- For best results, the canvas height should be odd. -->
-            <!-- Size of canvas must be set in html or javascript, not css. -->
-            <canvas id="threading_canvas" height="151" width="265"/>
-        </div>
-        <div class="flex-container" id="threading_controls_grid">
-            <div><button type="button" id="thread_direction">?</button></div>
+    <div class="canvas-grid threading-grid" style="display: none;">
+        <div id="threading_canvas_container">
+            <div>
+                <canvas id="threading_canvas"/>
+            </div>
         </div>
     </div>
 
-    <div class="flex-container">
+
+    <div class="flex-row-start">
         <label>{Raised shafts}</label>
         <label id="shaft_state"/>
     </div>
 
-    <div class="flex-container threading" id="end_number_div" style="display: none;">
+    <div class="flex-row-start weaving-flex">
+        <label>{Direction}</label>
+        <button type="button" id="weave_direction">?</button>        
+    </div>
+
+    <div class="flex-row-start threading-flex">
+        <label>{Direction}</label>
+        <button type="button" id="thread_direction">?</button>
+    </div>
+
+    <div class="flex-row-start threading-flex" id="end_number_div" style="display: none;">
         <label>{End}</label>
         <label id="end_number0"></label>
         <label> - </label>
@@ -71,17 +74,18 @@
         <label id="end_repeat_number"></label>
     </div>
 
-    <div class="flex-container weaving" id="pick_number_div">
+    <div class="flex-row-start weaving-flex" id="pick_number_div">
         <label>{Pick}</label>
         <label id="pick_number"></label>
         <label>{of}</label>
         <label id="total_picks">?</label>
         <label>{repeat}</label>
         <label id="pick_repeat_number"></label>
+        <button type="button" id="pick_color"></button>
     </div>
 
-    <form action="" class="threading" id="jump_to_end_form" style="display: none;">
-        <div class="flex-container">
+    <form action="" class="threading-flex" id="jump_to_end_form" style="display: none;">
+        <div class="flex-row-start">
             <label>{Jump to end}</label>
             <input size="5" id="jump_end_number0" inpumode="decimal"></input>
             <label>{repeat}</label>
@@ -91,8 +95,8 @@
         </div>
     </form>
 
-    <form action="" class="weaving" id="jump_to_pick_form">
-        <div class="flex-container">
+    <form action="" class="weaving-flex" id="jump_to_pick_form">
+        <div class="flex-row-start">
             <label>{Jump to pick}</label>
             <input size="5" id="jump_pick_number" inpumode="decimal"></input>
             <label>{repeat}</label>
@@ -102,7 +106,7 @@
         </div>
     </form>
 
-    <div class="flex-container threading" id="thread_group_size_grid" style="display: none;">
+    <div class="flex-row-start threading-flex" id="thread_group_size_grid" style="display: none;">
         <div>
             <label>{Group size}</label>
             <select name="thread_group_size" id="thread_group_size">
@@ -118,45 +122,47 @@
         </div>
     </div>
 
-    <div class="flex-container threading" id="separate_threading_repeats_grid" style="display: none">
+    <div class="flex-row-start threading-flex" id="separate_threading_repeats_grid" style="display: none">
         <label>{Separate repeats}?</label>
         <input type="checkbox" id="separate_threading_repeats" value="1"></input>
     </div>
 
-    <div class="flex-container weaving" id="separate_weaving_repeats_grid">
+    <div class="flex-row-start weaving-flex" id="separate_weaving_repeats_grid">
         <label>{Separate repeats}?</label>
         <input type="checkbox" id="separate_weaving_repeats"></input>
     </div>
 
-    <div class="flex-container">
+    <div class="flex-row-start">
         <label id="loom_info"></label>
         <label id="status">disconnected</label>
     </div>
 
-    <div class="flex-container">
+    <div class="flex-row-start">
         <label id="command_problem"/>
     </div>
 
-    <div style="display:{display_debug_controls}">
+    <div style="display:{display_debug_controls}" id="debug_div">
     <hr>
     <p>Debugging stuff</p>
     
-    <div class="flex-container">
+    <div class="flex-row-start">
         <label>{Command mock loom}</label>
         <button id="oob_next_pick">{Next Pick}</button>
         <button id="oob_change_direction">{Change Direction}</button>
         <button id="oob_close_connection">{Close Connection}</button>
     </div>
 
-    <div class="flex-container">
+    <div class="flex-row-start">
         <label>{Sent command}: </label>
         <label id='sent_command'/>
     </div>
 
-    <div class="flex-container">
+    <div class="flex-row-start">
         <label>{Read message}: </label>
         <label id='read_message'/>
     </div>
+
+    <div id="bottom_spacer"></div>
 
     <script>
         {display_js}

@@ -8,6 +8,7 @@
   "Command mock loom": null,
   "connected": null,
   "connecting": null,
+  "Direction": null,
   "disconnected": null,
   "disconnecting": null,
   "End": null,

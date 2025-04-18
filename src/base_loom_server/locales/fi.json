@@ -8,6 +8,7 @@
 	"Command mock loom": "Komenna tekopuut",
 	"connected": "liittynyt",
 	"connecting": "liittymässä",
+	"Direction": "Suunta",
 	"disconnected": "liittymä katki",
 	"disconnecting": "liittymä katkee",
 	"End": "Loppu",
