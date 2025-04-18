@@ -52,11 +52,13 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#threading-display">Threading Display</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#repeating">Repeating</a>
+    <li class="toctree-l2"><a class="reference internal" href="#threading-direction">Threading Direction</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#jumping">Jumping</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#group-size">Group Size</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#jumping">Jumping</a>
+    <li class="toctree-l2"><a class="reference internal" href="#repeating">Repeating</a>
     </li>
     </ul>
                 </li>
@@ -110,37 +112,16 @@ and a display will show you which threads belong on which shaft.</p>
 <p>Threading is displayed as a picture that shows a group of threads (vertical colored bars) and the shaft they go through (numbers that interrupt the colored bars).
 It also shows the one or a few warp thread numbers along the top.</p>
 <p>Warp end numbering goes up from 1 at the right (the typical US scheme when warping back to front).
-Warp end 0 is special: it has no threads and is what a pattern starts with and is also an intermediate step when repeating a threading sequence.</p>
-<p>There is one square button right of the pattern display which shows the direction.
-A left-facing arrow indicates that you are threading right to left.</p>
-<p>You can press the button to change the threading direction.</p>
-<p><strong>Warning</strong> the dobby's direction control is always ignored while threading.</p>
-<h2 id="repeating">Repeating</h2>
-<p>The software will automatically repeat threading if you thread beyond the end.
-However, like <a href="../weaving/">Weaving</a>, the transition depends on the <code>Separate repeats</code> checkbox:</p>
-<ul>
-<li>
-<p>"On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
-  The first advance will lower all shafts, as a signal that you have finished threading or unthreading one pattern repeat. That is the "separator".</p>
-</li>
-<li>
-<p>"Off" (unchecked): there is no indication that you have reached the aend of threading.
-  The next advance will start the next repeat of threading or unthreading.</p>
-</li>
-</ul>
-<p>The default value of <code>Separate repeats</code> is "on" if the pattern has more than 20 warp threads, "off" otherwise.
-The idea behind this is that frequent separator picks is annoying for short threading sequences, but having a separator pick is useful for long sequences.</p>
-<p>Note that the value of the Weaving and Threading <code>Separate repeats</code> checkboxes are independent of each other,
-and may also be different for different patterns. They are saved in the pattern database.</p>
-<h2 id="group-size">Group Size</h2>
-<p>The "Group size" menu selects how many warp ends are in a group
-(all shafts for a group are raised at once).</p>
-<p>You can change the group size whenever you like (the change takes effect for the next thread group).
-This can be convenient if threading a unit weave that also has sone non-unit-sized borders or other odd columns.</p>
+Warp end 0 is special: it has no shafts and no warp thread. It is the first pick when starting to thread a pattern.
+It is also an intermediate step when repeating a threading sequence, unless "Separate repeats" is unchecked.</p>
+<h2 id="threading-direction">Threading Direction</h2>
+<p>The square button labeled "Direction" shows and changes the direction you are threading: a left-facing arrow indicates that you are threading right to left. Press the button to change the threading direction.</p>
+<p><strong>Warning</strong> the dobby's direction control button (e.g. REVERSE or UNW) is always ignored while threading.</p>
 <h2 id="jumping">Jumping</h2>
 <p>You can jump to a different warp end and/or repeat number.
-The end number you specify will be the smaller warp end number,
-e.g. if group size is 4 and you jump to 21, the displayed group will be ends 21, 22, 23, 24, and 25.</p>
+The end number you specify is be the smaller warp end number,
+e.g. if group size is 4 and you jump to 21, the displayed group will be ends 21, 22, 23, 24, and 25
+(or fewer, if the warp has fewer than 25 threads).</p>
 <p>Jumping is a two-step process: first you request the jump, then you advance to it by pressing the loom's pedal.
 (Two steps are necessary because most looms will not accept an unsolicited command to raise shafts.)
 In detail:</p>
@@ -180,6 +161,26 @@ In detail:</p>
 </ul>
 </li>
 </ul>
+<h2 id="group-size">Group Size</h2>
+<p>The "Group size" menu selects how many warp ends are in a group, All shafts for a group are raised at once.</p>
+<p>You can change the group size whenever you like; the change takes effect for the next thread group (next time you push the pedal to advance).</p>
+<h2 id="repeating">Repeating</h2>
+<p>The software will automatically repeat threading if you thread beyond the end.
+However, like <a href="../weaving/">Weaving</a>, the transition depends on the <code>Separate repeats</code> checkbox:</p>
+<ul>
+<li>
+<p>"On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
+  The first advance will lower all shafts, as a signal that you have finished threading or unthreading one pattern repeat. That is the "separator".</p>
+</li>
+<li>
+<p>"Off" (unchecked): there is no indication that you have reached the end of threading.
+  The next advance will start the next repeat of threading or unthreading.</p>
+</li>
+</ul>
+<p>The default value of <code>Separate repeats</code> is "on" if the pattern has more than 20 warp threads, "off" otherwise.
+The idea behind this is that frequent separator picks are annoying for short threading sequences, but having a separator pick is useful for long sequences.</p>
+<p>Note that the value of the Weaving and Threading <code>Separate repeats</code> checkboxes are independent of each other,
+and may also be different for different patterns. They are saved in the pattern database.</p>
               
             </div>
           </div><footer>
