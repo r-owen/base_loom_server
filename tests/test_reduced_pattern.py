@@ -5,7 +5,7 @@ import pytest
 from dtx_to_wif import read_pattern_file
 
 from base_loom_server.reduced_pattern import (
-    NumItemsForRepeatSeparator,
+    NUM_ITEMS_FOR_REPEAT_SEPARATOR,
     Pick,
     ReducedPattern,
     reduced_pattern_from_pattern_data,
@@ -47,10 +47,10 @@ def test_basics() -> None:
         for field_name, value in EXPECTED_DEFAULTS.items():
             assert getattr(reduced_pattern, field_name) == value
         assert reduced_pattern.separate_weaving_repeats == (
-            len(reduced_pattern.picks) > NumItemsForRepeatSeparator
+            len(reduced_pattern.picks) > NUM_ITEMS_FOR_REPEAT_SEPARATOR
         )
         assert reduced_pattern.separate_threading_repeats == (
-            len(reduced_pattern.threading) > NumItemsForRepeatSeparator
+            len(reduced_pattern.threading) > NUM_ITEMS_FOR_REPEAT_SEPARATOR
         )
 
         for i, pick in enumerate(reduced_pattern.picks):
@@ -199,10 +199,9 @@ def test_end_number() -> None:
             with pytest.raises(IndexError):
                 reduced_pattern.check_end_number(end_number0)
             for thread_group_size in GROUP_SIZE_NUMBERS:
+                reduced_pattern.thread_group_size = thread_group_size
                 with pytest.raises(IndexError):
-                    reduced_pattern.set_current_end_number(
-                        end_number0, thread_group_size=thread_group_size
-                    )
+                    reduced_pattern.set_current_end_number(end_number0)
             assert reduced_pattern.end_number0 == 0
             assert reduced_pattern.end_repeat_number == 1
 
@@ -212,41 +211,27 @@ def test_end_number() -> None:
                 if end_number0 == 0 and end_number1 == 0:
                     continue
                 for thread_group_size in GROUP_SIZE_NUMBERS:
+                    reduced_pattern.thread_group_size = thread_group_size
                     with pytest.raises(IndexError):
                         reduced_pattern.set_current_end_number(
                             end_number0,
-                            thread_group_size=thread_group_size,
                             end_number1=end_number1,
                         )
             assert reduced_pattern.end_number0 == 0
             assert reduced_pattern.end_repeat_number == 1
 
         # Check invalid thread_group_size
+        initial_thread_group_size = reduced_pattern.thread_group_size
         for thread_group_size in (-1, 0):
-            for end_number0 in range(NUM_ITER):
-                with pytest.raises(ValueError):
-                    reduced_pattern.set_current_end_number(
-                        end_number0=end_number0,
-                        thread_group_size=thread_group_size,
-                    )
-                assert reduced_pattern.end_number0 == 0
-                assert reduced_pattern.end_repeat_number == 1
-
-            for thread_low_to_high in (False, True):
-                with pytest.raises(ValueError):
-                    reduced_pattern.increment_end_number(
-                        thread_group_size=thread_group_size,
-                        thread_low_to_high=thread_low_to_high,
-                    )
-                assert reduced_pattern.end_number0 == 0
-                assert reduced_pattern.end_repeat_number == 1
+            with pytest.raises(ValueError):
+                reduced_pattern.thread_group_size = thread_group_size
+            assert reduced_pattern.thread_group_size == initial_thread_group_size
 
         for thread_group_size in GROUP_SIZE_NUMBERS:
+            reduced_pattern.thread_group_size = thread_group_size
             # Test get_threading_group
             for end_number0 in (0, 1, num_ends - 1, num_ends):
-                reduced_pattern.set_current_end_number(
-                    end_number0=end_number0, thread_group_size=thread_group_size
-                )
+                reduced_pattern.set_current_end_number(end_number0=end_number0)
                 if end_number0 == 0:
                     expected_end_number1 = 0
                 elif end_number0 + thread_group_size > num_ends:
@@ -271,14 +256,12 @@ def test_end_number() -> None:
 
             for initial_end_number0 in (0, 1, num_ends - 1, num_ends):
                 # Increment low to high
+                reduced_pattern.thread_group_size = thread_group_size
                 reduced_pattern.set_current_end_number(
                     end_number0=initial_end_number0,
-                    thread_group_size=thread_group_size,
                     end_repeat_number=1,
                 )
-                reduced_pattern.increment_end_number(
-                    thread_group_size=thread_group_size, thread_low_to_high=True
-                )
+                reduced_pattern.increment_end_number(thread_low_to_high=True)
                 if initial_end_number0 == 0:
                     # The next group starts at one,
                     # regardless of thread_group_size
@@ -297,14 +280,12 @@ def test_end_number() -> None:
                     assert reduced_pattern.end_repeat_number == 1
 
                 # Increment high to low
+                reduced_pattern.thread_group_size = thread_group_size
                 reduced_pattern.set_current_end_number(
                     initial_end_number0,
-                    thread_group_size=thread_group_size,
                     end_repeat_number=1,
                 )
-                reduced_pattern.increment_end_number(
-                    thread_group_size=thread_group_size, thread_low_to_high=False
-                )
+                reduced_pattern.increment_end_number(thread_low_to_high=False)
                 if initial_end_number0 == 0 or (
                     initial_end_number0 == 1 and not separate_repeats
                 ):
@@ -341,10 +322,10 @@ def test_end_number() -> None:
                 for end_repeat_number in (-1, 0, 5):
                     if end_number1 > num_ends + 1:
                         continue
+                    reduced_pattern.thread_group_size = thread_group_size
                     reduced_pattern.set_current_end_number(
                         end_number0=initial_end_number0,
                         end_number1=end_number1,
-                        thread_group_size=thread_group_size,
                         end_repeat_number=end_repeat_number,
                     )
                     assert reduced_pattern.end_number0 == initial_end_number0

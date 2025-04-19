@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 __all__ = [
-    "NumItemsForRepeatSeparator",
+    "DEFAULT_THREAD_GROUP_SIZE",
+    "NUM_ITEMS_FOR_REPEAT_SEPARATOR",
     "Pick",
     "ReducedPattern",
     "reduced_pattern_from_pattern_data",
@@ -14,9 +15,11 @@ from typing import Any
 
 import dtx_to_wif
 
+DEFAULT_THREAD_GROUP_SIZE = 4
+
 # The number of picks or warp threads above which
 # the repeat separator is, by default, enabled
-NumItemsForRepeatSeparator = 20
+NUM_ITEMS_FOR_REPEAT_SEPARATOR = 20
 
 
 def pop_and_check_type_field(typename: str, datadict: dict[str, Any]) -> None:
@@ -74,6 +77,8 @@ class ReducedPattern:
     end_number0: int = 0
     end_number1: int = 0
     end_repeat_number: int = 1
+    _thread_group_size: int = DEFAULT_THREAD_GROUP_SIZE
+
     separate_weaving_repeats: bool = False
     separate_threading_repeats: bool = False
 
@@ -86,6 +91,17 @@ class ReducedPattern:
         datadict["picks"] = [Pick.from_dict(pickdict) for pickdict in datadict["picks"]]
         datadict["pick0"] = Pick.from_dict(datadict["pick0"])
         return cls(**datadict)
+
+    @property
+    def thread_group_size(self):
+        return self._thread_group_size
+
+    @thread_group_size.setter
+    def thread_group_size(self, value: int) -> None:
+        value = int(value)
+        if value < 1:
+            raise ValueError(f"{value=} must be positive")
+        self._thread_group_size = value
 
     def check_end_number(self, end_number0: int) -> None:
         """Raise IndexError if end_number0 out of range.
@@ -139,29 +155,14 @@ class ReducedPattern:
         shaft_word = sum(1 << shaft for shaft in shaft_set if shaft >= 0)
         return shaft_word
 
-    def increment_end_number(
-        self, thread_group_size: int, thread_low_to_high: bool
-    ) -> None:
+    def increment_end_number(self, thread_low_to_high: bool) -> None:
         """Increment self.end_number0 in the specified direction.
         Increment end_repeat_number as well, if appropriate.
 
-        Parameters
-        ----------
-        thread_group_size : int
-            Number of threads in the group.
-        thread_low_to_high : bool
-            Should the new end_number0 be larger than old?
-            (However, if True and end_number0 is at its max value,
-            then it wraps around to 0).
-
-        Notes
-        -----
         End number is 1-based, but 0 means at start or end
         (in which case there are no threads in the group).
         """
         self.check_end_number(self.end_number0)
-        if thread_group_size < 1:
-            raise ValueError(f"{thread_group_size=} must be >= 1")
         max_end_number = len(self.threading)
         new_end_number0 = 0
         # Initialize new_end_number1 to None to allow set_current_end_number
@@ -182,16 +183,15 @@ class ReducedPattern:
                 self.end_number0 == 1 and not self.separate_threading_repeats
             ):
                 new_end_number1 = max_end_number + 1
-                new_end_number0 = max(new_end_number1 - thread_group_size, 1)
+                new_end_number0 = max(new_end_number1 - self.thread_group_size, 1)
                 new_end_repeat_number -= 1
             elif self.end_number0 == 1:
                 new_end_number0 = 0
             else:
-                new_end_number0 = max(self.end_number0 - thread_group_size, 1)
+                new_end_number0 = max(self.end_number0 - self.thread_group_size, 1)
                 new_end_number1 = self.end_number0
         self.set_current_end_number(
             end_number0=new_end_number0,
-            thread_group_size=thread_group_size,
             end_number1=new_end_number1,
             end_repeat_number=new_end_repeat_number,
         )
@@ -217,19 +217,16 @@ class ReducedPattern:
         self.pick_number = next_pick_number
         return next_pick_number
 
-    def compute_end_number1(self, end_number0: int, thread_group_size: int) -> int:
+    def compute_end_number1(self, end_number0: int) -> int:
         self.check_end_number(end_number0)
-        if thread_group_size < 1:
-            raise ValueError(f"{thread_group_size=} must be >= 1")
         max_end_number = len(self.threading)
         if end_number0 == 0:
             return 0
-        return min(end_number0 + thread_group_size, max_end_number + 1)
+        return min(end_number0 + self.thread_group_size, max_end_number + 1)
 
     def set_current_end_number(
         self,
         end_number0: int,
-        thread_group_size: int,
         end_number1: int | None = None,
         end_repeat_number: int | None = None,
     ) -> None:
@@ -240,9 +237,6 @@ class ReducedPattern:
         end_number0 : int
             New end_number0, the starting end number
             for a group of ends to thread.
-        thread_group_size: int,
-            Thread group size; used to compute end_number1;
-            ignored (other than range checking) if end_number1 specified
         end_number1: int | None
             New value for end_number1; if None, compute it
         end_repeat_number : int | None
@@ -258,12 +252,8 @@ class ReducedPattern:
             * end_number0 = 0 and end_number1 != 0
             * end_number1 <= end_number0
             * end_number1 > # shafts + 1
-        ValueError
-            If thread_group_size < 1
         """
         self.check_end_number(end_number0)
-        if thread_group_size < 1:
-            raise ValueError(f"{thread_group_size=} must be >= 1")
         max_end_number = len(self.threading)
         if end_number1 is not None:
             if end_number0 == 0:
@@ -275,9 +265,7 @@ class ReducedPattern:
                 raise IndexError(f"{end_number1=} must be > {end_number0=}")
             self.end_number1 = end_number1
         else:
-            self.end_number1 = self.compute_end_number1(
-                end_number0=end_number0, thread_group_size=thread_group_size
-            )
+            self.end_number1 = self.compute_end_number1(end_number0=end_number0)
         self.end_number0 = end_number0
         if end_repeat_number is not None:
             self.end_repeat_number = end_repeat_number
@@ -403,8 +391,8 @@ def reduced_pattern_from_pattern_data(
         threading=threading,
         picks=picks,
         pick0=Pick(shaft_word=0, color=default_weft_color),
-        separate_weaving_repeats=len(picks) > NumItemsForRepeatSeparator,
-        separate_threading_repeats=len(threading) > NumItemsForRepeatSeparator,
+        separate_weaving_repeats=len(picks) > NUM_ITEMS_FOR_REPEAT_SEPARATOR,
+        separate_threading_repeats=len(threading) > NUM_ITEMS_FOR_REPEAT_SEPARATOR,
     )
     return result
 

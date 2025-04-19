@@ -18,7 +18,7 @@ from fastapi.testclient import TestClient
 from fastapi.websockets import WebSocket
 from starlette.testclient import WebSocketTestSession
 
-from .base_loom_server import DEFAULT_THREAD_GROUP_SIZE, BaseLoomServer
+from .base_loom_server import BaseLoomServer
 from .base_mock_loom import BaseMockLoom
 from .client_replies import (
     ConnectionStateEnum,
@@ -26,7 +26,10 @@ from .client_replies import (
     ModeEnum,
     ShaftStateEnum,
 )
-from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
+from .reduced_pattern import (
+    ReducedPattern,
+    reduced_pattern_from_pattern_data,
+)
 
 WebSocketType: TypeAlias = WebSocket | WebSocketTestSession
 
@@ -201,17 +204,30 @@ def select_pattern(
     pick_repeat_number : int
         Expected current repeat number.
     """
+    expected_seen_types = {
+        "CommandDone",
+        "CurrentPickNumber",
+        "CurrentEndNumber",
+        "ReducedPattern",
+        "SeparateThreadingRepeats",
+        "SeparateWeavingRepeats",
+        "ThreadGroupSize",
+    }
+
     replies = send_command(client, dict(type="select_pattern", name=pattern_name))
-    assert len(replies) == 6
+    assert len(replies) == len(expected_seen_types)
     pattern_reply = replies[0]
     assert pattern_reply["type"] == "ReducedPattern"
     pattern = ReducedPattern.from_dict(pattern_reply)
     assert pattern.pick_number == pick_number
     assert pattern.pick_repeat_number == pick_repeat_number
-    seen_types: set[str] = set()
-    for reply_dict in replies[1:5]:
+    seen_types: set[str] = {"ReducedPattern"}
+    for reply_dict in replies[1:]:
         reply = SimpleNamespace(**reply_dict)
         match reply.type:
+            case "CommandDone":
+                assert reply.cmd_type == "select_pattern"
+                assert reply.success
             case "CurrentPickNumber":
                 assert reply.pick_number == pick_number
                 assert reply.pick_repeat_number == pick_repeat_number
@@ -222,10 +238,12 @@ def select_pattern(
                 assert reply.separate == pattern.separate_threading_repeats
             case "SeparateWeavingRepeats":
                 assert reply.separate == pattern.separate_weaving_repeats
+            case "ThreadGroupSize":
+                assert reply.group_size == pattern.thread_group_size
             case _:
                 raise AssertionError(f"Unexpected message type {reply.type}")
         seen_types.add(reply.type)
-    assert len(seen_types) == 4
+    assert seen_types == expected_seen_types
     return pattern
 
 
@@ -622,7 +640,6 @@ class BaseTestLoomServer:
                             "PatternNames",
                             "ShaftState",
                             "ThreadDirection",
-                            "ThreadGroupSize",
                             "WeaveDirection",
                         }
                         if expected_status_messages:
@@ -634,7 +651,6 @@ class BaseTestLoomServer:
                                 "ReducedPattern",
                                 "SeparateWeavingRepeats",
                                 "SeparateThreadingRepeats",
-                                "ThreadGroupSize",
                             }
                         good_connection_states = {
                             ConnectionStateEnum.CONNECTING,
@@ -720,8 +736,6 @@ class BaseTestLoomServer:
                                     assert reply.severity == MessageSeverityEnum.INFO
                                 case "ThreadDirection":
                                     assert reply.low_to_high
-                                case "ThreadGroupSize":
-                                    assert reply.group_size == DEFAULT_THREAD_GROUP_SIZE
                                 case "WeaveDirection":
                                     assert reply.forward
                                 case _:

@@ -3,7 +3,6 @@ from __future__ import annotations
 __all__ = [
     "BaseLoomServer",
     "DEFAULT_DATABASE_PATH",
-    "DEFAULT_THREAD_GROUP_SIZE",
     "MOCK_PORT_NAME",
 ]
 
@@ -35,8 +34,6 @@ from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
 MAX_PATTERNS = 25
 
 DEFAULT_DATABASE_PATH = pathlib.Path(tempfile.gettempdir()) / "pattern_database.sqlite"
-
-DEFAULT_THREAD_GROUP_SIZE = 4
 
 MOCK_PORT_NAME = "mock"
 
@@ -145,7 +142,6 @@ class BaseLoomServer:
         self.mode = ModeEnum.WEAVE
         self.weave_forward = True
         self.thread_low_to_high = True
-        self.thread_group_size = DEFAULT_THREAD_GROUP_SIZE
 
     @abc.abstractmethod
     async def handle_loom_reply(self, reply_bytes: bytes) -> None:
@@ -400,7 +396,7 @@ class BaseLoomServer:
                     + f" {command.end_number0} > {max_end_number}"
                 )
         end_number1 = self.current_pattern.compute_end_number1(
-            end_number0=command.end_number0, thread_group_size=self.thread_group_size
+            end_number0=command.end_number0
         )
         self.jump_end = client_replies.JumpEndNumber(
             end_number0=command.end_number0,
@@ -470,7 +466,7 @@ class BaseLoomServer:
     async def cmd_thread_group_size(self, command: SimpleNamespace) -> None:
         if self.current_pattern is None:
             return
-        self.thread_group_size = command.group_size
+        self.current_pattern.thread_group_size = command.group_size
         await self.report_thread_group_size()
 
     async def cmd_weave_direction(self, command: SimpleNamespace) -> None:
@@ -520,7 +516,6 @@ class BaseLoomServer:
                     self.current_pattern.set_current_end_number(
                         end_number0=self.jump_end.end_number0,
                         end_number1=self.jump_end.end_number1,
-                        thread_group_size=self.thread_group_size,
                     )
                 else:
                     self.increment_end_number()
@@ -555,8 +550,7 @@ class BaseLoomServer:
         if self.current_pattern is None:
             return
         self.current_pattern.increment_end_number(
-            thread_group_size=self.thread_group_size,
-            thread_low_to_high=self.thread_low_to_high,
+            thread_low_to_high=self.thread_low_to_high
         )
 
     async def read_client_loop(self) -> None:
@@ -695,9 +689,8 @@ class BaseLoomServer:
         await self.write_to_client(self.loom_info)
         await self.report_mode()
         await self.report_pattern_names()
-        await self.report_thread_direction()
-        await self.report_thread_group_size()
         await self.report_weave_direction()
+        await self.report_thread_direction()
         await self.clear_jumps(force_output=True)
         await self.report_current_pattern()
         await self.report_current_end_numbers()
@@ -817,7 +810,11 @@ class BaseLoomServer:
 
     async def report_thread_group_size(self) -> None:
         """Report ThreadGroupSize"""
-        client_reply = client_replies.ThreadGroupSize(group_size=self.thread_group_size)
+        if self.current_pattern is None:
+            return
+        client_reply = client_replies.ThreadGroupSize(
+            group_size=self.current_pattern.thread_group_size
+        )
         await self.write_to_client(client_reply)
 
     async def report_weave_direction(self) -> None:
@@ -836,6 +833,7 @@ class BaseLoomServer:
         await self.report_current_pick_number()
         await self.report_separate_threading_repeats()
         await self.report_separate_weaving_repeats()
+        await self.report_thread_group_size()
 
     def t(self, phrase: str) -> str:
         """Translate a phrase, if possible."""
