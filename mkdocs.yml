@@ -6,6 +6,7 @@ nav:
   - Installing: installing.md
   - Coding: coding.md
   - Translations: translations.md
+  - Version Histsory: version_history.md
 theme:
   name: readthedocs
   features:
