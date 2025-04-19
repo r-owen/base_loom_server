@@ -466,6 +466,10 @@ class BaseLoomServer:
     async def cmd_thread_group_size(self, command: SimpleNamespace) -> None:
         if self.current_pattern is None:
             return
+        await self.pattern_db.update_thread_group_size(
+            pattern_name=self.current_pattern.name,
+            thread_group_size=command.group_size,
+        )
         self.current_pattern.thread_group_size = command.group_size
         await self.report_thread_group_size()
 

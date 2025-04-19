@@ -27,6 +27,8 @@ from .client_replies import (
     ShaftStateEnum,
 )
 from .reduced_pattern import (
+    DEFAULT_THREAD_GROUP_SIZE,
+    NUM_ITEMS_FOR_REPEAT_SEPARATOR,
     ReducedPattern,
     reduced_pattern_from_pattern_data,
 )
@@ -186,8 +188,8 @@ def command_next_pick(
 def select_pattern(
     client: Client,
     pattern_name: str,
+    check_defaults: bool = True,
     pick_number: int = 0,
-    pick_repeat_number: int = 1,
 ) -> ReducedPattern:
     """Tell the loom server to select a pattern.
 
@@ -199,10 +201,10 @@ def select_pattern(
         Client test fixture
     pattern_name : str
         Pattern name.
-    pick_number : int
-        Expected current pick number.
-    pick_repeat_number : int
-        Expected current repeat number.
+    check_defaults : bool
+        If True (the default), check that pick_number, etc. have the expected
+        default value. This is appropriate for patterns that are newly loaded
+        (rather than retrieved from the pattern database).
     """
     expected_seen_types = {
         "CommandDone",
@@ -219,8 +221,19 @@ def select_pattern(
     pattern_reply = replies[0]
     assert pattern_reply["type"] == "ReducedPattern"
     pattern = ReducedPattern.from_dict(pattern_reply)
-    assert pattern.pick_number == pick_number
-    assert pattern.pick_repeat_number == pick_repeat_number
+    if check_defaults:
+        assert pattern.pick_number == 0
+        assert pattern.pick_repeat_number == 1
+        assert pattern.end_number0 == 0
+        assert pattern.end_number1 == 0
+        assert pattern.end_repeat_number == 1
+        assert pattern.thread_group_size == DEFAULT_THREAD_GROUP_SIZE
+        assert bool(pattern.separate_threading_repeats) == (
+            len(pattern.threading) > NUM_ITEMS_FOR_REPEAT_SEPARATOR
+        )
+        assert bool(pattern.separate_weaving_repeats) == (
+            len(pattern.picks) > NUM_ITEMS_FOR_REPEAT_SEPARATOR
+        )
     seen_types: set[str] = {"ReducedPattern"}
     for reply_dict in replies[1:]:
         reply = SimpleNamespace(**reply_dict)
@@ -229,8 +242,8 @@ def select_pattern(
                 assert reply.cmd_type == "select_pattern"
                 assert reply.success
             case "CurrentPickNumber":
-                assert reply.pick_number == pick_number
-                assert reply.pick_repeat_number == pick_repeat_number
+                assert reply.pick_number == pattern.pick_number
+                assert reply.pick_repeat_number == pattern.pick_repeat_number
             case "CurrentEndNumber":
                 assert reply.end_number0 == pattern.end_number0
                 assert reply.end_repeat_number == pattern.end_repeat_number
@@ -427,6 +440,7 @@ class BaseTestLoomServer:
                     pattern_list.append(pattern)
                     pattern.pick_number = rnd.randrange(2, len(pattern.picks))
                     pattern.pick_repeat_number = rnd.randrange(-10, 10)
+                    pattern.thread_group_size = rnd.randrange(1, 10)
                     replies = send_command(
                         client,
                         dict(
@@ -453,6 +467,19 @@ class BaseTestLoomServer:
                         expected_shaft_word=expected_shaft_word,
                     )
 
+                    replies = send_command(
+                        client,
+                        dict(
+                            type="thread_group_size",
+                            group_size=pattern.thread_group_size,
+                        ),
+                    )
+                    assert len(replies) == 2
+                    assert replies[0] == dict(
+                        type="ThreadGroupSize",
+                        group_size=pattern.thread_group_size,
+                    )
+
             # This expects that first pattern 0 and then pattern 3
             # was selected from ALL_PATTERN_PATHS:
             all_pattern_names = [path.name for path in ALL_PATTERN_PATHS]
@@ -471,12 +498,12 @@ class BaseTestLoomServer:
                 db_path=f.name,
             ) as client:
                 for pattern in pattern_list:
-                    pattern = select_pattern(
+                    returned_pattern = select_pattern(
                         client=client,
                         pattern_name=pattern.name,
-                        pick_number=pattern.pick_number,
-                        pick_repeat_number=pattern.pick_repeat_number,
+                        check_defaults=False,
                     )
+                    assert returned_pattern == pattern
 
             # Now try again, but this time reset the database
             with self.create_test_client(
@@ -497,10 +524,10 @@ class BaseTestLoomServer:
             app=self.app,
             upload_patterns=ALL_PATTERN_PATHS[0:3],
         ) as client:
-            returned_pattern = select_pattern(
+            selected_pattern = select_pattern(
                 client=client, pattern_name=pattern_path.name
             )
-            assert returned_pattern == reduced_pattern
+            assert selected_pattern == reduced_pattern
 
     def test_upload(self) -> None:
         with self.create_test_client(

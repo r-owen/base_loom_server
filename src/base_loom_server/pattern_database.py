@@ -18,6 +18,7 @@ FIELD_TYPE_DICT = dict(
     end_number0="integer",
     end_number1="integer",
     end_repeat_number="integer",
+    thread_group_size="integer",
     separate_weaving_repeats="integer",
     separate_threading_repeats="integer",
     timestamp_sec="real",
@@ -41,6 +42,7 @@ CACHE_FIELD_NAMES = (
     "end_number0",
     "end_number1",
     "end_repeat_number",
+    "thread_group_size",
     "separate_weaving_repeats",
     "separate_threading_repeats",
 )
@@ -86,6 +88,7 @@ class PatternDatabase:
             * end_number0
             * end_number1
             * end_repeat_number
+            * thread_group_size
             * separate_weaving_repeats
             * separate_threading_repeats
 
@@ -221,6 +224,20 @@ class PatternDatabase:
                 "set separate_weaving_repeats = ?, timestamp_sec = ?"
                 "where pattern_name = ?",
                 (separate_weaving_repeats, time.time(), pattern_name),
+            )
+            await db.commit()
+
+    async def update_thread_group_size(
+        self, pattern_name: str, thread_group_size: int
+    ) -> None:
+        """Update thread_group_size for the specified pattern."""
+        print(f"update_thread_group_size({pattern_name=}, {thread_group_size=})")
+        async with aiosqlite.connect(self.dbpath) as db:
+            await db.execute(
+                "update patterns "
+                "set thread_group_size = ?, timestamp_sec = ?"
+                "where pattern_name = ?",
+                (thread_group_size, time.time(), pattern_name),
             )
             await db.commit()
 

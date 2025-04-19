@@ -19,6 +19,7 @@ DEFAULT_THREAD_GROUP_SIZE = 4
 
 # The number of picks or warp threads above which
 # the repeat separator is, by default, enabled
+# (so if the number is <= then no separator)
 NUM_ITEMS_FOR_REPEAT_SEPARATOR = 20
 
 
