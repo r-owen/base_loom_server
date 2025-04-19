@@ -697,7 +697,7 @@ class LoomClient {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
         canvas.width = 101
-        canvas.height = 101
+        canvas.height = 51
         let rect = document.getElementById("threading_canvas_container").getBoundingClientRect()
         canvas.width = asOdd(rect.width - 2)  // 2 for 1px border
         canvas.height = asOdd(rect.height - 2)  // 2 for 1px border
@@ -857,7 +857,7 @@ class LoomClient {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
         canvas.width = 101
-        canvas.height = 101
+        canvas.height = 51
 
         let rect = document.getElementById("pattern_canvas_container").getBoundingClientRect()
         canvas.width = asOdd(rect.width - 2)  // 2 for 1px border

@@ -1,18 +1,48 @@
 body {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100vh;
-    font-size: 120%;
+    width: calc(100% - 20px);
+    height: calc(100vh - 30px);
+    font-size: calc(12px + 0.5vh + 0.5vw);
     font-family: "georgia";
+}
+
+/* Reduce height on iPhone, due to tab-related stuff along the bottom */
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+    body {
+        height: calc(100vh - 100px);
+    }
+
+    #pattern_menu {
+        max-width: 180px;
+    }
 }
 
 button {
     background-color: #0000;
+    border-radius: 8px;
     font-size: 80%;
 }
 
 button:hover:enabled {
+    background-color: #ddd
+}
+
+select {
+    font-size: 100%;
+}
+
+#group_size_label {
+    margin-left: 1em;
+}
+
+#upload_patterns {
+    background-color: #0000;
+    border-radius: 8px;
+    font-size: 80%;
+}
+
+#upload_patterns:hover:enabled {
     background-color: #ddd
 }
 
@@ -24,12 +54,12 @@ button:hover:enabled {
 .tabbar button {
     border: 2px;
     padding: 2px 2px;
-    font-size: 90%;
+    font-size: 100%;
     font-family: "georgia";
 }
 
 #mode {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 /* Create an active/current tablink class */
@@ -48,7 +78,6 @@ div.flex-row-start {
 }
 
 #pattern_menu {
-    max-width: 220px;
     /* the following doesn't seem to do anything, at least on on macOS Safari */
     text-overflow: ellipsis;
 }
@@ -58,7 +87,6 @@ div.canvas-grid {
     flex: 1;
     gap: 5px;
     margin: 5px;
-    margin-right: 20px;
 }
 
 canvas {
@@ -66,34 +94,24 @@ canvas {
 }
 
 #debug_div {
-    margin-right: 20px;
-}
-
-#bottom_spacer {
-    height: 40px;
+    margin-right: 10px;
 }
 
 #pick_color {
     flex: 1;
-    height: 10px;
+    height: 12px;
     background-color: rgba(0, 0, 0, 0);
     border-style: solid;
     border-width: 1px;
-    margin-right: 20px;
-}
-
-#toggle_weave_direction {
-    font-size: 100%;
+    margin-right: 10px;
 }
 
 #thread_direction {
-    width: 30px;
-    height: 30px;
-    font-size: 120%;
+    font-size: 90%;
+    font-weight: bold;
 }
 
 #weave_direction {
-    width: 30px;
-    height: 30px;
-    font-size: 120%;
+    font-size: 90%;
+    font-weight: bold;
 }

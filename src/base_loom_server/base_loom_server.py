@@ -702,7 +702,6 @@ class BaseLoomServer:
         await self.report_current_pattern()
         await self.report_current_end_numbers()
         await self.report_current_pick_number()
-        print("report separate repeats")
         await self.report_separate_threading_repeats()
         await self.report_separate_weaving_repeats()
         await self.report_shaft_state()

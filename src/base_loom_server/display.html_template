@@ -61,6 +61,19 @@
     <div class="flex-row-start threading-flex">
         <label>{Direction}</label>
         <button type="button" id="thread_direction">?</button>
+        <div>
+            <label id="group_size_label">{Group size}</label>
+            <select name="thread_group_size" id="thread_group_size">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+            </select>
+        </div>
     </div>
 
     <div class="flex-row-start threading-flex" id="end_number_div" style="display: none;">
@@ -106,22 +119,6 @@
         </div>
     </form>
 
-    <div class="flex-row-start threading-flex" id="thread_group_size_grid" style="display: none;">
-        <div>
-            <label>{Group size}</label>
-            <select name="thread_group_size" id="thread_group_size">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-            </select>
-        </div>
-    </div>
-
     <div class="flex-row-start threading-flex" id="separate_threading_repeats_grid" style="display: none">
         <label>{Separate repeats}?</label>
         <input type="checkbox" id="separate_threading_repeats" value="1"></input>
@@ -143,7 +140,7 @@
 
     <div style="display:{display_debug_controls}" id="debug_div">
     <hr>
-    <p>Debugging stuff</p>
+    <divclass="flex-row-start">Debug (mock loom)</div>
     
     <div class="flex-row-start">
         <label>{Command mock loom}</label>
@@ -161,8 +158,6 @@
         <label>{Read message}: </label>
         <label id='read_message'/>
     </div>
-
-    <div id="bottom_spacer"></div>
 
     <script>
         {display_js}
