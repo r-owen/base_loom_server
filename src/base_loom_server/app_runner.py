@@ -207,9 +207,7 @@ class AppRunner:
     async def get(self) -> HTMLResponse:
         """Endpoint to get the main page."""
         assert self.loom_server is not None  # make mypy happy
-        display_html_template = PKG_FILES.joinpath("display.html_template").read_text(
-            encoding="utf_8"
-        )
+        display_html = PKG_FILES.joinpath("display.html").read_text(encoding="utf_8")
 
         display_css = PKG_FILES.joinpath("display.css").read_text(encoding="utf_8")
 
@@ -226,7 +224,7 @@ class AppRunner:
         is_mock = self.loom_server.mock_loom is not None
         display_debug_controls = "block" if is_mock else "none"
 
-        display_html = display_html_template.format(
+        display_html = display_html.format(
             display_css=display_css,
             display_js=display_js,
             display_debug_controls=display_debug_controls,

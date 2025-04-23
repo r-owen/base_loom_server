@@ -29,6 +29,7 @@ from .constants import LOG_NAME
 from .mock_streams import StreamReaderType, StreamWriterType
 from .pattern_database import PatternDatabase
 from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
+from .utils import compute_num_within_and_repeats, compute_total_num
 
 # The maximum number of patterns that can be in the history
 MAX_PATTERNS = 25
@@ -384,24 +385,31 @@ class BaseLoomServer:
             raise CommandError(
                 self.t("cannot jump to an end") + ": " + self.t("no pattern")
             )
-        if command.end_number0 is not None:
-            if command.end_number0 < 0:
-                raise CommandError(
-                    self.t("invalid end number") + f" {command.end_number0} < 0"
-                )
+        end_number0 = command.end_number0
+        end_number1 = None
+        end_repeat_number = command.end_repeat_number
+
+        # Handle partial defaults
+        if end_number0 is None and end_repeat_number is not None:
+            end_number0 = self.current_pattern.end_number0
+        elif end_repeat_number is None and end_number0 is not None:
+            end_repeat_number = self.current_pattern.end_repeat_number
+
+        if end_number0 is not None:
+            if end_number0 < 0:
+                raise CommandError(self.t("invalid end number") + f" {end_number0} < 0")
             max_end_number = len(self.current_pattern.threading)
-            if command.end_number0 > max_end_number:
+            if end_number0 > max_end_number:
                 raise CommandError(
-                    self.t("invalid end number")
-                    + f" {command.end_number0} > {max_end_number}"
+                    self.t("invalid end number") + f" {end_number0} > {max_end_number}"
                 )
-        end_number1 = self.current_pattern.compute_end_number1(
-            end_number0=command.end_number0
-        )
+            end_number1 = self.current_pattern.compute_end_number1(
+                end_number0=end_number0
+            )
         self.jump_end = client_replies.JumpEndNumber(
-            end_number0=command.end_number0,
+            end_number0=end_number0,
             end_number1=end_number1,
-            end_repeat_number=command.end_repeat_number,
+            end_repeat_number=end_repeat_number,
         )
         await self.report_jump_end()
 
@@ -410,21 +418,13 @@ class BaseLoomServer:
             raise CommandError(
                 self.t("cannot jump to a pick") + ": " + self.t("no pattern")
             )
-        if command.pick_number is not None:
-            if command.pick_number < 0:
-                raise CommandError(
-                    self.t("invalid pick number") + f" {command.pick_number} < 0"
-                )
-            max_pick_number = len(self.current_pattern.picks)
-            if command.pick_number > max_pick_number:
-                raise CommandError(
-                    self.t("invalid pick number")
-                    + f" {command.pick_number} > {max_pick_number}"
-                )
-
+        pick_number, pick_repeat_number = compute_num_within_and_repeats(
+            total_num=command.total_picks, repeat_len=len(self.current_pattern.picks)
+        )
         self.jump_pick = client_replies.JumpPickNumber(
-            pick_number=command.pick_number,
-            pick_repeat_number=command.pick_repeat_number,
+            total_picks=command.total_picks,
+            pick_number=pick_number,
+            pick_repeat_number=pick_repeat_number,
         )
         await self.report_jump_pick()
 
@@ -502,10 +502,11 @@ class BaseLoomServer:
             case ModeEnum.WEAVE:
                 # Command a new pick, if there is one.
                 if self.jump_pick.pick_number is not None:
-                    new_pick_number = self.jump_pick.pick_number
-                    self.current_pattern.set_current_pick_number(new_pick_number)
+                    self.current_pattern.set_current_pick_number(
+                        self.jump_pick.pick_number
+                    )
                 else:
-                    new_pick_number = self.increment_pick_number()
+                    self.increment_pick_number()
                 if self.jump_pick.pick_repeat_number is not None:
                     self.current_pattern.pick_repeat_number = (
                         self.jump_pick.pick_repeat_number
@@ -520,6 +521,7 @@ class BaseLoomServer:
                     self.current_pattern.set_current_end_number(
                         end_number0=self.jump_end.end_number0,
                         end_number1=self.jump_end.end_number1,
+                        end_repeat_number=self.jump_end.end_repeat_number,
                     )
                 else:
                     self.increment_end_number()
@@ -734,6 +736,11 @@ class BaseLoomServer:
             pick_repeat_number=self.current_pattern.pick_repeat_number,
         )
         reply = client_replies.CurrentPickNumber(
+            total_picks=compute_total_num(
+                num_within=self.current_pattern.pick_number,
+                repeat_number=self.current_pattern.pick_repeat_number,
+                repeat_len=len(self.current_pattern.picks),
+            ),
             pick_number=self.current_pattern.pick_number,
             pick_repeat_number=self.current_pattern.pick_repeat_number,
         )

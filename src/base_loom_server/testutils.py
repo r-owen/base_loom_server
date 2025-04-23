@@ -32,6 +32,7 @@ from .reduced_pattern import (
     ReducedPattern,
     reduced_pattern_from_pattern_data,
 )
+from .utils import compute_total_num
 
 WebSocketType: TypeAlias = WebSocket | WebSocketTestSession
 
@@ -244,6 +245,11 @@ def select_pattern(
             case "CurrentPickNumber":
                 assert reply.pick_number == pattern.pick_number
                 assert reply.pick_repeat_number == pattern.pick_repeat_number
+                assert reply.total_picks == compute_total_num(
+                    num_within=pattern.pick_number,
+                    repeat_number=pattern.pick_repeat_number,
+                    repeat_len=len(pattern.picks),
+                )
             case "CurrentEndNumber":
                 assert reply.end_number0 == pattern.end_number0
                 assert reply.end_repeat_number == pattern.end_repeat_number
@@ -344,21 +350,40 @@ class BaseTestLoomServer:
             num_picks_in_pattern = len(pattern.picks)
 
             for pick_number in (0, 1, num_picks_in_pattern // 3, num_picks_in_pattern):
-                for pick_repeat_number in (-1, 0, 1):
+                for pick_repeat_number in (-1, 0, 1, 2):
+                    total_picks = compute_total_num(
+                        num_within=pick_number,
+                        repeat_number=pick_repeat_number,
+                        repeat_len=num_picks_in_pattern,
+                    )
                     replies = send_command(
                         client,
-                        dict(
-                            type="jump_to_pick",
-                            pick_number=pick_number,
-                            pick_repeat_number=pick_repeat_number,
-                        ),
+                        dict(type="jump_to_pick", total_picks=total_picks),
                     )
                     assert len(replies) == 2
-                    assert replies[0] == dict(
-                        type="JumpPickNumber",
-                        pick_number=pick_number,
-                        pick_repeat_number=pick_repeat_number,
-                    )
+                    if total_picks == 0:
+                        assert replies[0] == dict(
+                            type="JumpPickNumber",
+                            total_picks=0,
+                            pick_number=0,
+                            pick_repeat_number=1,
+                        )
+                    elif pick_number == 0:
+                        # Special case: report the last pick of the previous
+                        # repeat, rather than the magic "0" pick_number
+                        assert replies[0] == dict(
+                            type="JumpPickNumber",
+                            total_picks=total_picks,
+                            pick_number=num_picks_in_pattern,
+                            pick_repeat_number=pick_repeat_number - 1,
+                        )
+                    else:
+                        assert replies[0] == dict(
+                            type="JumpPickNumber",
+                            total_picks=total_picks,
+                            pick_number=pick_number,
+                            pick_repeat_number=pick_repeat_number,
+                        )
 
     def test_oobcommand(self) -> None:
         pattern_name = ALL_PATTERN_PATHS[2].name
@@ -441,20 +466,40 @@ class BaseTestLoomServer:
                     pattern.pick_number = rnd.randrange(2, len(pattern.picks))
                     pattern.pick_repeat_number = rnd.randrange(-10, 10)
                     pattern.thread_group_size = rnd.randrange(1, 10)
+                    num_picks_in_pattern = len(pattern.picks)
+                    total_picks = compute_total_num(
+                        num_within=pattern.pick_number,
+                        repeat_number=pattern.pick_repeat_number,
+                        repeat_len=num_picks_in_pattern,
+                    )
                     replies = send_command(
                         client,
-                        dict(
-                            type="jump_to_pick",
-                            pick_number=pattern.pick_number,
-                            pick_repeat_number=pattern.pick_repeat_number,
-                        ),
+                        dict(type="jump_to_pick", total_picks=total_picks),
                     )
                     assert len(replies) == 2
-                    assert replies[0] == dict(
-                        type="JumpPickNumber",
-                        pick_number=pattern.pick_number,
-                        pick_repeat_number=pattern.pick_repeat_number,
-                    )
+                    if total_picks == 0:
+                        assert replies[0] == dict(
+                            type="JumpPickNumber",
+                            total_picks=0,
+                            pick_number=0,
+                            pick_repeat_number=1,
+                        )
+                    elif pattern.pick_number == 0 and total_picks != 0:
+                        # Special case: report the last pick of the previous
+                        # repeat, rather than the magic "0" pick_number
+                        assert replies[0] == dict(
+                            type="JumpPickNumber",
+                            total_picks=total_picks,
+                            pick_number=num_picks_in_pattern,
+                            pick_repeat_number=pattern.pick_repeat_number - 1,
+                        )
+                    else:
+                        assert replies[0] == dict(
+                            type="JumpPickNumber",
+                            total_picks=total_picks,
+                            pick_number=pattern.pick_number,
+                            pick_repeat_number=pattern.pick_repeat_number,
+                        )
                     expected_pick_number = pattern.pick_number
                     expected_shaft_word = pattern.get_pick(
                         expected_pick_number
@@ -708,6 +753,12 @@ class BaseTestLoomServer:
                                         reply.pick_repeat_number
                                         == expected_current_pattern.pick_repeat_number
                                     )
+                                    assert reply.total_picks == compute_total_num(
+                                        num_within=expected_current_pattern.pick_number,
+                                        repeat_number=expected_current_pattern.pick_repeat_number,
+                                        repeat_len=len(expected_current_pattern.picks),
+                                    )
+
                                 case "JumpEndNumber":
                                     assert reply.end_number0 is None
                                     assert reply.end_repeat_number is None

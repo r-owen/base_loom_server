@@ -77,21 +77,25 @@
     </div>
 
     <div class="flex-row-start threading-flex" id="end_number_div" style="display: none;">
-        <label>{End}</label>
+        <label id="end_label">{Ends}</label>
+        <label id="total_end_number0"></label>
+        <label> - </label>
+        <label id="total_end_number1"></label>
         <label id="end_number0"></label>
         <label> - </label>
         <label id="end_number1"></label>
         <label>{of}</label>
-        <label id="total_ends">?</label>
+        <label id="ends_per_repeat">?</label>
         <label>{repeat}</label>
         <label id="end_repeat_number"></label>
     </div>
 
     <div class="flex-row-start weaving-flex" id="pick_number_div">
         <label>{Pick}</label>
+        <label id="total_picks"></label>
         <label id="pick_number"></label>
         <label>{of}</label>
-        <label id="total_picks">?</label>
+        <label id="picks_per_repeat">?</label>
         <label>{repeat}</label>
         <label id="pick_repeat_number"></label>
         <button type="button" id="pick_color"></button>
@@ -111,9 +115,7 @@
     <form action="" class="weaving-flex" id="jump_to_pick_form">
         <div class="flex-row-start">
             <label>{Jump to pick}</label>
-            <input size="5" id="jump_pick_number" inpumode="decimal"></input>
-            <label>{repeat}</label>
-            <input size="3" id="jump_pick_repeat_number" inputmode="decimal"></input>
+            <input size="5" id="jump_total_pick_number" inpumode="decimal"></input>
             <button type="submit" id="jump_to_pick_submit">{Jump}</button>
             <button type="button" id="jump_to_pick_reset">{Reset}</button>
         </div>
