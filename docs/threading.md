@@ -27,30 +27,27 @@ The square button labeled "Direction" shows and changes the direction you are th
 
 ## Jumping
 
-You can jump to a different warp end and/or repeat number.
-The end number you specify is be the smaller warp end number,
-e.g. if group size is 4 and you jump to 21, the displayed group will be ends 21, 22, 23, 24, and 25
-(or fewer, if the warp has fewer than 25 threads).
+You can jump to a different group of warp ends, specified by the smaller warp end number.
+For example if the group size is 4 and you jump to end 21, the new ends will be 21, 22, 23, 24, and 25 (or fewer, if the warp has fewer than 25 threads), regardless of the threading direction.
 
 Jumping is a two-step process: first you request the jump, then you advance to it by pressing the loom's pedal.
 (Two steps are necessary because most looms will not accept an unsolicited command to raise shafts.)
 In detail:
 
-* Enter the desired warp end and/or repeat numbers in the boxes on the "Jump to end" line.
-    The box(es) will turn pink and the Jump button will be enabled.
+* Enter the desired warp end number in the box to the right of "Jump to end".
+  The box will turn pink and the Jump button will be enabled.
 
-* Press the "return" keyboard key or click the "Jump" button on the web page
-    to send the requested jump to the server.
-    You will see several changes:
+* Press the "return" keyboard key or click the "Jump" button on the web page to send the requested jump to the server.
+  You will see several changes:
 
-    * The jump input boxes will have a white background and the jump button will be disabled.
+  * The jump input box will have a white background and the jump button will be disabled.
 
-    * The pattern display will show the new thread group, with a dotted box around it.
-    (But if you are only changing the repeat number, the box will be solid.)
+  * The pattern display will show the new thread group, with a dotted box around it.
 
 * Advance to the next group by pressing the loom's pedal.
-    Until you advance to the next group, you can request a different jump
-    (in case you got it wrong the first time) or cancel the jump in several ways:
+
+* Until you advance to the next group, you may request a different jump (in case you got it wrong the first time) or cancel the jump.
+  To cancel the jump you may do any of the following:
 
     * Press the "Reset" button to the right of "Jump".
 

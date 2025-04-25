@@ -1,5 +1,10 @@
 # Version History
 
+## 0.16.0 2025-04-25
+
+Display total picks in Weaving and total ends in Threading.
+Also jump to total picks in Weaving and total ends in Threading.
+
 ## 0.15.0 2025-04-19
 
 Save threading group size with each pattern.

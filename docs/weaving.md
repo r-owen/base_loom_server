@@ -46,32 +46,32 @@ or, if you have specified a pick to jump to, then it is the color of that pendin
 
 ## Jumping
 
-You can jump to a different pick and/or repeat number.
-This is a two-step process: first you request the jump, then you advance to it by pressing the loom's pedal.
+You can jump to a different pick.
+
+Jumping is a two-step process: first you request the jump, then you advance to it by pressing the loom's pedal.
 (Two steps are necessary because most looms will not accept an unsolicited command to raise shafts.)
 In detail:
 
-* Enter the desired pick and/or repeat numbers in the boxes on the "Jump to pick" line.
-    The box(es) will turn pink and the Jump button will be enabled.
+* Enter the desired pick in the box on the "Jump to pick" line.
+  The box will turn pink and the Jump button will be enabled.
 
-* Press the "return" keyboard key or click the "Jump" button on the web page
-    to send the requested jump to the server.
-    You will see several changes:
+* Press the "return" keyboard key or click the "Jump" button on the web page to send the requested jump to the server.
+  You will see several changes:
 
-    * The jump input boxes will have a white background and the jump button will be disabled.
+  * The jump input box will have a white background and the jump button will be disabled.
 
-    * The pattern display will show the new pick in the center row, with a dotted box around it.
-    (But if you are only changing the repeat number, the box will be solid.)
+  * The pattern display will show the new pick in the center row, with a dotted box around it.
 
 * Advance to the next pick by pressing the loom's pedal.
-    Until you advance to the next pick, you can request a different jump
-    (in case you got it wrong the first time) or cancel the jump in several ways:
 
-    * Press the "Reset" button to the right of "Jump".
+* Until you advance to the next pick, you may request a different jump (in case you got it wrong the first time) or cancel it.
+  To cancel the jump you may do any of the following:
 
-    * Reload the page.
+  * Press the "Reset" button to the right of "Jump".
 
-    * Select a new pattern.
+  * Reload the page.
+
+  * Select a new pattern.
 
 ## Repeating
 
