@@ -881,11 +881,14 @@ class LoomClient {
     Center the jump or current pick vertically.
     */
     displayWeavingPattern() {
-        let pickColorElt = document.getElementById("pick_color")
+        let pickColorCanvas = document.getElementById("pick_color")
         let canvas = document.getElementById("pattern_canvas")
 
         let ctx = canvas.getContext("2d")
         ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        let pickColorCtx = pickColorCanvas.getContext("2d")
+        pickColorCtx.clearRect(0, 0, pickColorCanvas.width, pickColorCanvas.height)
 
         canvas.width = 101
         canvas.height = 51
@@ -895,7 +898,6 @@ class LoomClient {
         canvas.height = asOdd(rect.height - 2)  // 2 for 1px border
 
         if (!this.currentPattern) {
-            pickColorElt.style.backgroundColor = "rgb(0, 0, 0, 0)"
             return
         }
         let centerPickNumber = this.currentPickData.pick_number
@@ -909,9 +911,15 @@ class LoomClient {
         }
         if ((centerPickNumber > 0) && (centerPickNumber <= this.currentPattern.picks.length)) {
             const pick = this.currentPattern.picks[centerPickNumber - 1]
-            pickColorElt.style.backgroundColor = this.currentPattern.color_table[pick.color]
-        } else {
-            pickColorElt.style.backgroundColor = "rgb(0, 0, 0, 0)"
+            let pickColorGradient = ctx.createLinearGradient(0, 0, 0, pickColorCanvas.height)
+            let pickColor = this.currentPattern.color_table[pick.color]
+            pickColorGradient.addColorStop(0, "lightgray")
+            pickColorGradient.addColorStop(0.2, pickColor)
+            pickColorGradient.addColorStop(0.8, pickColor)
+            pickColorGradient.addColorStop(1, "darkgray")
+
+            pickColorCtx.fillStyle = pickColorGradient
+            pickColorCtx.fillRect(0, 0, pickColorCanvas.width, pickColorCanvas.height)
         }
         const numEnds = this.currentPattern.warp_colors.length
         const numPicks = this.currentPattern.picks.length
