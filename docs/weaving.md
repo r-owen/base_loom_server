@@ -58,20 +58,20 @@ In detail:
 * Press the "return" keyboard key or click the "Jump" button on the web page to send the requested jump to the server.
   You will see several changes:
 
-  * The jump input box will have a white background and the jump button will be disabled.
+    * The jump input box will have a white background and the jump button will be disabled.
 
-  * The pattern display will show the new pick in the center row, with a dotted box around it.
+    * The pattern display will show the new pick in the center row, with a dotted box around it.
 
 * Advance to the next pick by pressing the loom's pedal.
 
 * Until you advance to the next pick, you may request a different jump (in case you got it wrong the first time) or cancel it.
   To cancel the jump you may do any of the following:
 
-  * Press the "Reset" button to the right of "Jump".
+    * Press the "Reset" button to the right of "Jump".
 
-  * Reload the page.
+    * Reload the page.
 
-  * Select a new pattern.
+    * Select a new pattern.
 
 ## Repeating
 

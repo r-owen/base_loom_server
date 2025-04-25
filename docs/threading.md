@@ -40,9 +40,9 @@ In detail:
 * Press the "return" keyboard key or click the "Jump" button on the web page to send the requested jump to the server.
   You will see several changes:
 
-  * The jump input box will have a white background and the jump button will be disabled.
+    * The jump input box will have a white background and the jump button will be disabled.
 
-  * The pattern display will show the new thread group, with a dotted box around it.
+    * The pattern display will show the new thread group, with a dotted box around it.
 
 * Advance to the next group by pressing the loom's pedal.
 
