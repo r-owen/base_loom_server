@@ -385,32 +385,30 @@ class BaseLoomServer:
             raise CommandError(
                 self.t("cannot jump to an end") + ": " + self.t("no pattern")
             )
-        end_number0 = command.end_number0
-        end_number1 = None
-        end_repeat_number = command.end_repeat_number
-
-        # Handle partial defaults
-        if end_number0 is None and end_repeat_number is not None:
-            end_number0 = self.current_pattern.end_number0
-        elif end_repeat_number is None and end_number0 is not None:
-            end_repeat_number = self.current_pattern.end_repeat_number
-
-        if end_number0 is not None:
-            if end_number0 < 0:
-                raise CommandError(self.t("invalid end number") + f" {end_number0} < 0")
-            max_end_number = len(self.current_pattern.threading)
-            if end_number0 > max_end_number:
-                raise CommandError(
-                    self.t("invalid end number") + f" {end_number0} > {max_end_number}"
-                )
+        if command.total_end_number0 is None:
+            self.jump_end = client_replies.JumpEndNumber()
+        else:
+            total_end_number0 = command.total_end_number0
+            end_number0, end_repeat_number = compute_num_within_and_repeats(
+                total_num=total_end_number0,
+                repeat_len=self.current_pattern.num_ends,
+            )
             end_number1 = self.current_pattern.compute_end_number1(
                 end_number0=end_number0
             )
-        self.jump_end = client_replies.JumpEndNumber(
-            end_number0=end_number0,
-            end_number1=end_number1,
-            end_repeat_number=end_repeat_number,
-        )
+            total_end_number1 = compute_total_num(
+                num_within=end_number1,
+                repeat_number=end_repeat_number,
+                repeat_len=self.current_pattern.num_ends,
+            )
+
+            self.jump_end = client_replies.JumpEndNumber(
+                total_end_number0=total_end_number0,
+                total_end_number1=total_end_number1,
+                end_number0=end_number0,
+                end_number1=end_number1,
+                end_repeat_number=end_repeat_number,
+            )
         await self.report_jump_end()
 
     async def cmd_jump_to_pick(self, command: SimpleNamespace) -> None:
@@ -418,14 +416,17 @@ class BaseLoomServer:
             raise CommandError(
                 self.t("cannot jump to a pick") + ": " + self.t("no pattern")
             )
-        pick_number, pick_repeat_number = compute_num_within_and_repeats(
-            total_num=command.total_picks, repeat_len=len(self.current_pattern.picks)
-        )
-        self.jump_pick = client_replies.JumpPickNumber(
-            total_picks=command.total_picks,
-            pick_number=pick_number,
-            pick_repeat_number=pick_repeat_number,
-        )
+        if command.total_picks is None:
+            self.jump_pick = client_replies.JumpPickNumber()
+        else:
+            pick_number, pick_repeat_number = compute_num_within_and_repeats(
+                total_num=command.total_picks, repeat_len=self.current_pattern.num_picks
+            )
+            self.jump_pick = client_replies.JumpPickNumber(
+                total_picks=command.total_picks,
+                pick_number=pick_number,
+                pick_repeat_number=pick_repeat_number,
+            )
         await self.report_jump_pick()
 
     async def cmd_mode(self, command: SimpleNamespace) -> None:
@@ -444,7 +445,7 @@ class BaseLoomServer:
             return
         await self.pattern_db.update_separate_threading_repeats(
             pattern_name=self.current_pattern.name,
-            separate_threading_repeats=bool(command.separate),
+            separate_threading_repeats=command.separate,
         )
         self.current_pattern.separate_threading_repeats = command.separate
         await self.report_separate_threading_repeats()
@@ -454,7 +455,7 @@ class BaseLoomServer:
             return
         await self.pattern_db.update_separate_weaving_repeats(
             pattern_name=self.current_pattern.name,
-            separate_weaving_repeats=bool(command.separate),
+            separate_weaving_repeats=command.separate,
         )
         self.current_pattern.separate_weaving_repeats = command.separate
         await self.report_separate_weaving_repeats()
@@ -739,7 +740,7 @@ class BaseLoomServer:
             total_picks=compute_total_num(
                 num_within=self.current_pattern.pick_number,
                 repeat_number=self.current_pattern.pick_repeat_number,
-                repeat_len=len(self.current_pattern.picks),
+                repeat_len=self.current_pattern.num_picks,
             ),
             pick_number=self.current_pattern.pick_number,
             pick_repeat_number=self.current_pattern.pick_repeat_number,
@@ -747,7 +748,7 @@ class BaseLoomServer:
         await self.write_to_client(reply)
 
     async def report_current_end_numbers(self) -> None:
-        """Report CurrentEndNumbers to the client.
+        """Report CurrentEndNumber to the client.
 
         Also update threading information the database.
         """
@@ -759,7 +760,19 @@ class BaseLoomServer:
             end_number1=self.current_pattern.end_number1,
             end_repeat_number=self.current_pattern.end_repeat_number,
         )
-        reply = client_replies.CurrentEndNumbers(
+        total_end_number0 = compute_total_num(
+            num_within=self.current_pattern.end_number0,
+            repeat_number=self.current_pattern.end_repeat_number,
+            repeat_len=self.current_pattern.num_ends,
+        )
+        total_end_number1 = compute_total_num(
+            num_within=self.current_pattern.end_number1,
+            repeat_number=self.current_pattern.end_repeat_number,
+            repeat_len=self.current_pattern.num_ends,
+        )
+        reply = client_replies.CurrentEndNumber(
+            total_end_number0=total_end_number0,
+            total_end_number1=total_end_number1,
             end_number0=self.current_pattern.end_number0,
             end_number1=self.current_pattern.end_number1,
             end_repeat_number=self.current_pattern.end_repeat_number,

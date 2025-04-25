@@ -94,6 +94,16 @@ class ReducedPattern:
         return cls(**datadict)
 
     @property
+    def num_ends(self) -> int:
+        """How many warp ends are in the pattern"""
+        return len(self.threading)
+
+    @property
+    def num_picks(self) -> int:
+        """How many weft picks are in the pattern"""
+        return len(self.picks)
+
+    @property
     def thread_group_size(self):
         return self._thread_group_size
 

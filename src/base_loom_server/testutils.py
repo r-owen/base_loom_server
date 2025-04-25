@@ -252,7 +252,18 @@ def select_pattern(
                 )
             case "CurrentEndNumber":
                 assert reply.end_number0 == pattern.end_number0
+                assert reply.end_number1 == pattern.end_number1
                 assert reply.end_repeat_number == pattern.end_repeat_number
+                assert reply.total_end_number0 == compute_total_num(
+                    num_within=pattern.end_number0,
+                    repeat_number=pattern.end_repeat_number,
+                    repeat_len=pattern.num_ends,
+                )
+                assert reply.total_end_number1 == compute_total_num(
+                    num_within=pattern.end_number1,
+                    repeat_number=pattern.end_repeat_number,
+                    repeat_len=pattern.num_ends,
+                )
             case "SeparateThreadingRepeats":
                 assert reply.separate == pattern.separate_threading_repeats
             case "SeparateWeavingRepeats":
@@ -740,8 +751,22 @@ class BaseTestLoomServer:
                                         == expected_current_pattern.end_number0
                                     )
                                     assert (
+                                        reply.end_number1
+                                        == expected_current_pattern.end_number1
+                                    )
+                                    assert (
                                         reply.end_repeat_number
                                         == expected_current_pattern.end_repeat_number
+                                    )
+                                    assert reply.total_end_number0 == compute_total_num(
+                                        num_within=expected_current_pattern.end_number0,
+                                        repeat_number=expected_current_pattern.end_repeat_number,
+                                        repeat_len=expected_current_pattern.num_ends,
+                                    )
+                                    assert reply.total_end_number1 == compute_total_num(
+                                        num_within=expected_current_pattern.end_number1,
+                                        repeat_number=expected_current_pattern.end_repeat_number,
+                                        repeat_len=expected_current_pattern.num_ends,
                                     )
                                 case "CurrentPickNumber":
                                     assert expected_current_pattern is not None
@@ -760,11 +785,15 @@ class BaseTestLoomServer:
                                     )
 
                                 case "JumpEndNumber":
-                                    assert reply.end_number0 is None
-                                    assert reply.end_repeat_number is None
+                                    for field_name, value in vars(reply).items():
+                                        if field_name == "type":
+                                            continue
+                                        assert value is None
                                 case "JumpPickNumber":
-                                    assert reply.pick_number is None
-                                    assert reply.pick_repeat_number is None
+                                    for field_name, value in vars(reply).items():
+                                        if field_name == "type":
+                                            continue
+                                        assert value is None
                                 case "LoomConnectionState":
                                     if reply.state not in good_connection_states:
                                         raise AssertionError(

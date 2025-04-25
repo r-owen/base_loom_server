@@ -54,7 +54,7 @@ class CommandProblem:
 
 
 @dataclasses.dataclass
-class CurrentEndNumbers:
+class CurrentEndNumber:
     """The current threading end numbers and repeat number
 
     The range of end numbers is [end_number0, end_number1).
@@ -63,6 +63,8 @@ class CurrentEndNumbers:
     """
 
     type: str = dataclasses.field(init=False, default="CurrentEndNumber")
+    total_end_number0: int
+    total_end_number1: int
     end_number0: int
     end_number1: int
     end_repeat_number: int
@@ -83,6 +85,8 @@ class JumpEndNumber:
     """Pending end and repeat numbers"""
 
     type: str = dataclasses.field(init=False, default="JumpEndNumber")
+    total_end_number0: int | None = None
+    total_end_number1: int | None = None
     end_number0: int | None = None
     end_number1: int | None = None
     end_repeat_number: int | None = None

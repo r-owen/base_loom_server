@@ -208,7 +208,7 @@ class PatternDatabase:
                 "update patterns "
                 "set separate_threading_repeats = ?, timestamp_sec = ?"
                 "where pattern_name = ?",
-                (separate_threading_repeats, time.time(), pattern_name),
+                (int(separate_threading_repeats), time.time(), pattern_name),
             )
             await db.commit()
 
@@ -223,7 +223,7 @@ class PatternDatabase:
                 "update patterns "
                 "set separate_weaving_repeats = ?, timestamp_sec = ?"
                 "where pattern_name = ?",
-                (separate_weaving_repeats, time.time(), pattern_name),
+                (int(separate_weaving_repeats), time.time(), pattern_name),
             )
             await db.commit()
 

@@ -21,13 +21,15 @@ const WeavingThreadDisplayGap = 1
 
 const WeavingThreadHalfWidth = 10
 
-const NullCurrentPickNumber = {
-    "total_picks": null,
-    "pick_number": null,
-    "pick_repeat_number": null,
+const NullEndData = {
+    "total_end_number0": null,
+    "total_end_number1": null,
+    "end_number0": null,
+    "end_number1": null,
+    "end_repeat_number": null,
 }
 
-const NullJumpPick = {
+const NullPickData = {
     "total_picks": null,
     "pick_number": null,
     "pick_repeat_number": null,
@@ -235,8 +237,10 @@ class LoomClient {
         this.loomConnectionState = ConnectionStateEnum.disconnected
         this.loomConnectionStateReason = ""
         this.statusMessage = null
-        this.currentPickData = NullCurrentPickNumber
-        this.jumpPickData = NullJumpPick
+        this.currentEndData = NullEndData
+        this.currentPickData = NullPickData
+        this.jumpEndData = NullEndData
+        this.jumpPickData = NullPickData
         this.threadGroupSize = 4
         this.threadLowToHigh = true
         this.loomInfo = null
@@ -297,15 +301,11 @@ class LoomClient {
         let jumpToPickResetElt = document.getElementById("jump_to_pick_reset")
         jumpToPickResetElt.addEventListener("click", this.handleJumpToPickReset.bind(this))
 
-        let jumpEndNumber0Elt = document.getElementById("jump_end_number0")
+        let jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
         // Select all text on focus, to make it easier to try different jump values
         // (without this, you are likely to append digits, which is rarely what you want)
-        jumpEndNumber0Elt.addEventListener(`focus`, () => jumpEndNumber0Elt.select())
-        jumpEndNumber0Elt.addEventListener("input", this.handleJumpToEndInput.bind(this))
-
-        let jumpEndRepeatNumberElt = document.getElementById("jump_end_repeat_number")
-        jumpEndRepeatNumberElt.addEventListener(`focus`, () => jumpEndRepeatNumberElt.select())
-        jumpEndRepeatNumberElt.addEventListener("input", this.handleJumpToEndInput.bind(this))
+        jumpTotalEndNumber0Elt.addEventListener(`focus`, () => jumpTotalEndNumber0Elt.select())
+        jumpTotalEndNumber0Elt.addEventListener("input", this.handleJumpToEndInput.bind(this))
 
         let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
         jumpTotalPickNumberElt.addEventListener(`focus`, () => jumpTotalPickNumberElt.select())
@@ -410,6 +410,7 @@ class LoomClient {
             if (!this.currentPattern) {
                 console.log("Ignoring CurrentEndNumber: no pattern loaded")
             }
+            this.currentEndData = datadict
             this.currentPattern.end_number0 = datadict.end_number0
             this.currentPattern.end_number1 = datadict.end_number1
             this.currentPattern.end_repeat_number = datadict.end_repeat_number
@@ -417,19 +418,17 @@ class LoomClient {
             this.displayEnds()
         } else if (datadict.type == "CurrentPickNumber") {
             if (!this.currentPattern) {
-                this.currentPickData = NullCurrentPickNumber
+                this.currentPickData = NullPickData
                 console.log("Ignoring CurrentPickNumber: no pattern loaded")
             }
             this.currentPickData = datadict
             this.displayWeavingPattern()
             this.displayPick()
         } else if (datadict.type == "JumpEndNumber") {
-            this.jumpEndNumber0 = datadict.end_number0
-            this.jumpEndNumber1 = datadict.end_number1
-            this.jumpEndRepeatNumber = datadict.repeatNumber
+            this.jumpEndData = datadict
             this.displayJumpEnd()
         } else if (datadict.type == "JumpPickNumber") {
-            this.jumpPickData = datadict
+            this.numpPickNumber = datadict
             this.displayJumpPick()
         } else if (datadict.type == "LoomConnectionState") {
             this.loomConnectionState = datadict
@@ -486,10 +485,10 @@ class LoomClient {
             patternMenu.value = currentName
         } else if (datadict.type == "ReducedPattern") {
             this.currentPattern = new ReducedPattern(datadict)
-            // I am not sure this is necessary, but it adds safety in case 
-
-            this.displayWeavingPattern()
-            this.displayThreadingPattern()
+            this.currentEndData = NullEndData
+            this.currentPickData = NullPickData
+            this.jumpEndData = NullEndData
+            this.jumpPickData = NullPickData
             let patternMenu = document.getElementById("pattern_menu")
             patternMenu.value = this.currentPattern.name
         } else if (datadict.type == "SeparateThreadingRepeats") {
@@ -588,26 +587,15 @@ class LoomClient {
         let endNumber1Elt = document.getElementById("end_number1")
         let endsPerRepeatElt = document.getElementById("ends_per_repeat")
         let repeatNumberElt = document.getElementById("end_repeat_number")
-        let totalEndNumber0 = ""
-        let totalEndNumber1 = ""
-        let endNumber0 = ""
-        let endNumber1 = ""
-        let endsPerRepeat = "?"
-        let repeatNumber = ""
-        if (this.currentPattern) {
-            endNumber0 = this.currentPattern.end_number0
-            endNumber1 = this.currentPattern.end_number1
-            endsPerRepeat = this.currentPattern.threading.length
-            repeatNumber = this.currentPattern.end_repeat_number
-            totalEndNumber0 = this.computeTotalNumber(endNumber0, repeatNumber, endsPerRepeat)
-            totalEndNumber1 = this.computeTotalNumber(endNumber1, repeatNumber, endsPerRepeat)
+        if (!this.currentPattern) {
+            this.currentEndData = NullEndData
         }
-        totalEndNumber0Elt.textContent = totalEndNumber0
-        totalEndNumber1Elt.textContent = totalEndNumber1
-        endNumber0Elt.textContent = "(" + endNumber0
-        endNumber1Elt.textContent = endNumber1
-        endsPerRepeatElt.textContent = endsPerRepeat + ","
-        repeatNumberElt.textContent = repeatNumber + ")"
+        totalEndNumber0Elt.textContent = nullToDefault(this.currentEndData.end_number0)
+        totalEndNumber1Elt.textContent = nullToDefault(this.currentEndData.total_end_number1)
+        endNumber0Elt.textContent = "(" + nullToDefault(this.currentEndData.end_number0)
+        endNumber1Elt.textContent = nullToDefault(this.currentEndData.end_number1)
+        endsPerRepeatElt.textContent = nullToDefault(this.currentPattern.threading.length, "?") + ","
+        repeatNumberElt.textContent = nullToDefault(this.currentEndData.end_repeat_number) + ")"
     }
 
     /*
@@ -618,34 +606,24 @@ class LoomClient {
         let pickNumberElt = document.getElementById("pick_number")
         let picksPerRepeatElt = document.getElementById("picks_per_repeat")
         let repeatNumberElt = document.getElementById("pick_repeat_number")
-        let totalPicks = ""
-        let pickNumber = ""
-        let picksPerRepeat = "?"
-        let repeatNumber = ""
-        if ((this.currentPattern)) {
-            totalPicks = this.currentPickData.total_picks
-            pickNumber = this.currentPickData.pick_number
-            picksPerRepeat = this.currentPattern.picks.length
-            repeatNumber = this.currentPickData.pick_repeat_number
+        if (!this.currentPattern) {
+            this.currentPickData = NullPickData
         }
-        totalPicksElt.textContent = totalPicks
-        pickNumberElt.textContent = "(" + pickNumber
-        picksPerRepeatElt.textContent = picksPerRepeat + ","
-        repeatNumberElt.textContent = repeatNumber + ")"
+        totalPicksElt.textContent = nullToDefault(this.currentPickData.total_picks)
+        pickNumberElt.textContent = "(" + nullToDefault(this.currentPickData.pick_number)
+        picksPerRepeatElt.textContent = nullToDefault(this.currentPattern.picks.length, "?") + ","
+        repeatNumberElt.textContent = nullToDefault(this.currentPickData.pick_repeat_number) + ")"
     }
 
     /*
     Display the jump end and repeat
     */
     displayJumpEnd() {
-        let endNumber0Elt = document.getElementById("jump_end_number0")
-        let repeatNumberElt = document.getElementById("jump_end_repeat_number")
+        let endNumber0Elt = document.getElementById("jump_total_end_number0")
         if (!this.currentPattern) {
-            this.jumpEndNumber0 = null
-            this.jumpEndRepeatNumber = null
+            this.jumpEndData = NullPickData
         }
-        endNumber0Elt.value = nullToBlank(this.jumpEndNumber)
-        repeatNumberElt.value = nullToBlank(this.jumpEndRepeatNumber)
+        endNumber0Elt.value = nullToDefault(this.jumpEndData.total_end_number0)
         if (this.currentPattern) {
             this.displayThreadingPattern()
         }
@@ -658,9 +636,9 @@ class LoomClient {
     displayJumpPick() {
         let totalPickNumberElt = document.getElementById("jump_total_pick_number")
         if (!this.currentPattern) {
-            this.jumpPickData = NullJumpPick
+            this.numpPickNumber = NullPickData
         }
-        totalPickNumberElt.value = nullToBlank(this.jumpPickData.total_picks)
+        totalPickNumberElt.value = nullToDefault(this.numpPickNumber.total_picks)
         if (this.currentPattern) {
             this.displayWeavingPattern()
         }
@@ -759,10 +737,10 @@ class LoomClient {
         let endNumber0 = this.currentPattern.end_number0
         let endNumber1 = this.currentPattern.end_number1
         let isJump = false
-        if (this.jumpEndNumber0 != null) {
+        if (this.jumpEndData.end_number0 != null) {
             isJump = true
-            endNumber0 = this.jumpEndNumber0
-            endNumber1 = this.jumpEndNumber1
+            endNumber0 = this.jumpEndData.end_number0
+            endNumber1 = this.jumpEndData.end_number1
         }
         const centerEndNumber = Math.round(Math.max(0, (endNumber0 + endNumber1 - 1) / 2))
         ctx.font = window.getComputedStyle(endLabelElt).font
@@ -925,9 +903,9 @@ class LoomClient {
             return
         }
         let isJump = false
-        if (this.jumpPickData.pick_number != null) {
+        if (this.numpPickNumber.pick_number != null) {
             isJump = true
-            centerPickNumber = this.jumpPickData.pick_number
+            centerPickNumber = this.numpPickNumber.pick_number
         }
         if ((centerPickNumber > 0) && (centerPickNumber <= this.currentPattern.picks.length)) {
             const pick = this.currentPattern.picks[centerPickNumber - 1]
@@ -1020,7 +998,7 @@ class LoomClient {
         if (isJump) {
             // Jump pick: draw a dashed line around the (centered) jump pick,
             // and, if on the canvas, a solid line around the current pick
-            const jumpPickOffset = this.jumpPickData.pick_number - startPick
+            const jumpPickOffset = this.numpPickNumber.pick_number - startPick
             ctx.setLineDash([1, 3])
             ctx.strokeRect(
                 0,
@@ -1146,27 +1124,20 @@ class LoomClient {
 
 
     /*
-    Handle user editing of jump_end_number and jump_end_repeat_number.
+    Handle user editing of jump_end_number.
     */
     async handleJumpToEndInput(event) {
         let jumpToEndSubmitElt = document.getElementById("jump_to_end_submit")
         let jumpToEndResetElt = document.getElementById("jump_to_end_reset")
-        let jumpEndNumber0Elt = document.getElementById("jump_end_number0")
-        let jumpEndRepeatNumberElt = document.getElementById("jump_end_repeat_number")
+        let jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
         let disableJump = true
-        if (asNumberOrNull(jumpEndNumber0Elt.value) != this.jumpEndNumber) {
-            jumpEndNumber0Elt.style.backgroundColor = "pink"
+        if (asNumberOrNull(jumpTotalEndNumber0Elt.value) != this.jumpEndData.end_number0) {
+            jumpTotalEndNumber0Elt.style.backgroundColor = "pink"
             disableJump = false
         } else {
-            jumpEndNumber0Elt.style.backgroundColor = "white"
+            jumpTotalEndNumber0Elt.style.backgroundColor = "white"
         }
-        if (asNumberOrNull(jumpEndRepeatNumberElt.value) != this.jumpEndRepeatNumber) {
-            jumpEndRepeatNumberElt.style.backgroundColor = "pink"
-            disableJump = false
-        } else {
-            jumpEndRepeatNumberElt.style.backgroundColor = "white"
-        }
-        let disableReset = disableJump && (jumpEndNumber0Elt.value == "") && (jumpEndRepeatNumberElt.value == "")
+        let disableReset = disableJump && (jumpTotalEndNumber0Elt.value == "")
         jumpToEndSubmitElt.disabled = disableJump
         jumpToEndResetElt.disabled = disableReset
         if (event != null) {
@@ -1180,11 +1151,9 @@ class LoomClient {
     Reset end number and repeat number to current values.
     */
     async handleJumpToEndReset(event) {
-        const jumpEndNumber0Elt = document.getElementById("jump_end_number0")
-        const jumpEndRepeatNumberElt = document.getElementById("jump_end_repeat_number")
-        jumpEndNumber0Elt.value = ""
-        jumpEndRepeatNumberElt.value = ""
-        const command = { "type": "jump_to_end", "end_number0": null, "end_repeat_number": null }
+        const jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
+        jumpTotalEndNumber0Elt.value = ""
+        const command = { "type": "jump_to_end", "total_end_number0": null }
         await this.sendCommand(command)
         event.preventDefault()
     }
@@ -1195,12 +1164,9 @@ class LoomClient {
     Send the "jump_to_end" command.
     */
     async handleJumpToEndSubmit(event) {
-        const jumpEndNumber0Elt = document.getElementById("jump_end_number0")
-        const jumpEndRepeatNumberElt = document.getElementById("jump_end_repeat_number")
-        // Handle blanks by using the current default, if any
-        const endNumber0 = asNumberOrNull(jumpEndNumber0Elt.value)
-        const repeatNumber = asNumberOrNull(jumpEndRepeatNumberElt.value)
-        const command = { "type": "jump_to_end", "end_number0": endNumber0, "end_repeat_number": repeatNumber }
+        const jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
+        const totalEndNumber0 = asNumberOrNull(jumpTotalEndNumber0Elt.value)
+        const command = { "type": "jump_to_end", "total_end_number0": totalEndNumber0 }
         await this.sendCommand(command)
         event.preventDefault()
     }
@@ -1214,7 +1180,7 @@ class LoomClient {
         let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
 
         let disableJump = true
-        const totalJumpPick = this.jumpPickData.total_picks
+        const totalJumpPick = this.numpPickNumber.total_picks
         if (asNumberOrNull(jumpTotalPickNumberElt.value) != totalJumpPick) {
             jumpTotalPickNumberElt.style.backgroundColor = "pink"
             disableJump = false
@@ -1294,7 +1260,7 @@ class LoomClient {
     */
     async handleSeparateRepeats(isThreading, event) {
         const name = isThreading ? "threading" : "weaving"
-        const command = { "type": `separate_${name} _repeats`, "separate": event.target.checked }
+        const command = { "type": `separate_${name}_repeats`, "separate": event.target.checked }
         await this.sendCommand(command)
         event.preventDefault()
     }
@@ -1378,10 +1344,10 @@ async function handleWebsocketClosed(event) {
 }
 
 /*
-Return "" if value is null, else return value
+Return defaultValue (defaults to "") if value is null, else return value
 */
-function nullToBlank(value) {
-    return value == null ? "" : value
+function nullToDefault(value, defaultValue = "") {
+    return value == null ? defaultValue : value
 }
 
 /*
