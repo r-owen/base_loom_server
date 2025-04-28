@@ -1,5 +1,9 @@
 # Version History
 
+## 0.17.0 2025-04-27
+
+Purge the serial input buffer when connecting to the loom, to avoid a possible stale pick request.
+
 ## 0.16.0 2025-04-25
 
 Display total picks in Weaving and total ends in Threading.
