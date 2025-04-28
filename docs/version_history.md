@@ -1,5 +1,15 @@
 # Version History
 
+## 0.18.0 2025-04-28
+
+Improve the threading display:
+
+* Center the current group, even for patterns with short threading repeats.
+* For ends not threaded on any shaft just show the thread without a shaft number.
+  Formerly a truncated 0 was shown. Showing a whole 0 is possible, but likely more confusing.
+
+Remove a source of flicker by only updating the visible pattern.
+
 ## 0.17.0 2025-04-27
 
 Try to prevent an unwanted stale next-pick request when the loom server connects to the loom (which is when a user connects to the server).
