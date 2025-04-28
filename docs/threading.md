@@ -19,6 +19,11 @@ Warp end numbering goes up from 1 at the right (the typical US scheme when warpi
 Warp end 0 is special: it has no shafts and no warp thread. It is the first pick when starting to thread a pattern.
 It is also an intermediate step when repeating a threading sequence, unless "Separate repeats" is unchecked.
 
+Special cases that may only be supported by WIF files:
+
+* Ends that are threaded through heddles on more than one shaft are only shown threaded on the lowest-numbered shaft, ignoring 0.
+* Ends that are only threaded on shaft 0 (meaning not threaded through heddles on any shaft) are displayed without a shaft number.
+
 ## Threading Direction
 
 The square button labeled "Direction" shows and changes the direction you are threading: a left-facing arrow indicates that you are threading right to left. Press the button to change the threading direction.
