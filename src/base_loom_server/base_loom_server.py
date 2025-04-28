@@ -244,6 +244,27 @@ class BaseLoomServer:
                 self.loom_reader, self.loom_writer = await open_serial_connection(
                     url=self.serial_port, baudrate=self.baud_rate
                 )
+
+                # try to purge input buffer
+                transport = getattr(self.loom_writer, "transport", None)
+                if transport is None:
+                    self.log.warning(
+                        f"{self}: Could not flush read buffer; no transport found"
+                    )
+                else:
+                    serial_instance = getattr(transport, "_serial", None)
+                    if serial_instance is None:
+                        self.log.warning(
+                            f"{self}: Could not flush read buffer; no serial instance found in transport"
+                        )
+                    elif serial_instance.in_waiting > 0:
+                        serial_instance.reset_input_buffer()
+                        self.log.info(f"{self}: Read buffer flushed")
+                    else:
+                        self.log.info(
+                            f"{self}: Read buffer did not need to be flushed; it was empty"
+                        )
+
             self.loom_connecting = False
             await self.report_loom_connection_state()
             await self.get_initial_loom_state()
@@ -268,7 +289,7 @@ class BaseLoomServer:
         """
         if self.client_connected:
             self.log.info(
-                "BaseLoomServer: a client was already connected; closing that connection"
+                f"{self}: a client was already connected; closing that connection"
             )
             await self.disconnect_client()
         await websocket.accept()
@@ -574,9 +595,7 @@ class BaseLoomServer:
                 try:
                     data = await self.websocket.receive_json()
                 except json.JSONDecodeError:
-                    self.log.info(
-                        "BaseLoomServer: ignoring invalid command: not json-encoded"
-                    )
+                    self.log.info(f"{self}: ignoring invalid command: not json-encoded")
 
                 # Parse the command
                 try:
@@ -626,7 +645,7 @@ class BaseLoomServer:
         except asyncio.CancelledError:
             return
         except WebSocketDisconnect:
-            self.log.info("BaseLoomServer: client disconnected")
+            self.log.info(f"{self}: client disconnected")
             return
         except Exception as e:
             self.log.exception(f"{self}: bug: client read looop failed: {e!r}")
