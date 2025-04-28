@@ -2,7 +2,9 @@
 
 ## 0.17.0 2025-04-27
 
-Purge the serial input buffer when connecting to the loom, to avoid a possible stale pick request.
+Try to prevent an unwanted stale next-pick request when the loom server connects to the loom (which is when a user connects to the server).
+Do this by purging the read buffer.
+
 
 ## 0.16.0 2025-04-25
 
