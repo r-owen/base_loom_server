@@ -720,6 +720,9 @@ class LoomClient {
     Center the jump or current range horizontally.
     */
     displayThreadingPattern() {
+        if (this.mode != ModeEnum.THREADING) {
+            return
+        }
         let canvas = document.getElementById("threading_canvas")
         let endLabelElt = document.getElementById("end_label")
         let ctx = canvas.getContext("2d")
@@ -732,6 +735,7 @@ class LoomClient {
         canvas.height = asOdd(rect.height - 2)  // 2 for 1px border
 
         if (!this.currentPattern) {
+            // Now that it's the right size, leave it blank
             return
         }
         let endNumber0 = this.currentPattern.end_number0
@@ -746,6 +750,7 @@ class LoomClient {
         ctx.font = window.getComputedStyle(endLabelElt).font
         ctx.textBaseline = "middle"
         ctx.textAlign = "center"
+        // Measure the space required for a shaft number (max 2 digits)
         const fontMeas = ctx.measureText("59")
         const fontHeight = Math.ceil(fontMeas.actualBoundingBoxAscent + fontMeas.actualBoundingBoxDescent)
         let blockWidth = Math.ceil(fontMeas.width) + ThreadingWidthGap
@@ -753,6 +758,9 @@ class LoomClient {
             blockWidth++
         }
         const blockHalfWidth = (blockWidth - 1) / 2
+        // Position of right edge of center block
+        const centerX = ((canvas.width + 1) / 2) - blockHalfWidth
+
         let blockHeight = fontHeight
         if (blockHeight % 2 == 0) {
             blockHeight++
@@ -762,7 +770,8 @@ class LoomClient {
         const maxShaftNum = Math.max(...this.currentPattern.threading) + 1
         const verticalDelta = Math.floor(Math.min(blockHeight, remainingHeight / maxShaftNum))
 
-        const numEndsToShow = Math.min(numEnds, Math.floor(canvas.width / blockWidth))
+        const numEndSlots = Math.floor(canvas.width / blockWidth)
+        const numEndsToShow = Math.min(numEnds * 2 + 1, numEndSlots)  // 1 is for showing 0
 
         const centerSlotIndex = Math.round((numEndsToShow - 1) / 2)
 
@@ -796,8 +805,8 @@ class LoomClient {
 
             const shaftIndex = this.currentPattern.threading[endIndex]
 
-            const xCenter = canvas.width - blockWidth * slotIndex - blockHalfWidth
-            const yCenter = canvas.height - verticalDelta * (shaftIndex + 0.5) - fontMeas.actualBoundingBoxDescent
+            const xCenter = centerX + (blockWidth * (centerSlotIndex - slotIndex))
+            const yShaftNumberBaseline = canvas.height - verticalDelta * (shaftIndex + 0.5) - fontMeas.actualBoundingBoxDescent
 
             if (endIndex == displayEndIndex0) {
                 ctx.fillStyle = "black"
@@ -832,25 +841,35 @@ class LoomClient {
             endGradient.addColorStop(1, "darkgray")
 
             ctx.fillStyle = endGradient
-            ctx.fillRect(
-                xCenter - WeavingThreadHalfWidth,
-                blockHeight + ThreadingEndTopGap,
-                WeavingThreadHalfWidth * 2,
-                yCenter - Math.round(blockHeight / 2) - blockHeight - 2 - ThreadingEndTopGap,
-            )
-            ctx.fillRect(
-                xCenter - WeavingThreadHalfWidth,
-                yCenter + Math.round(blockHeight / 2) + halfTopGap,
-                WeavingThreadHalfWidth * 2,
-                canvas.height - (yCenter + Math.round(blockHeight / 2) + 2)
-            )
+            if (shaftIndex >= 0) {
+                ctx.fillRect(
+                    xCenter - WeavingThreadHalfWidth,
+                    blockHeight + ThreadingEndTopGap,
+                    WeavingThreadHalfWidth * 2,
+                    yShaftNumberBaseline - Math.round(blockHeight / 2) - blockHeight - 2 - ThreadingEndTopGap,
+                )
+                ctx.fillRect(
+                    xCenter - WeavingThreadHalfWidth,
+                    yShaftNumberBaseline + Math.round(blockHeight / 2) + halfTopGap,
+                    WeavingThreadHalfWidth * 2,
+                    canvas.height - (yShaftNumberBaseline + Math.round(blockHeight / 2) + 2)
+                )
 
-            // Display shaft number
-            ctx.fillStyle = "black"
-            ctx.fillText(shaftIndex + 1,
-                xCenter,
-                yCenter,
-            )
+                // Display shaft number
+                ctx.fillStyle = "black"
+                ctx.fillText(shaftIndex + 1,
+                    xCenter,
+                    yShaftNumberBaseline,
+                )
+            } else {
+                // shaft 0 -- no shaft threaded
+                ctx.fillRect(
+                    xCenter - WeavingThreadHalfWidth,
+                    blockHeight + ThreadingEndTopGap,
+                    WeavingThreadHalfWidth * 2,
+                    canvas.height - (blockHeight + ThreadingEndTopGap),
+                )
+            }
         }
     }
 
@@ -881,6 +900,10 @@ class LoomClient {
     Center the jump or current pick vertically.
     */
     displayWeavingPattern() {
+        if (this.mode != ModeEnum.WEAVING) {
+            return
+        }
+
         let pickColorCanvas = document.getElementById("pick_color")
         let canvas = document.getElementById("pattern_canvas")
 
