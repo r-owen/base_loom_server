@@ -66,6 +66,10 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Version Histsory</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#0181-2025-04-28">0.18.1 2025-04-28</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#0180-2025-04-28">0.18.0 2025-04-28</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#0170-2025-04-27">0.17.0 2025-04-27</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#0160-2025-04-25">0.16.0 2025-04-25</a>
@@ -141,6 +145,16 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="version-history">Version History</h1>
+<h2 id="0181-2025-04-28">0.18.1 2025-04-28</h2>
+<p>Show the correct threading group size when you connect.</p>
+<h2 id="0180-2025-04-28">0.18.0 2025-04-28</h2>
+<p>Improve the threading display:</p>
+<ul>
+<li>Center the current group, even for patterns with short threading repeats.</li>
+<li>For ends not threaded on any shaft just show the thread without a shaft number.
+  Formerly a truncated 0 was shown. Showing a whole 0 is possible, but likely more confusing.</li>
+</ul>
+<p>Remove a source of flicker by only updating the visible pattern.</p>
 <h2 id="0170-2025-04-27">0.17.0 2025-04-27</h2>
 <p>Try to prevent an unwanted stale next-pick request when the loom server connects to the loom (which is when a user connects to the server).
 Do this by purging the read buffer.</p>
