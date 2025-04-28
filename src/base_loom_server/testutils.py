@@ -734,6 +734,7 @@ class BaseTestLoomServer:
                                 "ReducedPattern",
                                 "SeparateWeavingRepeats",
                                 "SeparateThreadingRepeats",
+                                "ThreadGroupSize",
                             }
                         good_connection_states = {
                             ConnectionStateEnum.CONNECTING,
@@ -843,6 +844,12 @@ class BaseTestLoomServer:
                                     assert reply.severity == MessageSeverityEnum.INFO
                                 case "ThreadDirection":
                                     assert reply.low_to_high
+                                case "ThreadGroupSize":
+                                    assert expected_current_pattern is not None
+                                    assert (
+                                        reply.group_size
+                                        == expected_current_pattern.thread_group_size
+                                    )
                                 case "WeaveDirection":
                                     assert reply.forward
                                 case _:

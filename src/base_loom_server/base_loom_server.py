@@ -716,7 +716,6 @@ class BaseLoomServer:
         await self.report_mode()
         await self.report_pattern_names()
         await self.report_weave_direction()
-        await self.report_thread_direction()
         await self.clear_jumps(force_output=True)
         await self.report_current_pattern()
         await self.report_current_end_numbers()
@@ -724,6 +723,8 @@ class BaseLoomServer:
         await self.report_separate_threading_repeats()
         await self.report_separate_weaving_repeats()
         await self.report_shaft_state()
+        await self.report_thread_direction()
+        await self.report_thread_group_size()
 
     async def report_loom_connection_state(self, reason: str = "") -> None:
         """Report LoomConnectionState to the client."""

@@ -1,5 +1,9 @@
 # Version History
 
+## 0.18.1 2025-04-28
+
+Show the correct threading group size when you connect.
+
 ## 0.18.0 2025-04-28
 
 Improve the threading display:
