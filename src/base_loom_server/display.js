@@ -923,6 +923,9 @@ class LoomClient {
         if (!this.currentPattern) {
             return
         }
+        const numEnds = this.currentPattern.warp_colors.length
+        const numPicks = this.currentPattern.picks.length
+
         let centerPickNumber = this.currentPickData.pick_number
         if (centerPickNumber == null) {
             return
@@ -932,7 +935,7 @@ class LoomClient {
             isJump = true
             centerPickNumber = this.numpPickNumber.pick_number
         }
-        if ((centerPickNumber > 0) && (centerPickNumber <= this.currentPattern.picks.length)) {
+        if ((centerPickNumber > 0) && (centerPickNumber <= numPicks)) {
             const pick = this.currentPattern.picks[centerPickNumber - 1]
             let pickColorGradient = ctx.createLinearGradient(0, 0, 0, pickColorCanvas.height)
             let pickColor = this.currentPattern.color_table[pick.color]
@@ -944,8 +947,6 @@ class LoomClient {
             pickColorCtx.fillStyle = pickColorGradient
             pickColorCtx.fillRect(0, 0, pickColorCanvas.width, pickColorCanvas.height)
         }
-        const numEnds = this.currentPattern.warp_colors.length
-        const numPicks = this.currentPattern.picks.length
         let blockSize = Math.min(
             Math.max(Math.round(canvas.width / numEnds), MinBlockSize),
             Math.max(Math.round(canvas.height / numPicks), MinBlockSize),
@@ -957,7 +958,7 @@ class LoomClient {
 
         const numEndsToShow = Math.min(numEnds, Math.floor(canvas.width / blockSize))
         // Make sure numPicksToShow is odd
-        let numPicksToShow = Math.min(numPicks, Math.ceil(canvas.height / blockSize))
+        let numPicksToShow = Math.min(numPicks * 2 + 1, Math.ceil(canvas.height / blockSize))
         if (numPicksToShow % 2 == 0) {
             numPicksToShow += 1
         }
