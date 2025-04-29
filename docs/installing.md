@@ -151,3 +151,10 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
     * `--port`: server port
 
     For a full list of options, run the command with option `--help`.
+
+5. To upgrade to a newer version of one or more packages:
+
+        python -m pip install --upgrade dtx_to_wif base_loom_server toika_loom_server
+
+    (omit any packages you do not wish to upgrade).
+    You can also specify specific versions; seee pip's documentation for details.
