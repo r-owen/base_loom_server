@@ -7,7 +7,17 @@ nav:
   - Coding: coding.md
   - Translations: translations.md
   - Version Histsory: version_history.md
+  - API Reference:
+      - $api/base_loom_server.***
 theme:
   name: readthedocs
   features:
     - color_mode: auto
+plugins:
+  - mkapi
+  - search
+validation:
+  omitted_files: warn
+  absolute_links: warn  # Or 'relative_to_docs' - new in MkDocs 1.6
+  unrecognized_links: warn
+  anchors: warn  # New in MkDocs 1.6
