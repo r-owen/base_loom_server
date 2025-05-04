@@ -1,5 +1,9 @@
 # Version History
 
+## 0.18.2 2025-05-03
+
+Add API documentation.
+
 ## 0.18.1 2025-04-28
 
 Show the correct threading group size when you connect.
