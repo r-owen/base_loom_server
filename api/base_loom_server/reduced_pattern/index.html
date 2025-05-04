@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>base_loom_server.reduced_pattern - Base Loom Server</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../../../css/mkapi-material.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "base_loom_server.reduced_pattern";
+        var mkdocs_page_input_path = "api/base_loom_server/reduced_pattern.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> Base Loom Server
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving/">Weaving</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../installing/">Installing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../coding/">Coding</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../translations/">Translations</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../version_history/">Version Histsory</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >base_loom_server</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../">base_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../app_runner/">base_loom_server.app_runner</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_loom_server/">base_loom_server.base_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_mock_loom/">base_loom_server.base_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_loom_server/">base_loom_server.example_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_mock_loom/">base_loom_server.example_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../main/">base_loom_server.main</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../mock_streams/">base_loom_server.mock_streams</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../pattern_database/">base_loom_server.pattern_database</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">base_loom_server.reduced_pattern</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.reduced_pattern.Pick">Pick</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.Pick.from_dict">from_dict</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.from_dict">from_dict</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.num_ends">num_ends</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.num_picks">num_picks</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.thread_group_size">thread_group_size</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.check_end_number">check_end_number</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.check_pick_number">check_pick_number</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.get_current_pick">get_current_pick</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.get_pick">get_pick</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.get_threading_shaft_word">get_threading_shaft_word</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.increment_end_number">increment_end_number</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number">increment_pick_number</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">compute_end_number1</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number">set_current_end_number</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.set_current_pick_number">set_current_pick_number</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.reduced_pattern.reduced_pattern_from_pattern_data">reduced_pattern_from_pattern_data</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.reduced_pattern.pop_and_check_type_field">pop_and_check_type_field</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.reduced_pattern.shaft_word_from_shaft_set">shaft_word_from_shaft_set</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.reduced_pattern.shaft_set_from_shaft_word">shaft_set_from_shaft_word</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../testutils/">base_loom_server.testutils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utils/">base_loom_server.utils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../version/">base_loom_server.version</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">Base Loom Server</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API Reference</li>
+          <li class="breadcrumb-item">base_loom_server</li>
+      <li class="breadcrumb-item active">base_loom_server.reduced_pattern</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 style="display: none;">base_loom_server.reduced_pattern</h1><p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">module</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern" title="base_loom_server.reduced_pattern">base_loom_server.reduced_pattern</a></span>
+</p>
+<div class="mkapi-document">
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle classes">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Classes</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.Pick" title="base_loom_server.reduced_pattern.Pick">Pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+One pick of a pattern</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+A weaving pattern reduced to the bare essentials.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle functions">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Functions</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.reduced_pattern_from_pattern_data" title="base_loom_server.reduced_pattern.reduced_pattern_from_pattern_data">reduced_pattern_from_pattern_data</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Convert a dtx_to_wif.PatternData to a ReducedPattern.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.pop_and_check_type_field" title="base_loom_server.reduced_pattern.pop_and_check_type_field">pop_and_check_type_field</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.shaft_word_from_shaft_set" title="base_loom_server.reduced_pattern.shaft_word_from_shaft_set">shaft_word_from_shaft_set</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Convert a shaft set to a shaft word.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.shaft_set_from_shaft_word" title="base_loom_server.reduced_pattern.shaft_set_from_shaft_word">shaft_set_from_shaft_word</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Convert a shaft word to a shaft set.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.Pick">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.Pick" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">dataclass</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.Pick" title="base_loom_server.reduced_pattern.Pick">Pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">color</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">shaft_word</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>One pick of a pattern</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">color</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
+Weft color, as an index into the color table.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">shaft_word</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
+A bit mask, with bit 1 = shaft 0.
+The shaft is up if the bit is set.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle methods">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Methods</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.Pick.from_dict" title="base_loom_server.reduced_pattern.Pick.from_dict">from_dict</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Construct a Pick from a dict representation.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.Pick.from_dict">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.Pick.from_dict" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">classmethod</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.Pick" title="base_loom_server.reduced_pattern.Pick">Pick</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.Pick.from_dict" title="base_loom_server.reduced_pattern.Pick.from_dict">from_dict</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">datadict</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.reduced_pattern.Pick" title="base_loom_server.reduced_pattern.Pick">Pick</a></span></span>
+</p>
+<div class="mkapi-document">
+<p>Construct a Pick from a dict representation.</p>
+<p>The "type" field is optional, but checked if present.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">dataclass</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">color_table</span><span class="mkapi-colon">: </span><span class="mkapi-ann">list[str]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">warp_colors</span><span class="mkapi-colon">: </span><span class="mkapi-ann">list[int]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">threading</span><span class="mkapi-colon">: </span><span class="mkapi-ann">list[int]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">picks</span><span class="mkapi-colon">: </span><span class="mkapi-ann">list[<a href="./#base_loom_server.reduced_pattern.Pick" title="base_loom_server.reduced_pattern.Pick">Pick</a>]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick0</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.reduced_pattern.Pick" title="base_loom_server.reduced_pattern.Pick">Pick</a></span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-equal"> = </span><span class="mkapi-default">0</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-equal"> = </span><span class="mkapi-default">1</span><span class="mkapi-comma">, </span><span class="mkapi-arg">end_number0</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-equal"> = </span><span class="mkapi-default">0</span><span class="mkapi-comma">, </span><span class="mkapi-arg">end_number1</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-equal"> = </span><span class="mkapi-default">0</span><span class="mkapi-comma">, </span><span class="mkapi-arg">end_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-equal"> = </span><span class="mkapi-default">1</span><span class="mkapi-comma">, </span><span class="mkapi-arg">_thread_group_size</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-equal"> = </span><span class="mkapi-default"><span class="mkapi-tooltip" title="base_loom_server.reduced_pattern.DEFAULT_THREAD_GROUP_SIZE">DEFAULT_THREAD_GROUP_SIZE</span></span><span class="mkapi-comma">, </span><span class="mkapi-arg">separate_weaving_repeats</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-comma">, </span><span class="mkapi-arg">separate_threading_repeats</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>A weaving pattern reduced to the bare essentials.</p>
+<p>Contains just enough information to allow loom control,
+with a simple display.</p>
+<p>Picks are accessed by pick number, which is 1-based.
+0 indicates that nothing has been woven.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle attributes">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Attributes</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">num_ends</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
+How many warp ends are in the pattern</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">num_picks</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
+How many weft picks are in the pattern</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle methods">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Methods</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.from_dict" title="base_loom_server.reduced_pattern.ReducedPattern.from_dict">from_dict</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Construct a ReducedPattern from a dict.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.check_end_number" title="base_loom_server.reduced_pattern.ReducedPattern.check_end_number">check_end_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Raise IndexError if end_number0 out of range.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.check_pick_number" title="base_loom_server.reduced_pattern.ReducedPattern.check_pick_number">check_pick_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Raise IndexError if pick_number out of range.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.get_current_pick" title="base_loom_server.reduced_pattern.ReducedPattern.get_current_pick">get_current_pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Get the current pick.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.get_pick" title="base_loom_server.reduced_pattern.ReducedPattern.get_pick">get_pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Get the specified pick.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.get_threading_shaft_word" title="base_loom_server.reduced_pattern.ReducedPattern.get_threading_shaft_word">get_threading_shaft_word</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Get current threading shaft word.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.increment_end_number" title="base_loom_server.reduced_pattern.ReducedPattern.increment_end_number">increment_end_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Increment self.end_number0 in the specified direction.
+Increment end_repeat_number as well, if appropriate.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number" title="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number">increment_pick_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Increment pick_number in the specified direction.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">compute_end_number1</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number" title="base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number">set_current_end_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Set end_number0.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.set_current_pick_number" title="base_loom_server.reduced_pattern.ReducedPattern.set_current_pick_number">set_current_pick_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Set pick_number.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.from_dict">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.from_dict" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">classmethod</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.from_dict" title="base_loom_server.reduced_pattern.ReducedPattern.from_dict">from_dict</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">datadict</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a></span></span>
+</p>
+<div class="mkapi-document">
+<p>Construct a ReducedPattern from a dict.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.num_ends">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.num_ends" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">property</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.num_ends" title="base_loom_server.reduced_pattern.ReducedPattern.num_ends">num_ends</a></span><span class="mkapi-signature"><span class="mkapi-colon">: </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document">
+<p>How many warp ends are in the pattern</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.num_picks">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.num_picks" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">property</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.num_picks" title="base_loom_server.reduced_pattern.ReducedPattern.num_picks">num_picks</a></span><span class="mkapi-signature"><span class="mkapi-colon">: </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document">
+<p>How many weft picks are in the pattern</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.thread_group_size">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.thread_group_size" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">property</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.thread_group_size" title="base_loom_server.reduced_pattern.ReducedPattern.thread_group_size">thread_group_size</a></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.check_end_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.check_end_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.check_end_number" title="base_loom_server.reduced_pattern.ReducedPattern.check_end_number">check_end_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">end_number0</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Raise IndexError if end_number0 out of range.</p>
+<p>The allowed range is 0 to self.len(self.threading), inclusive.
+See get_end_number for more information.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">IndexError</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.check_pick_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.check_pick_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.check_pick_number" title="base_loom_server.reduced_pattern.ReducedPattern.check_pick_number">check_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Raise IndexError if pick_number out of range.</p>
+<p>The allowed range is 0 to self.len(self.picks), inclusive.
+See get_pick_number for more information.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">IndexError</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.get_current_pick">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.get_current_pick" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.get_current_pick" title="base_loom_server.reduced_pattern.ReducedPattern.get_current_pick">get_current_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.reduced_pattern.Pick" title="base_loom_server.reduced_pattern.Pick">Pick</a></span></span>
+</p>
+<div class="mkapi-document">
+<p>Get the current pick.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.get_pick">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.get_pick" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.get_pick" title="base_loom_server.reduced_pattern.ReducedPattern.get_pick">get_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.reduced_pattern.Pick" title="base_loom_server.reduced_pattern.Pick">Pick</a></span></span>
+</p>
+<div class="mkapi-document">
+<p>Get the specified pick.</p>
+<p>Return self.pick0 if pick_number = 0,
+else return self.picks[pick_number-1] if pick_number in range.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">IndexError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If <span class="mkapi-tooltip" title="base_loom_server.reduced_pattern.ReducedPattern.pick_number"><code>pick_number</code></span> &lt; 0 or &gt; len(self.picks).</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.get_threading_shaft_word">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.get_threading_shaft_word" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.get_threading_shaft_word" title="base_loom_server.reduced_pattern.ReducedPattern.get_threading_shaft_word">get_threading_shaft_word</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document">
+<p>Get current threading shaft word.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.increment_end_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.increment_end_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.increment_end_number" title="base_loom_server.reduced_pattern.ReducedPattern.increment_end_number">increment_end_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">thread_low_to_high</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Increment self.end_number0 in the specified direction.
+Increment end_repeat_number as well, if appropriate.</p>
+<p>End number is 1-based, but 0 means at start or end
+(in which case there are no threads in the group).</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number" title="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number">increment_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">weave_forward</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document">
+<p>Increment pick_number in the specified direction.</p>
+<p>Increment pick_repeat_number as well, if appropriate.</p>
+<p>Return the new pick number.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">compute_end_number1</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">end_number0</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number" title="base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number">set_current_end_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">end_number0</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">end_number1</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">end_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Set end_number0.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">end_number0</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
+New value for end_number0, the starting end number
+for a group of ends to thread.
+Must be in range 0 ≤ end_number0 ≤ num_shafts.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">end_number1</span> : 
+<span class="mkapi-item-type">int | None</span> <span class="mkapi-dash">&mdash;</span>
+New value for end_number1. If None, compute it.
+If not None then the value must be:</p>
+<ul>
+<li>0, if end_number0 = 0.</li>
+<li>In range end_number0 &lt; end_number1 ≤ 1 + num shafts,
+    if end_number0 ≠ 0.</li>
+</ul>
+</li>
+<li>
+<p><span class="mkapi-item-name">end_repeat_number</span> : 
+<span class="mkapi-item-type">int | None</span> <span class="mkapi-dash">&mdash;</span>
+New value for end_repeat_number.
+If None, use the current value.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">IndexError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If end_number0 &lt; 0 or &gt; len(self.threading).</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">IndexError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If end_number1 not None and not valid.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.set_current_pick_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.set_current_pick_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.set_current_pick_number" title="base_loom_server.reduced_pattern.ReducedPattern.set_current_pick_number">set_current_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Set pick_number.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">pick_number</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
+The pick number.</p>
+</li>
+</ul>
+</div>
+<div class="mkapi-section-content">
+<p>Raise IndexError if pick_number &lt; 0 or &gt; num picks.</p>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.reduced_pattern_from_pattern_data">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.reduced_pattern_from_pattern_data" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.reduced_pattern_from_pattern_data" title="base_loom_server.reduced_pattern.reduced_pattern_from_pattern_data">reduced_pattern_from_pattern_data</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">data</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="dtx_to_wif">dtx_to_wif</span>.<span class="mkapi-tooltip" title="dtx_to_wif.pattern_data.PatternData">PatternData</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a></span></span>
+</p>
+<div class="mkapi-document">
+<p>Convert a dtx_to_wif.PatternData to a ReducedPattern.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">name</span> : 
+<span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
+The name of the pattern to use.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">data</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="dtx_to_wif">dtx_to_wif</span>.<span class="mkapi-tooltip" title="dtx_to_wif.pattern_data.PatternData">PatternData</span></span> <span class="mkapi-dash">&mdash;</span>
+The pattern read by dtx_to_wif. The <code>name</code> field is ignored.</p>
+</li>
+</ul>
+</div>
+<div class="mkapi-section-content">
+<p>The result is simpler and smaller, and can be sent to easily
+encoded and sent to JavaScript.</p>
+<p>Note that all input (PatternData) indices are 1-based
+and all output (ReducedPattern) indices are 0-based.</p>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">RuntimeError</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.pop_and_check_type_field">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.pop_and_check_type_field" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.pop_and_check_type_field" title="base_loom_server.reduced_pattern.pop_and_check_type_field">pop_and_check_type_field</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">typename</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">datadict</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">TypeError</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.shaft_word_from_shaft_set">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.shaft_word_from_shaft_set" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.shaft_word_from_shaft_set" title="base_loom_server.reduced_pattern.shaft_word_from_shaft_set">shaft_word_from_shaft_set</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">shaft_set</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[int]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document">
+<p>Convert a shaft set to a shaft word.</p>
+<p>A shaft set is a collection of 1-based shafts numbers
+for shafts that are up. If 0 is present, it is ignored.
+A shaft word is a bit mask, with bit 0 = shaft 1;
+if a bit is high, that shaft is up.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.shaft_set_from_shaft_word">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.shaft_set_from_shaft_word" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.shaft_set_from_shaft_word" title="base_loom_server.reduced_pattern.shaft_set_from_shaft_word">shaft_set_from_shaft_word</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">shaft_word</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">set[int]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Convert a shaft word to a shaft set.</p>
+<p>See shaft_word_from_shaft_set for details.</p>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../pattern_database/" class="btn btn-neutral float-left" title="base_loom_server.pattern_database"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../testutils/" class="btn btn-neutral float-right" title="base_loom_server.testutils">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../pattern_database/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../testutils/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../javascript/mkapi.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

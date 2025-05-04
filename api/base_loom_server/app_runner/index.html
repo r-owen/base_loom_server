@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>base_loom_server.app_runner - Base Loom Server</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../../../css/mkapi-material.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "base_loom_server.app_runner";
+        var mkdocs_page_input_path = "api/base_loom_server/app_runner.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> Base Loom Server
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving/">Weaving</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../installing/">Installing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../coding/">Coding</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../translations/">Translations</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../version_history/">Version Histsory</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >base_loom_server</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../">base_loom_server</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">base_loom_server.app_runner</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner">AppRunner</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner.create_argument_parser">create_argument_parser</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner.lifespan">lifespan</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner.get_translation_dict">get_translation_dict</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner.get">get</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner.get_favicon">get_favicon</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner.websocket_endpoint">websocket_endpoint</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner.run">run</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_loom_server/">base_loom_server.base_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_mock_loom/">base_loom_server.base_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_loom_server/">base_loom_server.example_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_mock_loom/">base_loom_server.example_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../main/">base_loom_server.main</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../mock_streams/">base_loom_server.mock_streams</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../pattern_database/">base_loom_server.pattern_database</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../reduced_pattern/">base_loom_server.reduced_pattern</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../testutils/">base_loom_server.testutils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utils/">base_loom_server.utils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../version/">base_loom_server.version</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">Base Loom Server</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API Reference</li>
+          <li class="breadcrumb-item">base_loom_server</li>
+      <li class="breadcrumb-item active">base_loom_server.app_runner</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 style="display: none;">base_loom_server.app_runner</h1><p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/app_runner/#base_loom_server.app_runner" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">module</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.app_runner" title="base_loom_server.app_runner">base_loom_server.app_runner</a></span>
+</p>
+<div class="mkapi-document">
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle classes">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Classes</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Run the loom server application.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner.AppRunner">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">class</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">app</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="fastapi.applications.FastAPI">FastAPI</span></span><span class="mkapi-comma">, </span><span class="mkapi-arg">server_class</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="typing.Type">Type</span>[<a href="../base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a>]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">favicon</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bytes</span><span class="mkapi-comma">, </span><span class="mkapi-arg">app_package_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>Run the loom server application.</p>
+<p>This contains the web server's endpoints,
+the lifespan context manager,
+and a method to create the argument parser.</p>
+<p>In order to use this you <em>must</em> create an instance on import
+(i.e. at the module level), typically in `main.py'.
+If you defer creation, the web server will not see the endpoints!
+See <code>main.py</code> for an example.</p>
+<p>Construct endpoints for FastAPI</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">app</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="fastapi.applications.FastAPI">FastAPI</span></span> <span class="mkapi-dash">&mdash;</span>
+The application, generated with <code>app = FastAPI()</code></p>
+</li>
+<li>
+<p><span class="mkapi-item-name">server_class</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="typing.Type">Type</span>[<a href="../base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a>]</span> <span class="mkapi-dash">&mdash;</span>
+The loom server class (not an instance,
+but the class itself).</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">favicon</span> : 
+<span class="mkapi-item-type">bytes</span> <span class="mkapi-dash">&mdash;</span>
+A 32x32 or so favicon. No favicon if empty.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">app_package_name</span> : 
+<span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
+The name of the python package for your loom server,
+e.g. "toika_loom_server". This is used by the <a href="./#base_loom_server.app_runner.AppRunner.run" title="base_loom_server.app_runner.AppRunner.run"><code>run</code></a> method,
+as an argument to <span class="mkapi-tooltip" title="uvicorn.main.run"><code>uvicorn.run</code></span>.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle methods">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Methods</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.app_runner.AppRunner.create_argument_parser" title="base_loom_server.app_runner.AppRunner.create_argument_parser">create_argument_parser</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Create the argument parser.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.app_runner.AppRunner.lifespan" title="base_loom_server.app_runner.AppRunner.lifespan">lifespan</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Lifespan context manager for fastAPI.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.app_runner.AppRunner.get_translation_dict" title="base_loom_server.app_runner.AppRunner.get_translation_dict">get_translation_dict</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Get the translation dict for the current locale</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.app_runner.AppRunner.get" title="base_loom_server.app_runner.AppRunner.get">get</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Endpoint to get the main page.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.app_runner.AppRunner.get_favicon" title="base_loom_server.app_runner.AppRunner.get_favicon">get_favicon</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Endpoint to get the favicon</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.app_runner.AppRunner.websocket_endpoint" title="base_loom_server.app_runner.AppRunner.websocket_endpoint">websocket_endpoint</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Websocket endpoint.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.app_runner.AppRunner.run" title="base_loom_server.app_runner.AppRunner.run">run</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Parse command-line arguments and run the web server.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner.AppRunner.create_argument_parser">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.create_argument_parser" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner.create_argument_parser" title="base_loom_server.app_runner.AppRunner.create_argument_parser">create_argument_parser</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><span class="mkapi-tooltip" title="argparse">argparse</span>.<span class="mkapi-tooltip" title="argparse.ArgumentParser">ArgumentParser</span></span></span>
+</p>
+<div class="mkapi-document">
+<p>Create the argument parser.</p>
+<p>Subclasses may override this to add more options.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner.AppRunner.lifespan">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.lifespan" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner.lifespan" title="base_loom_server.app_runner.AppRunner.lifespan">lifespan</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">app</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="fastapi.applications.FastAPI">FastAPI</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><span class="mkapi-tooltip" title="typing.AsyncGenerator">AsyncGenerator</span>[None, <span class="mkapi-tooltip" title="fastapi.applications.FastAPI">FastAPI</span>]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Lifespan context manager for fastAPI.</p>
+<p>Load the translation dict and create the sole instance of
+the loom server class. That loom server instance persists
+for the entire time the web server is running. This is because
+the loom server speaks to one loom and serves at most one user.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner.AppRunner.get_translation_dict">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.get_translation_dict" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner.get_translation_dict" title="base_loom_server.app_runner.AppRunner.get_translation_dict">get_translation_dict</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">dict[str, str]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Get the translation dict for the current locale</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner.AppRunner.get">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.get" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner.get" title="base_loom_server.app_runner.AppRunner.get">get</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><span class="mkapi-tooltip" title="starlette.responses.HTMLResponse">HTMLResponse</span></span></span>
+</p>
+<div class="mkapi-document">
+<p>Endpoint to get the main page.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner.AppRunner.get_favicon">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.get_favicon" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner.get_favicon" title="base_loom_server.app_runner.AppRunner.get_favicon">get_favicon</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><span class="mkapi-tooltip" title="starlette.responses.Response">Response</span></span></span>
+</p>
+<div class="mkapi-document">
+<p>Endpoint to get the favicon</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner.AppRunner.websocket_endpoint">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.websocket_endpoint" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner.websocket_endpoint" title="base_loom_server.app_runner.AppRunner.websocket_endpoint">websocket_endpoint</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">websocket</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="starlette.websockets.WebSocket">WebSocket</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Websocket endpoint.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner.AppRunner.run">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.run" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner.run" title="base_loom_server.app_runner.AppRunner.run">run</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Parse command-line arguments and run the web server.</p>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../" class="btn btn-neutral float-left" title="base_loom_server"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../base_loom_server/" class="btn btn-neutral float-right" title="base_loom_server.base_loom_server">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../base_loom_server/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../javascript/mkapi.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

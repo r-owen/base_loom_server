@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>base_loom_server.mock_streams - Base Loom Server</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../../../css/mkapi-material.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "base_loom_server.mock_streams";
+        var mkdocs_page_input_path = "api/base_loom_server/mock_streams.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> Base Loom Server
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving/">Weaving</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../installing/">Installing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../coding/">Coding</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../translations/">Translations</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../version_history/">Version Histsory</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >base_loom_server</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../">base_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../app_runner/">base_loom_server.app_runner</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_loom_server/">base_loom_server.base_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_mock_loom/">base_loom_server.base_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_loom_server/">base_loom_server.example_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_mock_loom/">base_loom_server.example_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../main/">base_loom_server.main</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">base_loom_server.mock_streams</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamReader.at_eof">at_eof</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamReader.readexactly">readexactly</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamReader.readline">readline</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamReader.readuntil">readuntil</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamReader.create_writer">create_writer</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamWriter.close">close</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamWriter.is_closing">is_closing</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamWriter.drain">drain</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamWriter.wait_closed">wait_closed</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamWriter.write">write</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.MockStreamWriter.create_reader">create_reader</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.mock_streams.open_mock_connection">open_mock_connection</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.mock_streams.StreamData">StreamData</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.mock_streams.BaseMockStream">BaseMockStream</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../pattern_database/">base_loom_server.pattern_database</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../reduced_pattern/">base_loom_server.reduced_pattern</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../testutils/">base_loom_server.testutils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utils/">base_loom_server.utils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../version/">base_loom_server.version</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">Base Loom Server</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API Reference</li>
+          <li class="breadcrumb-item">base_loom_server</li>
+      <li class="breadcrumb-item active">base_loom_server.mock_streams</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 style="display: none;">base_loom_server.mock_streams</h1><p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">module</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams" title="base_loom_server.mock_streams">base_loom_server.mock_streams</a></span>
+</p>
+<div class="mkapi-document">
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle classes">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Classes</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Minimal mock stream reader that only supports line-oriented data
+and fixed-length unterminated messages.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Minimal mock stream writer that only allows writing terminated data.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.StreamData" title="base_loom_server.mock_streams.StreamData">StreamData</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Data contained in a mock stream.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.BaseMockStream" title="base_loom_server.mock_streams.BaseMockStream">BaseMockStream</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Base class for MockStreamReader and MockStreamWriter.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle functions">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Functions</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.open_mock_connection" title="base_loom_server.mock_streams.open_mock_connection">open_mock_connection</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Create a mock stream reader, writer pair.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamReader">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamReader" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">class</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">sd</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.mock_streams.StreamData" title="base_loom_server.mock_streams.StreamData">StreamData</a> | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">terminator</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bytes</span><span class="mkapi-equal"> = </span><span class="mkapi-default"><span class="mkapi-tooltip" title="base_loom_server.mock_streams.DEFAULT_TERMINATOR">DEFAULT_TERMINATOR</span></span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p><p class="mkapi-bases" markdown="1">Bases :
+<span class="mkapi-base"><a href="./#base_loom_server.mock_streams.BaseMockStream" title="base_loom_server.mock_streams.BaseMockStream">BaseMockStream</a></span></p></p>
+<p>Minimal mock stream reader that only supports line-oriented data
+and fixed-length unterminated messages.</p>
+<p>Intended to be created in one of two ways:</p>
+<ul>
+<li><a href="./#base_loom_server.mock_streams.open_mock_connection" title="base_loom_server.mock_streams.open_mock_connection"><code>open_mock_connection</code></a> to create a reader and writer that are linked
+  in that closing the writer also closes the reader.</li>
+<li><a href="./#base_loom_server.mock_streams.MockStreamWriter.create_reader" title="base_loom_server.mock_streams.MockStreamWriter.create_reader"><code>MockStreamWriter.create_reader</code></a> to create a reader that reads from
+   the writer.</li>
+</ul>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">sd</span> : 
+<span class="mkapi-item-type"><a href="./#base_loom_server.mock_streams.StreamData" title="base_loom_server.mock_streams.StreamData">StreamData</a> | None</span> <span class="mkapi-dash">&mdash;</span>
+Stream data to use; if None create new.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">terminator</span> : 
+<span class="mkapi-item-type">bytes</span> <span class="mkapi-dash">&mdash;</span>
+Required terminator. Calls to <a href="./#base_loom_server.mock_streams.MockStreamReader.readuntil" title="base_loom_server.mock_streams.MockStreamReader.readuntil"><code>readuntil</code></a> will raise
+<code>AssertionError</code> if the separator is not in the terminator.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle methods">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Methods</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.at_eof" title="base_loom_server.mock_streams.MockStreamReader.at_eof">at_eof</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Return true if closed and all buffered data has been read.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.readexactly" title="base_loom_server.mock_streams.MockStreamReader.readexactly">readexactly</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Read exactly n bytes (including a terminator, if any).</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.readline" title="base_loom_server.mock_streams.MockStreamReader.readline">readline</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Read one line of data ending with self.terminator</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.readuntil" title="base_loom_server.mock_streams.MockStreamReader.readuntil">readuntil</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Read until the specified value.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.create_writer" title="base_loom_server.mock_streams.MockStreamReader.create_writer">create_writer</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Create a MockStreamWriter that writes to this reader</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamReader.at_eof">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamReader.at_eof" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.at_eof" title="base_loom_server.mock_streams.MockStreamReader.at_eof">at_eof</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">bool</span></span>
+</p>
+<div class="mkapi-document">
+<p>Return true if closed and all buffered data has been read.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamReader.readexactly">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamReader.readexactly" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.readexactly" title="base_loom_server.mock_streams.MockStreamReader.readexactly">readexactly</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">n</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">bytes</span></span>
+</p>
+<div class="mkapi-document">
+<p>Read exactly n bytes (including a terminator, if any).</p>
+<p>Unlike <span class="mkapi-tooltip" title="asyncio.streams.StreamReader"><code>asyncio.StreamReader</code></span>, this assumes
+the message will be exactly n bytes long,
+and the terminator is checked if self.terminator != b"".</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">AssertionError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If the message is too long.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">asyncio.IncompleteReadError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If the message is too short.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">AssertionError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If self.terminator is not blank and the message
+is not terminated with self.terminator.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamReader.readline">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamReader.readline" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.readline" title="base_loom_server.mock_streams.MockStreamReader.readline">readline</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">bytes</span></span>
+</p>
+<div class="mkapi-document">
+<p>Read one line of data ending with self.terminator</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">AssertionError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If self.terminator is blank.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamReader.readuntil">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamReader.readuntil" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.readuntil" title="base_loom_server.mock_streams.MockStreamReader.readuntil">readuntil</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">separator</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bytes</span><span class="mkapi-equal"> = </span><span class="mkapi-default">b'\n'</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">bytes</span></span>
+</p>
+<div class="mkapi-document">
+<p>Read until the specified value.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">AssertionError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If <code>separator</code> is blank.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">AssertionError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If <code>separator</code> not in self.terminator.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamReader.create_writer">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamReader.create_writer" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.create_writer" title="base_loom_server.mock_streams.MockStreamReader.create_writer">create_writer</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a></span></span>
+</p>
+<div class="mkapi-document">
+<p>Create a MockStreamWriter that writes to this reader</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamWriter">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamWriter" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">class</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">sd</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.mock_streams.StreamData" title="base_loom_server.mock_streams.StreamData">StreamData</a> | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">terminator</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bytes</span><span class="mkapi-equal"> = </span><span class="mkapi-default"><span class="mkapi-tooltip" title="base_loom_server.mock_streams.DEFAULT_TERMINATOR">DEFAULT_TERMINATOR</span></span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p><p class="mkapi-bases" markdown="1">Bases :
+<span class="mkapi-base"><a href="./#base_loom_server.mock_streams.BaseMockStream" title="base_loom_server.mock_streams.BaseMockStream">BaseMockStream</a></span></p></p>
+<p>Minimal mock stream writer that only allows writing terminated data.</p>
+<p>Intended to be created in one of two ways:</p>
+<ul>
+<li><a href="./#base_loom_server.mock_streams.open_mock_connection" title="base_loom_server.mock_streams.open_mock_connection"><code>open_mock_connection</code></a> to create a reader and writer that are linked
+  in that closing the writer also closes the reader.</li>
+<li><a href="./#base_loom_server.mock_streams.MockStreamReader.create_writer" title="base_loom_server.mock_streams.MockStreamReader.create_writer"><code>MockStreamReader.create_writer</code></a> to create a writer that writes to
+   the reader.</li>
+</ul>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">sd</span> : 
+<span class="mkapi-item-type"><a href="./#base_loom_server.mock_streams.StreamData" title="base_loom_server.mock_streams.StreamData">StreamData</a> | None</span> <span class="mkapi-dash">&mdash;</span>
+Stream data to use; if None create new.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">terminator</span> : 
+<span class="mkapi-item-type">bytes</span> <span class="mkapi-dash">&mdash;</span>
+Required terminator. Calls to <a href="./#base_loom_server.mock_streams.MockStreamWriter.write" title="base_loom_server.mock_streams.MockStreamWriter.write"><code>write</code></a> with data that is not
+correctly terminated will raise <code>AssertionError</code>.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle methods">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Methods</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.close" title="base_loom_server.mock_streams.MockStreamWriter.close">close</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Close the writer.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.is_closing" title="base_loom_server.mock_streams.MockStreamWriter.is_closing">is_closing</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Return true if the writer is closed or being closed.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.drain" title="base_loom_server.mock_streams.MockStreamWriter.drain">drain</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Push the current data to the reader.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.wait_closed" title="base_loom_server.mock_streams.MockStreamWriter.wait_closed">wait_closed</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Wait for closing to finish. A no-op if closed.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.write" title="base_loom_server.mock_streams.MockStreamWriter.write">write</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Write the specified data.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.create_reader" title="base_loom_server.mock_streams.MockStreamWriter.create_reader">create_reader</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Create a MockStreamReader that reads from this writer.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamWriter.close">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamWriter.close" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.close" title="base_loom_server.mock_streams.MockStreamWriter.close">close</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Close the writer.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamWriter.is_closing">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamWriter.is_closing" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.is_closing" title="base_loom_server.mock_streams.MockStreamWriter.is_closing">is_closing</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">bool</span></span>
+</p>
+<div class="mkapi-document">
+<p>Return true if the writer is closed or being closed.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamWriter.drain">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamWriter.drain" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.drain" title="base_loom_server.mock_streams.MockStreamWriter.drain">drain</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Push the current data to the reader.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamWriter.wait_closed">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamWriter.wait_closed" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.wait_closed" title="base_loom_server.mock_streams.MockStreamWriter.wait_closed">wait_closed</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Wait for closing to finish. A no-op if closed.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamWriter.write">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamWriter.write" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.write" title="base_loom_server.mock_streams.MockStreamWriter.write">write</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">data</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bytes</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Write the specified data.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">AssertionError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If self.terminator is not empty
+and <code>data</code> is not properly terminated.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamWriter.create_reader">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamWriter.create_reader" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamWriter.create_reader" title="base_loom_server.mock_streams.MockStreamWriter.create_reader">create_reader</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a></span></span>
+</p>
+<div class="mkapi-document">
+<p>Create a MockStreamReader that reads from this writer.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.open_mock_connection">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.open_mock_connection" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.open_mock_connection" title="base_loom_server.mock_streams.open_mock_connection">open_mock_connection</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">terminator</span><span class="mkapi-equal">=</span><span class="mkapi-default"><span class="mkapi-tooltip" title="base_loom_server.mock_streams.DEFAULT_TERMINATOR">DEFAULT_TERMINATOR</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">tuple[<a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a>, <a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a>]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Create a mock stream reader, writer pair.</p>
+<p>To create a stream that writes to the returned reader,
+call reader.create_writer, and similarly for the returned writer.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.StreamData">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.StreamData" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">class</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.StreamData" title="base_loom_server.mock_streams.StreamData">StreamData</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>Data contained in a mock stream.</p>
+<p>Contains a queue of data and asyncio events to track data available
+and stream closing.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.BaseMockStream">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.BaseMockStream" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">class</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.BaseMockStream" title="base_loom_server.mock_streams.BaseMockStream">BaseMockStream</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">sd</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.mock_streams.StreamData" title="base_loom_server.mock_streams.StreamData">StreamData</a> | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">terminator</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bytes</span><span class="mkapi-equal"> = </span><span class="mkapi-default"><span class="mkapi-tooltip" title="base_loom_server.mock_streams.DEFAULT_TERMINATOR">DEFAULT_TERMINATOR</span></span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>Base class for MockStreamReader and MockStreamWriter.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">sd</span> : 
+<span class="mkapi-item-type"><a href="./#base_loom_server.mock_streams.StreamData" title="base_loom_server.mock_streams.StreamData">StreamData</a> | None</span> <span class="mkapi-dash">&mdash;</span>
+Stream data to use; if None create new.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">terminator</span> : 
+<span class="mkapi-item-type">bytes</span> <span class="mkapi-dash">&mdash;</span>
+Required terminator.</p>
+</li>
+</ul>
+</div>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../main/" class="btn btn-neutral float-left" title="base_loom_server.main"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../pattern_database/" class="btn btn-neutral float-right" title="base_loom_server.pattern_database">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../main/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../pattern_database/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../javascript/mkapi.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

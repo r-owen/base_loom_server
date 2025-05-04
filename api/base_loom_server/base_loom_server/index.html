@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>base_loom_server.base_loom_server - Base Loom Server</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../../../css/mkapi-material.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "base_loom_server.base_loom_server";
+        var mkdocs_page_input_path = "api/base_loom_server/base_loom_server.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> Base Loom Server
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving/">Weaving</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../installing/">Installing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../coding/">Coding</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../translations/">Translations</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../version_history/">Version Histsory</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >base_loom_server</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../">base_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../app_runner/">base_loom_server.app_runner</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">base_loom_server.base_loom_server</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.handle_loom_reply">handle_loom_reply</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.write_shafts_to_loom">write_shafts_to_loom</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.loom_connected">loom_connected</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.start">start</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.close">close</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.add_pattern">add_pattern</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.close_websocket">close_websocket</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.get_initial_loom_state">get_initial_loom_state</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom">connect_to_loom</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.run_client">run_client</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.disconnect_client">disconnect_client</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom">disconnect_from_loom</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.basic_read_loom">basic_read_loom</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end">clear_jump_end</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick">clear_jump_pick</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps">clear_jumps</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names">cmd_clear_pattern_names</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_file">cmd_file</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end">cmd_jump_to_end</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick">cmd_jump_to_pick</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode">cmd_mode</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern">cmd_select_pattern</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats">cmd_separate_threading_repeats</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats">cmd_separate_weaving_repeats</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_direction">cmd_thread_direction</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size">cmd_thread_group_size</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_weave_direction">cmd_weave_direction</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand">cmd_oobcommand</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word">get_threading_shaft_word</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request">handle_next_pick_request</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number">increment_pick_number</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number">increment_end_number</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.read_client_loop">read_client_loop</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.read_loom_loop">read_loom_loop</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_command_done">report_command_done</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_command_problem">report_command_problem</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern">report_current_pattern</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_initial_server_state">report_initial_server_state</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_loom_connection_state">report_loom_connection_state</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_pattern_names">report_pattern_names</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_current_pick_number">report_current_pick_number</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers">report_current_end_numbers</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_jump_end">report_jump_end</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick">report_jump_pick</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state">report_shaft_state</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_mode">report_mode</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats">report_separate_threading_repeats</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats">report_separate_weaving_repeats</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_status_message">report_status_message</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_thread_direction">report_thread_direction</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size">report_thread_group_size</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_weave_direction">report_weave_direction</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.select_pattern">select_pattern</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.t">t</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.write_to_client">write_to_client</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.write_to_loom">write_to_loom</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.base_loom_server.CloseCode">CloseCode</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.base_loom_server.CommandError">CommandError</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_mock_loom/">base_loom_server.base_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_loom_server/">base_loom_server.example_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_mock_loom/">base_loom_server.example_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../main/">base_loom_server.main</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../mock_streams/">base_loom_server.mock_streams</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../pattern_database/">base_loom_server.pattern_database</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../reduced_pattern/">base_loom_server.reduced_pattern</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../testutils/">base_loom_server.testutils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utils/">base_loom_server.utils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../version/">base_loom_server.version</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">Base Loom Server</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API Reference</li>
+          <li class="breadcrumb-item">base_loom_server</li>
+      <li class="breadcrumb-item active">base_loom_server.base_loom_server</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 style="display: none;">base_loom_server.base_loom_server</h1><p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">module</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server" title="base_loom_server.base_loom_server">base_loom_server.base_loom_server</a></span>
+</p>
+<div class="mkapi-document">
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle classes">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Classes</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Base class for a web server that controls a dobby loom.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.CloseCode" title="base_loom_server.base_loom_server.CloseCode">CloseCode</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+WebSocket close codes</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.CommandError" title="base_loom_server.base_loom_server.CommandError">CommandError</a></span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">class</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">num_shafts</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">serial_port</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">translation_dict</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, str]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">reset_db</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">verbose</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">db_path</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="pathlib">pathlib</span>.<span class="mkapi-tooltip" title="pathlib.Path">Path</span> | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">enable_software_weave_direction</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>Base class for a web server that controls a dobby loom.</p>
+<p>Subclasses should not only provide implementations for the abstract
+methods, but should also override the class constants, as appropriate.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">num_shafts</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
+The number of shafts the loom has.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">serial_port</span> : 
+<span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
+The name of the serial port, e.g. "/dev/tty0".
+If the name is "mock" then use a mock loom.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">translation_dict</span> : 
+<span class="mkapi-item-type">dict[str, str]</span> <span class="mkapi-dash">&mdash;</span>
+Language translation dict.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">reset_db</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
+If True, delete the old database and create a new one.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">verbose</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
+If True, log diagnostic information.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">name</span> : 
+<span class="mkapi-item-type">str | None</span> <span class="mkapi-dash">&mdash;</span>
+User-assigned loom name.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">db_path</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="pathlib">pathlib</span>.<span class="mkapi-tooltip" title="pathlib.Path">Path</span> | None</span> <span class="mkapi-dash">&mdash;</span>
+Path to the pattern database. Specify None for the
+default path. Unit tests specify a non-None value, to avoid
+stomping on the real database.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">enable_software_weave_direction</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
+Can the software control
+the weave direction? For Seguin looms, always specify True.
+For Toika looms, the user must make a choice between software
+or the loom.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle attributes">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Attributes</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">loom_connected</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
+Return True if connected to the loom.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle methods">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Methods</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.handle_loom_reply" title="base_loom_server.base_loom_server.BaseLoomServer.handle_loom_reply">handle_loom_reply</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Process one reply from the loom.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.write_shafts_to_loom" title="base_loom_server.base_loom_server.BaseLoomServer.write_shafts_to_loom">write_shafts_to_loom</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Write the shaft word to the loom.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.start" title="base_loom_server.base_loom_server.BaseLoomServer.start">start</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.close" title="base_loom_server.base_loom_server.BaseLoomServer.close">close</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Disconnect from client and loom and stop all tasks.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.add_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.add_pattern">add_pattern</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Add a pattern to pattern database.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.close_websocket" title="base_loom_server.base_loom_server.BaseLoomServer.close_websocket">close_websocket</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Close a websocket using best effort and a short timeout.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.get_initial_loom_state" title="base_loom_server.base_loom_server.BaseLoomServer.get_initial_loom_state">get_initial_loom_state</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Obtain the loom state.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom" title="base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom">connect_to_loom</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Connect to the loom.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.run_client" title="base_loom_server.base_loom_server.BaseLoomServer.run_client">run_client</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Run a client connection, closing any existing connection.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.disconnect_client" title="base_loom_server.base_loom_server.BaseLoomServer.disconnect_client">disconnect_client</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom" title="base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom">disconnect_from_loom</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Disconnect from the loom. A no-op if already disconnected.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.basic_read_loom" title="base_loom_server.base_loom_server.BaseLoomServer.basic_read_loom">basic_read_loom</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Read one reply from the loom.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end">clear_jump_end</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Clear self.jump_end and report value if changed or force_output</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick">clear_jump_pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Clear self.jump_pick and report value if changed or force_output</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jumps">clear_jumps</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Clear all jumps and report values if changed or force_output.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names">cmd_clear_pattern_names</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_file" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_file">cmd_file</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end">cmd_jump_to_end</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick">cmd_jump_to_pick</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_mode">cmd_mode</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern">cmd_select_pattern</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats">cmd_separate_threading_repeats</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats">cmd_separate_weaving_repeats</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_direction" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_direction">cmd_thread_direction</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size">cmd_thread_group_size</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_weave_direction" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_weave_direction">cmd_weave_direction</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand">cmd_oobcommand</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word" title="base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word">get_threading_shaft_word</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request" title="base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request">handle_next_pick_request</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle next pick request from loom.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number">increment_pick_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Increment pick_number in the current direction.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_end_number">increment_end_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Increment end_number0 in the current direction.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.read_client_loop" title="base_loom_server.base_loom_server.BaseLoomServer.read_client_loop">read_client_loop</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Read and process commands from the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.read_loom_loop" title="base_loom_server.base_loom_server.BaseLoomServer.read_loom_loop">read_loom_loop</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Read and process replies from the loom.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_command_done" title="base_loom_server.base_loom_server.BaseLoomServer.report_command_done">report_command_done</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report completion of a command</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_command_problem" title="base_loom_server.base_loom_server.BaseLoomServer.report_command_problem">report_command_problem</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report a CommandProblem to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern">report_current_pattern</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report pattern to the client</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_initial_server_state" title="base_loom_server.base_loom_server.BaseLoomServer.report_initial_server_state">report_initial_server_state</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report server state.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_loom_connection_state" title="base_loom_server.base_loom_server.BaseLoomServer.report_loom_connection_state">report_loom_connection_state</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report LoomConnectionState to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_pattern_names" title="base_loom_server.base_loom_server.BaseLoomServer.report_pattern_names">report_pattern_names</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report PatternNames to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_current_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.report_current_pick_number">report_current_pick_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report CurrentPickNumber to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers" title="base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers">report_current_end_numbers</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report CurrentEndNumber to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_jump_end" title="base_loom_server.base_loom_server.BaseLoomServer.report_jump_end">report_jump_end</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report JumpEndNumber to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick" title="base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick">report_jump_pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report JumpPickNumber to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state" title="base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state">report_shaft_state</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report ShaftState to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_mode" title="base_loom_server.base_loom_server.BaseLoomServer.report_mode">report_mode</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report the current mode to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats">report_separate_threading_repeats</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats">report_separate_weaving_repeats</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_status_message" title="base_loom_server.base_loom_server.BaseLoomServer.report_status_message">report_status_message</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report a status message to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_thread_direction" title="base_loom_server.base_loom_server.BaseLoomServer.report_thread_direction">report_thread_direction</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report ThreadDirection</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size" title="base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size">report_thread_group_size</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report ThreadGroupSize</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_weave_direction" title="base_loom_server.base_loom_server.BaseLoomServer.report_weave_direction">report_weave_direction</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report WeaveDirection</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.select_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.select_pattern">select_pattern</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.t" title="base_loom_server.base_loom_server.BaseLoomServer.t">t</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Translate a phrase, if possible.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.write_to_client" title="base_loom_server.base_loom_server.BaseLoomServer.write_to_client">write_to_client</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Send a reply to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.write_to_loom" title="base_loom_server.base_loom_server.BaseLoomServer.write_to_loom">write_to_loom</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Send data to the loom.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.handle_loom_reply">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.handle_loom_reply" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.handle_loom_reply" title="base_loom_server.base_loom_server.BaseLoomServer.handle_loom_reply">handle_loom_reply</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">reply_bytes</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bytes</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Process one reply from the loom.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">NotImplementedError</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.write_shafts_to_loom">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.write_shafts_to_loom" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.write_shafts_to_loom" title="base_loom_server.base_loom_server.BaseLoomServer.write_shafts_to_loom">write_shafts_to_loom</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">shaft_word</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Write the shaft word to the loom.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">NotImplementedError</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.loom_connected">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.loom_connected" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">property</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.loom_connected" title="base_loom_server.base_loom_server.BaseLoomServer.loom_connected">loom_connected</a></span><span class="mkapi-signature"><span class="mkapi-colon">: </span><span class="mkapi-return">bool</span></span>
+</p>
+<div class="mkapi-document">
+<p>Return True if connected to the loom.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.start">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.start" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.start" title="base_loom_server.base_loom_server.BaseLoomServer.start">start</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.close">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.close" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.close" title="base_loom_server.base_loom_server.BaseLoomServer.close">close</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">stop_read_loom</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-comma">, </span><span class="mkapi-arg">stop_read_client</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Disconnect from client and loom and stop all tasks.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.add_pattern">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.add_pattern" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.add_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.add_pattern">add_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="../reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Add a pattern to pattern database.</p>
+<p>Also purge the MAX_PATTERNS oldest entries (excluding
+the current pattern, if any) and report the new list
+of pattern names to the client.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.close_websocket">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.close_websocket" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.close_websocket" title="base_loom_server.base_loom_server.BaseLoomServer.close_websocket">close_websocket</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">ws</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="starlette.websockets.WebSocket">WebSocket</span></span><span class="mkapi-comma">, </span><span class="mkapi-arg">code</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.base_loom_server.CloseCode" title="base_loom_server.base_loom_server.CloseCode">CloseCode</a></span><span class="mkapi-equal"> = </span><span class="mkapi-default"><a href="./#base_loom_server.base_loom_server.CloseCode" title="base_loom_server.base_loom_server.CloseCode">CloseCode</a>.<span class="mkapi-tooltip" title="base_loom_server.base_loom_server.CloseCode.NORMAL">NORMAL</span></span><span class="mkapi-comma">, </span><span class="mkapi-arg">reason</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-equal"> = </span><span class="mkapi-default">''</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Close a websocket using best effort and a short timeout.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.get_initial_loom_state">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.get_initial_loom_state" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.get_initial_loom_state" title="base_loom_server.base_loom_server.BaseLoomServer.get_initial_loom_state">get_initial_loom_state</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Obtain the loom state.</p>
+<p>Called just after the server connects to the loom.</p>
+<p>Usually a no-op, because a well designed loom automatically
+reports its own state when software connects to it.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom" title="base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom">connect_to_loom</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Connect to the loom.</p>
+<p>If already connected to loom, disconnect first, since
+connecting again may indicate that something is wrong.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.run_client">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.run_client" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.run_client" title="base_loom_server.base_loom_server.BaseLoomServer.run_client">run_client</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">websocket</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="starlette.websockets.WebSocket">WebSocket</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Run a client connection, closing any existing connection.</p>
+<p>Also open a connection to the loom, if that was closed.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">websocket</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="starlette.websockets.WebSocket">WebSocket</span></span> <span class="mkapi-dash">&mdash;</span>
+Connection to the client.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.disconnect_client">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.disconnect_client" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.disconnect_client" title="base_loom_server.base_loom_server.BaseLoomServer.disconnect_client">disconnect_client</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">cancel_read_client_loop</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom" title="base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom">disconnect_from_loom</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Disconnect from the loom. A no-op if already disconnected.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.basic_read_loom">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.basic_read_loom" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.basic_read_loom" title="base_loom_server.base_loom_server.BaseLoomServer.basic_read_loom">basic_read_loom</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">bytes</span></span>
+</p>
+<div class="mkapi-document">
+<p>Read one reply from the loom.</p>
+<p>Perform no error checking, except that self.loom_reader exists.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end">clear_jump_end</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">force_output</span><span class="mkapi-equal">=</span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>Clear self.jump_end and report value if changed or force_output</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">force_output</span>
+ <span class="mkapi-dash">&mdash;</span>
+If true, report <code>JumpEndNumber</code>,
+even if it has not changed.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick">clear_jump_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">force_output</span><span class="mkapi-equal">=</span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>Clear self.jump_pick and report value if changed or force_output</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">force_output</span>
+ <span class="mkapi-dash">&mdash;</span>
+If true, report <code>JumpPickNumber</code>,
+even if it has not changed.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jumps">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jumps">clear_jumps</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">force_output</span><span class="mkapi-equal">=</span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>Clear all jumps and report values if changed or force_output.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names">cmd_clear_pattern_names</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_file">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_file" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_file" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_file">cmd_file</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type"><a href="./#base_loom_server.base_loom_server.CommandError" title="base_loom_server.base_loom_server.CommandError">CommandError</a></span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end">cmd_jump_to_end</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type"><a href="./#base_loom_server.base_loom_server.CommandError" title="base_loom_server.base_loom_server.CommandError">CommandError</a></span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick">cmd_jump_to_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type"><a href="./#base_loom_server.base_loom_server.CommandError" title="base_loom_server.base_loom_server.CommandError">CommandError</a></span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_mode">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_mode">cmd_mode</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern">cmd_select_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats">cmd_separate_threading_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats">cmd_separate_weaving_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_direction">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_direction" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_direction" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_direction">cmd_thread_direction</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size">cmd_thread_group_size</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_weave_direction">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_weave_direction" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_weave_direction" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_weave_direction">cmd_weave_direction</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand">cmd_oobcommand</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word" title="base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word">get_threading_shaft_word</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request" title="base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request">handle_next_pick_request</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Handle next pick request from loom.</p>
+<p>Call this from handle_loom_reply.</p>
+<p>Figure out the next pick, send it to the loom,
+and report the information to the client.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">RuntimeError</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number">increment_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document">
+<p>Increment pick_number in the current direction.</p>
+<p>Increment pick_repeat_number as well, if appropriate.</p>
+<p>Return the new pick number. This will be 0 if
+pick_repeat_number changed,
+or if unweaving and pick_repeat_number
+would be decremented to 0.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.increment_end_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_end_number">increment_end_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Increment end_number0 in the current direction.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.read_client_loop">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.read_client_loop" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.read_client_loop" title="base_loom_server.base_loom_server.BaseLoomServer.read_client_loop">read_client_loop</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Read and process commands from the client.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.read_loom_loop">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.read_loom_loop" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.read_loom_loop" title="base_loom_server.base_loom_server.BaseLoomServer.read_loom_loop">read_loom_loop</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Read and process replies from the loom.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">RuntimeError</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_command_done">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_command_done" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_command_done" title="base_loom_server.base_loom_server.BaseLoomServer.report_command_done">report_command_done</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">cmd_type</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">success</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">message</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-equal"> = </span><span class="mkapi-default">''</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report completion of a command</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_command_problem">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_command_problem" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_command_problem" title="base_loom_server.base_loom_server.BaseLoomServer.report_command_problem">report_command_problem</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">message</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">severity</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="../client_replies/#base_loom_server.client_replies.MessageSeverityEnum" title="base_loom_server.client_replies.MessageSeverityEnum">MessageSeverityEnum</a></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report a CommandProblem to the client.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern">report_current_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report pattern to the client</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_initial_server_state">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_initial_server_state" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_initial_server_state" title="base_loom_server.base_loom_server.BaseLoomServer.report_initial_server_state">report_initial_server_state</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report server state.</p>
+<p>Called just after a client connects to the server.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_loom_connection_state">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_loom_connection_state" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_loom_connection_state" title="base_loom_server.base_loom_server.BaseLoomServer.report_loom_connection_state">report_loom_connection_state</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">reason</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-equal"> = </span><span class="mkapi-default">''</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report LoomConnectionState to the client.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_pattern_names">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_pattern_names" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_pattern_names" title="base_loom_server.base_loom_server.BaseLoomServer.report_pattern_names">report_pattern_names</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report PatternNames to the client.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_current_pick_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_current_pick_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_current_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.report_current_pick_number">report_current_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report CurrentPickNumber to the client.</p>
+<p>Also update pick information in the database.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers" title="base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers">report_current_end_numbers</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report CurrentEndNumber to the client.</p>
+<p>Also update threading information the database.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_jump_end">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_jump_end" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_jump_end" title="base_loom_server.base_loom_server.BaseLoomServer.report_jump_end">report_jump_end</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report JumpEndNumber to the client.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick" title="base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick">report_jump_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report JumpPickNumber to the client.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state" title="base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state">report_shaft_state</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report ShaftState to the client.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_mode">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_mode" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_mode" title="base_loom_server.base_loom_server.BaseLoomServer.report_mode">report_mode</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report the current mode to the client.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats">report_separate_threading_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats">report_separate_weaving_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_status_message">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_status_message" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_status_message" title="base_loom_server.base_loom_server.BaseLoomServer.report_status_message">report_status_message</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">message</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">severity</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="../client_replies/#base_loom_server.client_replies.MessageSeverityEnum" title="base_loom_server.client_replies.MessageSeverityEnum">MessageSeverityEnum</a></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report a status message to the client.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_thread_direction">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_thread_direction" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_thread_direction" title="base_loom_server.base_loom_server.BaseLoomServer.report_thread_direction">report_thread_direction</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report ThreadDirection</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size" title="base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size">report_thread_group_size</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report ThreadGroupSize</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_weave_direction">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_weave_direction" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_weave_direction" title="base_loom_server.base_loom_server.BaseLoomServer.report_weave_direction">report_weave_direction</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report WeaveDirection</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.select_pattern">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.select_pattern" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.select_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.select_pattern">select_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type"><a href="./#base_loom_server.base_loom_server.CommandError" title="base_loom_server.base_loom_server.CommandError">CommandError</a></span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.t">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.t" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.t" title="base_loom_server.base_loom_server.BaseLoomServer.t">t</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">phrase</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">str</span></span>
+</p>
+<div class="mkapi-document">
+<p>Translate a phrase, if possible.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.write_to_client">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.write_to_client" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.write_to_client" title="base_loom_server.base_loom_server.BaseLoomServer.write_to_client">write_to_client</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">reply</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="typing.Any">Any</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Send a reply to the client.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">reply</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="typing.Any">Any</span></span> <span class="mkapi-dash">&mdash;</span>
+The reply to write, as a dataclass. It should have
+a "type" field whose value is a string.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.write_to_loom">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.write_to_loom" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.write_to_loom" title="base_loom_server.base_loom_server.BaseLoomServer.write_to_loom">write_to_loom</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">data</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bytes | bytearray | str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Send data to the loom.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">data</span> : 
+<span class="mkapi-item-type">bytes | bytearray | str</span> <span class="mkapi-dash">&mdash;</span>
+The data to send, without a terminator.
+(This method will append the terminator).</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">RuntimeError</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.CloseCode">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.CloseCode" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">enum</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.CloseCode" title="base_loom_server.base_loom_server.CloseCode">CloseCode</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-arg">args</span><span class="mkapi-comma">, </span><span class="mkapi-star">**</span><span class="mkapi-arg">kwds</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p><p class="mkapi-bases" markdown="1">Bases :
+<span class="mkapi-base"><span class="mkapi-tooltip" title="enum">enum</span>.<span class="mkapi-tooltip" title="enum.IntEnum">IntEnum</span></span></p></p>
+<p>WebSocket close codes</p>
+<p>A small subset of
+https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle attributes">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Attributes</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">NORMAL</span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name">GOING_AWAY</span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name">ERROR</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.CommandError">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.CommandError" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">class</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.CommandError" title="base_loom_server.base_loom_server.CommandError">CommandError</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p><p class="mkapi-bases" markdown="1">Bases :
+<span class="mkapi-base">Exception</span></p></p>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../app_runner/" class="btn btn-neutral float-left" title="base_loom_server.app_runner"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../base_mock_loom/" class="btn btn-neutral float-right" title="base_loom_server.base_mock_loom">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../app_runner/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../base_mock_loom/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../javascript/mkapi.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
