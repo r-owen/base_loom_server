@@ -72,10 +72,8 @@ def change_weave_direction(client: Client):
     Use a software command, if the loom supports that,
     else an oob command.
 
-    Parameters
-    ----------
-    client: Client
-        Client fixture
+    Args:
+        client: Client fixture.
     """
     expected_weave_direction_reply = True
     client.mock_loom.command_threading_event.set()
@@ -109,18 +107,12 @@ def command_next_pick(
 
     Ignore info-level StatusMessage
 
-    Parameters
-    ----------
-    client : Client
-        client fixture
-    expected_pick_number : int
-        Expected pick number of the next pick
-    expected_repeat_number : int
-        Expected repeat number of the next pick
-    expected_shaft_word : int
-        Expected shaft_word of the pick.
-    jump_pending : bool
-        Is a jump pending?
+    Args:
+        client: Client fixture.
+        expected_pick_number: Expected pick number of the next pick.
+        expected_repeat_number: Expected repeat number of the next pick.
+        expected_shaft_word: Expected shaft_word of the next pick.
+        jump_pending: Is a jump pending?
     """
     replies = send_command(client, dict(type="oobcommand", command="n"))
     assert len(replies) == 1
@@ -190,22 +182,19 @@ def select_pattern(
     client: Client,
     pattern_name: str,
     check_defaults: bool = True,
-    pick_number: int = 0,
 ) -> ReducedPattern:
     """Tell the loom server to select a pattern.
 
     Read and check the expected replies and return the pattern.
 
-    Parameters
-    ----------
-    client : Client
-        Client test fixture
-    pattern_name : str
-        Pattern name.
-    check_defaults : bool
-        If True (the default), check that pick_number, etc. have the expected
-        default value. This is appropriate for patterns that are newly loaded
-        (rather than retrieved from the pattern database).
+    Args:
+        client: Client test fixture.
+        pattern_name: Pattern name.
+        check_defaults: If true (the default), check that all pattern fields,
+        that are updated as one weaves or threads (such as pick_value)
+        have the expected default value. This is only appropriate for patterns
+            that are newly loaded, or have not been woven on or threaded
+            once loaded.
     """
     expected_seen_types = {
         "CommandDone",
@@ -305,17 +294,12 @@ def upload_pattern(
 
     Check expected replies.
 
-    Parameters
-    ----------
-    client: Client
-        Test client
-    filepath : Traversable
-        Path to pattern file
-    expected_names : Iterable[str]
-        Expected pattern names.
-    sound_fail: bool
-        If True then upload should fail.
-        Expected_names is ignored.
+    Args:
+        client: Test client.
+        filepath: Path to pattern file.
+        expected_names: Expected pattern names.
+        should_fail: If true, upload should fail (and `expected_names`
+            is ignored).
     """
     suffix = pathlib.Path(str(filepath)).suffix
     if suffix == ".wpo":
@@ -640,40 +624,28 @@ class BaseTestLoomServer:
     ) -> Generator[Client]:
         """Create a test client fixture.
 
-        Parameters
-        ----------
-        app : FastAPI
-            Server application to test.
-            If None then raises an error (BaseTestLoomServer needs
-            this be be able to be None).
-        name : str | None
-            Loom name
-        num_shafts : int
-            The number of shafts that the loom has.
-        read_initial_state : bool
-            If true, read and check the initial server replies
-            from the websocket. This is the most common case.
-        upload_patterns : Iterable[pathlib.Path]
-            Initial patterns to upload, if any.
-        reset_db : bool
-            Specify argument --reset-db?
-            If False then you should also specify expected_pattern_names
-        db_path : pathLib.Path | str | None
-            --db-path argument value. If None, use a temp file.
-            If not None and you expect the database to contain any patterns,
-            then also specify expected_pattern_names and
-            expected_current_pattern.
-        expected_status_messages : Iterable[str]
-            Expected status messages when the connection is made, in order.
-            All should have severity level INFO.
-        expected_pattern_names : Iterable[str]
-            Expected pattern names, in order.
-            Specify if and only if db_path is not None
-            and you expect the database to contain any patterns.
-        expected_current_pattern : ReducedPattern | None
-            Expected_current_pattern. Specify if and only if
-            db_path is not None and you expect the database
-            to contain any patterns.
+        Args:
+            app: Server application to test. If None, raise an error.
+            name: Loom name.
+            num_shafts: The number of shafts that the loom has.
+            read_initial_state: If true, read and check the initial server
+                replies from the websocket. This is the most common case.
+            upload_patterns: Initial patterns to upload, if any.
+            reset_db: Specify argument `--reset-db`?
+                If False, you should also specify `expected_pattern_names`
+            db_path: `--db-path` argument value. If None, use a temp file.
+                If not None and you expect the database to contain any
+                patterns, then also specify `expected_pattern_names`
+                and `expected_current_pattern`.
+            expected_status_messages: Expected status messages when
+                the connection is made, in order.
+                All should have severity level INFO.
+            expected_pattern_names: Expected pattern names, in order.
+                Specify if and only if `db_path` is not None
+                and you expect the database to contain these patterns.
+            expected_current_pattern: Expected_current_pattern.
+                Specify if and only if `db_path` is not None and
+                you expect the database to contain any patterns.
         """
         expected_pattern_names = list(expected_pattern_names)
         expected_status_messages = list(expected_status_messages)

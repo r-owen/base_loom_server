@@ -77,29 +77,22 @@ class PatternDatabase:
         so the new pattern is the most recent).
         Prune excess patterns and return the resulting pattern names.
 
-        Parameters
-        ----------
-        pattern : ReducedPattern
-            The pattern to add. The associated cache fields
-            are set to default values:
+        Args:
+            pattern: The pattern to add. The associated cache fields
+                are set to default values:
 
-            * pick_number
-            * pick_repeat_number
-            * end_number0
-            * end_number1
-            * end_repeat_number
-            * thread_group_size
-            * separate_weaving_repeats
-            * separate_threading_repeats
+                * pick_number
+                * pick_repeat_number
+                * end_number0
+                * end_number1
+                * end_repeat_number
+                * thread_group_size
+                * separate_weaving_repeats
+                * separate_threading_repeats
 
-        max_patterns : int
-            Maximum number of patterns to keep; if 0 then no limit.
-            If there are more than this many patterns in the database,
-            the oldest are purged. If keep_name is not None then its
-            timestamp is set to a bit later than now.
-            and a value of 1 is silently changed to 2,
-            so the most recent pattern (which is the current pattern)
-            and the new one are both kept.
+            max_patterns: Maximum number of patterns to keep; no limit if 0.
+                If >0 and there are more patterns in the database,
+                the oldest are purged.
         """
 
         pattern_json = json.dumps(dataclasses.asdict(pattern))
@@ -244,12 +237,9 @@ class PatternDatabase:
     async def set_timestamp(self, pattern_name: str, timestamp: float) -> None:
         """Set the timestamp for the specified pattern.
 
-        Parameters
-        ----------
-        pattern_name : str
-            Pattern name
-        timestamp : float
-            Timestamp in unix seconds, e.g. from time.time()
+        Args:
+        pattern_name: Pattern name.
+        timestamp: Timestamp in unix seconds, e.g. from time.time().
         """
         async with aiosqlite.connect(self.dbpath) as db:
             await db.execute(

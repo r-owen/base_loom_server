@@ -58,38 +58,32 @@ class CommandError(Exception):
 class BaseLoomServer:
     """Base class for a web server that controls a dobby loom.
 
-    Parameters
-    ----------
-    mock_loom_type : Type[BaseMockLoom]
-        Base mock loom class
-    num_shafts : int
-        The number of shafts that the loom has.
-    serial_port : str
-        The name of the serial port, e.g. "/dev/tty0".
-        If the name is "mock" then use a mock loom.
-    translation_dict : dict[str, str]
-        Translation dict.
-    reset_db : bool
-        If True, delete the old database and create a new one.
-        A rescue aid, in case the database gets corrupted.
-    verbose : bool
-        If True, log diagnostic information.
-    name : str
-        User-assigned loom name.
-        Typically defaults to the loom brand, e.g. "toika".
-    db_path : pathlib.Path | None
-        Path to pattern database.
-        Intended for unit tests, to avoid stomping on the real database.
-    enable_software_weave_direction : bool
-        Can the software control the weave direction?
-        For Seguin always set True. For Toika the user must make a choice
-        between software or the loom.
+    Subclasses should not only provide implementations for the abstract
+    methods, but should also override the class constants, as appropriate.
+
+    Args:
+        num_shafts: The number of shafts the loom has.
+        serial_port: The name of the serial port, e.g. "/dev/tty0".
+            If the name is "mock" then use a mock loom.
+        translation_dict: Language translation dict.
+        reset_db: If True, delete the old database and create a new one.
+        verbose: If True, log diagnostic information.
+        name: User-assigned loom name.
+        db_path: Path to the pattern database. Specify None for the
+            default path. Unit tests specify a non-None value, to avoid
+            stomping on the real database.
+        enable_software_weave_direction: Can the software control
+            the weave direction? For Seguin looms, always specify True.
+            For Toika looms, the user must make a choice between software
+            or the loom.
     """
 
+    # Subclasses should override these, as necesary.
+    # Definitely overide `default_name` and `mock_loom_type`.
     baud_rate = 9600
     default_name = "base"
-    loom_reports_motion = True
     loom_reports_direction = True
+    loom_reports_motion = True
     mock_loom_type: type[BaseMockLoom] | None = None
 
     def __init__(
@@ -282,10 +276,8 @@ class BaseLoomServer:
 
         Also open a connection to the loom, if that was closed.
 
-        Parameters
-        ----------
-        websocket : WebSocket
-            Connection to the client.
+        Args:
+            websocket: Connection to the client.
         """
         if self.client_connected:
             self.log.info(
@@ -344,10 +336,9 @@ class BaseLoomServer:
     async def clear_jump_end(self, force_output=False):
         """Clear self.jump_end and report value if changed or force_output
 
-        Parameters
-        ----------
-        force_output : bool
-            If True then report JumpEndNumber, even if it has not changed.
+        Args:
+            force_output: If true, report `JumpEndNumber`,
+                even if it has not changed.
         """
         null_jump_end = client_replies.JumpEndNumber()
         do_report = force_output or self.jump_end != null_jump_end
@@ -358,10 +349,9 @@ class BaseLoomServer:
     async def clear_jump_pick(self, force_output=False):
         """Clear self.jump_pick and report value if changed or force_output
 
-        Parameters
-        ----------
-        force_output : bool
-            If True then report JumpPickNumber, even if it has not changed.
+        Args:
+            force_output: If true, report `JumpPickNumber`,
+                even if it has not changed.
         """
         null_jump_pick = client_replies.JumpPickNumber()
         do_report = force_output or self.jump_pick != null_jump_pick
@@ -888,11 +878,9 @@ class BaseLoomServer:
     async def write_to_client(self, reply: Any) -> None:
         """Send a reply to the client.
 
-        Parameters
-        ----------
-        reply : dataclasses.dataclass
-            The reply as a dataclass. It should have a "type" field
-            whose value is a string.
+        Args:
+            reply: The reply to write, as a dataclass. It should have
+                a "type" field whose value is a string.
         """
         if self.client_connected:
             assert self.websocket is not None
@@ -913,11 +901,9 @@ class BaseLoomServer:
     async def write_to_loom(self, data: bytes | bytearray | str) -> None:
         """Send data to the loom.
 
-        Parameters
-        ----------
-        data : str | bytes
-            The data to send, without a terminator.
-            (This method will append the terminator).
+        Args:
+            data: The data to send, without a terminator.
+                (This method will append the terminator).
         """
         if self.loom_writer is None or self.loom_writer.is_closing():
             raise RuntimeError("Cannot write to the loom: no connection.")

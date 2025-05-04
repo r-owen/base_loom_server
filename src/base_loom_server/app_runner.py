@@ -30,17 +30,14 @@ class AppRunner:
     If you defer creation, the web server will not see the endpoints!
     See ``main.py`` for an example.
 
-    Parameters
-    ----------
-    app : FastAPI
-        The application, generated with ``app = FastAPI()``
-    server_class : Type[BaseLoomServer]
-        Your loom server class (NOT an instance, but the class itself).
-    favicon : bytes
-        A 32x32 or so favicon. None if empty.
-    app_package_name : the name of the python package for your loom server,
-        e.g. "toika_loom_server". This is used by the `run` method,
-        as an argument to `uvicorn.run`.
+    Args:
+        app: The application, generated with ``app = FastAPI()``
+        server_class:  The loom server class (not an instance,
+            but the class itself).
+        favicon: A 32x32 or so favicon. No favicon if empty.
+        app_package_name: The name of the python package for your loom server,
+            e.g. "toika_loom_server". This is used by the `run` method,
+            as an argument to `uvicorn.run`.
     """
 
     def __init__(

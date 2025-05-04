@@ -2,41 +2,28 @@ def compute_num_within_and_repeats(total_num: int, repeat_len: int) -> tuple[int
     """Compute num_within and repeat_number from total_num and repeat_len
     such that total_num = (repeat_number - 1) * repeat_len + num_within.
 
-    Parameters
-    ----------
-    total_num : int
-        Total count (e.g. picks or ends)
-    repeat_len : int
-        Number of counts in one repeat; must be positive.
+    Args:
+        total_num: Total count (e.g. picks or ends).
+        repeat_len: Number of counts in one repeat; must be positive.
 
-    Returns
-    ------
-    A tuple consisting of
+    Returns:
+        A tuple consisting of:
 
-    * num_within : int
-        Number of counts in range [1, repeat_len], or 0 if total_num == 0
-    * repeat_num : int
-        1 + number of full repeats (the first repeat has value 1)
+        * num_within: Number of counts in range [1, repeat_len],
+            or 0 if total_num == 0
+        * repeat_num: 1 + number of full repeats (the first repeat has value 1)
 
-    Raises
-    ------
-    ValueError
-        If repeat_len <= 0
+    Raises:
+        ValueError: If `repeat_len` ≤ 0.
 
-    Notes
-    -----
-    If total_num is 0 return (0, 0) because that is the most sensible
-    thing to show when we haven't started weaving or threading.
+    Notes:
+        If total_num is 0 return (0, 0) because that is the most sensible
+        thing to show when we haven't started weaving or threading.
 
-    Otherwise, if total_num is exactly N repeats of repeat_len,
-    return (repeat_len, N) rather than (0, N+1), because I want
-    to display a pick or end that is in the pattern, rather
-    than the mythical pick or repeat 0.
-
-    Raises
-    ------
-    ValueError
-        If repeat_len <= 0
+        Otherwise, if total_num is exactly N repeats of repeat_len,
+        return (repeat_len, N) rather than (0, N+1), because I want
+        to display a pick or end that is in the pattern, rather
+        than the mythical pick or repeat 0.
     """
     if repeat_len <= 0:
         raise ValueError(f"{repeat_len=} must be positive (or None)")
@@ -57,18 +44,13 @@ def compute_total_num(num_within: int, repeat_number: int, repeat_len: int) -> i
     This is basically the opposite of divmod, but handles None inputs
     and repeat_number is 1-based.
 
-    Parameters
-    ----------
-    num_within : int
-        A value in range [-repeat_len, repeat_len]
-    repeat_number : int
-        1 + number of full repeats.
-    repeat_len : int
-        Length of one repeat; must be positive or None.
+    Args:
+        num_within: A value in range [-repeat_len, repeat_len].
+        repeat_number: 1 + number of full repeats.
+        repeat_len: Length of one repeat; must be positive or None.
 
-    Returns
-    -------
-    total_num = repeat_len * (repeat_number - 1) + num_within
+    Returns:
+        total_num = repeat_len * (repeat_number - 1) + num_within
     """
     if repeat_len <= 0:
         raise ValueError(f"{repeat_len=} must be positive (or None)")

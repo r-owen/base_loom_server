@@ -7,12 +7,10 @@ class ExampleMockLoom(BaseMockLoom):
     """Example dobby loom simulator.
 
     This is a slightly simplified version of the Séguin dobby loom.
-    See the doc string for BaseMockLoom for usage instructions.
+    See the doc string for `BaseMockLoom` for usage instructions.
 
-    Parameters
-    ----------
-    verbose : bool
-        If True, log diagnostic information.
+    Args:
+        verbose: If True, log diagnostic information.
     """
 
     async def handle_read_bytes(self, read_bytes: bytes) -> None:

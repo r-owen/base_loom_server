@@ -24,21 +24,17 @@ DIRECTION_NAMES = {True: "weave", False: "unweave"}
 class BaseMockLoom(abc.ABC):
     """Base class for a dobby loom similator.
 
-    Parameters
-    ----------
-    num_shafts : int
-        The number of shafts; must be positive
-    verbose : bool
-        If True, log diagnostic information.
+    Args:
+        num_shafts: The number of shafts; must be positive.
+        verbose: If True, log diagnostic information.
 
-    Notes
-    -----
-    The user controls a mock loom by:
+    Notes:
+        To control a mock loom:
 
-    * Call reader.create_writer() to create a command writer.
-    * Call writer.create_reader() to create a reply reader.
-    * Read replies from the reply reader.
-    * Write commands to the command writer.
+        * Call `reader.create_writer` to create a command writer.
+        * Call `writer.create_reader` to create a reply reader.
+        * Read replies from the reply reader.
+        * Write commands to the command writer.
     """
 
     terminator = b"\n"

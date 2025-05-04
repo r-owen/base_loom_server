@@ -8,25 +8,17 @@ from .example_mock_loom import ExampleMockLoom
 class ExampleLoomServer(BaseLoomServer):
     """Example loom server.
 
-    Parameters
-    ----------
-    num_shafts : int
-        The number of shafts that the loom has.
-    serial_port : str
-        The name of the serial port, e.g. "/dev/tty0".
-        If the name is "mock" then use a mock loom.
-    translation_dict : dict[str, str]
-        Translation dict.
-    reset_db : bool
-        If True, delete the old database and create a new one.
-        A rescue aid, in case the database gets corrupted.
-    verbose : bool
-        If True, log diagnostic information.
-    name : str
-        User-assigned loom name.
-    db_path : pathlib.Path | None
-        Path to pattern database.
-        Intended for unit tests, to avoid stomping on the real database.
+    Args:
+        num_shafts: The number of shafts the loom has.
+        serial_port: The name of the serial port, e.g. "/dev/tty0".
+            If the name is "mock" then use a mock loom.
+        translation_dict: Language translation dict.
+        reset_db: If True, delete the old database and create a new one.
+        verbose: If True, log diagnostic information.
+        name: User-assigned loom name.
+        db_path: Path to the pattern database. Specify None for the
+            default path. Unit tests specify a non-None value, to avoid
+            stomping on the real database.
     """
 
     default_name = "example"

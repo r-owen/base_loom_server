@@ -158,10 +158,8 @@ A minimal weaving pattern, including display code.
 Javascript version of the python class of the same name,
 with the same attributes but different methods.
 
-Parameters
-----------
-datadict : dict object
-    Data from a Python ReducedPattern dataclass.
+Args:
+    datadict: Data from a Python ReducedPattern dataclass.
 */
 class ReducedPattern {
     constructor(datadict) {

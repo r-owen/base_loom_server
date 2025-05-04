@@ -33,11 +33,10 @@ def pop_and_check_type_field(typename: str, datadict: dict[str, Any]) -> None:
 class Pick:
     """One pick of a pattern
 
-    Parameters
-    ----------
-    color: weft color, as an index into the color table
-    shaft_word: a bit mask, with bit 1 = shaft 0;
-        the shaft is up if the bit is set
+    Args:
+        color: Weft color, as an index into the color table.
+        shaft_word: A bit mask, with bit 1 = shaft 0.
+            The shaft is up if the bit is set.
     """
 
     color: int
@@ -146,10 +145,8 @@ class ReducedPattern:
         Return self.pick0 if pick_number = 0,
         else return self.picks[pick_number-1] if pick_number in range.
 
-        Raises
-        ------
-        IndexError
-            If pick_number < 0 or > len(self.picks).
+        Raises:
+            IndexError: If `pick_number` < 0 or > len(self.picks).
         """
         self.check_pick_number(pick_number)
         if pick_number == 0:
@@ -243,26 +240,22 @@ class ReducedPattern:
     ) -> None:
         """Set end_number0.
 
-        Parameters
-        ----------
-        end_number0 : int
-            New end_number0, the starting end number
-            for a group of ends to thread.
-        end_number1: int | None
-            New value for end_number1; if None, compute it
-        end_repeat_number : int | None
-            New value for end_repeat_number; if None then use current value.
+        Args:
+            end_number0: New value for end_number0, the starting end number
+                for a group of ends to thread.
+                Must be in range 0 ≤ end_number0 ≤ num_shafts.
+            end_number1: New value for end_number1. If None, compute it.
+                If not None then the value must be:
 
-        Raises
-        ------
-        IndexError
-            If end_number0 < 0 or > len(self.threading)
-        IndexError
-            If end_number1 not None invalid:
+                * 0, if end_number0 = 0.
+                * In range end_number0 < end_number1 ≤ 1 + num shafts,
+                    if end_number0 ≠ 0.
+            end_repeat_number: New value for end_repeat_number.
+                If None, use the current value.
 
-            * end_number0 = 0 and end_number1 != 0
-            * end_number1 <= end_number0
-            * end_number1 > # shafts + 1
+        Raises:
+            IndexError: If end_number0 < 0 or > len(self.threading).
+            IndexError: If end_number1 not None and not valid.
         """
         self.check_end_number(end_number0)
         max_end_number = len(self.threading)
@@ -284,10 +277,8 @@ class ReducedPattern:
     def set_current_pick_number(self, pick_number: int) -> None:
         """Set pick_number.
 
-        Parameters
-        ----------
-        pick_number : int
-            The pick pick_number.
+        Args:
+            pick_number: The pick number.
 
         Raise IndexError if pick_number < 0 or > num picks.
         """
@@ -310,16 +301,12 @@ def reduced_pattern_from_pattern_data(
 ) -> ReducedPattern:
     """Convert a dtx_to_wif.PatternData to a ReducedPattern.
 
-    Parameters
-    ----------
-    name : str
-        The name of the pattern to use (overrides the name
-        in PatternData).
-    data : dtx_to_wif.PatternData
-        The pattern read by dtx_to_wif.
+    Args:
+        name: The name of the pattern to use.
+        data: The pattern read by dtx_to_wif. The `name` field is ignored.
 
     The result is simpler and smaller, and can be sent to easily
-    encoded and sent to javascript.
+    encoded and sent to JavaScript.
 
     Note that all input (PatternData) indices are 1-based
     and all output (ReducedPattern) indices are 0-based.

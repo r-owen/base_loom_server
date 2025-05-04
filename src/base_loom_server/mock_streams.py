@@ -17,7 +17,11 @@ DEFAULT_TERMINATOR = b"\n"
 
 
 class StreamData:
-    """Data contained in a mock stream."""
+    """Data contained in a mock stream.
+
+    Contains a queue of data and asyncio events to track data available
+    and stream closing.
+    """
 
     def __init__(self) -> None:
         self.closed_event = asyncio.Event()
@@ -32,12 +36,9 @@ class StreamData:
 class BaseMockStream:
     """Base class for MockStreamReader and MockStreamWriter.
 
-    Parameters
-    ----------
-    sd : StreamData
-        Stream data to use; if None create new.
-    terminator : bytes
-        Required terminator.
+    Args:
+        sd: Stream data to use; if None create new.
+        terminator: Required terminator.
     """
 
     def __init__(
@@ -54,17 +55,17 @@ class MockStreamReader(BaseMockStream):
     """Minimal mock stream reader that only supports line-oriented data
     and fixed-length unterminated messages.
 
-    Parameters
-    ----------
-    sd : StreamData
-        Stream data to use; if None create new.
-    terminator : bytes
-        Required terminator. Calls to `readuntil` will raise
-        AssertionError if the separator is not in the terminator.
+    Intended to be created in one of two ways:
 
-    Intended to be created using `open_mock_connection` for pair of streams,
-    or `MockStreamWriter.create_reader` to create a reader that will
-    read from a given writer.
+    * `open_mock_connection` to create a reader and writer that are linked
+      in that closing the writer also closes the reader.
+    * `MockStreamWriter.create_reader` to create a reader that reads from
+       the writer.
+
+    Args:
+        sd: Stream data to use; if None create new.
+        terminator: Required terminator. Calls to `readuntil` will raise
+            `AssertionError` if the separator is not in the terminator.
     """
 
     def at_eof(self) -> bool:
@@ -74,18 +75,15 @@ class MockStreamReader(BaseMockStream):
     async def readexactly(self, n: int) -> bytes:
         """Read exactly n bytes (including a terminator, if any).
 
-        Unlike asyncio.StreamReader, this assumes
+        Unlike `asyncio.StreamReader`, this assumes
         the message will be exactly n bytes long,
         and the terminator is checked if self.terminator != b"".
 
-        Raises
-        ------
-        AssertionError
-            If the message is too long.
-        asyncio.IncompleteReadError if the message is too short
-        AssertionError
-            If self.terminator is not blank and the message
-            is not terminated with self.terminator.
+        Raises:
+            AssertionError: If the message is too long.
+            asyncio.IncompleteReadError: If the message is too short.
+            AssertionError: If self.terminator is not blank and the message
+                is not terminated with self.terminator.
         """
         while not self.sd.queue:
             if self.sd._is_closed():
@@ -107,10 +105,8 @@ class MockStreamReader(BaseMockStream):
     async def readline(self) -> bytes:
         """Read one line of data ending with self.terminator
 
-        Raises
-        ------
-        AssertionError
-            If self.terminator is blank
+        Raises:
+            AssertionError: If self.terminator is blank.
         """
         if not self.terminator:
             raise AssertionError("readline not allowed: self.terminator is blank")
@@ -127,12 +123,9 @@ class MockStreamReader(BaseMockStream):
     async def readuntil(self, separator: bytes = b"\n") -> bytes:
         """Read until the specified value.
 
-        Raises
-        ------
-        AssertionError
-            If separator is blank
-        AssertionError
-            If separator not in self.terminator
+        Raises:
+            AssertionError: If `separator` is blank.
+            AssertionError: If `separator` not in self.terminator.
         """
         if separator == b"":
             raise AssertionError("readuntil must have a non-blank separator")
@@ -151,16 +144,17 @@ class MockStreamReader(BaseMockStream):
 class MockStreamWriter(BaseMockStream):
     """Minimal mock stream writer that only allows writing terminated data.
 
-    Parameters
-    ----------
-    sd : StreamData
-        Stream data to use; if None create new.
-    terminator : bytes
-        Required terminator. Calls to `write` with data that is not
-        correctly terminated will raise AssertionError.
+    Intended to be created in one of two ways:
 
-    Intended to be created `open_mock_connection` for a new pair,
-    or `create_reader` to create a reader that will read from this writer.
+    * `open_mock_connection` to create a reader and writer that are linked
+      in that closing the writer also closes the reader.
+    * `MockStreamReader.create_writer` to create a writer that writes to
+       the reader.
+
+    Args:
+        sd: Stream data to use; if None create new.
+        terminator: Required terminator. Calls to `write` with data that is not
+            correctly terminated will raise `AssertionError`.
     """
 
     def close(self) -> None:
@@ -186,11 +180,9 @@ class MockStreamWriter(BaseMockStream):
     def write(self, data: bytes) -> None:
         """Write the specified data.
 
-        Raises
-        ------
-        AssertionError
-            If self.terminator is not empty and `data` is not
-            properly terminated.
+        Raises:
+            AssertionError: If self.terminator is not empty
+                and `data` is not properly terminated.
         """
         if self.terminator and not data.endswith(self.terminator):
             raise AssertionError(
