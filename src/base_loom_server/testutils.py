@@ -48,6 +48,14 @@ ALL_PATTERN_PATHS = (
 )
 
 
+def assert_replies_equal(reply: dict[str, Any], expected_reply: dict[str, Any]) -> None:
+    for key, value in expected_reply.items():
+        if value is not None and reply.get(key) != value:
+            raise AssertionError(
+                f"{reply=} != {expected_reply}: failed on field {key!r}"
+            )
+
+
 @dataclasses.dataclass
 class Client:
     test_client: TestClient
@@ -66,7 +74,22 @@ class Client:
         return data
 
 
-def change_weave_direction(client: Client):
+def set_thread_direction(client: Client, low_to_high: bool) -> None:
+    """Command the loom to thread in the specified direction,
+    and read and check the reply, if one is expected.
+
+    Args:
+        client: Client fixture.
+    """
+
+    replies = send_command(
+        client, dict(type="thread_direction", low_to_high=low_to_high)
+    )
+    assert len(replies) == 2
+    assert replies[0] == dict(type="ThreadDirection", low_to_high=low_to_high)
+
+
+def change_weave_direction(client: Client) -> None:
     """Command the loom to weave in the specified direction,
     and read and check the reply, if one is expected.
 
@@ -77,7 +100,7 @@ def change_weave_direction(client: Client):
         client: Client fixture.
     """
     expected_weave_direction_reply = True
-    client.mock_loom.command_threading_event.set()
+    client.mock_loom.command_threading_event.clear()
     if client.loom_server.enable_software_weave_direction:
         weave_forward = not client.loom_server.weave_forward
         replies = send_command(
@@ -95,6 +118,95 @@ def change_weave_direction(client: Client):
         assert len(replies) == 1
         # Give the loom client time to process the command
         client.mock_loom.command_threading_event.wait(timeout=1)
+
+
+def command_next_end(
+    client: Client,
+    expected_end_number0: int,
+    expected_end_number1: int,
+    expected_repeat_number: int,
+    jump_pending: bool = False,
+) -> None:
+    """Command the next threading end group and test the replies.
+
+    Ignore info-level StatusMessage
+
+    Args:
+        client: Client fixture.
+        expected_end_number0: Expected end number of the next end group.
+        expected_repeat_number: Expected repeat number of the next end group.
+        jump_pending: Is a jump pending?
+    """
+    pattern = client.loom_server.current_pattern
+    assert pattern is not None
+
+    client.mock_loom.command_threading_event.clear()
+
+    replies = send_command(client, dict(type="oobcommand", command="n"))
+    assert len(replies) == 1
+    # Give the loom client time to process the command
+    client.mock_loom.command_threading_event.wait(timeout=1)
+
+    expected_shaft_word = pattern.get_threading_shaft_word()
+    expected_replies: list[dict[str, Any]] = []
+    if jump_pending:
+        expected_replies += [
+            dict(
+                type="JumpEndNumber",
+                end_number=None,
+                end_repeat_number=None,
+            ),
+        ]
+    num_ends_in_pattern = len(pattern.threading)
+    expected_total_end_number0 = compute_total_num(
+        num_within=expected_end_number0,
+        repeat_number=expected_repeat_number,
+        repeat_len=num_ends_in_pattern,
+    )
+    expected_total_end_number1 = compute_total_num(
+        num_within=expected_end_number1,
+        repeat_number=expected_repeat_number,
+        repeat_len=num_ends_in_pattern,
+    )
+    expected_replies += [
+        dict(
+            type="CurrentEndNumber",
+            end_number0=expected_end_number0,
+            end_number1=expected_end_number1,
+            total_end_number0=expected_total_end_number0,
+            total_end_number1=expected_total_end_number1,
+            end_repeat_number=expected_repeat_number,
+        ),
+    ]
+    if client.loom_server.loom_reports_motion:
+        expected_replies += [
+            dict(
+                type="ShaftState",
+                state=ShaftStateEnum.MOVING,
+                shaft_word=None,
+            ),
+            dict(
+                type="ShaftState",
+                state=ShaftStateEnum.MOVING,
+                shaft_word=None,
+            ),
+        ]
+    expected_replies += [
+        dict(
+            type="ShaftState",
+            state=ShaftStateEnum.DONE,
+            shaft_word=expected_shaft_word,
+        ),
+    ]
+    for expected_reply in expected_replies:
+        reply = client.receive_dict()
+        if (
+            reply["type"] == "ServerMessage"
+            and reply["severity"] == MessageSeverityEnum.INFO
+        ):
+            # Ignore info-level status messages
+            continue
+        assert_replies_equal(reply, expected_reply)
 
 
 def command_next_pick(
@@ -143,6 +255,7 @@ def command_next_pick(
         dict(
             type="CurrentPickNumber",
             pick_number=expected_pick_number,
+            total_pick_number=None,
             pick_repeat_number=expected_repeat_number,
         ),
     ]
@@ -174,9 +287,7 @@ def command_next_pick(
         ):
             # Ignore info-level status messages
             continue
-        for key, value in expected_reply.items():
-            if value is not None:
-                assert reply.get(key) == value
+        assert_replies_equal(reply, expected_reply)
 
 
 def select_pattern(
@@ -196,6 +307,11 @@ def select_pattern(
         have the expected default value. This is only appropriate for patterns
             that are newly loaded, or have not been woven on or threaded
             once loaded.
+
+    Returns:
+        current_pattern: the actual current_pattern in the loom server
+            (rather than the one reconstructed from the ReducedPattern reply,
+            so you can monitor internal changes).
     """
     expected_seen_types = {
         "CommandDone",
@@ -211,19 +327,19 @@ def select_pattern(
     assert len(replies) == len(expected_seen_types)
     pattern_reply = replies[0]
     assert pattern_reply["type"] == "ReducedPattern"
-    pattern = ReducedPattern.from_dict(pattern_reply)
+    pattern_in_reply = ReducedPattern.from_dict(pattern_reply)
     if check_defaults:
-        assert pattern.pick_number == 0
-        assert pattern.pick_repeat_number == 1
-        assert pattern.end_number0 == 0
-        assert pattern.end_number1 == 0
-        assert pattern.end_repeat_number == 1
-        assert pattern.thread_group_size == DEFAULT_THREAD_GROUP_SIZE
-        assert bool(pattern.separate_threading_repeats) == (
-            len(pattern.threading) > NUM_ITEMS_FOR_REPEAT_SEPARATOR
+        assert pattern_in_reply.pick_number == 0
+        assert pattern_in_reply.pick_repeat_number == 1
+        assert pattern_in_reply.end_number0 == 0
+        assert pattern_in_reply.end_number1 == 0
+        assert pattern_in_reply.end_repeat_number == 1
+        assert pattern_in_reply.thread_group_size == DEFAULT_THREAD_GROUP_SIZE
+        assert bool(pattern_in_reply.separate_threading_repeats) == (
+            len(pattern_in_reply.threading) > NUM_ITEMS_FOR_REPEAT_SEPARATOR
         )
-        assert bool(pattern.separate_weaving_repeats) == (
-            len(pattern.picks) > NUM_ITEMS_FOR_REPEAT_SEPARATOR
+        assert bool(pattern_in_reply.separate_weaving_repeats) == (
+            len(pattern_in_reply.picks) > NUM_ITEMS_FOR_REPEAT_SEPARATOR
         )
     seen_types: set[str] = {"ReducedPattern"}
     for reply_dict in replies[1:]:
@@ -233,38 +349,39 @@ def select_pattern(
                 assert reply.cmd_type == "select_pattern"
                 assert reply.success
             case "CurrentPickNumber":
-                assert reply.pick_number == pattern.pick_number
-                assert reply.pick_repeat_number == pattern.pick_repeat_number
+                assert reply.pick_number == pattern_in_reply.pick_number
+                assert reply.pick_repeat_number == pattern_in_reply.pick_repeat_number
                 assert reply.total_picks == compute_total_num(
-                    num_within=pattern.pick_number,
-                    repeat_number=pattern.pick_repeat_number,
-                    repeat_len=len(pattern.picks),
+                    num_within=pattern_in_reply.pick_number,
+                    repeat_number=pattern_in_reply.pick_repeat_number,
+                    repeat_len=len(pattern_in_reply.picks),
                 )
             case "CurrentEndNumber":
-                assert reply.end_number0 == pattern.end_number0
-                assert reply.end_number1 == pattern.end_number1
-                assert reply.end_repeat_number == pattern.end_repeat_number
+                assert reply.end_number0 == pattern_in_reply.end_number0
+                assert reply.end_number1 == pattern_in_reply.end_number1
+                assert reply.end_repeat_number == pattern_in_reply.end_repeat_number
                 assert reply.total_end_number0 == compute_total_num(
-                    num_within=pattern.end_number0,
-                    repeat_number=pattern.end_repeat_number,
-                    repeat_len=pattern.num_ends,
+                    num_within=pattern_in_reply.end_number0,
+                    repeat_number=pattern_in_reply.end_repeat_number,
+                    repeat_len=pattern_in_reply.num_ends,
                 )
                 assert reply.total_end_number1 == compute_total_num(
-                    num_within=pattern.end_number1,
-                    repeat_number=pattern.end_repeat_number,
-                    repeat_len=pattern.num_ends,
+                    num_within=pattern_in_reply.end_number1,
+                    repeat_number=pattern_in_reply.end_repeat_number,
+                    repeat_len=pattern_in_reply.num_ends,
                 )
             case "SeparateThreadingRepeats":
-                assert reply.separate == pattern.separate_threading_repeats
+                assert reply.separate == pattern_in_reply.separate_threading_repeats
             case "SeparateWeavingRepeats":
-                assert reply.separate == pattern.separate_weaving_repeats
+                assert reply.separate == pattern_in_reply.separate_weaving_repeats
             case "ThreadGroupSize":
-                assert reply.group_size == pattern.thread_group_size
+                assert reply.group_size == pattern_in_reply.thread_group_size
             case _:
                 raise AssertionError(f"Unexpected message type {reply.type}")
         seen_types.add(reply.type)
     assert seen_types == expected_seen_types
-    return pattern
+    assert client.loom_server.current_pattern is not None
+    return client.loom_server.current_pattern
 
 
 def send_command(
@@ -332,6 +449,120 @@ class BaseTestLoomServer:
     expected_status_messages = ()
     app: FastAPI | None = None
     extra_args = ()
+
+    def test_jump_to_end(self) -> None:
+        pattern_name = ALL_PATTERN_PATHS[4].name
+
+        with self.create_test_client(
+            app=self.app,
+            name="test name",
+            num_shafts=32,
+            upload_patterns=ALL_PATTERN_PATHS[2:5],
+        ) as client:
+            pattern = select_pattern(client=client, pattern_name=pattern_name)
+            num_ends_in_pattern = len(pattern.threading)
+
+            replies = send_command(client, dict(type="mode", mode=ModeEnum.THREAD))
+            assert len(replies) == 2
+            assert replies[0] == dict(type="Mode", mode=ModeEnum.THREAD)
+
+            # post_action sets what to do after sending the jump_to_end cmd:
+            # * cancel: cancel the jump_to_pick
+            # * next: advance to the next end (thus accepting the jump)
+            # * nothing: do nothing
+            for (
+                thread_group_size,
+                post_action,
+                end_number0,
+                end_repeat_number,
+            ) in itertools.product(
+                (1, 4),
+                ("cancel", "next", "nothing"),
+                (0, 1, num_ends_in_pattern // 3, num_ends_in_pattern),
+                (-1, 0, 1, 2),
+            ):
+                replies = send_command(
+                    client, dict(type="thread_group_size", group_size=thread_group_size)
+                )
+                assert len(replies) == 2
+                assert replies[0] == dict(
+                    type="ThreadGroupSize", group_size=thread_group_size
+                )
+                assert pattern.thread_group_size == thread_group_size
+
+                total_end_number0 = compute_total_num(
+                    num_within=end_number0,
+                    repeat_number=end_repeat_number,
+                    repeat_len=num_ends_in_pattern,
+                )
+                replies = send_command(
+                    client,
+                    dict(type="jump_to_end", total_end_number0=total_end_number0),
+                )
+                assert len(replies) == 2
+                jump_end_reply = SimpleNamespace(**replies[0])
+                if total_end_number0 == 0:
+                    # Jump to end_number0 0, repeat_number 1.
+                    assert jump_end_reply == SimpleNamespace(
+                        type="JumpEndNumber",
+                        total_end_number0=0,
+                        total_end_number1=0,
+                        end_number0=0,
+                        end_number1=0,
+                        end_repeat_number=1,
+                    )
+                elif end_number0 == 0:
+                    # Jump to end_number0 0, repeat_number not 1.
+                    # Report the last end of the previous repeat,
+                    # rather than the magic "0" end_number0
+                    assert jump_end_reply == SimpleNamespace(
+                        type="JumpEndNumber",
+                        total_end_number0=total_end_number0,
+                        total_end_number1=total_end_number0 + 1,
+                        end_number0=num_ends_in_pattern,
+                        end_number1=num_ends_in_pattern + 1,
+                        end_repeat_number=end_repeat_number - 1,
+                    )
+                else:
+                    end_delta = pattern.compute_end_number1(end_number0) - end_number0
+                    # Jump to a nonzero end_number0.
+                    assert jump_end_reply == SimpleNamespace(
+                        type="JumpEndNumber",
+                        total_end_number0=total_end_number0,
+                        total_end_number1=total_end_number0 + end_delta,
+                        end_number0=end_number0,
+                        end_number1=end_number0 + end_delta,
+                        end_repeat_number=end_repeat_number,
+                    )
+                match post_action:
+                    case "cancel":
+                        replies = send_command(
+                            client, dict(type="jump_to_end", total_end_number0=None)
+                        )
+                        assert len(replies) == 2
+                        jump_end_cancel_reply = SimpleNamespace(**replies[0])
+                        assert jump_end_cancel_reply == SimpleNamespace(
+                            type="JumpEndNumber",
+                            total_end_number0=None,
+                            total_end_number1=None,
+                            end_number0=None,
+                            end_number1=None,
+                            end_repeat_number=None,
+                        )
+                    case "next":
+                        # Test against jump_end_reply because we already
+                        # checked that against expected values.
+                        command_next_end(
+                            client=client,
+                            expected_end_number0=jump_end_reply.end_number0,
+                            expected_end_number1=jump_end_reply.end_number1,
+                            expected_repeat_number=jump_end_reply.end_repeat_number,
+                            jump_pending=True,
+                        )
+                    case "nothing":
+                        pass
+                    case _:
+                        raise RuntimeError(f"Unsupported {post_action=!r}")
 
     def test_jump_to_pick(self) -> None:
         pattern_name = ALL_PATTERN_PATHS[3].name
@@ -419,7 +650,123 @@ class BaseTestLoomServer:
                     case _:
                         raise RuntimeError(f"Unsupported {post_action=!r}")
 
-    def test_oobcommand(self) -> None:
+    def test_next_end(self) -> None:
+        pattern_name = ALL_PATTERN_PATHS[1].name
+
+        with self.create_test_client(
+            app=self.app,
+            upload_patterns=ALL_PATTERN_PATHS[0:3],
+        ) as client:
+            pattern = select_pattern(client=client, pattern_name=pattern_name)
+            num_ends_in_pattern = len(pattern.threading)
+
+            replies = send_command(client, dict(type="mode", mode=ModeEnum.THREAD))
+            assert len(replies) == 2
+            assert replies[0] == dict(type="Mode", mode=ModeEnum.THREAD)
+
+            for separate_threading_repeats, thread_group_size in itertools.product(
+                (False, True),
+                (
+                    1,
+                    2,
+                    3,
+                    num_ends_in_pattern - 1,
+                    num_ends_in_pattern,
+                    num_ends_in_pattern + 1,
+                ),
+            ):
+                print(f"{separate_threading_repeats=}, {thread_group_size=}")
+                pattern.set_current_end_number(end_number0=0, end_repeat_number=1)
+                expected_end_number0 = 0
+                expected_end_number1 = 0
+                expected_repeat_number = 1
+
+                set_thread_direction(client, low_to_high=True)
+
+                replies = send_command(
+                    client,
+                    dict(
+                        type="separate_threading_repeats",
+                        separate=separate_threading_repeats,
+                    ),
+                )
+                assert len(replies) == 2
+                assert replies[0] == dict(
+                    type="SeparateThreadingRepeats", separate=separate_threading_repeats
+                )
+                assert pattern.separate_threading_repeats == separate_threading_repeats
+
+                replies = send_command(
+                    client, dict(type="thread_group_size", group_size=thread_group_size)
+                )
+                assert len(replies) == 2
+                assert replies[0] == dict(
+                    type="ThreadGroupSize", group_size=thread_group_size
+                )
+                assert pattern.thread_group_size == thread_group_size
+
+                # Make enough low_to_high end advances to get into 3rd repeat
+                expected_end_number0 = 0
+                expected_repeat_number = 1
+                while expected_repeat_number < 3:
+                    if expected_end_number1 == 0:
+                        expected_end_number0 = 1
+                    elif expected_end_number1 <= num_ends_in_pattern:
+                        expected_end_number0 = expected_end_number1
+                    else:
+                        # Wrap around
+                        expected_end_number0 = (
+                            0 if pattern.separate_threading_repeats else 1
+                        )
+                        expected_repeat_number += 1
+                    if expected_end_number0 == 0:
+                        expected_end_number1 = 0
+                    else:
+                        expected_end_number1 = min(
+                            expected_end_number0 + thread_group_size,
+                            num_ends_in_pattern + 1,
+                        )
+                    command_next_end(
+                        client=client,
+                        expected_end_number0=expected_end_number0,
+                        expected_end_number1=expected_end_number1,
+                        expected_repeat_number=expected_repeat_number,
+                    )
+
+                # Now go high to low at least two ends past the beginning
+                set_thread_direction(client, low_to_high=False)
+
+                iter_past_beginning = 0
+                while iter_past_beginning < 2:
+                    if expected_end_number0 == 0 or (
+                        expected_end_number0 == 1 and not separate_threading_repeats
+                    ):
+                        # Wrap around
+                        expected_end_number1 = num_ends_in_pattern + 1
+                        expected_end_number0 = max(
+                            1, num_ends_in_pattern + 1 - thread_group_size
+                        )
+                        expected_repeat_number -= 1
+                    elif expected_end_number0 == 1:
+                        expected_end_number0 = 0
+                        expected_end_number1 = 0
+                    else:
+                        expected_end_number1 = expected_end_number0
+                        expected_end_number0 = max(
+                            1, expected_end_number0 - thread_group_size
+                        )
+                    if expected_repeat_number <= 0:
+                        iter_past_beginning += 1
+
+                    command_next_end(
+                        client=client,
+                        expected_end_number0=expected_end_number0,
+                        expected_end_number1=expected_end_number1,
+                        expected_repeat_number=expected_repeat_number,
+                    )
+                assert expected_repeat_number <= 0
+
+    def test_next_pick(self) -> None:
         pattern_name = ALL_PATTERN_PATHS[2].name
 
         with self.create_test_client(
