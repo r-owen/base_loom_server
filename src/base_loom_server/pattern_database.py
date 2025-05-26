@@ -224,7 +224,6 @@ class PatternDatabase:
         self, pattern_name: str, thread_group_size: int
     ) -> None:
         """Update thread_group_size for the specified pattern."""
-        print(f"update_thread_group_size({pattern_name=}, {thread_group_size=})")
         async with aiosqlite.connect(self.dbpath) as db:
             await db.execute(
                 "update patterns "
