@@ -2,6 +2,7 @@ import base64
 import contextlib
 import dataclasses
 import importlib.resources
+import itertools
 import pathlib
 import random
 import sys
@@ -344,41 +345,79 @@ class BaseTestLoomServer:
             pattern = select_pattern(client=client, pattern_name=pattern_name)
             num_picks_in_pattern = len(pattern.picks)
 
-            for pick_number in (0, 1, num_picks_in_pattern // 3, num_picks_in_pattern):
-                for pick_repeat_number in (-1, 0, 1, 2):
-                    total_picks = compute_total_num(
-                        num_within=pick_number,
-                        repeat_number=pick_repeat_number,
-                        repeat_len=num_picks_in_pattern,
+            # post_action sets what to do after sending the jump_to_pick cmd:
+            # * cancel: cancel the jump_to_pick
+            # * next: advance to the next pick (thus accepting the jump)
+            # * nothing: do nothing
+            for post_action, pick_number, pick_repeat_number in itertools.product(
+                ("cancel", "next", "nothing"),
+                (0, 1, num_picks_in_pattern // 3, num_picks_in_pattern),
+                (-1, 0, 1, 2),
+            ):
+                total_picks = compute_total_num(
+                    num_within=pick_number,
+                    repeat_number=pick_repeat_number,
+                    repeat_len=num_picks_in_pattern,
+                )
+                replies = send_command(
+                    client,
+                    dict(type="jump_to_pick", total_picks=total_picks),
+                )
+                assert len(replies) == 2
+                jump_pick_reply = SimpleNamespace(**replies[0])
+                if total_picks == 0:
+                    # Jump to pick_number 0, repeat_number 1.
+                    assert jump_pick_reply == SimpleNamespace(
+                        type="JumpPickNumber",
+                        total_picks=0,
+                        pick_number=0,
+                        pick_repeat_number=1,
                     )
-                    replies = send_command(
-                        client,
-                        dict(type="jump_to_pick", total_picks=total_picks),
+                elif pick_number == 0:
+                    # Jump to pick_number 0, repeat_number not 1.
+                    # Report the last pick of the previous repeat,
+                    # rather than the magic "0" pick_number
+                    assert jump_pick_reply == SimpleNamespace(
+                        type="JumpPickNumber",
+                        total_picks=total_picks,
+                        pick_number=num_picks_in_pattern,
+                        pick_repeat_number=pick_repeat_number - 1,
                     )
-                    assert len(replies) == 2
-                    if total_picks == 0:
-                        assert replies[0] == dict(
-                            type="JumpPickNumber",
-                            total_picks=0,
-                            pick_number=0,
-                            pick_repeat_number=1,
+                else:
+                    # Jump to a nonzero pick_number.
+                    assert jump_pick_reply == SimpleNamespace(
+                        type="JumpPickNumber",
+                        total_picks=total_picks,
+                        pick_number=pick_number,
+                        pick_repeat_number=pick_repeat_number,
+                    )
+                match post_action:
+                    case "cancel":
+                        replies = send_command(
+                            client, dict(type="jump_to_pick", total_picks=None)
                         )
-                    elif pick_number == 0:
-                        # Special case: report the last pick of the previous
-                        # repeat, rather than the magic "0" pick_number
-                        assert replies[0] == dict(
+                        assert len(replies) == 2
+                        jump_pick_cancel_reply = SimpleNamespace(**replies[0])
+                        assert jump_pick_cancel_reply == SimpleNamespace(
                             type="JumpPickNumber",
-                            total_picks=total_picks,
-                            pick_number=num_picks_in_pattern,
-                            pick_repeat_number=pick_repeat_number - 1,
+                            total_picks=None,
+                            pick_number=None,
+                            pick_repeat_number=None,
                         )
-                    else:
-                        assert replies[0] == dict(
-                            type="JumpPickNumber",
-                            total_picks=total_picks,
-                            pick_number=pick_number,
-                            pick_repeat_number=pick_repeat_number,
+                    case "next":
+                        command_next_pick(
+                            client=client,
+                            expected_pick_number=jump_pick_reply.pick_number,
+                            expected_repeat_number=jump_pick_reply.pick_repeat_number,
+                            expected_shaft_word=pattern.get_pick(
+                                jump_pick_reply.pick_number
+                            ).shaft_word,
+                            jump_pending=True,
                         )
+                    case "nothing":
+                        pass
+                    case _:
+                        raise RuntimeError(f"Unsupported {post_action=!r}")
 
     def test_oobcommand(self) -> None:
         pattern_name = ALL_PATTERN_PATHS[2].name
