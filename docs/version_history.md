@@ -1,5 +1,9 @@
 # Version History
 
+## 0.18.3 2025-05-25
+
+Expand unit tests.
+
 ## 0.18.2 2025-05-03
 
 Add API documentation.
