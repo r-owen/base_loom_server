@@ -13,6 +13,7 @@ from fastapi.responses import HTMLResponse, Response
 
 from .base_loom_server import DEFAULT_DATABASE_PATH, BaseLoomServer
 from .constants import LOG_NAME
+from .enums import DirectionControlEnum
 
 PKG_FILES = importlib.resources.files("base_loom_server")
 LOCALE_FILES = PKG_FILES.joinpath("locales")
@@ -39,6 +40,8 @@ class AppRunner:
             e.g. "toika_loom_server". This is used by the `run` method,
             as an argument to `uvicorn.run`.
     """
+
+    DirectionControlMap = {item.name.lower(): item for item in DirectionControlEnum}
 
     def __init__(
         self,
@@ -103,6 +106,7 @@ class AppRunner:
         parser.add_argument(
             "-n",
             "--name",
+            default=self.server_class.default_name,
             help="loom name",
         )
         parser.add_argument(
@@ -124,6 +128,13 @@ class AppRunner:
             help="Path for the pattern database. "
             "Specify this if you plan to run more than one loom server on this computer.",
         )
+        if not self.server_class.supports_full_direction_control:
+            parser.add_argument(
+                "--direction-control",
+                help="What controls weaving vs. unweaving?",
+                choices=("software", "loom"),
+                default="software",
+            )
         parser.add_argument(
             "--host",
             default="0.0.0.0",
@@ -156,9 +167,13 @@ class AppRunner:
 
         parser = self.create_argument_parser()
         args = parser.parse_args()
-        for extra_arg in ("host", "port", "log_level"):
-            if getattr(args, extra_arg, None) is not None:
-                delattr(args, extra_arg)
+        for uvicorn_arg in ("host", "port", "log_level"):
+            if getattr(args, uvicorn_arg, None) is not None:
+                delattr(args, uvicorn_arg)
+        if self.server_class.supports_full_direction_control:
+            args.direction_control = DirectionControlEnum.FULL
+        else:
+            args.direction_control = self.DirectionControlMap[args.direction_control]
 
         async with self.server_class(
             **vars(args),

@@ -24,8 +24,8 @@ from serial_asyncio import open_serial_connection  # type: ignore
 
 from . import client_replies
 from .base_mock_loom import BaseMockLoom
-from .client_replies import MessageSeverityEnum, ModeEnum, ShaftStateEnum
 from .constants import LOG_NAME
+from .enums import DirectionControlEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
 from .mock_streams import StreamReaderType, StreamWriterType
 from .pattern_database import PatternDatabase
 from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
@@ -68,14 +68,11 @@ class BaseLoomServer:
         translation_dict: Language translation dict.
         reset_db: If True, delete the old database and create a new one.
         verbose: If True, log diagnostic information.
+        direction_control : What controls weaving vs. unweaving.
         name: User-assigned loom name.
         db_path: Path to the pattern database. Specify None for the
             default path. Unit tests specify a non-None value, to avoid
             stomping on the real database.
-        enable_software_weave_direction: Can the software control
-            the weave direction? For Seguin looms, always specify True.
-            For Toika looms, the user must make a choice between software
-            or the loom.
     """
 
     # Subclasses should override these, as necesary.
@@ -85,6 +82,7 @@ class BaseLoomServer:
     loom_reports_direction = True
     loom_reports_motion = True
     mock_loom_type: type[BaseMockLoom] | None = None
+    supports_full_direction_control = True
 
     def __init__(
         self,
@@ -94,20 +92,27 @@ class BaseLoomServer:
         translation_dict: dict[str, str],
         reset_db: bool,
         verbose: bool,
+        direction_control: DirectionControlEnum,
         name: str | None = None,
         db_path: pathlib.Path | None = None,
-        enable_software_weave_direction: bool = True,
     ) -> None:
         if self.mock_loom_type is None:
             raise RuntimeError("Subclasses must set class variable 'mock_loom_type'")
         self.terminator = self.mock_loom_type.terminator
         self.log = logging.getLogger(LOG_NAME)
+        if name is None:
+            name = self.default_name
         if verbose:
             self.log.info(
                 f"{self}({serial_port=!r}, {reset_db=!r}, {verbose=!r}, {db_path=!r})"
             )
-        if name is None:
-            name = self.default_name
+        if self.supports_full_direction_control:
+            if direction_control is not DirectionControlEnum.FULL:
+                self.log.warning(
+                    f"Ignoring {direction_control=} because this loom supports full direction control"
+                )
+            direction_control = DirectionControlEnum.FULL
+        self.direction_control = DirectionControlEnum(direction_control)
         self.serial_port = serial_port
         self.translation_dict = translation_dict
         self.verbose = verbose
@@ -118,7 +123,6 @@ class BaseLoomServer:
         if reset_db:
             self.db_path.unlink(missing_ok=True)
         self.pattern_db = PatternDatabase(self.db_path)
-        self.enable_software_weave_direction = enable_software_weave_direction
         self.websocket: WebSocket | None = None
         self.loom_connecting = False
         self.loom_disconnecting = False
@@ -147,6 +151,13 @@ class BaseLoomServer:
     async def write_shafts_to_loom(self, shaft_word: int) -> None:
         """Write the shaft word to the loom."""
         raise NotImplementedError()
+
+    @property
+    def enable_software_weave_direction(self) -> bool:
+        return self.direction_control in {
+            DirectionControlEnum.FULL,
+            DirectionControlEnum.SOFTWARE,
+        }
 
     @property
     def loom_connected(self) -> bool:
