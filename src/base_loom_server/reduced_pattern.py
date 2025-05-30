@@ -204,7 +204,7 @@ class ReducedPattern:
             end_repeat_number=new_end_repeat_number,
         )
 
-    def increment_pick_number(self, weave_forward: bool) -> int:
+    def increment_pick_number(self, direction_forward: bool) -> int:
         """Increment pick_number in the specified direction.
 
         Increment pick_repeat_number as well, if appropriate.
@@ -212,7 +212,7 @@ class ReducedPattern:
         Return the new pick number.
         """
         self.check_pick_number(self.pick_number)
-        next_pick_number = self.pick_number + (1 if weave_forward else -1)
+        next_pick_number = self.pick_number + (1 if direction_forward else -1)
 
         if next_pick_number < 0 or (
             next_pick_number == 0 and not self.separate_weaving_repeats

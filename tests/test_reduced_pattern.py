@@ -367,18 +367,18 @@ def test_pick_number() -> None:
         reduced_pattern.set_current_pick_number(0)
         for i in range(NUM_ITER):
             returned_pick_number = reduced_pattern.increment_pick_number(
-                weave_forward=True
+                direction_forward=True
             )
             assert returned_pick_number == i + 1
             assert reduced_pattern.pick_number == returned_pick_number
             assert reduced_pattern.pick_repeat_number == 1
         end_num = 0 if separate_repeats else 1
         for i in range(NUM_ITER, end_num, -1):
-            reduced_pattern.increment_pick_number(weave_forward=False)
+            reduced_pattern.increment_pick_number(direction_forward=False)
             assert reduced_pattern.pick_number == i - 1
             assert reduced_pattern.pick_repeat_number == 1
         for i in range(NUM_ITER):
-            reduced_pattern.increment_pick_number(weave_forward=False)
+            reduced_pattern.increment_pick_number(direction_forward=False)
             assert reduced_pattern.pick_number == num_picks - i
             assert reduced_pattern.pick_repeat_number == 0
 
@@ -388,17 +388,17 @@ def test_pick_number() -> None:
         reduced_pattern.set_current_pick_number(num_picks)
         for i in range(NUM_ITER):
             returned_pick_number = reduced_pattern.increment_pick_number(
-                weave_forward=False
+                direction_forward=False
             )
             assert returned_pick_number == num_picks - i - 1
             assert reduced_pattern.pick_number == returned_pick_number
             assert reduced_pattern.pick_repeat_number == 0
         for i in range(NUM_ITER, 0, -1):
-            reduced_pattern.increment_pick_number(weave_forward=True)
+            reduced_pattern.increment_pick_number(direction_forward=True)
             assert reduced_pattern.pick_number == 1 + num_picks - i
             assert reduced_pattern.pick_repeat_number == 0
         offset = 0 if separate_repeats else 1
         for i in range(NUM_ITER):
-            reduced_pattern.increment_pick_number(weave_forward=True)
+            reduced_pattern.increment_pick_number(direction_forward=True)
             assert reduced_pattern.pick_number == i + offset
             assert reduced_pattern.pick_repeat_number == 1

@@ -1,37 +1,12 @@
 import dataclasses
-import enum
 
-
-class ConnectionStateEnum(enum.IntEnum):
-    """Client websocket connection state."""
-
-    DISCONNECTED = 0
-    CONNECTED = 1
-    CONNECTING = 2
-    DISCONNECTING = 3
-
-
-class MessageSeverityEnum(enum.IntEnum):
-    """Severity for text messages"""
-
-    INFO = 1
-    WARNING = 2
-    ERROR = 3
-
-
-class ModeEnum(enum.IntEnum):
-    WEAVE = 1
-    THREAD = 2
-    TEST = 3
-
-
-class ShaftStateEnum(enum.IntEnum):
-    """Shaft state"""
-
-    UNKNOWN = 0
-    DONE = 1
-    MOVING = 2
-    ERROR = 3
+from .enums import (
+    ConnectionStateEnum,
+    DirectionControlEnum,
+    MessageSeverityEnum,
+    ModeEnum,
+    ShaftStateEnum,
+)
 
 
 @dataclasses.dataclass
@@ -78,6 +53,14 @@ class CurrentPickNumber:
     total_picks: int
     pick_number: int
     pick_repeat_number: int
+
+
+@dataclasses.dataclass
+class Direction:
+    """The weaving and threading direction"""
+
+    type: str = dataclasses.field(init=False, default="Direction")
+    forward: bool
 
 
 @dataclasses.dataclass
@@ -129,8 +112,8 @@ class LoomInfo:
     """Information about the loom"""
 
     type: str = dataclasses.field(init=False, default="LoomInfo")
-    name: str
     num_shafts: int
+    serial_port: str
 
 
 @dataclasses.dataclass
@@ -155,6 +138,16 @@ class SeparateWeavingRepeats:
 
     type: str = dataclasses.field(init=False, default="SeparateWeavingRepeats")
     separate: bool
+
+
+@dataclasses.dataclass
+class Settings:
+    type: str = dataclasses.field(init=False, default="Settings")
+    loom_name: str
+    direction_control: DirectionControlEnum
+    thread_group_size: int
+    thread_right_to_left: bool
+    thread_back_to_front: bool
 
 
 @dataclasses.dataclass
@@ -192,24 +185,8 @@ class PatternNames:
 
 
 @dataclasses.dataclass
-class ThreadDirection:
-    """The threading direction"""
-
-    type: str = dataclasses.field(init=False, default="ThreadDirection")
-    low_to_high: bool
-
-
-@dataclasses.dataclass
 class ThreadGroupSize:
     """The threading group size"""
 
     type: str = dataclasses.field(init=False, default="ThreadGroupSize")
     group_size: int
-
-
-@dataclasses.dataclass
-class WeaveDirection:
-    """The weaving direction"""
-
-    type: str = dataclasses.field(init=False, default="WeaveDirection")
-    forward: bool

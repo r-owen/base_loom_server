@@ -46,8 +46,12 @@ select {
     background-color: #ddd
 }
 
+#thread_direction:disabled {
+    border: 0px;
+}
+
 #weave_direction:disabled {
-    background-color: #0000;
+    border: 0px;
 }
 
 /* Style the buttons that are used to open the tab content */
@@ -67,7 +71,17 @@ select {
     font-weight: bold;
 }
 
-div.flex-row-start {
+div.flex-column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: start;
+    align-items: start;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+div.flex-row {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -108,14 +122,4 @@ canvas {
     border-style: solid;
     border-width: 1px;
     margin-right: 10px;
-}
-
-#thread_direction {
-    font-size: 90%;
-    font-weight: bold;
-}
-
-#weave_direction {
-    font-size: 90%;
-    font-weight: bold;
 }

@@ -37,26 +37,25 @@ class ExampleLoomServer(BaseLoomServer):
         reply_data = reply[1:]
         match reply_char:
             case "c":
-                # Shafts that are up
+                # Shafts that are up.
                 self.shaft_word = int(reply_data, base=16)
                 await self.report_shaft_state()
             case "m":
-                # Loom moving
+                # Loom moving.
                 self.moving = reply_data == "1"
                 self.shaft_state = (
                     ShaftStateEnum.MOVING if reply_data == "1" else ShaftStateEnum.DONE
                 )
                 await self.report_shaft_state()
             case "p":
-                # Next pick wanted
+                # Next pick wanted.
                 await self.handle_next_pick_request()
             case "u":
-                # Weave direction
-                # The loom expects a new pick, as a result
+                # Weave or thread direction.
                 if reply_data == "0":
-                    self.weave_forward = True
+                    self.direction_forward = True
                 elif reply_data == "1":
-                    self.weave_forward = False
+                    self.direction_forward = False
                 else:
                     message = (
                         f"invalid loom reply {reply!r}: " "direction must be 0 or 1"
@@ -66,4 +65,4 @@ class ExampleLoomServer(BaseLoomServer):
                         message=message, severity=MessageSeverityEnum.WARNING
                     )
                     return
-                await self.report_weave_direction()
+                await self.report_direction()

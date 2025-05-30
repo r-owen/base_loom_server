@@ -49,7 +49,7 @@ class BaseMockLoom(abc.ABC):
         self.moving = False
         self.pick_wanted = False
         self.shaft_word = 0
-        self.weave_forward = True
+        self.direction_forward = True
         self.writer: StreamWriterType | None = None
         self.reader: StreamReaderType | None = None
         self.done_task: asyncio.Future = asyncio.Future()
@@ -133,12 +133,12 @@ class BaseMockLoom(abc.ABC):
 
     async def oob_command_d(self, cmd: str):
         """Toggle weave direction"""
-        self.weave_forward = not self.weave_forward
+        self.direction_forward = not self.direction_forward
         await self.report_direction()
         if self.verbose:
             self.log.info(
                 f"{self}: oob toggle weave direction to: "
-                f"{DIRECTION_NAMES[self.weave_forward]}"
+                f"{DIRECTION_NAMES[self.direction_forward]}"
             )
 
     async def oob_command_n(self, cmd: str):
@@ -219,10 +219,10 @@ class BaseMockLoom(abc.ABC):
             self.log.info(f"{self}: raise shafts {self.shaft_word:08x}")
         self.move_task = asyncio.create_task(self.move(shaft_word=shaft_word))
 
-    async def set_weave_forward(self, weave_forward: bool) -> None:
-        self.weave_forward = bool(weave_forward)
+    async def set_direction_forward(self, direction_forward: bool) -> None:
+        self.direction_forward = bool(direction_forward)
         if self.verbose:
-            self.log.info(f"{self}: set {weave_forward=} by software")
+            self.log.info(f"{self}: set {direction_forward=} by software")
         await self.report_direction()
 
     async def write(self, data: bytes | bytearray | str) -> None:

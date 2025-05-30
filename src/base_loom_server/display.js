@@ -1,10 +1,6 @@
 // value is replaced by python code
 const TranslationDict = { translation_dict }
 
-// value is replaced by python code
-const EnableSoftwareWeaveDirection = { enable_software_weave_direction }
-console.log(`EnableSoftwareWeaveDirection=${EnableSoftwareWeaveDirection}`)
-
 const MaxFiles = 10
 
 const MinBlockSize = 11
@@ -20,6 +16,10 @@ const ThreadingEndTopGap = 10
 const WeavingThreadDisplayGap = 1
 
 const WeavingThreadHalfWidth = 10
+
+const NullDirectionData = {
+    "forward": null,
+}
 
 const NullEndData = {
     "total_end_number0": null,
@@ -44,9 +44,17 @@ const ConnectionStateTranslationDict = {
     3: "disconnecting",
 }
 
+const DirectionControlEnum = {
+    "FULL": 1,
+    "LOOM": 2,
+    "SOFTWARE": 3,
+    "WEAVING_LOOM_THREADING_SOFTWARE": 4,
+}
+
 const ModeEnum = {
     "WEAVING": 1,
     "THREADING": 2,
+    "SETTINGS": 3,
 }
 
 const SeverityColors = {
@@ -237,11 +245,13 @@ class LoomClient {
         this.statusMessage = null
         this.currentEndData = NullEndData
         this.currentPickData = NullPickData
+        this.direction = NullDirectionData
         this.jumpEndData = NullEndData
         this.jumpPickData = NullPickData
         this.threadGroupSize = 4
         this.threadLowToHigh = true
         this.loomInfo = null
+        this.settings = null
 
         // this.init()
     }
@@ -281,6 +291,33 @@ class LoomClient {
         let tabThreadingElt = document.getElementById("mode_threading")
         tabThreadingElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.THREADING))
 
+        let tabSettingsElt = document.getElementById("mode_settings")
+        tabSettingsElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.SETTINGS))
+
+        let loomNameInputElt = document.getElementById("setting-loom-name-input")
+        // Select all text on focus, to make it easier to type a new name
+        // (without this, you are likely to append to the existing name, instead of replacing it).
+        loomNameInputElt.addEventListener("focus", this.selectOnInput.bind(this, loomNameInputElt))
+        loomNameInputElt.addEventListener("input", this.handleLoomNameInput.bind(this))
+
+        let settingLoomNameForm = document.getElementById("setting-loom-name-form")
+        settingLoomNameForm.addEventListener("submit", this.sendSettings.bind(this))
+
+        let loomNameResetButton = document.getElementById("setting-loom-name-reset")
+        loomNameResetButton.addEventListener("click", this.handleSettingsReset.bind(this))
+
+        let settingThreadRightToLeftElt = document.getElementById("setting-thread-right-to-left")
+        settingThreadRightToLeftElt.addEventListener("change", this.sendSettings.bind(this))
+
+        let settingThreadBackToFrontElt = document.getElementById("setting-thread-back-to-front")
+        settingThreadBackToFrontElt.addEventListener("change", this.sendSettings.bind(this))
+
+        let settingThreadGroupSizeElt = document.getElementById("setting-thread-group-size")
+        settingThreadGroupSizeElt.addEventListener("change", this.sendSettings.bind(this))
+
+        let settingDirectionControlElt = document.getElementById("setting-direction-control")
+        settingDirectionControlElt.addEventListener("change", this.sendSettings.bind(this))
+
         let fileInputElt = document.getElementById("file_input")
         fileInputElt.addEventListener("change", this.handleFileInput.bind(this))
 
@@ -302,11 +339,11 @@ class LoomClient {
         let jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
         // Select all text on focus, to make it easier to try different jump values
         // (without this, you are likely to append digits, which is rarely what you want)
-        jumpTotalEndNumber0Elt.addEventListener(`focus`, () => jumpTotalEndNumber0Elt.select())
+        jumpTotalEndNumber0Elt.addEventListener("focus", this.selectOnInput.bind(this, jumpTotalEndNumber0Elt))
         jumpTotalEndNumber0Elt.addEventListener("input", this.handleJumpToEndInput.bind(this))
 
         let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
-        jumpTotalPickNumberElt.addEventListener(`focus`, () => jumpTotalPickNumberElt.select())
+        jumpTotalPickNumberElt.addEventListener("focus", this.selectOnInput.bind(this, jumpTotalPickNumberElt))
         jumpTotalPickNumberElt.addEventListener("input", this.handleJumpToPickInput.bind(this))
 
         let oobChangeDirectionButton = document.getElementById("oob_change_direction")
@@ -325,18 +362,26 @@ class LoomClient {
         separateWeavingRepeatsCheckbox.addEventListener("change", this.handleSeparateRepeats.bind(this, false))
 
         let threadDirectionElt = document.getElementById("thread_direction")
-        threadDirectionElt.addEventListener("click", this.handleToggleThreadDirection.bind(this))
+        threadDirectionElt.addEventListener("click", this.handleToggleDirection.bind(this))
 
         let weaveDirectionElt = document.getElementById("weave_direction")
-        if (EnableSoftwareWeaveDirection) {
-            weaveDirectionElt.addEventListener("click", this.handleToggleWeaveDirection.bind(this))
-        } else {
-            weaveDirectionElt.disabled = true
-        }
+        weaveDirectionElt.addEventListener("click", this.handleToggleDirection.bind(this))
         let patternMenu = document.getElementById("pattern_menu")
         patternMenu.addEventListener("change", this.handlePatternMenu.bind(this))
 
         addEventListener("resize", (this.displayThreadingOrWeavingPattern.bind(this)))
+    }
+
+    /*
+    * Select the text in an input field when it gets focus
+    *
+    * Use as follows:
+    *   myInputElt.addEventListener("focus", this.selectOnInput.bind(this, myInputElt))
+    *
+    * See https://stackoverflow.com/a/13542708/1653413 for why the obvious solution fails.
+    */
+    selectOnInput(inputField) {
+        setTimeout(function () { inputField.select() }, 0)
     }
 
     /*
@@ -495,23 +540,22 @@ class LoomClient {
         } else if (datadict.type == "SeparateWeavingRepeats") {
             let separateWeavingRepeatsCheckbox = document.getElementById("separate_weaving_repeats")
             separateWeavingRepeatsCheckbox.checked = datadict.separate
+        } else if (datadict.type == "Settings") {
+            this.settings = datadict
+            this.displaySettings()
         } else if (datadict.type == "ShaftState") {
             this.displayShaftState(datadict)
         } else if (datadict.type == "StatusMessage") {
             resetCommandProblemMessage = false
             this.statusMessage = datadict
             this.displayStatusMessage()
-        } else if (datadict.type == "ThreadDirection") {
-            this.threadLowToHigh = datadict.low_to_high
-            this.displayThreadingPattern()
-            this.displayThreadDirection()
+        } else if (datadict.type == "Direction") {
+            this.direction = datadict
+            this.displayDirection()
         } else if (datadict.type == "ThreadGroupSize") {
             this.threadGroupSize = datadict.group_size
             let threadGroupSizeMenu = document.getElementById("thread_group_size")
             threadGroupSizeMenu.value = this.threadGroupSize
-        } else if (datadict.type == "WeaveDirection") {
-            this.weaveForward = datadict.forward
-            this.displayWeaveDirection()
         } else {
             console.log(`Unknown message type ${datadict.type
                 } `, datadict)
@@ -524,6 +568,44 @@ class LoomClient {
 
     isConnected() {
         return this.loomConnectionState.state == ConnectionStateEnum.connected
+    }
+
+    /*
+    * Display Settings
+    */
+    displaySettings() {
+        let loomNameInputElt = document.getElementById("setting-loom-name-input")
+        const loomNameHasFocus = document.activeElement == loomNameInputElt
+        loomNameInputElt.value = this.settings.loom_name
+        let directionControlDiv = document.getElementById("setting-direction-control-div")
+        let directionControlElt = document.getElementById("setting-direction-control")
+        if (this.settings.direction_control == DirectionControlEnum.FULL) {
+            directionControlDiv.style.display = "none"
+            directionControlElt.value = null
+        } else {
+            directionControlElt.value = this.settings.direction_control
+            directionControlDiv.style.display = "flex"
+        }
+        let threadRightToLeftElt = document.getElementById("setting-thread-right-to-left")
+        threadRightToLeftElt.value = this.settings.thread_right_to_left ? "1" : "0"
+        let threadBackToFrontElt = document.getElementById("setting-thread-back-to-front")
+        threadBackToFrontElt.value = this.settings.thread_back_to_front ? "1" : "0"
+        let defaultThreadGroupSize = document.getElementById("setting-thread-group-size")
+        defaultThreadGroupSize.value = this.settings.thread_group_size
+        let weaveDirectionElt = document.getElementById("weave_direction")
+        let threadDirectionElt = document.getElementById("thread_direction")
+        if (this.settings.direction_control == DirectionControlEnum.LOOM) {
+            weaveDirectionElt.disabled = true
+            threadDirectionElt.disabled = true
+        } else {
+            weaveDirectionElt.disabled = false
+            threadDirectionElt.disabled = false
+        }
+        this.handleLoomNameInput()
+        if (loomNameHasFocus) {
+            loomNameInputElt.select()
+        }
+        this.displayLoomInfo()
     }
 
     /*
@@ -588,7 +670,7 @@ class LoomClient {
         if (!this.currentPattern) {
             this.currentEndData = NullEndData
         }
-        totalEndNumber0Elt.textContent = nullToDefault(this.currentEndData.end_number0)
+        totalEndNumber0Elt.textContent = nullToDefault(this.currentEndData.total_end_number0)
         totalEndNumber1Elt.textContent = nullToDefault(this.currentEndData.total_end_number1)
         endNumber0Elt.textContent = "(" + nullToDefault(this.currentEndData.end_number0)
         endNumber1Elt.textContent = nullToDefault(this.currentEndData.end_number1)
@@ -655,22 +737,7 @@ class LoomClient {
 
         let elt = null
         let modeButton = null
-        if (this.mode == ModeEnum.THREADING) {
-            modeButton = document.getElementById("mode_threading")
-            for (const elt of document.getElementsByClassName("weaving-flex")) {
-                elt.style.display = "none"
-            }
-            for (const elt of document.getElementsByClassName("weaving-grid")) {
-                elt.style.display = "none"
-            }
-            for (const elt of document.getElementsByClassName("threading-flex")) {
-                elt.style.display = "flex"
-            }
-            for (const elt of document.getElementsByClassName("threading-grid")) {
-                elt.style.display = "grid"
-            }
-            this.displayThreadingPattern()
-        } else {
+        if (this.mode == ModeEnum.WEAVING) {
             // weaving
             modeButton = document.getElementById("mode_weaving")
             for (const elt of document.getElementsByClassName("threading-flex")) {
@@ -679,6 +746,12 @@ class LoomClient {
             for (const elt of document.getElementsByClassName("threading-grid")) {
                 elt.style.display = "none"
             }
+            for (const elt of document.getElementsByClassName("settings-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("not-settings-flex")) {
+                elt.style.display = "flex"
+            }
             for (const elt of document.getElementsByClassName("weaving-flex")) {
                 elt.style.display = "flex"
             }
@@ -686,6 +759,49 @@ class LoomClient {
                 elt.style.display = "grid"
             }
             this.displayWeavingPattern()
+        } else if (this.mode == ModeEnum.THREADING) {
+            modeButton = document.getElementById("mode_threading")
+            for (const elt of document.getElementsByClassName("weaving-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weaving-grid")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("settings-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("not-settings-flex")) {
+                elt.style.display = "flex"
+            }
+            for (const elt of document.getElementsByClassName("threading-flex")) {
+                elt.style.display = "flex"
+            }
+            for (const elt of document.getElementsByClassName("threading-grid")) {
+                elt.style.display = "grid"
+            }
+            this.displayThreadingPattern()
+        } else if (this.mode == ModeEnum.SETTINGS) {
+            modeButton = document.getElementById("mode_settings")
+            for (const elt of document.getElementsByClassName("weaving-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weaving-grid")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("threading-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("threading-grid")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("not-settings-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("settings-flex")) {
+                elt.style.display = "flex"
+            }
+        } else {
+            console.log("Unrecognized mode", this.mode)
         }
         if (modeButton != null) {
             modeButton.className += " active"
@@ -695,20 +811,36 @@ class LoomClient {
     displayThreadingOrWeavingPattern(event) {
         if (this.mode == ModeEnum.THREADING) {
             this.displayThreadingPattern(event)
-        } else {
+        } else if (this.mode == ModeEnum.WEAVING) {
             this.displayWeavingPattern(event)
         }
     }
 
     /*
-    Display thread direction
+    Display threading and weaving direction (thread/unthread, weave/unweave).
     */
-    displayThreadDirection() {
+    displayDirection() {
+        if (!this.settings) {
+            return
+        }
         let threadDirectionElt = document.getElementById("thread_direction")
-        if (this.threadLowToHigh) {
-            threadDirectionElt.textContent = "←"
+        let weaveDirectionElt = document.getElementById("weave_direction")
+        let threadArrowPointsLeft = this.settings.thread_right_to_left
+        if (!this.direction.forward) {
+            threadArrowPointsLeft = !threadArrowPointsLeft
+        }
+        const threadArrow = threadArrowPointsLeft ? "←" : "→"
+
+        if (this.direction.forward) {
+            threadDirectionElt.textContent = `${threadArrow} ${t("Thread")}`
+            weaveDirectionElt.textContent = t("Weave")
+            threadDirectionElt.style.color = "black"
+            weaveDirectionElt.style.color = "black"
         } else {
-            threadDirectionElt.textContent = "→"
+            threadDirectionElt.textContent = `${threadArrow} ${t("Unthread")}`
+            threadDirectionElt.style.color = "red"
+            weaveDirectionElt.textContent = t("Unweave")
+            weaveDirectionElt.style.color = "red"
         }
     }
 
@@ -721,6 +853,8 @@ class LoomClient {
         if (this.mode != ModeEnum.THREADING) {
             return
         }
+        let end1OnRight = this.settings.thread_back_to_front
+        let shaft1OnBottom = this.settings.thread_back_to_front
         let canvas = document.getElementById("threading_canvas")
         let endLabelElt = document.getElementById("end_label")
         let ctx = canvas.getContext("2d")
@@ -744,7 +878,7 @@ class LoomClient {
             endNumber0 = this.jumpEndData.end_number0
             endNumber1 = this.jumpEndData.end_number1
         }
-        const centerEndNumber = Math.round(Math.max(0, (endNumber0 + endNumber1 - 1) / 2))
+        const groupSize = endNumber1 - endNumber0
         ctx.font = window.getComputedStyle(endLabelElt).font
         ctx.textBaseline = "middle"
         ctx.textAlign = "center"
@@ -756,8 +890,16 @@ class LoomClient {
             blockWidth++
         }
         const blockHalfWidth = (blockWidth - 1) / 2
-        // Position of right edge of center block
-        const centerX = ((canvas.width + 1) / 2) - blockHalfWidth
+        const centerX = ((canvas.width + 1) / 2)
+
+        // Compute number of ends per end number (out how far apart to space the end numbers)
+        // Display as many as one number per group, but no more than one every 4 ends
+        // and leave enough space that we can display 4-digit end numbers plus a bit of gap
+        // (thus measure the width of 5 digits instead of 4).
+        const fourDigitWidth = ctx.measureText("9999").width
+        const minNumEndsPerEndNumber = Math.max(4, Math.ceil(fourDigitWidth / blockWidth))
+        const numEndsPerEndNumber = Math.ceil(minNumEndsPerEndNumber / groupSize) * groupSize
+        const displayEndNumberOffset = endNumber0 % numEndsPerEndNumber
 
         let blockHeight = fontHeight
         if (blockHeight % 2 == 0) {
@@ -765,32 +907,57 @@ class LoomClient {
         }
         const numEnds = this.currentPattern.warp_colors.length
         const remainingHeight = canvas.height - (blockHeight + fontHeight) - ThreadingEndTopGap
-        const maxShaftNum = Math.max(...this.currentPattern.threading) + 1
-        const verticalDelta = Math.floor(Math.min(blockHeight, remainingHeight / maxShaftNum))
+        const verticalDelta = Math.floor(remainingHeight / this.loomInfo.num_shafts)
 
         const numEndSlots = Math.floor(canvas.width / blockWidth)
-        const numEndsToShow = Math.min(numEnds * 2 + 1, numEndSlots)  // 1 is for showing 0
+        let numEndsToShow = Math.min(numEnds * 2 + 1, numEndSlots)  // 1 is for showing 0
+        let xOffset = 0
+        if (groupSize % 2 == 0) {
+            // groupSize is even; make numEndsToShow even
+            if (numEndsToShow % 2 != 0) {
+                numEndsToShow -= 1
+            }
+            xOffset = -blockHalfWidth
+        } else {
+            // groupSize is odd; make numEndsToShow odd
+            if (numEndsToShow % 2 == 0) {
+                numEndsToShow -= 1
+            }
+        }
 
         const centerSlotIndex = Math.round((numEndsToShow - 1) / 2)
+
+        const centerEndNumber = Math.round(Math.max(0, (endNumber0 + endNumber1 - 1) / 2))
 
         let minDarkEndIndex = endNumber0 - 1
         let maxDarkEndIndex = endNumber1 - 2
 
-        // Display end number above two ends:
-        // * The right-most in the range (endNumber0) if nonzero, else end 1
-        // * The left-most in the range (endNumber1-1) unless current group size < 4
-        //   (i.e. endNumber1 - endNumber0 < 4) because of crowding
-        let displayEndIndex0 = endNumber0 - 1
-        let displayEndIndex1 = endNumber1 - 2
-        if (endNumber0 == 0) {
-            displayEndIndex0 = 0
-            displayEndIndex1 = null
-        } else if (endNumber1 - endNumber0 < 4) {
-            displayEndIndex1 = null
+
+        // Display a box around the grouop, unless the at end 0
+        if (endNumber0 > 0) {
+            if (isJump) {
+                ctx.globalAlpha = 0.3
+            } else {
+                ctx.globalAlpha = 1.0
+            }
+            ctx.strokeRect(
+                centerX - Math.round(blockWidth * groupSize / 2),
+                blockHeight + ThreadingEndTopGap,
+                blockWidth * groupSize,
+                canvas.height - blockHeight - 2,
+            )
+            ctx.globalAlpha = 1.0
         }
+
+        let endIndex = 0  // declare for later use
+        let yShaftNumberBaseline = 0  // declare for later use
         const halfTopGap = Math.floor(ThreadingEndTopGap / 2)
         for (let slotIndex = 0; slotIndex < numEndsToShow; slotIndex++) {
-            const endIndex = centerEndNumber + slotIndex - centerSlotIndex - 1
+            if (end1OnRight) {
+                endIndex = centerEndNumber + slotIndex - centerSlotIndex - 1
+            } else {
+                endIndex = centerEndNumber + (numEndsToShow - slotIndex - 1) - centerSlotIndex - 1
+            }
 
             if (endIndex < 0 || endIndex >= this.currentPattern.threading.length) {
                 continue
@@ -803,36 +970,26 @@ class LoomClient {
 
             const shaftIndex = this.currentPattern.threading[endIndex]
 
-            const xCenter = centerX + (blockWidth * (centerSlotIndex - slotIndex))
-            const yShaftNumberBaseline = canvas.height - verticalDelta * (shaftIndex + 0.5) - fontMeas.actualBoundingBoxDescent
+            const xBarCenter = centerX + xOffset + (blockWidth * (centerSlotIndex - slotIndex))
+            if (shaft1OnBottom) {
+                yShaftNumberBaseline = canvas.height - verticalDelta * (shaftIndex + 0.5) - fontMeas.actualBoundingBoxDescent
+            } else {
+                yShaftNumberBaseline = canvas.height - verticalDelta * (this.loomInfo.num_shafts - shaftIndex - 0.5) - fontMeas.actualBoundingBoxDescent
+            }
 
-            if (endIndex == displayEndIndex0) {
+            if ((endNumber0 > 0) && ((endIndex + 1 - displayEndNumberOffset) % numEndsPerEndNumber == 0)) {
                 ctx.fillStyle = "black"
                 ctx.fillText(endIndex + 1,
-                    xCenter,
-                    fontMeas.actualBoundingBoxAscent + halfTopGap + 2,
-                )
-                if (endNumber0 > 0) {
-                    ctx.strokeRect(
-                        xCenter + blockHalfWidth,
-                        blockHeight + ThreadingEndTopGap,
-                        - blockWidth * (endNumber1 - endNumber0),
-                        canvas.height - blockHeight - 2,
-                    )
-                }
-            } else if (endIndex == displayEndIndex1) {
-                ctx.fillStyle = "black"
-                ctx.fillText(endIndex + 1,
-                    xCenter,
+                    xBarCenter,
                     fontMeas.actualBoundingBoxAscent + halfTopGap + 2,
                 )
             }
 
-            // Display weft (end) color as bars above and below the shaft number
-            const xStart = xCenter - WeavingThreadHalfWidth
-            const xEnd = xCenter + WeavingThreadHalfWidth
+            // Display weft (end) color as vertical colored bars (threads) above and below the shaft number.
+            const xBarStart = xBarCenter - WeavingThreadHalfWidth
+            const xBarEnd = xBarCenter + WeavingThreadHalfWidth
             const endColor = this.currentPattern.color_table[this.currentPattern.warp_colors[endIndex]]
-            let endGradient = ctx.createLinearGradient(xStart, 0, xEnd, 0)
+            let endGradient = ctx.createLinearGradient(xBarStart, 0, xBarEnd, 0)
             endGradient.addColorStop(0, "lightgray")
             endGradient.addColorStop(0.2, endColor)
             endGradient.addColorStop(0.8, endColor)
@@ -841,13 +998,13 @@ class LoomClient {
             ctx.fillStyle = endGradient
             if (shaftIndex >= 0) {
                 ctx.fillRect(
-                    xCenter - WeavingThreadHalfWidth,
+                    xBarCenter - WeavingThreadHalfWidth,
                     blockHeight + ThreadingEndTopGap,
                     WeavingThreadHalfWidth * 2,
                     yShaftNumberBaseline - Math.round(blockHeight / 2) - blockHeight - 2 - ThreadingEndTopGap,
                 )
                 ctx.fillRect(
-                    xCenter - WeavingThreadHalfWidth,
+                    xBarCenter - WeavingThreadHalfWidth,
                     yShaftNumberBaseline + Math.round(blockHeight / 2) + halfTopGap,
                     WeavingThreadHalfWidth * 2,
                     canvas.height - (yShaftNumberBaseline + Math.round(blockHeight / 2) + 2)
@@ -856,13 +1013,13 @@ class LoomClient {
                 // Display shaft number
                 ctx.fillStyle = "black"
                 ctx.fillText(shaftIndex + 1,
-                    xCenter,
+                    xBarCenter,
                     yShaftNumberBaseline,
                 )
             } else {
                 // shaft 0 -- no shaft threaded
                 ctx.fillRect(
-                    xCenter - WeavingThreadHalfWidth,
+                    xBarCenter - WeavingThreadHalfWidth,
                     blockHeight + ThreadingEndTopGap,
                     WeavingThreadHalfWidth * 2,
                     canvas.height - (blockHeight + ThreadingEndTopGap),
@@ -873,23 +1030,10 @@ class LoomClient {
 
     displayLoomInfo() {
         let loominfoElt = document.getElementById("loom_info")
-        if (this.loomInfo == null) {
-            loominfoElt.textContent = ""
-        } else {
-            loominfoElt.textContent = `${this.loomInfo.name} ${this.loomInfo.num_shafts} `
-        }
-    }
-
-    // Display the weave direction -- the value of the global "weaveForward" 
-    displayWeaveDirection() {
-        let weaveDirectionElt = document.getElementById("weave_direction")
-        if (this.weaveForward) {
-            weaveDirectionElt.textContent = "↓"
-            weaveDirectionElt.style.color = "green"
-        } else {
-            weaveDirectionElt.textContent = "↑"
-            weaveDirectionElt.style.color = "red"
-        }
+        const nodata = (this.loomInfo == null) || (this.settings == null)
+        const msg = nodata ? "" : `${this.settings.loom_name} ${this.loomInfo.num_shafts}`
+        loominfoElt.textContent = msg
+        document.title = msg
     }
 
     /*
@@ -1095,7 +1239,7 @@ class LoomClient {
     async handleFileList(fileList) {
         let commandProblemElt = document.getElementById("command_problem")
         if (fileList.length > MaxFiles) {
-            commandProblemElt.textContent = t("Too many files") + `: ${fileList.length} > ${MaxFiles} `
+            commandProblemElt.textContent = t("Too many files") + `: ${fileList.length} > ${MaxFiles}`
             commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
             return
         }
@@ -1147,8 +1291,8 @@ class LoomClient {
     Handle the thread group size select menu
     */
     async handleThreadGroupSize(event) {
-        const patternMenu = document.getElementById("thread_group_size")
-        const command = { "type": "thread_group_size", "group_size": Number(patternMenu.value) }
+        const threadGroupSizeElt = document.getElementById("thread_group_size")
+        const command = { "type": "thread_group_size", "group_size": asIntOrNull(threadGroupSizeElt.value) }
         await this.sendCommand(command)
     }
 
@@ -1161,7 +1305,7 @@ class LoomClient {
         let jumpToEndResetElt = document.getElementById("jump_to_end_reset")
         let jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
         let disableJump = true
-        if (asNumberOrNull(jumpTotalEndNumber0Elt.value) != this.jumpEndData.end_number0) {
+        if (asIntOrNull(jumpTotalEndNumber0Elt.value) != this.jumpEndData.end_number0) {
             jumpTotalEndNumber0Elt.style.backgroundColor = "pink"
             disableJump = false
         } else {
@@ -1195,7 +1339,7 @@ class LoomClient {
     */
     async handleJumpToEndSubmit(event) {
         const jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
-        const totalEndNumber0 = asNumberOrNull(jumpTotalEndNumber0Elt.value)
+        const totalEndNumber0 = asIntOrNull(jumpTotalEndNumber0Elt.value)
         const command = { "type": "jump_to_end", "total_end_number0": totalEndNumber0 }
         await this.sendCommand(command)
         event.preventDefault()
@@ -1211,7 +1355,7 @@ class LoomClient {
 
         let disableJump = true
         const totalJumpPick = this.numpPickNumber.total_picks
-        if (asNumberOrNull(jumpTotalPickNumberElt.value) != totalJumpPick) {
+        if (asIntOrNull(jumpTotalPickNumberElt.value) != totalJumpPick) {
             jumpTotalPickNumberElt.style.backgroundColor = "pink"
             disableJump = false
         } else {
@@ -1245,10 +1389,32 @@ class LoomClient {
     */
     async handleJumpToPickSubmit(event) {
         const jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
-        const jumpTotalPickNumber = asNumberOrNull(jumpTotalPickNumberElt.value)
+        const jumpTotalPickNumber = asIntOrNull(jumpTotalPickNumberElt.value)
         const command = { "type": "jump_to_pick", "total_picks": jumpTotalPickNumber }
         await this.sendCommand(command)
+        jumpTotalPickNumberElt.select()
         event.preventDefault()
+    }
+
+    /*
+    Handle typing in loom name input
+    */
+    async handleLoomNameInput(event) {
+        let disableSubmit = true
+        let loomNameInputElt = document.getElementById("setting-loom-name-input")
+        let loomNameSubmitButton = document.getElementById("setting-loom-name-submit")
+        let loomNameResetButton = document.getElementById("setting-loom-name-reset")
+        if (loomNameInputElt.value != this.settings.loom_name) {
+            loomNameInputElt.style.backgroundColor = "pink"
+            disableSubmit = false
+        } else {
+            loomNameInputElt.style.backgroundColor = "white"
+        }
+        loomNameSubmitButton.disabled = disableSubmit
+        loomNameResetButton.disabled = disableSubmit
+        if (event != null) {
+            event.preventDefault()
+        }
     }
 
 
@@ -1294,6 +1460,33 @@ class LoomClient {
         await this.sendCommand(command)
         event.preventDefault()
     }
+    /*
+    Handle settings form submit
+    */
+    async sendSettings(event) {
+        let loomNameInputElt = document.getElementById("setting-loom-name-input")
+        let directionControlElt = document.getElementById("setting-direction-control")
+        let threadRightToLeftElt = document.getElementById("setting-thread-right-to-left")
+        let threadBackToFrontElt = document.getElementById("setting-thread-back-to-front")
+        let defaultThreadGroupSize = document.getElementById("setting-thread-group-size")
+        const command = {
+            "type": "settings",
+            "loom_name": loomNameInputElt.value,
+            "direction_control": asIntOrNull(directionControlElt.value),
+            "thread_right_to_left": asIntOrNull(threadRightToLeftElt.value),
+            "thread_back_to_front": asIntOrNull(threadBackToFrontElt.value),
+            "thread_group_size": asIntOrNull(defaultThreadGroupSize.value),
+        }
+        await this.sendCommand(command)
+        event.preventDefault()
+    }
+
+    /*
+    Handle settings form reset
+    */
+    async handleSettingsReset(event) {
+        this.displaySettings()
+    }
 
     /*
     Handle the mode tab bar buttons
@@ -1307,26 +1500,12 @@ class LoomClient {
     }
 
     /*
-    Handle thread_direction button clicks.
+    Handle weaving and threading direction button clicks.
     
-    Send the weave_direction command to the loom server.
+    Send the direction command to the loom server.
     */
-    async handleToggleThreadDirection(event) {
-        let threadDirectionElt = document.getElementById("thread_direction")
-        let newLowToHigh = (threadDirectionElt.textContent == "→") ? true : false
-        let command = { "type": "thread_direction", "low_to_high": newLowToHigh }
-        await this.sendCommand(command)
-    }
-
-    /*
-    Handle weave_direction button clicks.
-    
-    Send the weave_direction command to the loom server.
-    */
-    async handleToggleWeaveDirection(event) {
-        let weaveDirectionElt = document.getElementById("weave_direction")
-        let newForward = (weaveDirectionElt.textContent == "↑") ? true : false
-        let command = { "type": "weave_direction", "forward": newForward }
+    async handleToggleDirection(event) {
+        let command = { "type": "direction", "forward": !this.direction.forward }
         await this.sendCommand(command)
     }
 
@@ -1381,10 +1560,10 @@ function nullToDefault(value, defaultValue = "") {
 }
 
 /*
-Return null if value is "", else return Number(value)
+Return null if value is "", else return parseInt(value)
 */
-function asNumberOrNull(value) {
-    return value == "" ? null : Number(value)
+function asIntOrNull(value) {
+    return value == "" ? null : parseInt(value)
 }
 
 //

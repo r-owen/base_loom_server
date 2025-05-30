@@ -21,12 +21,7 @@ from starlette.testclient import WebSocketTestSession
 
 from .base_loom_server import BaseLoomServer
 from .base_mock_loom import BaseMockLoom
-from .client_replies import (
-    ConnectionStateEnum,
-    MessageSeverityEnum,
-    ModeEnum,
-    ShaftStateEnum,
-)
+from .enums import ConnectionStateEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
 from .reduced_pattern import (
     DEFAULT_THREAD_GROUP_SIZE,
     NUM_ITEMS_FOR_REPEAT_SEPARATOR,
@@ -74,23 +69,8 @@ class Client:
         return data
 
 
-def set_thread_direction(client: Client, low_to_high: bool) -> None:
-    """Command the loom to thread in the specified direction,
-    and read and check the reply, if one is expected.
-
-    Args:
-        client: Client fixture.
-    """
-
-    replies = send_command(
-        client, dict(type="thread_direction", low_to_high=low_to_high)
-    )
-    assert len(replies) == 2
-    assert replies[0] == dict(type="ThreadDirection", low_to_high=low_to_high)
-
-
-def change_weave_direction(client: Client) -> None:
-    """Command the loom to weave in the specified direction,
+def change_direction(client: Client) -> None:
+    """Command the loom to weave or thread in the opposite direction,
     and read and check the reply, if one is expected.
 
     Use a software command, if the loom supports that,
@@ -99,21 +79,22 @@ def change_weave_direction(client: Client) -> None:
     Args:
         client: Client fixture.
     """
-    expected_weave_direction_reply = True
+    expected_direction_reply = True
     client.mock_loom.command_threading_event.clear()
-    if client.loom_server.enable_software_weave_direction:
-        weave_forward = not client.loom_server.weave_forward
+    if client.loom_server.enable_software_direction:
+        direction_forward = not client.loom_server.direction_forward
         replies = send_command(
-            client, dict(type="weave_direction", forward=weave_forward)
+            client, dict(type="direction", forward=direction_forward)
         )
     else:
-        expected_weave_direction_reply = client.loom_server.loom_reports_direction
-        weave_forward = not client.mock_loom.weave_forward
+        expected_direction_reply = client.loom_server.loom_reports_direction
+        direction_forward = not client.mock_loom.direction_forward
         replies = send_command(client, dict(type="oobcommand", command="d"))
 
-    if expected_weave_direction_reply:
+    if expected_direction_reply:
         assert len(replies) == 2
-        assert replies[0] == dict(type="WeaveDirection", forward=weave_forward)
+        assert replies[0]["type"] == "Direction"
+        assert replies[0]["forward"] == direction_forward
     else:
         assert len(replies) == 1
         # Give the loom client time to process the command
@@ -231,16 +212,16 @@ def command_next_pick(
     assert len(replies) == 1
     expected_replies: list[dict[str, Any]] = []
     if (
-        not client.loom_server.enable_software_weave_direction
+        not client.loom_server.enable_software_direction
         and not client.loom_server.loom_reports_direction
-        and client.loom_server.weave_forward != client.mock_loom.weave_forward
+        and client.loom_server.direction_forward != client.mock_loom.direction_forward
     ):
         # Loom only reports direction when it asks for a pick
         # and the direction has changed
         expected_replies += [
             dict(
-                type="WeaveDirection",
-                forward=client.mock_loom.weave_forward,
+                type="Direction",
+                forward=client.mock_loom.direction_forward,
             )
         ]
     if jump_pending:
@@ -397,7 +378,13 @@ def send_command(
         reply = client.receive_dict()
         replies.append(reply)
         if reply["type"] == "CommandDone":
-            assert reply["success"] != should_fail
+            if should_fail == reply["success"]:
+                if should_fail:
+                    raise AssertionError(
+                        f"Command {cmd_dict} succeeded, but should have failed"
+                    )
+                else:
+                    raise AssertionError(f"Command {cmd_dict} failed")
             break
     return replies
 
@@ -455,7 +442,6 @@ class BaseTestLoomServer:
 
         with self.create_test_client(
             app=self.app,
-            name="test name",
             num_shafts=32,
             upload_patterns=ALL_PATTERN_PATHS[2:5],
         ) as client:
@@ -569,7 +555,6 @@ class BaseTestLoomServer:
 
         with self.create_test_client(
             app=self.app,
-            name="test name",
             num_shafts=32,
             upload_patterns=ALL_PATTERN_PATHS[2:5],
         ) as client:
@@ -681,7 +666,8 @@ class BaseTestLoomServer:
                 expected_end_number1 = 0
                 expected_repeat_number = 1
 
-                set_thread_direction(client, low_to_high=True)
+                # Start threading low to high
+                assert client.loom_server.thread_low_to_high
 
                 replies = send_command(
                     client,
@@ -733,8 +719,9 @@ class BaseTestLoomServer:
                         expected_repeat_number=expected_repeat_number,
                     )
 
-                # Now go high to low at least two ends past the beginning
-                set_thread_direction(client, low_to_high=False)
+                # Change to unthreading (high to low)
+                change_direction(client)
+                assert not client.loom_server.thread_low_to_high
 
                 iter_past_beginning = 0
                 while iter_past_beginning < 2:
@@ -766,6 +753,10 @@ class BaseTestLoomServer:
                     )
                 assert expected_repeat_number <= 0
 
+                # Go back to threading
+                change_direction(client)
+                assert client.loom_server.thread_low_to_high
+
     def test_next_pick(self) -> None:
         pattern_name = ALL_PATTERN_PATHS[2].name
 
@@ -794,7 +785,7 @@ class BaseTestLoomServer:
                     expected_shaft_word=expected_shaft_word,
                 )
 
-            change_weave_direction(client=client)
+            change_direction(client=client)
 
             # Now go backwards at least two picks past the beginning
             end_pick_number = num_picks_in_pattern - 2
@@ -818,7 +809,7 @@ class BaseTestLoomServer:
             assert expected_repeat_number == 0
 
             # Change direction to forward
-            change_weave_direction(client)
+            change_direction(client)
             expected_pick_number += 1
 
             expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
@@ -832,11 +823,12 @@ class BaseTestLoomServer:
     def test_pattern_persistence(self) -> None:
         rnd = random.Random(47)
         pattern_list = []
-        with tempfile.NamedTemporaryFile() as f:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = pathlib.Path(temp_dir) / "loom_server_database.sqlite"
             with self.create_test_client(
                 app=self.app,
                 upload_patterns=ALL_PATTERN_PATHS,
-                db_path=f.name,
+                db_path=db_path,
             ) as client:
                 # Select a few patterns; for each one jump to some random
                 # pick (including actually going to that pick).
@@ -921,7 +913,7 @@ class BaseTestLoomServer:
                 reset_db=False,
                 expected_pattern_names=expected_pattern_names,
                 expected_current_pattern=expected_current_pattern,
-                db_path=f.name,
+                db_path=db_path,
             ) as client:
                 for pattern in pattern_list:
                     returned_pattern = select_pattern(
@@ -981,17 +973,16 @@ class BaseTestLoomServer:
             app=self.app,
             upload_patterns=ALL_PATTERN_PATHS[0:4],
         ) as client:
-            if not client.loom_server.enable_software_weave_direction:
+            if not client.loom_server.enable_software_direction:
                 raise pytest.skip("Weave direction cannot be controlled by software")
 
             select_pattern(client=client, pattern_name=pattern_name)
 
             for forward in (False, True):
-                replies = send_command(
-                    client, dict(type="weave_direction", forward=forward)
-                )
+                replies = send_command(client, dict(type="direction", forward=forward))
                 assert len(replies) == 2
-                assert replies[0] == dict(type="WeaveDirection", forward=forward)
+                assert replies[0]["type"] == "Direction"
+                assert replies[0]["forward"] == forward
 
     @classmethod
     @contextlib.contextmanager
@@ -1001,7 +992,6 @@ class BaseTestLoomServer:
         num_shafts: int = 24,
         read_initial_state: bool = True,
         upload_patterns: Iterable[pathlib.Path] = (),
-        name: str | None = None,
         reset_db: bool = False,
         db_path: pathlib.Path | str | None = None,
         expected_status_messages: Iterable[str] = (),
@@ -1012,7 +1002,6 @@ class BaseTestLoomServer:
 
         Args:
             app: Server application to test. If None, raise an error.
-            name: Loom name.
             num_shafts: The number of shafts that the loom has.
             read_initial_state: If true, read and check the initial server
                 replies from the websocket. This is the most common case.
@@ -1040,29 +1029,24 @@ class BaseTestLoomServer:
                 "app is None but must be a FastAPI; "
                 "you must set the app class property in your subclass"
             )
-        with tempfile.NamedTemporaryFile() as f:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            if db_path is None:
+                db_path = pathlib.Path(temp_dir) / "loom_server_database.sqlite"
             argv = ["testutils", str(num_shafts), "mock", "--verbose"] + list(
                 cls.extra_args
             )
             if reset_db:
                 argv.append("--reset-db")
-            if db_path is None:
-                argv += ["--db-path", f.name]
-            else:
-                argv += ["--db-path", str(db_path)]
-            if name is not None:
-                argv += ["--name", name]
+            argv += ["--db-path", str(db_path)]
             sys.argv = argv
 
             with TestClient(app) as test_client:
                 with test_client.websocket_connect("/ws") as websocket:
                     loom_server: BaseLoomServer = test_client.app.state.loom_server  # type: ignore
                     assert loom_server.mock_loom is not None
-                    expected_name = (
-                        name if name is not None else loom_server.default_name
-                    )
-                    assert loom_server.loom_info.name == expected_name
+                    assert loom_server.settings.loom_name == loom_server.default_name
                     assert loom_server.loom_info.num_shafts == num_shafts
+
                     client = Client(
                         test_client=test_client,
                         websocket=websocket,
@@ -1079,9 +1063,9 @@ class BaseTestLoomServer:
                             "LoomInfo",
                             "Mode",
                             "PatternNames",
+                            "Settings",
                             "ShaftState",
-                            "ThreadDirection",
-                            "WeaveDirection",
+                            "Direction",
                         }
                         if expected_status_messages:
                             expected_types |= {"StatusMessage"}
@@ -1162,8 +1146,9 @@ class BaseTestLoomServer:
                                     elif reply.state != ConnectionStateEnum.CONNECTED:
                                         continue
                                 case "LoomInfo":
-                                    assert reply.name == expected_name
-                                    assert reply.num_shafts == num_shafts
+                                    assert vars(reply) == dataclasses.asdict(
+                                        loom_server.loom_info
+                                    )
                                 case "Mode":
                                     assert reply.mode == ModeEnum.WEAVE
                                 case "PatternNames":
@@ -1188,6 +1173,10 @@ class BaseTestLoomServer:
                                         reply.separate
                                         == expected_current_pattern.separate_weaving_repeats
                                     )
+                                case "Settings":
+                                    assert vars(reply) == dataclasses.asdict(
+                                        loom_server.settings
+                                    )
                                 case "ShaftState":
                                     assert reply.state == ShaftStateEnum.DONE
                                     assert reply.shaft_word == 0
@@ -1200,15 +1189,13 @@ class BaseTestLoomServer:
                                         ]
                                     )
                                     assert reply.severity == MessageSeverityEnum.INFO
-                                case "ThreadDirection":
-                                    assert reply.low_to_high
                                 case "ThreadGroupSize":
                                     assert expected_current_pattern is not None
                                     assert (
                                         reply.group_size
                                         == expected_current_pattern.thread_group_size
                                     )
-                                case "WeaveDirection":
+                                case "Direction":
                                     assert reply.forward
                                 case _:
                                     raise AssertionError(

@@ -13,6 +13,7 @@ from fastapi.responses import HTMLResponse, Response
 
 from .base_loom_server import DEFAULT_DATABASE_PATH, BaseLoomServer
 from .constants import LOG_NAME
+from .enums import DirectionControlEnum
 
 PKG_FILES = importlib.resources.files("base_loom_server")
 LOCALE_FILES = PKG_FILES.joinpath("locales")
@@ -39,6 +40,8 @@ class AppRunner:
             e.g. "toika_loom_server". This is used by the `run` method,
             as an argument to `uvicorn.run`.
     """
+
+    DirectionControlMap = {item.name.lower(): item for item in DirectionControlEnum}
 
     def __init__(
         self,
@@ -101,11 +104,6 @@ class AppRunner:
             "Specify 'mock' to run a mock (simulated) loom",
         )
         parser.add_argument(
-            "-n",
-            "--name",
-            help="loom name",
-        )
-        parser.add_argument(
             "-r",
             "--reset-db",
             action="store_true",
@@ -156,9 +154,9 @@ class AppRunner:
 
         parser = self.create_argument_parser()
         args = parser.parse_args()
-        for extra_arg in ("host", "port", "log_level"):
-            if getattr(args, extra_arg, None) is not None:
-                delattr(args, extra_arg)
+        for uvicorn_arg in ("host", "port", "log_level"):
+            if getattr(args, uvicorn_arg, None) is not None:
+                delattr(args, uvicorn_arg)
 
         async with self.server_class(
             **vars(args),
@@ -210,12 +208,7 @@ class AppRunner:
 
         display_js = PKG_FILES.joinpath("display.js").read_text(encoding="utf_8")
         js_translation_str = json.dumps(self.translation_dict, indent=4)
-        js_enable_swd_str = (
-            "true" if self.loom_server.enable_software_weave_direction else "false"
-        )
-        display_js = display_js.replace(
-            "{ translation_dict }", js_translation_str
-        ).replace("{ enable_software_weave_direction }", js_enable_swd_str)
+        display_js = display_js.replace("{ translation_dict }", js_translation_str)
 
         assert self.loom_server is not None
         is_mock = self.loom_server.mock_loom is not None
@@ -225,8 +218,6 @@ class AppRunner:
             display_css=display_css,
             display_js=display_js,
             display_debug_controls=display_debug_controls,
-            loom_name=self.loom_server.loom_info.name,
-            loom_num_shafts=self.loom_server.loom_info.num_shafts,
             **self.translation_dict,
         )
 

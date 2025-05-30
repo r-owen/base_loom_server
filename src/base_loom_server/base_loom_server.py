@@ -8,12 +8,12 @@ __all__ = [
 
 import abc
 import asyncio
+import copy
 import dataclasses
 import enum
 import json
 import logging
 import pathlib
-import tempfile
 from types import SimpleNamespace, TracebackType
 from typing import Any, Type
 
@@ -24,8 +24,8 @@ from serial_asyncio import open_serial_connection  # type: ignore
 
 from . import client_replies
 from .base_mock_loom import BaseMockLoom
-from .client_replies import MessageSeverityEnum, ModeEnum, ShaftStateEnum
 from .constants import LOG_NAME
+from .enums import DirectionControlEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
 from .mock_streams import StreamReaderType, StreamWriterType
 from .pattern_database import PatternDatabase
 from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
@@ -34,7 +34,9 @@ from .utils import compute_num_within_and_repeats, compute_total_num
 # The maximum number of patterns that can be in the history
 MAX_PATTERNS = 25
 
-DEFAULT_DATABASE_PATH = pathlib.Path(tempfile.gettempdir()) / "pattern_database.sqlite"
+DEFAULT_DATABASE_PATH = pathlib.Path.home() / "loom_server_database.sqlite"
+SETTINGS_FILE_NAME = "loom_server_settings.json"
+
 
 MOCK_PORT_NAME = "mock"
 
@@ -68,14 +70,9 @@ class BaseLoomServer:
         translation_dict: Language translation dict.
         reset_db: If True, delete the old database and create a new one.
         verbose: If True, log diagnostic information.
-        name: User-assigned loom name.
         db_path: Path to the pattern database. Specify None for the
             default path. Unit tests specify a non-None value, to avoid
             stomping on the real database.
-        enable_software_weave_direction: Can the software control
-            the weave direction? For Seguin looms, always specify True.
-            For Toika looms, the user must make a choice between software
-            or the loom.
     """
 
     # Subclasses should override these, as necesary.
@@ -85,6 +82,7 @@ class BaseLoomServer:
     loom_reports_direction = True
     loom_reports_motion = True
     mock_loom_type: type[BaseMockLoom] | None = None
+    supports_full_direction_control = True
 
     def __init__(
         self,
@@ -94,9 +92,7 @@ class BaseLoomServer:
         translation_dict: dict[str, str],
         reset_db: bool,
         verbose: bool,
-        name: str | None = None,
         db_path: pathlib.Path | None = None,
-        enable_software_weave_direction: bool = True,
     ) -> None:
         if self.mock_loom_type is None:
             raise RuntimeError("Subclasses must set class variable 'mock_loom_type'")
@@ -106,19 +102,79 @@ class BaseLoomServer:
             self.log.info(
                 f"{self}({serial_port=!r}, {reset_db=!r}, {verbose=!r}, {db_path=!r})"
             )
-        if name is None:
-            name = self.default_name
+
         self.serial_port = serial_port
         self.translation_dict = translation_dict
         self.verbose = verbose
-        self.loom_info = client_replies.LoomInfo(name=name, num_shafts=num_shafts)
+        self.loom_info = client_replies.LoomInfo(
+            num_shafts=num_shafts, serial_port=serial_port
+        )
         self.db_path: pathlib.Path = (
             DEFAULT_DATABASE_PATH if db_path is None else db_path
         )
         if reset_db:
-            self.db_path.unlink(missing_ok=True)
-        self.pattern_db = PatternDatabase(self.db_path)
-        self.enable_software_weave_direction = enable_software_weave_direction
+            self.log.info(f"Resetting database {self.db_path} by request")
+            self.reset_database()
+        try:
+            self.pattern_db = PatternDatabase(self.db_path)
+        except Exception as e:
+            self.log.warning(
+                f"Resetting database {self.db_path} because open failed: {e!r}"
+            )
+            self.reset_database()
+
+        # Compute initial value for direction_control.
+        # This value will be overridden by the settings file, if it exists.
+        if self.supports_full_direction_control:
+            direction_control = DirectionControlEnum.FULL
+        elif self.loom_reports_direction:
+            # We have to pick something for the initial default,
+            # and it may as well be the loom.
+            direction_control = DirectionControlEnum.LOOM
+        else:
+            # This value is required for unit tests, which want immediate
+            # notification when the direction changes.
+            direction_control = DirectionControlEnum.SOFTWARE
+
+        settings = client_replies.Settings(
+            loom_name=self.default_name,
+            direction_control=direction_control,
+            thread_group_size=4,
+            thread_right_to_left=True,
+            thread_back_to_front=True,
+        )
+        self.settings_path = self.db_path.parent / SETTINGS_FILE_NAME
+        if self.settings_path.exists():
+            try:
+                with open(self.settings_path, "r") as f:
+                    settings_dict = json.load(f)
+                for key, value in settings_dict.items():
+                    if key == "type":
+                        continue
+                    default_value = getattr(settings, key, None)
+                    if default_value is None:
+                        self.log.warning(
+                            f"Ignoring setting {key}={value!r}; uknown key"
+                        )
+                    else:
+                        try:
+                            cast_value = type(default_value)(value)
+                        except Exception:
+                            self.log.warning(
+                                f"Ignoring setting {key}={value!r}; wrong type or invalid enum value"
+                            )
+                        else:
+                            setattr(settings, key, cast_value)
+            except Exception as e:
+                self.log.warning(
+                    f"Deleting settings file {self.settings_path} because read failed: {e!r}"
+                )
+                self.settings_path.unlink()
+        else:
+            self.log.info(f"Settings file {self.settings_path} does not exist")
+        self.settings = settings
+        self.save_settings()
+
         self.websocket: WebSocket | None = None
         self.loom_connecting = False
         self.loom_disconnecting = False
@@ -135,8 +191,7 @@ class BaseLoomServer:
         self.jump_pick = client_replies.JumpPickNumber()
         self.jump_end = client_replies.JumpEndNumber()
         self.mode = ModeEnum.WEAVE
-        self.weave_forward = True
-        self.thread_low_to_high = True
+        self.direction_forward = True
 
     @abc.abstractmethod
     async def handle_loom_reply(self, reply_bytes: bytes) -> None:
@@ -147,6 +202,29 @@ class BaseLoomServer:
     async def write_shafts_to_loom(self, shaft_word: int) -> None:
         """Write the shaft word to the loom."""
         raise NotImplementedError()
+
+    @property
+    def enable_software_direction(self) -> bool:
+        return self.settings.direction_control in {
+            DirectionControlEnum.FULL,
+            DirectionControlEnum.SOFTWARE,
+        }
+
+    @property
+    def thread_low_to_high(self) -> bool:
+        """Return True if threading (or unthreading) is currently low to high.
+
+        Takes into account forward_direction (threading or unthreading)
+        and threading settings, but not jump_to_end.
+        """
+        low_to_high_if_forward = (
+            self.settings.thread_back_to_front == self.settings.thread_right_to_left
+        )
+        return (
+            low_to_high_if_forward
+            if self.direction_forward
+            else not low_to_high_if_forward
+        )
 
     @property
     def loom_connected(self) -> bool:
@@ -160,6 +238,11 @@ class BaseLoomServer:
 
     async def start(self) -> None:
         await self.pattern_db.init()
+        if not await self.pattern_db.check_schema():
+            self.log.warning(
+                f"Resetting database {self.db_path} because the schema is outdated"
+            )
+            self.reset_database()
         await self.clear_jumps()
         # Restore current pattern, if any
         names = await self.pattern_db.get_pattern_names()
@@ -225,7 +308,7 @@ class BaseLoomServer:
         try:
             self.loom_connecting = True
             await self.report_loom_connection_state()
-            if self.serial_port == MOCK_PORT_NAME:
+            if self.loom_info.serial_port == MOCK_PORT_NAME:
                 assert self.mock_loom_type is not None  # make mypy happy
                 self.mock_loom = self.mock_loom_type(
                     num_shafts=self.loom_info.num_shafts, verbose=self.verbose
@@ -236,7 +319,7 @@ class BaseLoomServer:
                 )
             else:
                 self.loom_reader, self.loom_writer = await open_serial_connection(
-                    url=self.serial_port, baudrate=self.baud_rate
+                    url=self.loom_info.serial_port, baudrate=self.baud_rate
                 )
 
                 # try to purge input buffer
@@ -373,6 +456,10 @@ class BaseLoomServer:
         else:
             await self.report_pattern_names()
 
+    async def cmd_direction(self, command: SimpleNamespace) -> None:
+        self.direction_forward = command.forward
+        await self.report_direction()
+
     async def cmd_file(self, command: SimpleNamespace) -> None:
         suffix = command.name[-4:]
         if self.verbose:
@@ -389,6 +476,7 @@ class BaseLoomServer:
             raise CommandError(
                 f"Pattern {command.name!r} max shaft {max_shaft_num} > {self.loom_info.num_shafts}"
             )
+        pattern.thread_group_size = self.settings.thread_group_size
         await self.add_pattern(pattern)
 
     async def cmd_jump_to_end(self, command: SimpleNamespace) -> None:
@@ -471,9 +559,21 @@ class BaseLoomServer:
         self.current_pattern.separate_weaving_repeats = command.separate
         await self.report_separate_weaving_repeats()
 
-    async def cmd_thread_direction(self, command: SimpleNamespace) -> None:
-        self.thread_low_to_high = command.low_to_high
-        await self.report_thread_direction()
+    async def cmd_settings(self, command: SimpleNamespace) -> None:
+        bad_keys = list()
+        new_settings = copy.copy(self.settings)
+        for key, value in vars(command).items():
+            if key == "type":
+                continue
+            if not hasattr(self.settings, key):
+                bad_keys.append(key)
+                continue
+            setattr(new_settings, key, value)
+        if bad_keys:
+            raise CommandError(f"Settings command failed: invalid keys {bad_keys}")
+        self.settings = new_settings
+        await self.report_settings()
+        self.save_settings()
 
     async def cmd_thread_group_size(self, command: SimpleNamespace) -> None:
         if self.current_pattern is None:
@@ -484,10 +584,6 @@ class BaseLoomServer:
         )
         self.current_pattern.thread_group_size = command.group_size
         await self.report_thread_group_size()
-
-    async def cmd_weave_direction(self, command: SimpleNamespace) -> None:
-        self.weave_forward = command.forward
-        await self.report_weave_direction()
 
     async def cmd_oobcommand(self, command: SimpleNamespace) -> None:
         if self.mock_loom is not None:
@@ -542,6 +638,8 @@ class BaseLoomServer:
                 await self.write_shafts_to_loom(shaft_word)
                 await self.clear_jumps()
                 await self.report_current_end_numbers()
+            case ModeEnum.SETTINGS:
+                self.log.warning("Mode SETTINGS not yet supported")
             case ModeEnum.TEST:
                 raise RuntimeError("Test mode is not yet supported")
             case _:
@@ -560,7 +658,7 @@ class BaseLoomServer:
         if self.current_pattern is None:
             return 0
         return self.current_pattern.increment_pick_number(
-            weave_forward=self.weave_forward
+            direction_forward=self.direction_forward
         )
 
     def increment_end_number(self) -> None:
@@ -703,9 +801,10 @@ class BaseLoomServer:
         """
         await self.report_loom_connection_state()
         await self.write_to_client(self.loom_info)
+        await self.report_settings()
         await self.report_mode()
         await self.report_pattern_names()
-        await self.report_weave_direction()
+        await self.report_direction()
         await self.clear_jumps(force_output=True)
         await self.report_current_pattern()
         await self.report_current_end_numbers()
@@ -713,7 +812,6 @@ class BaseLoomServer:
         await self.report_separate_threading_repeats()
         await self.report_separate_weaving_repeats()
         await self.report_shaft_state()
-        await self.report_thread_direction()
         await self.report_thread_group_size()
 
     async def report_loom_connection_state(self, reason: str = "") -> None:
@@ -827,6 +925,9 @@ class BaseLoomServer:
             )
         )
 
+    async def report_settings(self) -> None:
+        await self.write_to_client(self.settings)
+
     async def report_status_message(
         self, message: str, severity: MessageSeverityEnum
     ) -> None:
@@ -834,13 +935,6 @@ class BaseLoomServer:
         await self.write_to_client(
             client_replies.StatusMessage(message=message, severity=severity)
         )
-
-    async def report_thread_direction(self) -> None:
-        """Report ThreadDirection"""
-        client_reply = client_replies.ThreadDirection(
-            low_to_high=self.thread_low_to_high
-        )
-        await self.write_to_client(client_reply)
 
     async def report_thread_group_size(self) -> None:
         """Report ThreadGroupSize"""
@@ -851,10 +945,27 @@ class BaseLoomServer:
         )
         await self.write_to_client(client_reply)
 
-    async def report_weave_direction(self) -> None:
-        """Report WeaveDirection"""
-        client_reply = client_replies.WeaveDirection(forward=self.weave_forward)
-        await self.write_to_client(client_reply)
+    async def report_direction(self) -> None:
+        """Report Direction"""
+        await self.write_to_client(
+            client_replies.Direction(
+                forward=self.direction_forward,
+            )
+        )
+
+    def reset_database(self):
+        self.db_path.unlink(missing_ok=True)
+        self.pattern_db = PatternDatabase(self.db_path)
+
+    def save_settings(self):
+        """Save the settings file."""
+        datadict = dataclasses.asdict(self.settings)
+        del datadict["type"]
+        try:
+            with open(self.settings_path, "w") as f:
+                json.dump(datadict, f)
+        except Exception as e:
+            self.log.error(f"Could not write settings file {self.settings_path}: {e!r}")
 
     async def select_pattern(self, name: str) -> None:
         try:
