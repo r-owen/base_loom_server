@@ -106,12 +106,16 @@ class BaseLoomServer:
             self.log.info(
                 f"{self}({serial_port=!r}, {reset_db=!r}, {verbose=!r}, {db_path=!r})"
             )
+        # Check the direction_control value
+        direction_control = DirectionControlEnum(direction_control)
         if self.supports_full_direction_control:
             if direction_control is not DirectionControlEnum.FULL:
                 self.log.warning(
                     f"Ignoring {direction_control=} because this loom supports full direction control"
                 )
             direction_control = DirectionControlEnum.FULL
+        elif direction_control is DirectionControlEnum.FULL:
+            raise ValueError("direction_control cannot be FULL for this type of loom")
         self.direction_control = DirectionControlEnum(direction_control)
         self.serial_port = serial_port
         self.translation_dict = translation_dict

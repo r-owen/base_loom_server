@@ -13,15 +13,14 @@ class ConnectionStateEnum(enum.IntEnum):
 class DirectionControlEnum(enum.IntEnum):
     """What controls the direction (weave/unweave).
 
-    * FULL: the direction can be changed by both the web interface
+    * FULL: The direction can be changed by both the web interface
         and the direction button on the loom.
-        If the loom supports this (e.g. Séguin), this is the only allowed
-        value. For other looms (e.g. Toika) the direction must be
-        one of the other values.
-    * LOOM: the direction can only be changed by the direction button
+        If the loom supports this (e.g. Séguin), it is the only allowed value.
+        If the loom does not (e.g. Toika), this value is prohibited.
+    * LOOM: The direction can only be changed by the unweave button
         on the loom. The web browser only displays the direction.
-    * SOFTWARE: the direction can only be changed by the web interface.
-        The direction control on the loom is ignored.
+    * SOFTWARE: The direction can only be changed by the web interface.
+        The unweave button on the loom is ignored.
     """
 
     FULL = 1
