@@ -13,7 +13,6 @@ import enum
 import json
 import logging
 import pathlib
-import tempfile
 from types import SimpleNamespace, TracebackType
 from typing import Any, Type
 
@@ -34,7 +33,9 @@ from .utils import compute_num_within_and_repeats, compute_total_num
 # The maximum number of patterns that can be in the history
 MAX_PATTERNS = 25
 
-DEFAULT_DATABASE_PATH = pathlib.Path(tempfile.gettempdir()) / "pattern_database.sqlite"
+DEFAULT_DATABASE_PATH = pathlib.Path.home() / "loom_server_database.sqlite"
+SETTINGS_FILE_NAME = "loom_server_settings.json"
+
 
 MOCK_PORT_NAME = "mock"
 
@@ -92,7 +93,7 @@ class BaseLoomServer:
         translation_dict: dict[str, str],
         reset_db: bool,
         verbose: bool,
-        direction_control: DirectionControlEnum,
+        direction_control: DirectionControlEnum | None = None,
         name: str | None = None,
         db_path: pathlib.Path | None = None,
     ) -> None:
@@ -106,17 +107,19 @@ class BaseLoomServer:
             self.log.info(
                 f"{self}({serial_port=!r}, {reset_db=!r}, {verbose=!r}, {db_path=!r})"
             )
-        # Check the direction_control value
-        direction_control = DirectionControlEnum(direction_control)
+
         if self.supports_full_direction_control:
-            if direction_control is not DirectionControlEnum.FULL:
+            if direction_control not in (None, DirectionControlEnum.FULL):
                 self.log.warning(
                     f"Ignoring {direction_control=} because this loom supports full direction control"
                 )
             direction_control = DirectionControlEnum.FULL
         elif direction_control is DirectionControlEnum.FULL:
             raise ValueError("direction_control cannot be FULL for this type of loom")
-        self.direction_control = DirectionControlEnum(direction_control)
+        if direction_control is None:
+            direction_control = DirectionControlEnum.SOFTWARE
+        else:
+            direction_control = DirectionControlEnum(direction_control)
         self.serial_port = serial_port
         self.translation_dict = translation_dict
         self.verbose = verbose
@@ -125,8 +128,47 @@ class BaseLoomServer:
             DEFAULT_DATABASE_PATH if db_path is None else db_path
         )
         if reset_db:
-            self.db_path.unlink(missing_ok=True)
-        self.pattern_db = PatternDatabase(self.db_path)
+            self.log.info("Resetting database by request")
+            self.reset_database()
+        try:
+            self.pattern_db = PatternDatabase(self.db_path)
+        except Exception as e:
+            self.log.warning(
+                f"Resetting database {self.db_path} because read failed: {e!r}"
+            )
+            self.reset_database()
+
+        self.settings_path = self.db_path.parent / SETTINGS_FILE_NAME
+        settings: client_replies.Settings | None = None
+        if self.settings_path.exists():
+            try:
+                with open(self.settings_path, "r") as f:
+                    settings_dict = json.load(f)
+                settings = client_replies.Settings(**settings_dict)
+            except Exception as e:
+                self.log.warning(
+                    f"Deleting settings file {self.settings_path} because read failed: {e!r}"
+                )
+                self.settings_path.unlink()
+        else:
+            self.log.info(f"Settings file {self.settings_path} does not exist")
+        if settings is None:
+            settings = client_replies.Settings(
+                loom_name=name,
+                num_shafts=num_shafts,
+                serial_port=serial_port,
+                direction_control=direction_control,
+                default_thread_group_size=4,
+                thread_low_to_high=True,
+            )
+        else:
+            if name is not None:
+                settings.loom_name = name
+            if direction_control is not None:
+                settings.direction_control = direction_control
+        self.settings = settings
+        self.save_settings()
+
         self.websocket: WebSocket | None = None
         self.loom_connecting = False
         self.loom_disconnecting = False
@@ -158,7 +200,7 @@ class BaseLoomServer:
 
     @property
     def enable_software_weave_direction(self) -> bool:
-        return self.direction_control in {
+        return self.settings.direction_control in {
             DirectionControlEnum.FULL,
             DirectionControlEnum.SOFTWARE,
         }
@@ -177,9 +219,13 @@ class BaseLoomServer:
         await self.pattern_db.init()
         await self.clear_jumps()
         # Restore current pattern, if any
-        names = await self.pattern_db.get_pattern_names()
-        if len(names) > 0:
-            await self.select_pattern(names[-1])
+        try:
+            names = await self.pattern_db.get_pattern_names()
+            if len(names) > 0:
+                await self.select_pattern(names[-1])
+        except Exception as e:
+            self.log.warning(f"Failed to read pattern names; resetting database: {e!r}")
+            self.reset_database()
         await self.connect_to_loom()
 
     async def close(
@@ -204,7 +250,14 @@ class BaseLoomServer:
         the current pattern, if any) and report the new list
         of pattern names to the client.
         """
-        await self.pattern_db.add_pattern(pattern=pattern, max_entries=MAX_PATTERNS)
+        try:
+            await self.pattern_db.add_pattern(pattern=pattern, max_entries=MAX_PATTERNS)
+        except Exception as e:
+            self.log.warning(
+                f"Save pattern failed; resetting database and trying again: {e!r}"
+            )
+            self.reset_database()
+            await self.pattern_db.add_pattern(pattern=pattern, max_entries=MAX_PATTERNS)
         await self.report_pattern_names()
 
     async def close_websocket(
@@ -486,6 +539,12 @@ class BaseLoomServer:
         self.current_pattern.separate_weaving_repeats = command.separate
         await self.report_separate_weaving_repeats()
 
+    async def cmd_settings(self, command: SimpleNamespace) -> None:
+        for key in dataclasses.asdict(self.settings):
+            setattr(self.settings, key, getattr(command, key))
+        await self.report_settings()
+        self.save_settings()
+
     async def cmd_thread_direction(self, command: SimpleNamespace) -> None:
         self.thread_low_to_high = command.low_to_high
         await self.report_thread_direction()
@@ -718,6 +777,7 @@ class BaseLoomServer:
         """
         await self.report_loom_connection_state()
         await self.write_to_client(self.loom_info)
+        await self.report_settings()
         await self.report_mode()
         await self.report_pattern_names()
         await self.report_weave_direction()
@@ -746,7 +806,12 @@ class BaseLoomServer:
 
     async def report_pattern_names(self) -> None:
         """Report PatternNames to the client."""
-        names = await self.pattern_db.get_pattern_names()
+        try:
+            names = await self.pattern_db.get_pattern_names()
+        except Exception as e:
+            self.log.warning(f"Get pattern names failed; resetting database: {e!r}")
+            self.reset_database()
+            names = await self.pattern_db.get_pattern_names()
         reply = client_replies.PatternNames(names=names)
         await self.write_to_client(reply)
 
@@ -842,6 +907,9 @@ class BaseLoomServer:
             )
         )
 
+    async def report_settings(self) -> None:
+        await self.write_to_client(self.settings)
+
     async def report_status_message(
         self, message: str, severity: MessageSeverityEnum
     ) -> None:
@@ -870,6 +938,23 @@ class BaseLoomServer:
         """Report WeaveDirection"""
         client_reply = client_replies.WeaveDirection(forward=self.weave_forward)
         await self.write_to_client(client_reply)
+
+    def reset_database(self):
+        self.db_path.unlink(missing_ok=True)
+        try:
+            self.pattern_db = PatternDatabase(self.db_path)
+        except Exception as e:
+            self.log.error(f"Failed to read reset database: {e!r}")
+
+    def save_settings(self):
+        """Save the settings file."""
+        datadict = dataclasses.asdict(self.settings)
+        del datadict["type"]
+        try:
+            with open(self.settings_path, "w") as f:
+                json.dump(datadict, f)
+        except Exception as e:
+            self.log.error(f"Could not write settings file {self.settings_path}: {e!r}")
 
     async def select_pattern(self, name: str) -> None:
         try:

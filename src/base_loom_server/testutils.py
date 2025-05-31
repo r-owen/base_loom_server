@@ -1079,6 +1079,7 @@ class BaseTestLoomServer:
                             "LoomInfo",
                             "Mode",
                             "PatternNames",
+                            "Settings",
                             "ShaftState",
                             "ThreadDirection",
                             "WeaveDirection",
@@ -1187,6 +1188,10 @@ class BaseTestLoomServer:
                                     assert (
                                         reply.separate
                                         == expected_current_pattern.separate_weaving_repeats
+                                    )
+                                case "Settings":
+                                    assert vars(reply) == dataclasses.asdict(
+                                        loom_server.settings
                                     )
                                 case "ShaftState":
                                     assert reply.state == ShaftStateEnum.DONE

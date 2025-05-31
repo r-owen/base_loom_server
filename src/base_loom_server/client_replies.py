@@ -1,6 +1,12 @@
 import dataclasses
 
-from .enums import ConnectionStateEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
+from .enums import (
+    ConnectionStateEnum,
+    DirectionControlEnum,
+    MessageSeverityEnum,
+    ModeEnum,
+    ShaftStateEnum,
+)
 
 
 @dataclasses.dataclass
@@ -124,6 +130,17 @@ class SeparateWeavingRepeats:
 
     type: str = dataclasses.field(init=False, default="SeparateWeavingRepeats")
     separate: bool
+
+
+@dataclasses.dataclass
+class Settings:
+    type: str = dataclasses.field(init=False, default="Settings")
+    loom_name: str
+    num_shafts: int
+    serial_port: str
+    direction_control: DirectionControlEnum
+    default_thread_group_size: int
+    thread_low_to_high: bool
 
 
 @dataclasses.dataclass
