@@ -4,6 +4,7 @@
 
 Add support for preferences.
 Automatically reset pattern database if it changes in an incompatible way.
+Store the pattern database and settings in your home directory, instead of a temp directory, so it will survive rebooting.
 
 ## 0.18.3 2025-05-25
 
