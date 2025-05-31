@@ -1,5 +1,10 @@
 # Version History
 
+## 0.19.0 2025-06-??
+
+Add support for preferences.
+Automatically reset pattern database if it changes in an incompatible way.
+
 ## 0.18.3 2025-05-25
 
 Expand unit tests.
