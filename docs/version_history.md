@@ -1,5 +1,18 @@
 # Version History
 
+## 0.19.0 2025-06-3
+
+* Add a new Settings panel which allows you to specify loom name, direction control, and new threading settings.
+* Enhance threading support by adding settings for:
+  * Thread right-to-left or left-to-right.
+  * Thread back-to-front or front-to-back.
+  * The defalt threading group size for newly loaded patterns.
+* Automatically reset the pattern database if it changes in an incompatible way.
+* Store the pattern database and new settings file in your home directory, instead of a temporary directory,
+  so that the files will survive a reboot.
+* **Breaking change**: remove command-line arguments "name" and "direction-control".
+  Use the new Settings panel, instead.
+
 ## 0.18.3 2025-05-25
 
 Expand unit tests.
