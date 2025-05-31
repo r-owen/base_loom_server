@@ -2,10 +2,15 @@ import pathlib
 import tempfile
 import time
 
+import aiosqlite
 import pytest
 from dtx_to_wif import read_pattern_file
 
-from base_loom_server.pattern_database import create_pattern_database
+from base_loom_server.pattern_database import (
+    FIELD_TYPE_DICT,
+    PatternDatabase,
+    create_pattern_database,
+)
 from base_loom_server.reduced_pattern import (
     ReducedPattern,
     reduced_pattern_from_pattern_data,
@@ -78,6 +83,39 @@ async def test_add_and_get_pattern() -> None:
         await db.add_pattern(pattern2, max_entries=1)
         pattern_names = await db.get_pattern_names()
         assert pattern_names == [pattern1.name, pattern2.name]
+
+
+async def test_check_schema() -> None:
+    with tempfile.NamedTemporaryFile() as f:
+        dbpath = pathlib.Path(f.name)
+        db = await create_pattern_database(dbpath)
+        assert await db.check_schema()
+
+    # Create a database with missing or wrong-typed fields
+    # (set wrong_type to None to delete the field)
+    for field_name, wrong_type in (
+        ("pattern_name", None),
+        ("pick_number", None),
+        ("pattern_json", "integer"),
+        ("end_number0", "real"),
+    ):
+        bad_field_type_dict = FIELD_TYPE_DICT.copy()
+        if wrong_type is None:
+            del bad_field_type_dict[field_name]
+        else:
+            bad_field_type_dict[field_name] = wrong_type
+        fields_str = ", ".join(
+            f"{key} {value}" for key, value in bad_field_type_dict.items()
+        )
+        with tempfile.NamedTemporaryFile() as f:
+            dbpath = pathlib.Path(f.name)
+            db = PatternDatabase(dbpath=dbpath)
+            async with aiosqlite.connect(db.dbpath) as conn:
+                await conn.execute(
+                    f"create table if not exists patterns ({fields_str})"
+                )
+                await conn.commit()
+            assert not await db.check_schema()
 
 
 async def test_clear_database() -> None:
