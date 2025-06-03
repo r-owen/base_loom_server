@@ -10,12 +10,16 @@ This page assumes you have done all the [basics](index.md):
 * Uploaded at least one pattern, and selected a pattern from the pattern menu
 * Selected the Threading mode.
 
+## Threading Direction
+
+The [Settings][settings.md] panel contains several settings specific to threading.
+In particular, you can choose whether to thread right-to-left or left-to-right, and whether to display threading for front-to-back or back-to-front.
+
 ## Threading Display
 
 Threading is displayed as a picture that shows a group of threads (vertical colored bars) and the shaft they go through (numbers that interrupt the colored bars).
-It also shows the one or a few warp thread numbers along the top.
+It also shows warp end numbers above some threads.
 
-Warp end numbering goes up from 1 at the right (the typical US scheme when warping back to front).
 Warp end 0 is special: it has no shafts and no warp thread. It is the first pick when starting to thread a pattern.
 It is also an intermediate step when repeating a threading sequence, unless "Separate repeats" is unchecked.
 
@@ -26,9 +30,10 @@ Special cases that may only be supported by WIF files:
 
 ## Threading Direction
 
-The square button labeled "Direction" shows and changes the direction you are threading: a left-facing arrow indicates that you are threading right to left. Press the button to change the threading direction.
+See [Weave Direction](weaving.md#weave-direction) for information on changing between threading and unthreading.
 
-**Warning** the dobby's direction control button (e.g. REVERSE or UNW) is always ignored while threading.
+If you are using a Toika loom, you must specify whether Software or the Loom controls threading direction in [Settings](settings.md).
+If you thread front-to-back, consider specifying Software, because it may be difficult to reach the REVERSE button on the dobby head from behind the castle.
 
 ## Jumping
 

@@ -15,11 +15,14 @@ of the loom server computer, as determined in [Installing](installing.md).
 
 ## Select the Mode
 
-The server has two modes, which are listed at the top of the web page: Weaving and Threading:
+The server has three modes, which are listed at the top of the web page: Weaving, Threading, and Settings:
 
 * [Weaving](weaving.md) is used to weave fabric; this is by far the most common mode.
 
 * [Threading](threading.md) will help you thread the loom, by lifting shafts for groups of threads.
+
+* [Settings](settings.md) allows you specify a few settings that the server remembers.
+  ([Threading](threading.md) also has two settings that allow you to specify how you prefer to thread.)
 
 Click on the word to select that mode.
 The bold word shows the current mode.

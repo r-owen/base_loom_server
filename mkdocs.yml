@@ -3,6 +3,7 @@ nav:
   - Home: index.md
   - Weaving: weaving.md
   - Threading: threading.md
+  - Settings: settings.md
   - Installing: installing.md
   - Coding: coding.md
   - Translations: translations.md

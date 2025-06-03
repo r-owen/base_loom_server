@@ -17,31 +17,31 @@ and does not display multi-layer patterns (such as doubleweave) correctly.
 
 ## Weave Direction
 
-The square button labeled Direction shows the weave direction: a green down arrow if you are weaving, a red up-arrow if you are unweaving.
-  The arrow points in the direction cloth is moving through the loom.
+The Weaving "Direction" button shows "Weave" (in black) or "Unweave" (in red).
+[Threading](threading.md) also has a direction button that shows "Thread" (in black) or "Unthread" (in red),
+prefixed by an arrow showing the direction of the next group of warp ends.
 
   How you change direction depends on the loom:
 
-  * Séguin looms allow you to change direction by pressing the square
-    weave direction button or pressing the UNW button on the dobby unit.
-    Both work. Use whichever you prefer.
+  * Séguin looms allow you to change direction by pressing the direction button in web browser display,
+    or pressing the UNW button on the dobby unit. Both work. Use whichever you prefer.
 
-  * Toika looms can be operated in one of two ways, specified by
-    a command-line argument when you start the loom server:
+  * Toika looms can be operated in one of two ways, specified by **Direction control**
+    in the [Settings](settings.md) panel:
 
-      * Software controls the weave direction. The square button showing weave
-        direction can be pressed to change the direction. <b>The physical REVERSE button
-        on the dobby head is ignored</b>. This is the default.
+      * **Software**: push the direction button (Weave/Unweave if weaving, Thread/Unthread if threading)
+        in the web browser display to change direction.
+        <b>The physical REVERSE button on the dobby head is ignored</b>.
 
-      * The loom controls the weave direction. You have to press the physical REVERSE button
-        on the dobby head to change direction. The square button showing weave direction
-        is only a display (you can't click it). You run in this mode by starting the loom server with argument `--weave-direction loom`.
+      * **Loom**: press the physical REVERSE button on the dobby head to change direction.
+        <b>Warning: the displayed direction does not update until you command the next pick!</b>.
+        This is because Toika looms only report direction when requesting a pick.
   
   * For other looms, see the loom-specific documentation with the software package.
 
 ## Pick Color
 
-The long colored rectangle to the right the Pick row shows the color of the current pick (blank for pick 0),
+The long colored rectangle to the right of Pick shows the color of the current pick (blank for pick 0),
 or, if you have specified a pick to jump to, then it is the color of that pending pick.
 
 ## Jumping
