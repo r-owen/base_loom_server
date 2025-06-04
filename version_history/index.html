@@ -55,6 +55,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../settings/">Settings</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../installing/">Installing</a>
                 </li>
               </ul>
@@ -69,6 +73,10 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Version Histsory</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#0190-2025-06-3">0.19.0 2025-06-3</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#0183-2025-05-25">0.18.3 2025-05-25</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#0182-2025-05-03">0.18.2 2025-05-03</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#0181-2025-04-28">0.18.1 2025-04-28</a>
@@ -142,6 +150,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/constants/">base_loom_server.constants</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/enums/">base_loom_server.enums</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/example_loom_server/">base_loom_server.example_loom_server</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/example_mock_loom/">base_loom_server.example_mock_loom</a>
@@ -187,6 +197,21 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="version-history">Version History</h1>
+<h2 id="0190-2025-06-3">0.19.0 2025-06-3</h2>
+<ul>
+<li>Add a new Settings panel which allows you to specify loom name, direction control, and new threading settings.</li>
+<li>Enhance threading support by adding settings for:</li>
+<li>Thread right-to-left or left-to-right.</li>
+<li>Thread back-to-front or front-to-back.</li>
+<li>The defalt threading group size for newly loaded patterns.</li>
+<li>Automatically reset the pattern database if it changes in an incompatible way.</li>
+<li>Store the pattern database and new settings file in your home directory, instead of a temporary directory,
+  so that the files will survive a reboot.</li>
+<li><strong>Breaking change</strong>: remove command-line arguments "name" and "direction-control".
+  Use the new Settings panel, instead.</li>
+</ul>
+<h2 id="0183-2025-05-25">0.18.3 2025-05-25</h2>
+<p>Expand unit tests.</p>
 <h2 id="0182-2025-05-03">0.18.2 2025-05-03</h2>
 <p>Add API documentation.</p>
 <h2 id="0181-2025-04-28">0.18.1 2025-04-28</h2>

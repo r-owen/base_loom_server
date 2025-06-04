@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Translations - Base Loom Server</title>
+    <title>Settings - Base Loom Server</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -15,8 +15,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Translations";
-        var mkdocs_page_input_path = "translations.md";
+        var mkdocs_page_name = "Settings";
+        var mkdocs_page_input_path = "settings.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -54,8 +54,10 @@
                 <li class="toctree-l1"><a class="reference internal" href="../threading/">Threading</a>
                 </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../settings/">Settings</a>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Settings</a>
+    <ul class="current">
+    </ul>
                 </li>
               </ul>
               <ul>
@@ -66,10 +68,8 @@
                 <li class="toctree-l1"><a class="reference internal" href="../coding/">Coding</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">Translations</a>
-    <ul class="current">
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../translations/">Translations</a>
                 </li>
               </ul>
               <ul>
@@ -129,7 +129,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Translations</li>
+      <li class="breadcrumb-item active">Settings</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -138,23 +138,36 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="translations">Translations</h1>
-<p><a href="https://pypi.org/project/base-loom-server/">base_loom_server</a> supports foreign language translations (for the web display, but not this documentation).</p>
-<p>At present only one translation available: is a rather poor French translation.
-Help from others to add and improve language support would be most welcome.</p>
-<p>Each language is supported by a separate yaml file in <code>src/locales</code>.</p>
-<p>Each translation file must have name <em>language_code</em>.js, where  <em>language_code</em> is a standard language code as reported by the Python <code>locale</code> library.
-Here is one <a href="https://stackoverflow.com/questions/3191664/list-of-all-locales-and-their-short-codes">list of codes</a>.
-On macOS and unix you can see a list of supported locales with terminal command <code>locale -a</code>.</p>
-<p>The file <code>src/locales/default.yaml</code> lists all the words and phrases for which translations are wanted. Note that the values are ignored in this file. Other than that, the format is the same as for a language file. Thus a good way to start is to copy <code>src/locales/default.yaml</code> to the new language file, then replace each <code>null</code> with the translated string.</p>
-<p>An incomplete file is better than none; missing entries will be shown in English.</p>
-<p>It is possible to have two files for a given language: one that uses a more general language code, and the other that uses a more specific code. If you do this, the more general file is read first, then the more specific file. Thus the more specific file need only have entries that differ from the general file.</p>
+                <h1 id="settings">Settings</h1>
+<p>This panel offers a few settings that you can change which apply to all weaving patterns.
+Settings are automatically saved, and should survive rebooting the loom server.</p>
+<p>These include:</p>
+<ul>
+<li>
+<p><strong>Loom name</strong>: the name of the loom, as it appears in the display.</p>
+</li>
+<li>
+<p><strong>Direction control</strong>: specifies how to change direction (weaving or unweaving, threading or unthreading).
+  See <a href="../weaving/#weave-direction">Weave Direction</a> for more information.
+  This setting is not shown for Séguin looms and others that support changing direction from both software and a button on the loom.</p>
+</li>
+<li>
+<p><strong>Threading</strong>: Specify whether you prefer to thread right-to-left or left-to-right, and front-to-back or back-to-front.
+  Specifying front-to-back simply changes the threading display to appear as if you are sitting behind the castle: shaft 1 is displayed on the left and shaft 1 on the top.</p>
+</li>
+<li>
+<p><strong>Default threading group size</strong>: specify the default threading group size.
+  This setting only applies when you load pattern files.
+  It has no effect on the pattern files you have already loaded
+  (because threading group size is saved with each pattern file).</p>
+</li>
+</ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../coding/" class="btn btn-neutral float-left" title="Coding"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../version_history/" class="btn btn-neutral float-right" title="Version Histsory">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../threading/" class="btn btn-neutral float-left" title="Threading"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../installing/" class="btn btn-neutral float-right" title="Installing">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -177,10 +190,10 @@ On macOS and unix you can see a list of supported locales with terminal command 
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../coding/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../threading/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../version_history/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../installing/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

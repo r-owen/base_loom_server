@@ -55,6 +55,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../settings/">Settings</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../../../installing/">Installing</a>
                 </li>
               </ul>
@@ -85,6 +89,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/constants/">base_loom_server.constants</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/enums/">base_loom_server.enums</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/example_loom_server/">base_loom_server.example_loom_server</a>
                 </li>
@@ -332,63 +338,15 @@
 <span class="normal">189</span>
 <span class="normal">190</span>
 <span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">dataclasses</span>
-<span class="kn">import</span> <span class="nn">enum</span>
+<span class="normal">192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">dataclasses</span>
 
-
-<span class="k">class</span> <span class="nc">ConnectionStateEnum</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.client_replies.ConnectionStateEnum"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.ConnectionStateEnum" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Client websocket connection state.&quot;&quot;&quot;</span>
-
-    <span class="n">DISCONNECTED</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">CONNECTED</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">CONNECTING</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">DISCONNECTING</span> <span class="o">=</span> <span class="mi">3</span>
-
-
-<span class="k">class</span> <span class="nc">MessageSeverityEnum</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.client_replies.MessageSeverityEnum"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.MessageSeverityEnum" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Severity for text messages&quot;&quot;&quot;</span>
-
-    <span class="n">INFO</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">WARNING</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">ERROR</span> <span class="o">=</span> <span class="mi">3</span>
-
-
-<span class="k">class</span> <span class="nc">ModeEnum</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.client_replies.ModeEnum"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.ModeEnum" title="Go to docs">docs</a></div>
-    <span class="n">WEAVE</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">THREAD</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">TEST</span> <span class="o">=</span> <span class="mi">3</span>
-
-
-<span class="k">class</span> <span class="nc">ShaftStateEnum</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.client_replies.ShaftStateEnum"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.ShaftStateEnum" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Shaft state&quot;&quot;&quot;</span>
-
-    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">DONE</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">MOVING</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">ERROR</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="kn">from</span> <span class="nn">.enums</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ConnectionStateEnum</span><span class="p">,</span>
+    <span class="n">DirectionControlEnum</span><span class="p">,</span>
+    <span class="n">MessageSeverityEnum</span><span class="p">,</span>
+    <span class="n">ModeEnum</span><span class="p">,</span>
+    <span class="n">ShaftStateEnum</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
@@ -435,6 +393,14 @@
     <span class="n">total_picks</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">pick_number</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">pick_repeat_number</span><span class="p">:</span> <span class="nb">int</span>
+
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">Direction</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.Direction"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.Direction" title="Go to docs">docs</a></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The weaving and threading direction&quot;&quot;&quot;</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Direction&quot;</span><span class="p">)</span>
+    <span class="n">forward</span><span class="p">:</span> <span class="nb">bool</span>
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
@@ -486,8 +452,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Information about the loom&quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;LoomInfo&quot;</span><span class="p">)</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">num_shafts</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">serial_port</span><span class="p">:</span> <span class="nb">str</span>
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
@@ -512,6 +478,16 @@
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;SeparateWeavingRepeats&quot;</span><span class="p">)</span>
     <span class="n">separate</span><span class="p">:</span> <span class="nb">bool</span>
+
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.Settings"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.Settings" title="Go to docs">docs</a></div>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Settings&quot;</span><span class="p">)</span>
+    <span class="n">loom_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">direction_control</span><span class="p">:</span> <span class="n">DirectionControlEnum</span>
+    <span class="n">thread_group_size</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">thread_right_to_left</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">thread_back_to_front</span><span class="p">:</span> <span class="nb">bool</span>
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
@@ -549,27 +525,11 @@
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">ThreadDirection</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.ThreadDirection"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.ThreadDirection" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The threading direction&quot;&quot;&quot;</span>
-
-    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;ThreadDirection&quot;</span><span class="p">)</span>
-    <span class="n">low_to_high</span><span class="p">:</span> <span class="nb">bool</span>
-
-
-<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">ThreadGroupSize</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.ThreadGroupSize"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.ThreadGroupSize" title="Go to docs">docs</a></div>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The threading group size&quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;ThreadGroupSize&quot;</span><span class="p">)</span>
     <span class="n">group_size</span><span class="p">:</span> <span class="nb">int</span>
-
-
-<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">WeaveDirection</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.WeaveDirection"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.WeaveDirection" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The weaving direction&quot;&quot;&quot;</span>
-
-    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;WeaveDirection&quot;</span><span class="p">)</span>
-    <span class="n">forward</span><span class="p">:</span> <span class="nb">bool</span>
 </code></pre></div></td></tr></table></div>
 
               

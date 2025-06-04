@@ -53,9 +53,11 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Threading</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#threading-direction">Threading Direction</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#threading-display">Threading Display</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#threading-direction">Threading Direction</a>
+    <li class="toctree-l2"><a class="reference internal" href="#threading-direction_1">Threading Direction</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#jumping">Jumping</a>
     </li>
@@ -64,6 +66,10 @@
     <li class="toctree-l2"><a class="reference internal" href="#repeating">Repeating</a>
     </li>
     </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../settings/">Settings</a>
                 </li>
               </ul>
               <ul>
@@ -97,6 +103,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/constants/">base_loom_server.constants</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/enums/">base_loom_server.enums</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/example_loom_server/">base_loom_server.example_loom_server</a>
                 </li>
@@ -152,20 +160,23 @@ and a display will show you which threads belong on which shaft.</p>
 <li>Uploaded at least one pattern, and selected a pattern from the pattern menu</li>
 <li>Selected the Threading mode.</li>
 </ul>
+<h2 id="threading-direction">Threading Direction</h2>
+<p>The [Settings][settings.md] panel contains several settings specific to threading.
+In particular, you can choose whether to thread right-to-left or left-to-right, and whether to display threading for front-to-back or back-to-front.</p>
 <h2 id="threading-display">Threading Display</h2>
 <p>Threading is displayed as a picture that shows a group of threads (vertical colored bars) and the shaft they go through (numbers that interrupt the colored bars).
-It also shows the one or a few warp thread numbers along the top.</p>
-<p>Warp end numbering goes up from 1 at the right (the typical US scheme when warping back to front).
-Warp end 0 is special: it has no shafts and no warp thread. It is the first pick when starting to thread a pattern.
+It also shows warp end numbers above some threads.</p>
+<p>Warp end 0 is special: it has no shafts and no warp thread. It is the first pick when starting to thread a pattern.
 It is also an intermediate step when repeating a threading sequence, unless "Separate repeats" is unchecked.</p>
 <p>Special cases that may only be supported by WIF files:</p>
 <ul>
 <li>Ends that are threaded through heddles on more than one shaft are only shown threaded on the lowest-numbered shaft, ignoring 0.</li>
 <li>Ends that are only threaded on shaft 0 (meaning not threaded through heddles on any shaft) are displayed without a shaft number.</li>
 </ul>
-<h2 id="threading-direction">Threading Direction</h2>
-<p>The square button labeled "Direction" shows and changes the direction you are threading: a left-facing arrow indicates that you are threading right to left. Press the button to change the threading direction.</p>
-<p><strong>Warning</strong> the dobby's direction control button (e.g. REVERSE or UNW) is always ignored while threading.</p>
+<h2 id="threading-direction_1">Threading Direction</h2>
+<p>See <a href="../weaving/#weave-direction">Weave Direction</a> for information on changing between threading and unthreading.</p>
+<p>If you are using a Toika loom, you must specify whether Software or the Loom controls threading direction in <a href="../settings/">Settings</a>.
+If you thread front-to-back, consider specifying Software, because it may be difficult to reach the REVERSE button on the dobby head from behind the castle.</p>
 <h2 id="jumping">Jumping</h2>
 <p>You can jump to a different group of warp ends, specified by the smaller warp end number.
 For example if the group size is 4 and you jump to end 21, the new ends will be 21, 22, 23, 24, and 25 (or fewer, if the warp has fewer than 25 threads), regardless of the threading direction.</p>
@@ -233,7 +244,7 @@ and may also be different for different patterns. They are saved in the pattern 
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../weaving/" class="btn btn-neutral float-left" title="Weaving"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../installing/" class="btn btn-neutral float-right" title="Installing">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../settings/" class="btn btn-neutral float-right" title="Settings">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -259,7 +270,7 @@ and may also be different for different patterns. They are saved in the pattern 
       <span><a href="../weaving/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../installing/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../settings/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

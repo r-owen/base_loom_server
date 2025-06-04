@@ -55,6 +55,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../settings/">Settings</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../../../installing/">Installing</a>
                 </li>
               </ul>
@@ -85,6 +89,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/constants/">base_loom_server.constants</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/enums/">base_loom_server.enums</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/example_loom_server/">base_loom_server.example_loom_server</a>
                 </li>
@@ -442,7 +448,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">moving</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pick_wanted</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shaft_word</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">weave_forward</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="p">:</span> <span class="n">StreamWriterType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="p">:</span> <span class="n">StreamReaderType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">done_task</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
@@ -526,12 +532,12 @@
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">oob_command_d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.oob_command_d"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.oob_command_d" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Toggle weave direction&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">weave_forward</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weave_forward</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_direction</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: oob toggle weave direction to: &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DIRECTION_NAMES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">weave_forward</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DIRECTION_NAMES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">oob_command_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.oob_command_n"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.oob_command_n" title="Go to docs">docs</a></div>
@@ -611,11 +617,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: raise shafts </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shaft_word</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">shaft_word</span><span class="o">=</span><span class="n">shaft_word</span><span class="p">))</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">set_weave_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weave_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.set_weave_forward"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.set_weave_forward" title="Go to docs">docs</a></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">weave_forward</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">weave_forward</span><span class="p">)</span>
+<div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.set_direction_forward"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.set_direction_forward" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">set_direction_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">direction_forward</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: set </span><span class="si">{</span><span class="n">weave_forward</span><span class="si">=}</span><span class="s2"> by software&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: set </span><span class="si">{</span><span class="n">direction_forward</span><span class="si">=}</span><span class="s2"> by software&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_direction</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.write"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.write" title="Go to docs">docs</a></div>

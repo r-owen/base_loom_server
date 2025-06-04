@@ -67,6 +67,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../settings/">Settings</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../installing/">Installing</a>
                 </li>
               </ul>
@@ -97,6 +101,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/constants/">base_loom_server.constants</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/enums/">base_loom_server.enums</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/example_loom_server/">base_loom_server.example_loom_server</a>
                 </li>
@@ -156,28 +162,28 @@
 Note that the display is a bit naive, in that it shows all threads as the same thickness
 and does not display multi-layer patterns (such as doubleweave) correctly.</p>
 <h2 id="weave-direction">Weave Direction</h2>
-<p>The square button labeled Direction shows the weave direction: a green down arrow if you are weaving, a red up-arrow if you are unweaving.
-  The arrow points in the direction cloth is moving through the loom.</p>
+<p>The Weaving "Direction" button shows "Weave" (in black) or "Unweave" (in red).
+<a href="../threading/">Threading</a> also has a direction button that shows "Thread" (in black) or "Unthread" (in red),
+prefixed by an arrow showing the direction of the next group of warp ends.</p>
 <p>How you change direction depends on the loom:</p>
 <ul>
 <li>
-<p>Séguin looms allow you to change direction by pressing the square
-    weave direction button or pressing the UNW button on the dobby unit.
-    Both work. Use whichever you prefer.</p>
+<p>Séguin looms allow you to change direction by pressing the direction button in web browser display,
+    or pressing the UNW button on the dobby unit. Both work. Use whichever you prefer.</p>
 </li>
 <li>
-<p>Toika looms can be operated in one of two ways, specified by
-    a command-line argument when you start the loom server:</p>
+<p>Toika looms can be operated in one of two ways, specified by <strong>Direction control</strong>
+    in the <a href="../settings/">Settings</a> panel:</p>
 <ul>
 <li>
-<p>Software controls the weave direction. The square button showing weave
-    direction can be pressed to change the direction. <b>The physical REVERSE button
-    on the dobby head is ignored</b>. This is the default.</p>
+<p><strong>Software</strong>: push the direction button (Weave/Unweave if weaving, Thread/Unthread if threading)
+    in the web browser display to change direction.
+    <b>The physical REVERSE button on the dobby head is ignored</b>.</p>
 </li>
 <li>
-<p>The loom controls the weave direction. You have to press the physical REVERSE button
-    on the dobby head to change direction. The square button showing weave direction
-    is only a display (you can't click it). You run in this mode by starting the loom server with argument <code>--weave-direction loom</code>.</p>
+<p><strong>Loom</strong>: press the physical REVERSE button on the dobby head to change direction.
+    <b>Warning: the displayed direction does not update until you command the next pick!</b>.
+    This is because Toika looms only report direction when requesting a pick.</p>
 </li>
 </ul>
 </li>
@@ -186,7 +192,7 @@ and does not display multi-layer patterns (such as doubleweave) correctly.</p>
 </li>
 </ul>
 <h2 id="pick-color">Pick Color</h2>
-<p>The long colored rectangle to the right the Pick row shows the color of the current pick (blank for pick 0),
+<p>The long colored rectangle to the right of Pick shows the color of the current pick (blank for pick 0),
 or, if you have specified a pick to jump to, then it is the color of that pending pick.</p>
 <h2 id="jumping">Jumping</h2>
 <p>You can jump to a different pick.</p>
