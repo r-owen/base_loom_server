@@ -48,7 +48,6 @@ const DirectionControlEnum = {
     "FULL": 1,
     "LOOM": 2,
     "SOFTWARE": 3,
-    "WEAVING_LOOM_THREADING_SOFTWARE": 4,
 }
 
 const ModeEnum = {
@@ -836,11 +835,15 @@ class LoomClient {
             weaveDirectionElt.textContent = t("Weave")
             threadDirectionElt.style.color = "black"
             weaveDirectionElt.style.color = "black"
+            threadDirectionElt.style.borderStyle = ""
+            weaveDirectionElt.style.borderStyle = ""
         } else {
             threadDirectionElt.textContent = `${threadArrow} ${t("Unthread")}`
             threadDirectionElt.style.color = "red"
             weaveDirectionElt.textContent = t("Unweave")
             weaveDirectionElt.style.color = "red"
+            threadDirectionElt.style.borderStyle = "inset"
+            weaveDirectionElt.style.borderStyle = "inset"
         }
     }
 

@@ -24,6 +24,10 @@ button {
     font-size: 80%;
 }
 
+.toggle_button {
+    border-radius: 0px;
+}
+
 button:hover:enabled {
     background-color: #ddd
 }
