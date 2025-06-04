@@ -1,5 +1,9 @@
 # Version History
 
+## 0.19.2 2025-??
+
+* Improve the display of direction controls.
+
 ## 0.19.1 2025-06-04
 
 * Add missing translation strings.
