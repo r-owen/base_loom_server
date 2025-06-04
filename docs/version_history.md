@@ -1,5 +1,9 @@
 # Version History
 
+## 0.19.1 2025-06-04
+
+* Add missing translation strings.
+
 ## 0.19.0 2025-06-3
 
 * Add a new Settings panel which allows you to specify loom name, direction control, and new threading settings.
