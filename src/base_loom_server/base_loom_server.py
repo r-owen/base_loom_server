@@ -565,10 +565,16 @@ class BaseLoomServer:
         for key, value in vars(command).items():
             if key == "type":
                 continue
-            if not hasattr(self.settings, key):
+
+            old_value = getattr(self.settings, key, ...)
+            if old_value is ...:
                 bad_keys.append(key)
                 continue
-            setattr(new_settings, key, value)
+            try:
+                cast_value = type(old_value)(value)
+            except Exception as e:
+                raise CommandError(f"Invalid {key}={value!r}: {e}")
+            setattr(new_settings, key, cast_value)
         if bad_keys:
             raise CommandError(f"Settings command failed: invalid keys {bad_keys}")
         self.settings = new_settings
