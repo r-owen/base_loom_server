@@ -1,6 +1,10 @@
 # Version History
 
-## 0.19.2 2025-??
+## 0.19.3 2025-06-07
+
+* Improve the display of the tab bar at the top of the window.
+
+## 0.19.2 2025-06-07
 
 * Improve the display of direction controls.
 
