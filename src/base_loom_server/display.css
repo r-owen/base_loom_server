@@ -40,6 +40,10 @@ select {
     margin-left: 1em;
 }
 
+#mode {
+    margin-bottom: 10px;
+}
+
 #upload_patterns {
     background-color: #0000;
     border-radius: 8px;
@@ -60,19 +64,18 @@ select {
 
 /* Style the buttons that are used to open the tab content */
 .tabbar button {
-    border: 2px;
-    padding: 2px 2px;
     font-size: 100%;
     font-family: "georgia";
-}
-
-#mode {
-    margin-bottom: 10px;
+    border-style: inset;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
 
 /* Create an active/current tablink class */
 .tabbar button.active {
     font-weight: bold;
+    border-style: outset;
+    border-bottom: 0px;
 }
 
 div.flex-column {
