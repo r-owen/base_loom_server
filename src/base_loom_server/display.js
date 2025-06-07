@@ -293,28 +293,28 @@ class LoomClient {
         let tabSettingsElt = document.getElementById("mode_settings")
         tabSettingsElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.SETTINGS))
 
-        let loomNameInputElt = document.getElementById("setting-loom-name-input")
+        let loomNameInputElt = document.getElementById("setting_loom_name_input")
         // Select all text on focus, to make it easier to type a new name
         // (without this, you are likely to append to the existing name, instead of replacing it).
         loomNameInputElt.addEventListener("focus", this.selectOnInput.bind(this, loomNameInputElt))
         loomNameInputElt.addEventListener("input", this.handleLoomNameInput.bind(this))
 
-        let settingLoomNameForm = document.getElementById("setting-loom-name-form")
+        let settingLoomNameForm = document.getElementById("setting_loom_name_form")
         settingLoomNameForm.addEventListener("submit", this.sendSettings.bind(this))
 
-        let loomNameResetButton = document.getElementById("setting-loom-name-reset")
+        let loomNameResetButton = document.getElementById("setting_loom_name_reset")
         loomNameResetButton.addEventListener("click", this.handleSettingsReset.bind(this))
 
-        let settingThreadRightToLeftElt = document.getElementById("setting-thread-right-to-left")
+        let settingThreadRightToLeftElt = document.getElementById("setting_thread_right_to_left")
         settingThreadRightToLeftElt.addEventListener("change", this.sendSettings.bind(this))
 
-        let settingThreadBackToFrontElt = document.getElementById("setting-thread-back-to-front")
+        let settingThreadBackToFrontElt = document.getElementById("setting_thread_back_to_front")
         settingThreadBackToFrontElt.addEventListener("change", this.sendSettings.bind(this))
 
-        let settingThreadGroupSizeElt = document.getElementById("setting-thread-group-size")
+        let settingThreadGroupSizeElt = document.getElementById("setting_thread_group_size")
         settingThreadGroupSizeElt.addEventListener("change", this.sendSettings.bind(this))
 
-        let settingDirectionControlElt = document.getElementById("setting-direction-control")
+        let settingDirectionControlElt = document.getElementById("setting_direction_control")
         settingDirectionControlElt.addEventListener("change", this.sendSettings.bind(this))
 
         let fileInputElt = document.getElementById("file_input")
@@ -573,11 +573,11 @@ class LoomClient {
     * Display Settings
     */
     displaySettings() {
-        let loomNameInputElt = document.getElementById("setting-loom-name-input")
+        let loomNameInputElt = document.getElementById("setting_loom_name_input")
         const loomNameHasFocus = document.activeElement == loomNameInputElt
         loomNameInputElt.value = this.settings.loom_name
-        let directionControlDiv = document.getElementById("setting-direction-control-div")
-        let directionControlElt = document.getElementById("setting-direction-control")
+        let directionControlDiv = document.getElementById("setting_direction_control_div")
+        let directionControlElt = document.getElementById("setting_direction_control")
         if (this.settings.direction_control == DirectionControlEnum.FULL) {
             directionControlDiv.style.display = "none"
             directionControlElt.value = null
@@ -585,11 +585,11 @@ class LoomClient {
             directionControlElt.value = this.settings.direction_control
             directionControlDiv.style.display = "flex"
         }
-        let threadRightToLeftElt = document.getElementById("setting-thread-right-to-left")
+        let threadRightToLeftElt = document.getElementById("setting_thread_right_to_left")
         threadRightToLeftElt.value = this.settings.thread_right_to_left ? "1" : "0"
-        let threadBackToFrontElt = document.getElementById("setting-thread-back-to-front")
+        let threadBackToFrontElt = document.getElementById("setting_thread_back_to_front")
         threadBackToFrontElt.value = this.settings.thread_back_to_front ? "1" : "0"
-        let defaultThreadGroupSize = document.getElementById("setting-thread-group-size")
+        let defaultThreadGroupSize = document.getElementById("setting_thread_group_size")
         defaultThreadGroupSize.value = this.settings.thread_group_size
         let weaveDirectionElt = document.getElementById("weave_direction")
         let threadDirectionElt = document.getElementById("thread_direction")
@@ -1404,9 +1404,9 @@ class LoomClient {
     */
     async handleLoomNameInput(event) {
         let disableSubmit = true
-        let loomNameInputElt = document.getElementById("setting-loom-name-input")
-        let loomNameSubmitButton = document.getElementById("setting-loom-name-submit")
-        let loomNameResetButton = document.getElementById("setting-loom-name-reset")
+        let loomNameInputElt = document.getElementById("setting_loom_name_input")
+        let loomNameSubmitButton = document.getElementById("setting_loom_name_submit")
+        let loomNameResetButton = document.getElementById("setting_loom_name_reset")
         if (loomNameInputElt.value != this.settings.loom_name) {
             loomNameInputElt.style.backgroundColor = "pink"
             disableSubmit = false
@@ -1467,11 +1467,11 @@ class LoomClient {
     Handle settings form submit
     */
     async sendSettings(event) {
-        let loomNameInputElt = document.getElementById("setting-loom-name-input")
-        let directionControlElt = document.getElementById("setting-direction-control")
-        let threadRightToLeftElt = document.getElementById("setting-thread-right-to-left")
-        let threadBackToFrontElt = document.getElementById("setting-thread-back-to-front")
-        let defaultThreadGroupSize = document.getElementById("setting-thread-group-size")
+        let loomNameInputElt = document.getElementById("setting_loom_name_input")
+        let directionControlElt = document.getElementById("setting_direction_control")
+        let threadRightToLeftElt = document.getElementById("setting_thread_right_to_left")
+        let threadBackToFrontElt = document.getElementById("setting_thread_back_to_front")
+        let defaultThreadGroupSize = document.getElementById("setting_thread_group_size")
         const command = {
             "type": "settings",
             "loom_name": loomNameInputElt.value,

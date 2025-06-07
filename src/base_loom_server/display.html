@@ -18,34 +18,34 @@
         </div>
     </div>
 
-    <div class="flex-column settings-flex" id="setting-loom-name-form">
+    <div class="flex-column settings-flex" id="setting_loom_name_form">
         <form class="settings-flex">
             <label>{Loom name}</label>
-            <input type="text" id="setting-loom-name-input"></input>
-            <button type="submit" id="setting-loom-name-submit">{Save}</button>
-            <button type="button" id="setting-loom-name-reset">{Reset}</button>
+            <input type="text" id="setting_loom_name_input"></input>
+            <button type="submit" id="setting_loom_name_submit">{Save}</button>
+            <button type="button" id="setting_loom_name_reset">{Reset}</button>
         </form>
-        <div class="flex-row" id="setting-direction-control-div">
+        <div class="flex-row" id="setting_direction_control_div">
             <label>{Direction control}</label>
-            <select name="setting-direction-control" id="setting-direction-control">
+            <select name="setting_direction_control" id="setting_direction_control">
                 <option value="2">{Loom}</option>
                 <option value="3">{Software}</option>
             </select>
         </div>
         <div class="flex-row">
             <label>{Thread}</label>
-            <select name="setting-thread-right-to-left" id="setting-thread-right-to-left">
+            <select name="setting_thread_right_to_left" id="setting_thread_right_to_left">
                 <option value="1">{Right to left}</option>
                 <option value="0">{Left to right}</option>
             </select>
-            <select name="setting-thread-back-to-front" id="setting-thread-back-to-front">
+            <select name="setting_thread_back_to_front" id="setting_thread_back_to_front">
                 <option value="1">{Back to front}</option>
                 <option value="0">{Front to back}</option>
             </select>
         </div>
         <div class="flex-row">
             <label>{Default threading group size}</label>
-            <select name="setting-thread-group-size" id="setting-thread-group-size">
+            <select name="setting_thread_group_size" id="setting_thread_group_size">
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
@@ -96,12 +96,12 @@
 
     <div class="flex-row weaving-flex">
         <label>{Direction}</label>
-        <button type="button" id="weave_direction" class="toggle_button">?</button>        
+        <button type="button" class="toggle_button" id="weave_direction">?</button>        
     </div>
 
     <div class="flex-row threading-flex">
         <label>{Direction}</label>
-        <button type="button" id="thread_direction" class="toggle_button">?</button>
+        <button type="button" class="toggle_button" id="thread_direction">?</button>
         <div>
             <label id="group_size_label">{Group size}</label>
             <select name="thread_group_size" id="thread_group_size">
@@ -162,7 +162,7 @@
         </div>
     </form>
 
-    <div class="flex-row threading-flex" id="separate_threading_repeats_grid" style="display: none">
+    <div class="flex-row threading-flex" id="separate_threading_repeats_grid" style="display: none;">
         <label>{Separate repeats}?</label>
         <input type="checkbox" id="separate_threading_repeats" value="1"></input>
     </div>
@@ -181,7 +181,7 @@
         <label id="command_problem"/>
     </div>
 
-    <div style="display:{display_debug_controls}" id="debug_div">
+    <div style="display:{display_debug_controls};" id="debug_div">
     <hr>
     <divclass="flex-row">Debug (mock loom)</div>
     
