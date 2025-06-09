@@ -729,9 +729,9 @@ class LoomClient {
     */
     displayMode() {
         // Get all elements with class="tablinks" and remove the class "active"
-        let buttons = document.getElementsByClassName("tabchoices")
+        let buttons = document.getElementsByClassName("tab_button")
         for (let button of buttons) {
-            button.className = button.className.replace(" active", "")
+            button.classList.remove("tab_active")
         }
 
         let elt = null
@@ -803,7 +803,7 @@ class LoomClient {
             console.log("Unrecognized mode", this.mode)
         }
         if (modeButton != null) {
-            modeButton.className += " active"
+            modeButton.classList.add("tab_active")
         }
     }
 
@@ -835,8 +835,8 @@ class LoomClient {
             weaveDirectionElt.textContent = t("Weave")
             threadDirectionElt.style.color = "black"
             weaveDirectionElt.style.color = "black"
-            threadDirectionElt.style.borderStyle = ""
-            weaveDirectionElt.style.borderStyle = ""
+            threadDirectionElt.style.borderStyle = "outset"
+            weaveDirectionElt.style.borderStyle = "outset"
         } else {
             threadDirectionElt.textContent = `${threadArrow} ${t("Unthread")}`
             threadDirectionElt.style.color = "red"

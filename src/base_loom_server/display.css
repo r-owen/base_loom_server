@@ -62,20 +62,25 @@ select {
     border: 0px;
 }
 
-/* Style the buttons that are used to open the tab content */
-.tabbar button {
+/* Style the tab bar mode buttons */
+button.tab_button {
     font-size: 100%;
     font-family: "georgia";
     border-style: inset;
+    background-color: #eee;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
 }
 
-/* Create an active/current tablink class */
-.tabbar button.active {
+button.tab_active {
     font-weight: bold;
+    background-color: #0000;
     border-style: outset;
     border-bottom: 0px;
+}
+
+button.tab_active:hover {
+    background-color: #0000;
 }
 
 div.flex-column {
