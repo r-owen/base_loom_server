@@ -1,5 +1,23 @@
 # Version History
 
+## 0.19.4 2025-06-11
+
+* Bug fixes in Threading:
+
+  * End numbers were not shown when displaying end 0.
+  * When a jump is pending, the "Jump to end" input box now shows the total end number
+    (the same value you typed in), rather than the end number within the current pattern repeat.
+* Change the threading display to show total end numbers along the top,
+  rather than end numbers within the current pattern repeat.
+* Further improve the display of the tab bar at the top of the window.
+* Improve the display of popup menus, such as the Pattern menu.
+* Improve the display of text input areas, such as "Jump to pick".
+* For most controls with labels, you can now click on the label to activate the control.
+  This is especially helpful for the "Separate repeats?" checkboxes.
+* Specify the language in the HTML. This will be English,
+  unless a translation file is present for the current locale.
+* Fix some HTML errors (though few, if any, were visible).
+
 ## 0.19.3 2025-06-07
 
 * Improve the display of the tab bar at the top of the window.
