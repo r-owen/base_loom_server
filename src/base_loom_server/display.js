@@ -833,17 +833,13 @@ class LoomClient {
         if (this.direction.forward) {
             threadDirectionElt.textContent = `${threadArrow} ${t("Thread")}`
             weaveDirectionElt.textContent = t("Weave")
-            threadDirectionElt.style.color = "black"
-            weaveDirectionElt.style.color = "black"
-            threadDirectionElt.style.borderStyle = "outset"
-            weaveDirectionElt.style.borderStyle = "outset"
+            threadDirectionElt.classList.remove("direction_undo")
+            weaveDirectionElt.classList.remove("direction_undo")
         } else {
             threadDirectionElt.textContent = `${threadArrow} ${t("Unthread")}`
-            threadDirectionElt.style.color = "red"
             weaveDirectionElt.textContent = t("Unweave")
-            weaveDirectionElt.style.color = "red"
-            threadDirectionElt.style.borderStyle = "inset"
-            weaveDirectionElt.style.borderStyle = "inset"
+            threadDirectionElt.classList.add("direction_undo")
+            weaveDirectionElt.classList.add("direction_undo")
         }
     }
 

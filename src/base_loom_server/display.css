@@ -24,8 +24,13 @@ button {
     font-size: 80%;
 }
 
-.toggle_button {
+button.toggle_button {
     border-radius: 0px;
+}
+
+button.direction_undo {
+    color: red;
+    border-style: inset;
 }
 
 button:hover:enabled {
