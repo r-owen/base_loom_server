@@ -22,7 +22,7 @@
         <form class="settings-flex">
             <div class="flex-row">
                 <label>{Loom name}</label>
-                <input type="text" id="setting_loom_name_input"></input>
+                <input type="text" id="setting_loom_name_input">
                 <button type="submit" id="setting_loom_name_submit">{Save}</button>
                 <button type="button" id="setting_loom_name_reset">{Reset}</button>
             </div>
@@ -65,13 +65,13 @@
     <div class="flex-row not-settings-flex">
         <label>{Pattern}</label>
         <select name="pattern_menu" id="pattern_menu">
-            <option></option>
+            <option label="placeholder_option"></option>
             <hr>
             <option>{Clear Recents}</option>
         </select>
         <form class="upload-form">
             <input type="file" id="file_input" multiple accept=".dtx,.wif,.wpo" style="display:none;">
-            <input type="button" value="{Upload}"  id="upload_patterns" onclick="document.getElementById('file_input').click()"/>
+            <input type="button" value="{Upload}"  id="upload_patterns" onclick="document.getElementById('file_input').click()">
         </form>
     </div>
 
@@ -146,32 +146,32 @@
         <canvas id="pick_color"></canvas>
     </div>
 
-    <form action="" class="threading-flex" id="jump_to_end_form" style="display: none;">
+    <form class="threading-flex" id="jump_to_end_form" style="display: none;">
         <div class="flex-row">
-            <label>{Jump to end}</label>
-            <input type="text" size="5" id="jump_total_end_number0" inpumode="decimal"></input>
+            <label onclick="document.getElementById('jump_total_end_number0').focus()">{Jump to end}</label>
+            <input type="text" size="5" id="jump_total_end_number0">
             <button type="submit" id="jump_to_end_submit">{Jump}</button>
             <button type="button" id="jump_to_end_reset">{Reset}</button>
         </div>
     </form>
 
-    <form action="" class="weaving-flex" id="jump_to_pick_form">
+    <form class="weaving-flex" id="jump_to_pick_form">
         <div class="flex-row">
-            <label>{Jump to pick}</label>
-            <input type="text" size="5" id="jump_total_pick_number" inpumode="decimal"></input>
+            <label onclick="document.getElementById('jump_total_pick_number').focus()">{Jump to pick}</label>
+            <input type="text" size="5" id="jump_total_pick_number">
             <button type="submit" id="jump_to_pick_submit">{Jump}</button>
             <button type="button" id="jump_to_pick_reset">{Reset}</button>
         </div>
     </form>
 
     <div class="flex-row threading-flex" id="separate_threading_repeats_grid" style="display: none;">
-        <label>{Separate repeats}?</label>
-        <input type="checkbox" id="separate_threading_repeats" value="1"></input>
+        <label onclick="document.getElementById('separate_threading_repeats').click()">{Separate repeats}?</label>
+        <input type="checkbox" id="separate_threading_repeats" value="1">
     </div>
 
     <div class="flex-row weaving-flex" id="separate_weaving_repeats_grid">
-        <label>{Separate repeats}?</label>
-        <input type="checkbox" id="separate_weaving_repeats"></input>
+        <label onclick="document.getElementById('separate_weaving_repeats').click()">{Separate repeats}?</label>
+        <input type="checkbox" id="separate_weaving_repeats">
     </div>
 
     <div class="flex-row">
@@ -180,28 +180,29 @@
     </div>
 
     <div class="flex-row">
-        <label id="command_problem"/>
+        <label id="command_problem"></label>
     </div>
 
     <div style="display:{display_debug_controls};" id="debug_div">
-    <hr>
-    <divclass="flex-row">Debug (mock loom)</div>
-    
-    <div class="flex-row">
-        <label>{Command mock loom}</label>
-        <button id="oob_next_pick">{Next Pick}</button>
-        <button id="oob_change_direction">{Change Direction}</button>
-        <button id="oob_close_connection">{Close Connection}</button>
-    </div>
+        <hr>
+        <div class="flex-row">Debug (mock loom)</div>
+        
+        <div class="flex-row">
+            <label>{Command mock loom}</label>
+            <button id="oob_next_pick">{Next Pick}</button>
+            <button id="oob_change_direction">{Change Direction}</button>
+            <button id="oob_close_connection">{Close Connection}</button>
+        </div>
 
-    <div class="flex-row">
-        <label>{Sent command}: </label>
-        <label id='sent_command'/>
-    </div>
+        <div class="flex-row">
+            <label>{Sent command}:</label>
+            <label id='sent_command'></label>
+        </div>
 
-    <div class="flex-row">
-        <label>{Read message}: </label>
-        <label id='read_message'/>
+        <div class="flex-row">
+            <label>{Read message}: </label>
+            <label id='read_message'></label>
+        </div>
     </div>
     <script>
         {display_js}
