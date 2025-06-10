@@ -57,6 +57,7 @@ class AppRunner:
         self.favicon = favicon
         self.app_package_name = app_package_name
         self.loom_server: BaseLoomServer | None = None
+        self.html_lang_value: str = "en"
         self.translation_dict: dict[str, str] = {}
 
         # There must be a better way to do this,
@@ -150,7 +151,7 @@ class AppRunner:
         for the entire time the web server is running. This is because
         the loom server speaks to one loom and serves at most one user.
         """
-        self.translation_dict = self.get_translation_dict()
+        self.html_lang_value, self.translation_dict = self.get_translation_info()
 
         parser = self.create_argument_parser()
         args = parser.parse_args()
@@ -166,22 +167,35 @@ class AppRunner:
             app.state.loom_server = self.loom_server
             yield
 
-    def get_translation_dict(self) -> dict[str, str]:
-        """Get the translation dict for the current locale"""
+    def get_translation_info(self) -> tuple[str, dict[str, str]]:
+        """Get the HTML lang value and translation dict for the current
+        locale.
+
+        The HTML lang value is the value of the HTML lang tag:
+        f"<html lang="{html_lang_value}>"
+
+        Note: HTML lang value is "en" unless a translation file is present.
+        If a translation file is present, the value is the short language code
+        returned by the locale module. This is because more detail is not
+        needed, and because it is is difficult to translate locale names
+        return by the locale module to valid HTML lang values.
+        """
         # Read a dict of key: None and turn into a dict of key: key
         default_dict = json.loads(
             LOCALE_FILES.joinpath("default.json").read_text(encoding="utf_8")
         )
         translation_dict = {key: key for key in default_dict}
 
-        language_code = locale.getlocale(locale.LC_CTYPE)[0]
+        html_lang_value = "en"
+        language_code = locale.getlocale(locale.LC_CTYPE)[0] or ""
         self.log.info(f"Locale: {language_code!r}")
-        if language_code is not None:
+        if language_code and language_code != "C":
             short_language_code = language_code.split("_")[0]
             for lc in (short_language_code, language_code):
                 translation_name = lc + ".json"
                 translation_file = LOCALE_FILES.joinpath(translation_name)
                 if translation_file.is_file():
+                    html_lang_value = short_language_code
                     self.log.info(f"Loading translation file {translation_name!r}")
                     locale_dict = json.loads(
                         translation_file.read_text(encoding="utf_8")
@@ -197,7 +211,7 @@ class AppRunner:
                             "have null entries"
                         )
                     translation_dict.update(purged_locale_dict)
-        return translation_dict
+        return html_lang_value, translation_dict
 
     async def get(self) -> HTMLResponse:
         """Endpoint to get the main page."""
@@ -215,6 +229,7 @@ class AppRunner:
         display_debug_controls = "block" if is_mock else "none"
 
         display_html = display_html.format(
+            lang_str=self.html_lang_value,
             display_css=display_css,
             display_js=display_js,
             display_debug_controls=display_debug_controls,
