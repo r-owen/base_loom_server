@@ -669,10 +669,16 @@ class LoomClient {
         if (!this.currentPattern) {
             this.currentEndData = NullEndData
         }
+        let maxTotalEndNumber1 = this.currentEndData.total_end_number1
+        let maxEndNumber1 = this.currentEndData.end_number1
+        if (this.currentEndData.end_number0 > 0) {
+            maxTotalEndNumber1 -= 1
+            maxEndNumber1 -= 1
+        }
         totalEndNumber0Elt.textContent = nullToDefault(this.currentEndData.total_end_number0)
-        totalEndNumber1Elt.textContent = nullToDefault(this.currentEndData.total_end_number1)
+        totalEndNumber1Elt.textContent = nullToDefault(maxTotalEndNumber1)
         endNumber0Elt.textContent = "(" + nullToDefault(this.currentEndData.end_number0)
-        endNumber1Elt.textContent = nullToDefault(this.currentEndData.end_number1)
+        endNumber1Elt.textContent = nullToDefault(maxEndNumber1)
         endsPerRepeatElt.textContent = nullToDefault(this.currentPattern.threading.length, "?") + ","
         repeatNumberElt.textContent = nullToDefault(this.currentEndData.end_repeat_number) + ")"
     }
@@ -1567,14 +1573,16 @@ function asIntOrNull(value) {
     return value == "" ? null : parseInt(value)
 }
 
-//
 function preventDefaults(event) {
     event.preventDefault()
     event.stopPropagation()
 }
 
-// Async wrapper around FileReader.readAsText
-// from https://masteringjs.io/tutorials/fundamentals/filereader#:~:text=The%20FileReader%20class%27%20async%20API%20isn%27t%20ideal,for%20usage%20with%20async%2Fawait%20or%20promise%20chaining.
+/*
+Async wrapper around FileReader.readAsText
+
+from https://masteringjs.io/tutorials/fundamentals/filereader#:~:text=The%20FileReader%20class%27%20async%20API%20isn%27t%20ideal,for%20usage%20with%20async%2Fawait%20or%20promise%20chaining.
+*/
 function readTextFile(file, encoding = "utf-8") {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
@@ -1588,8 +1596,11 @@ function readTextFile(file, encoding = "utf-8") {
     })
 }
 
-// Read a binary file and encode it using base64
-// The encoding algorithm is from https://stackoverflow.com/a/58339391/1653413
+/*
+Read a binary file and encode it using base64
+
+The encoding algorithm is from https://stackoverflow.com/a/58339391/1653413
+*/
 function readAndEncodeBinaryFile(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
