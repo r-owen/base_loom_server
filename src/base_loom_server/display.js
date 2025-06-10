@@ -784,6 +784,7 @@ class LoomClient {
             for (const elt of document.getElementsByClassName("threading-grid")) {
                 elt.style.display = "grid"
             }
+            this.displayDirection()  // to show correct direction arrow
             this.displayThreadingPattern()
         } else if (this.mode == ModeEnum.SETTINGS) {
             modeButton = document.getElementById("mode_settings")
