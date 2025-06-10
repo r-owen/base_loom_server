@@ -843,6 +843,14 @@ class LoomClient {
         }
     }
 
+    displayLoomInfo() {
+        let loominfoElt = document.getElementById("loom_info")
+        const nodata = (this.loomInfo == null) || (this.settings == null)
+        const msg = nodata ? "" : `${this.settings.loom_name} ${this.loomInfo.num_shafts}`
+        loominfoElt.textContent = msg
+        document.title = msg
+    }
+
     /*
     Display a portion of threading on the "threading_canvas" element.
      
@@ -899,8 +907,8 @@ class LoomClient {
         // (thus measure the width of 5 digits instead of 4).
         const fourDigitWidth = ctx.measureText("9999").width
         const minNumEndsPerEndNumber = Math.max(4, Math.ceil(fourDigitWidth / blockWidth))
-        const numEndsPerEndNumber = Math.ceil(minNumEndsPerEndNumber / groupSize) * groupSize
-        const displayEndNumberOffset = endNumber0 % numEndsPerEndNumber
+        const numEndsPerEndNumber = groupSize > 0 ? Math.ceil(minNumEndsPerEndNumber / groupSize) * groupSize : minNumEndsPerEndNumber
+        const displayEndNumberOffset = groupSize > 0 ? endNumber0 % numEndsPerEndNumber : 1
 
         let blockHeight = fontHeight
         if (blockHeight % 2 == 0) {
@@ -978,7 +986,8 @@ class LoomClient {
                 yShaftNumberBaseline = canvas.height - verticalDelta * (this.loomInfo.num_shafts - shaftIndex - 0.5) - fontMeas.actualBoundingBoxDescent
             }
 
-            if ((endNumber0 > 0) && ((endIndex + 1 - displayEndNumberOffset) % numEndsPerEndNumber == 0)) {
+            /* Display end number, if wanted, above this bar */
+            if ((endIndex + 1 - displayEndNumberOffset) % numEndsPerEndNumber == 0) {
                 ctx.fillStyle = "black"
                 ctx.fillText(endIndex + 1 + endNumberOffset,
                     xBarCenter,
@@ -1027,14 +1036,6 @@ class LoomClient {
                 )
             }
         }
-    }
-
-    displayLoomInfo() {
-        let loominfoElt = document.getElementById("loom_info")
-        const nodata = (this.loomInfo == null) || (this.settings == null)
-        const msg = nodata ? "" : `${this.settings.loom_name} ${this.loomInfo.num_shafts}`
-        loominfoElt.textContent = msg
-        document.title = msg
     }
 
     /*
