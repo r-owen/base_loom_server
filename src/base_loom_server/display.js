@@ -871,11 +871,13 @@ class LoomClient {
         }
         let endNumber0 = this.currentPattern.end_number0
         let endNumber1 = this.currentPattern.end_number1
+        let endNumberOffset = this.currentEndData.total_end_number0 - this.currentPattern.end_number0
         let isJump = false
         if (this.jumpEndData.end_number0 != null) {
             isJump = true
             endNumber0 = this.jumpEndData.end_number0
             endNumber1 = this.jumpEndData.end_number1
+            endNumberOffset = this.jumpEndData.total_end_number0 - this.jumpEndData.end_number0
         }
         const groupSize = endNumber1 - endNumber0
         ctx.font = window.getComputedStyle(endLabelElt).font
@@ -932,7 +934,7 @@ class LoomClient {
         let maxDarkEndIndex = endNumber1 - 2
 
 
-        // Display a box around the grouop, unless the at end 0
+        // Display a box around the group, unless the at end 0
         if (endNumber0 > 0) {
             if (isJump) {
                 ctx.globalAlpha = 0.3
@@ -978,7 +980,7 @@ class LoomClient {
 
             if ((endNumber0 > 0) && ((endIndex + 1 - displayEndNumberOffset) % numEndsPerEndNumber == 0)) {
                 ctx.fillStyle = "black"
-                ctx.fillText(endIndex + 1,
+                ctx.fillText(endIndex + 1 + endNumberOffset,
                     xBarCenter,
                     fontMeas.actualBoundingBoxAscent + halfTopGap + 2,
                 )
@@ -1304,7 +1306,7 @@ class LoomClient {
         let jumpToEndResetElt = document.getElementById("jump_to_end_reset")
         let jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
         let disableJump = true
-        if (asIntOrNull(jumpTotalEndNumber0Elt.value) != this.jumpEndData.end_number0) {
+        if (asIntOrNull(jumpTotalEndNumber0Elt.value) != this.jumpEndData.total_end_number0) {
             jumpTotalEndNumber0Elt.style.backgroundColor = "pink"
             disableJump = false
         } else {
@@ -1353,8 +1355,7 @@ class LoomClient {
         let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
 
         let disableJump = true
-        const totalJumpPick = this.numpPickNumber.total_picks
-        if (asIntOrNull(jumpTotalPickNumberElt.value) != totalJumpPick) {
+        if (asIntOrNull(jumpTotalPickNumberElt.value) != this.numpPickNumber.total_picks) {
             jumpTotalPickNumberElt.style.backgroundColor = "pink"
             disableJump = false
         } else {
