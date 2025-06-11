@@ -21,14 +21,14 @@
     <div class="flex-column settings-flex" id="setting_loom_name_form">
         <form class="settings-flex">
             <div class="flex-row">
-                <label>{Loom name}</label>
+                <label for="setting_loom_name_input">{Loom name}</label>
                 <input type="text" id="setting_loom_name_input">
                 <button type="submit" id="setting_loom_name_submit">{Save}</button>
                 <button type="button" id="setting_loom_name_reset">{Reset}</button>
             </div>
         </form>
         <div class="flex-row" id="setting_direction_control_div">
-            <label>{Direction control}</label>
+            <label for="setting_direction_control">{Direction control}</label>
             <select name="setting_direction_control" id="setting_direction_control">
                 <option value="2">{Loom}</option>
                 <option value="3">{Software}</option>
@@ -46,7 +46,7 @@
             </select>
         </div>
         <div class="flex-row">
-            <label>{Default threading group size}</label>
+            <label for="setting_thread_group_size">{Default threading group size}</label>
             <select name="setting_thread_group_size" id="setting_thread_group_size">
                 <option>1</option>
                 <option>2</option>
@@ -63,7 +63,7 @@
     </div>
 
     <div class="flex-row not-settings-flex">
-        <label>{Pattern}</label>
+        <label for="pattern_menu">{Pattern}</label>
         <select name="pattern_menu" id="pattern_menu">
             <option label="placeholder_option"></option>
             <hr>
@@ -97,12 +97,12 @@
     </div>
 
     <div class="flex-row weaving-flex">
-        <label>{Direction}</label>
+        <label for="weave_direction">{Direction}</label>
         <button type="button" class="toggle_button" id="weave_direction">?</button>        
     </div>
 
     <div class="flex-row threading-flex">
-        <label>{Direction}</label>
+        <label for="thread_direction">{Direction}</label>
         <button type="button" class="toggle_button" id="thread_direction">?</button>
         <div>
             <label id="group_size_label">{Group size}</label>
@@ -148,7 +148,7 @@
 
     <form class="threading-flex" id="jump_to_end_form" style="display: none;">
         <div class="flex-row">
-            <label onclick="document.getElementById('jump_total_end_number0').focus()">{Jump to end}</label>
+            <label for="jump_total_end_number0">{Jump to end}</label>
             <input type="text" size="5" id="jump_total_end_number0">
             <button type="submit" id="jump_to_end_submit">{Jump}</button>
             <button type="button" id="jump_to_end_reset">{Reset}</button>
@@ -157,7 +157,7 @@
 
     <form class="weaving-flex" id="jump_to_pick_form">
         <div class="flex-row">
-            <label onclick="document.getElementById('jump_total_pick_number').focus()">{Jump to pick}</label>
+            <label for="jump_total_pick_number">{Jump to pick}</label>
             <input type="text" size="5" id="jump_total_pick_number">
             <button type="submit" id="jump_to_pick_submit">{Jump}</button>
             <button type="button" id="jump_to_pick_reset">{Reset}</button>
@@ -165,12 +165,12 @@
     </form>
 
     <div class="flex-row threading-flex" id="separate_threading_repeats_grid" style="display: none;">
-        <label onclick="document.getElementById('separate_threading_repeats').click()">{Separate repeats}?</label>
+        <label for="separate_threading_repeats">{Separate repeats}?</label>
         <input type="checkbox" id="separate_threading_repeats" value="1">
     </div>
 
     <div class="flex-row weaving-flex" id="separate_weaving_repeats_grid">
-        <label onclick="document.getElementById('separate_weaving_repeats').click()">{Separate repeats}?</label>
+        <label for="separate_weaving_repeats">{Separate repeats}?</label>
         <input type="checkbox" id="separate_weaving_repeats">
     </div>
 
