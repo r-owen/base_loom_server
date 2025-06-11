@@ -88,7 +88,7 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner.lifespan">lifespan</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner.get_translation_dict">get_translation_dict</a>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner.get_translation_info">get_translation_info</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.app_runner.AppRunner.get">get</a>
     </li>
@@ -265,9 +265,10 @@ Create the argument parser.</p>
 Lifespan context manager for fastAPI.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.app_runner.AppRunner.get_translation_dict" title="base_loom_server.app_runner.AppRunner.get_translation_dict">get_translation_dict</a></span>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.app_runner.AppRunner.get_translation_info" title="base_loom_server.app_runner.AppRunner.get_translation_info">get_translation_info</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Get the translation dict for the current locale</p>
+Get the HTML lang value and translation dict for the current
+locale.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.app_runner.AppRunner.get" title="base_loom_server.app_runner.AppRunner.get">get</a></span>
@@ -331,22 +332,41 @@ the loom server class. That loom server instance persists
 for the entire time the web server is running. This is because
 the loom server speaks to one loom and serves at most one user.</p>
 </div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner.AppRunner.get_translation_dict">
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner.AppRunner.get_translation_info">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
 <i class="fa-solid fa-square-plus"></i>
 </span>
 
-<a href="../../../src/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.get_translation_dict" title="Go to source">source</a>
+<a href="../../../src/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.get_translation_info" title="Go to source">source</a>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
 </span><span class="mkapi-object-kind">method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner.get_translation_dict" title="base_loom_server.app_runner.AppRunner.get_translation_dict">get_translation_dict</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">dict[str, str]</span></span>
+<a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner.get_translation_info" title="base_loom_server.app_runner.AppRunner.get_translation_info">get_translation_info</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">tuple[str, dict[str, str]]</span></span>
 </p>
 <div class="mkapi-document">
-<p>Get the translation dict for the current locale</p>
+<p>Get the HTML lang value and translation dict for the current
+locale.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle the html lang value is the value of the html lang tag">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">The HTML lang value is the value of the HTML lang tag</span>
+</p>
+<div class="mkapi-section-content">
+<p>f"<html lang="{html_lang_value}>"
+</div></p>
+<div class="mkapi-section-content">
+<p>Note: HTML lang value is "en" unless a translation file is present.
+If a translation file is present, the value is the short language code
+returned by the locale module. This is because more detail is not
+needed, and because it is is difficult to translate locale names
+return by the locale module to valid HTML lang values.</p>
+</div>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.app_runner.AppRunner.get">
 <span class="mkapi-object-link">
@@ -415,6 +435,7 @@ the loom server speaks to one loom and serves at most one user.</p>
 </p>
 <div class="mkapi-document">
 <p>Parse command-line arguments and run the web server.</p>
+</div>
 </div>
               
             </div>
