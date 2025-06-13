@@ -1277,14 +1277,14 @@ class LoomClient {
                     data = await readTextFile(file, "utf-8")
                 }
                 const fileCommand = { "type": "file", "name": file.name, "data": data }
-                let replyDict = await this.sendCommandAndWait(fileCommand, t("Upload") + ` "${file.name}"`)
+                let replyDict = await this.sendCommandAndWait(fileCommand)
                 if (!replyDict.success) {
                     return
                 }
                 if (isFirst) {
                     isFirst = false
                     const selectPatternCommand = { "type": "select_pattern", "name": file.name }
-                    replyDict = await this.sendCommandAndWait(selectPatternCommand, t("Select") + ` "${file.name}"`)
+                    replyDict = await this.sendCommandAndWait(selectPatternCommand)
                     if (!replyDict.success) {
                         return
                     }
@@ -1536,15 +1536,12 @@ class LoomClient {
 
     Return the CommandDone reply dict.
     */
-    async sendCommandAndWait(commandDict, description, timeoutMs = 5000) {
-        if (description == null) {
-            description = commandDict.type
-        }
+    async sendCommandAndWait(commandDict, timeoutMs = 5000) {
         let oldFuture = this.commandFutures[commandDict.type]
         if ((oldFuture != null) && (!oldFuture.done)) {
             oldFuture.setException(Error("superseded"))
         }
-        let newFuture = new Future(description, timeoutMs)
+        let newFuture = new Future(commandDict.type, timeoutMs)
         this.commandFutures[commandDict.type] = newFuture
         await this.sendCommand(commandDict)
         return newFuture
