@@ -515,14 +515,15 @@ class BaseLoomServer:
             raise CommandError(
                 self.t("cannot jump to a pick") + ": " + self.t("no pattern")
             )
-        if command.total_picks is None:
+        if command.total_pick_number is None:
             self.jump_pick = client_replies.JumpPickNumber()
         else:
             pick_number, pick_repeat_number = compute_num_within_and_repeats(
-                total_num=command.total_picks, repeat_len=self.current_pattern.num_picks
+                total_num=command.total_pick_number,
+                repeat_len=self.current_pattern.num_picks,
             )
             self.jump_pick = client_replies.JumpPickNumber(
-                total_picks=command.total_picks,
+                total_pick_number=command.total_pick_number,
                 pick_number=pick_number,
                 pick_repeat_number=pick_repeat_number,
             )
@@ -851,7 +852,7 @@ class BaseLoomServer:
             pick_repeat_number=self.current_pattern.pick_repeat_number,
         )
         reply = client_replies.CurrentPickNumber(
-            total_picks=compute_total_num(
+            total_pick_number=compute_total_num(
                 num_within=self.current_pattern.pick_number,
                 repeat_number=self.current_pattern.pick_repeat_number,
                 repeat_len=self.current_pattern.num_picks,

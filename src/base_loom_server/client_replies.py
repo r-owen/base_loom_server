@@ -47,10 +47,10 @@ class CurrentEndNumber:
 
 @dataclasses.dataclass
 class CurrentPickNumber:
-    """The current total_picks, pick_number and pick_repeat_number"""
+    """The current total_pick_number, pick_number and pick_repeat_number"""
 
     type: str = dataclasses.field(init=False, default="CurrentPickNumber")
-    total_picks: int
+    total_pick_number: int
     pick_number: int
     pick_repeat_number: int
 
@@ -77,24 +77,24 @@ class JumpEndNumber:
 
 @dataclasses.dataclass
 class JumpPickNumber:
-    """Pending total_picks, pick_number, and pick_repeat_number
+    """Pending total_pick_number, pick_number, and pick_repeat_number
 
-    If total_picks is not None then pick_number and pick_repeat_number
+    If total_pick_number is not None then pick_number and pick_repeat_number
     must also not be None.
     """
 
     type: str = dataclasses.field(init=False, default="JumpPickNumber")
-    total_picks: int | None = None
+    total_pick_number: int | None = None
     pick_number: int | None = None
     pick_repeat_number: int | None = None
 
     def __post_init__(self) -> None:
-        if self.total_picks is not None and (
+        if self.total_pick_number is not None and (
             self.pick_number is None or self.pick_repeat_number is None
         ):
             raise ValueError(
                 f"{self.pick_number=} and {self.pick_repeat_number=} must not be None "
-                f"if {self.total_picks=} is not None"
+                f"if {self.total_pick_number=} is not None"
             )
 
 

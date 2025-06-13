@@ -4,7 +4,7 @@ const TranslationDict = { translation_dict }
 const MaxFiles = 10
 
 const MinBlockSize = 11
-const MaxBlockSize = 41
+const MaxBlockSize = 21
 
 // Display gap on left and right edges of threading end numbers
 const ThreadingWidthGap = 3
@@ -30,9 +30,13 @@ const NullEndData = {
 }
 
 const NullPickData = {
-    "total_picks": null,
+    "total_pick_number": null,
     "pick_number": null,
     "pick_repeat_number": null,
+}
+
+const NullSeparateData = {
+    "separate": null,
 }
 
 // Keys are the possible values of the LoomConnectionState.state messages
@@ -105,9 +109,19 @@ class TimeoutError extends Error {
 The description isn't quite right for negative values;
 those are first truncated towards 0, then made more negative if needed.
 */
-function asOdd(value) {
+function asOddReduced(value) {
     let ret = Math.trunc(value)
     return ret % 2 == 0 ? ret - 1 : ret
+}
+
+/* Return the largest odd integer >= value
+
+The description isn't quite right for negative values;
+those are first truncated towards 0, then made more positive if needed.
+*/
+function asOddIncreased(value) {
+    let ret = Math.trunc(value)
+    return ret % 2 == 0 ? ret + 1 : ret
 }
 
 
@@ -247,6 +261,8 @@ class LoomClient {
         this.direction = NullDirectionData
         this.jumpEndData = NullEndData
         this.jumpPickData = NullPickData
+        this.separateThreadingRepeatsData = NullSeparateData
+        this.separateWeavingRepeatsData = NullSeparateData
         this.threadGroupSize = 4
         this.threadLowToHigh = true
         this.loomInfo = null
@@ -470,7 +486,7 @@ class LoomClient {
             this.jumpEndData = datadict
             this.displayJumpEnd()
         } else if (datadict.type == "JumpPickNumber") {
-            this.numpPickNumber = datadict
+            this.jumpPickNumber = datadict
             this.displayJumpPick()
         } else if (datadict.type == "LoomConnectionState") {
             this.loomConnectionState = datadict
@@ -534,11 +550,14 @@ class LoomClient {
             let patternMenu = document.getElementById("pattern_menu")
             patternMenu.value = this.currentPattern.name
         } else if (datadict.type == "SeparateThreadingRepeats") {
+            this.separateThreadingRepeatsData = datadict
             let separateThreadingRepeatsCheckbox = document.getElementById("separate_threading_repeats")
             separateThreadingRepeatsCheckbox.checked = datadict.separate
         } else if (datadict.type == "SeparateWeavingRepeats") {
+            this.separateWeavingRepeatsData = datadict
             let separateWeavingRepeatsCheckbox = document.getElementById("separate_weaving_repeats")
             separateWeavingRepeatsCheckbox.checked = datadict.separate
+            this.displayWeavingPattern()
         } else if (datadict.type == "Settings") {
             this.settings = datadict
             this.displaySettings()
@@ -639,7 +658,7 @@ class LoomClient {
     }
 
     /*
-    Display the status message (a combination of self.loomConnectionState and self.statusMessage)
+    Display the status message (a combination of this.loomConnectionState and this.statusMessage)
     */
     displayStatusMessage() {
         let text = t(this.loomConnectionState.state)
@@ -687,14 +706,14 @@ class LoomClient {
     Display the current pick and repeat.
     */
     displayPick() {
-        let totalPicksElt = document.getElementById("total_picks")
+        let totalPicksElt = document.getElementById("total_pick_number")
         let pickNumberElt = document.getElementById("pick_number")
         let picksPerRepeatElt = document.getElementById("picks_per_repeat")
         let repeatNumberElt = document.getElementById("pick_repeat_number")
         if (!this.currentPattern) {
             this.currentPickData = NullPickData
         }
-        totalPicksElt.textContent = nullToDefault(this.currentPickData.total_picks)
+        totalPicksElt.textContent = nullToDefault(this.currentPickData.total_pick_number)
         pickNumberElt.textContent = "(" + nullToDefault(this.currentPickData.pick_number)
         picksPerRepeatElt.textContent = nullToDefault(this.currentPattern.picks.length, "?") + ","
         repeatNumberElt.textContent = nullToDefault(this.currentPickData.pick_repeat_number) + ")"
@@ -721,9 +740,9 @@ class LoomClient {
     displayJumpPick() {
         let totalPickNumberElt = document.getElementById("jump_total_pick_number")
         if (!this.currentPattern) {
-            this.numpPickNumber = NullPickData
+            this.jumpPickNumber = NullPickData
         }
-        totalPickNumberElt.value = nullToDefault(this.numpPickNumber.total_picks)
+        totalPickNumberElt.value = nullToDefault(this.jumpPickNumber.total_pick_number)
         if (this.currentPattern) {
             this.displayWeavingPattern()
         }
@@ -877,8 +896,8 @@ class LoomClient {
         canvas.width = 101
         canvas.height = 51
         let rect = document.getElementById("threading_canvas_container").getBoundingClientRect()
-        canvas.width = asOdd(rect.width - 2)  // 2 for 1px border
-        canvas.height = asOdd(rect.height - 2)  // 2 for 1px border
+        canvas.width = asOddReduced(rect.width - 2)  // 2 for 1px border
+        canvas.height = asOddReduced(rect.height - 2)  // 2 for 1px border
 
         if (!this.currentPattern) {
             // Now that it's the right size, leave it blank
@@ -901,10 +920,7 @@ class LoomClient {
         // Measure the space required for a shaft number (max 2 digits)
         const fontMeas = ctx.measureText("59")
         const fontHeight = Math.ceil(fontMeas.actualBoundingBoxAscent + fontMeas.actualBoundingBoxDescent)
-        let blockWidth = Math.ceil(fontMeas.width) + ThreadingWidthGap
-        if (blockWidth % 2 == 0) {
-            blockWidth++
-        }
+        const blockWidth = asOddIncreased(Math.ceil(fontMeas.width) + ThreadingWidthGap)
         const blockHalfWidth = (blockWidth - 1) / 2
         const centerX = ((canvas.width + 1) / 2)
 
@@ -917,10 +933,7 @@ class LoomClient {
         const numEndsPerEndNumber = groupSize > 0 ? Math.ceil(minNumEndsPerEndNumber / groupSize) * groupSize : minNumEndsPerEndNumber
         const displayEndNumberOffset = groupSize > 0 ? endNumber0 % numEndsPerEndNumber : 1
 
-        let blockHeight = fontHeight
-        if (blockHeight % 2 == 0) {
-            blockHeight++
-        }
+        let blockHeight = asOddIncreased(fontHeight)
         const numEnds = this.currentPattern.warp_colors.length
         const remainingHeight = canvas.height - (blockHeight + fontHeight) - ThreadingEndTopGap
         const verticalDelta = Math.floor(remainingHeight / this.loomInfo.num_shafts)
@@ -1068,24 +1081,31 @@ class LoomClient {
         canvas.height = 51
 
         let rect = document.getElementById("pattern_canvas_container").getBoundingClientRect()
-        canvas.width = asOdd(rect.width - 2)  // 2 for 1px border
-        canvas.height = asOdd(rect.height - 2)  // 2 for 1px border
+        canvas.width = asOddReduced(rect.width - 2)  // 2 for 1px border
+        canvas.height = asOddReduced(rect.height - 2)  // 2 for 1px border
 
         if (!this.currentPattern) {
             return
         }
+        if (this.separateWeavingRepeatsData.separate == null) {
+            return
+        }
+        const separateRepeats = this.separateWeavingRepeatsData.separate
         const numEnds = this.currentPattern.warp_colors.length
         const numPicks = this.currentPattern.picks.length
 
-        let centerPickNumber = this.currentPickData.pick_number
+        const isJump = this.jumpPickNumber.pick_number != null
+        let centerTotalPickNumber = isJump ? this.jumpPickNumber.total_pick_number : this.currentPickData.total_pick_number
+        const centerPickNumber = isJump ? this.jumpPickNumber.pick_number : this.currentPickData.pick_number
+
         if (centerPickNumber == null) {
             return
         }
-        let isJump = false
-        if (this.numpPickNumber.pick_number != null) {
-            isJump = true
-            centerPickNumber = this.numpPickNumber.pick_number
+        if (centerPickNumber == 0) {
+            // Advance the display below the center, but not at or above it
+            centerTotalPickNumber += 1
         }
+
         if ((centerPickNumber > 0) && (centerPickNumber <= numPicks)) {
             const pick = this.currentPattern.picks[centerPickNumber - 1]
             let pickColorGradient = ctx.createLinearGradient(0, 0, 0, pickColorCanvas.height)
@@ -1098,21 +1118,13 @@ class LoomClient {
             pickColorCtx.fillStyle = pickColorGradient
             pickColorCtx.fillRect(0, 0, pickColorCanvas.width, pickColorCanvas.height)
         }
-        let blockSize = Math.min(
+        const blockSize = asOddReduced(Math.min(
             Math.max(Math.round(canvas.width / numEnds), MinBlockSize),
             Math.max(Math.round(canvas.height / numPicks), MinBlockSize),
-            MaxBlockSize)
-        // Make sure blockSize is odd
-        if (blockSize % 2 == 0) {
-            blockSize -= 1
-        }
+            MaxBlockSize))
 
         const numEndsToShow = Math.min(numEnds, Math.floor(canvas.width / blockSize))
-        // Make sure numPicksToShow is odd
-        let numPicksToShow = Math.min(numPicks * 2 + 1, Math.ceil(canvas.height / blockSize))
-        if (numPicksToShow % 2 == 0) {
-            numPicksToShow += 1
-        }
+        const numPicksToShow = asOddReduced(Math.ceil(canvas.height / blockSize))
 
         let warpGradients = {}
         for (let i = 0; i < numEndsToShow; i++) {
@@ -1127,25 +1139,41 @@ class LoomClient {
         }
 
         let yOffset = Math.floor((canvas.height - (blockSize * numPicksToShow)) / 2)
-        let startPick = centerPickNumber - ((numPicksToShow - 1) / 2)
 
-        let maxColoredPickIndex = centerPickNumber - 1
-        if (isJump) {
-            maxColoredPickIndex -= 1
+        // Set initial totalPicknum and pickNum to 1 fewer than the first row to show,
+        // then increment the values at the start of the display loop.
+        let totalPickNumber = centerTotalPickNumber - ((numPicksToShow - 1) / 2) - 1
+        let pickNumber = ((totalPickNumber - 1) % numPicks) + 1
+        if (pickNumber < 0) {
+            pickNumber += numPicks
         }
-        for (let pickOffset = 0; pickOffset < numPicksToShow; pickOffset++) {
-            const pickIndex = startPick + pickOffset - 1
 
-            if (pickIndex < 0 || pickIndex >= this.currentPattern.picks.length) {
+        const centerRowIndex = (numPicksToShow - 1) / 2
+        const lastColoredRowIndex = isJump ? centerRowIndex - 1 : centerRowIndex
+
+        for (let rowIndex = 0; rowIndex < numPicksToShow; rowIndex++) {
+            if ((centerPickNumber == 0) && (rowIndex == centerRowIndex)) {
+                pickNumber = 0
+            } else if (separateRepeats && (rowIndex > centerRowIndex) && (pickNumber == numPicks)) {
+                pickNumber = 0
+            } else {
+                totalPickNumber += 1
+                pickNumber = (pickNumber % numPicks) + 1
+            }
+            if (pickNumber == 0) {
                 continue
             }
-            if (pickIndex > maxColoredPickIndex) {
-                ctx.globalAlpha = 0.3
-            } else {
+            let pickIndex = pickNumber - 1
+
+            if (totalPickNumber <= 0) {
+                ctx.globalAlpha = 0.1
+            } else if (rowIndex <= lastColoredRowIndex) {
                 ctx.globalAlpha = 1.0
+            } else {
+                ctx.globalAlpha = 0.3
             }
 
-            const yStart = canvas.height - (yOffset + (blockSize * (pickOffset + 1)))
+            const yStart = canvas.height - (yOffset + (blockSize * (rowIndex + 1)))
             let pickGradient = ctx.createLinearGradient(0, yStart + WeavingThreadDisplayGap, 0, yStart + blockSize - (2 * WeavingThreadDisplayGap))
             const pickColor = this.currentPattern.color_table[this.currentPattern.picks[pickIndex].color]
             pickGradient.addColorStop(0, "lightgray")
@@ -1174,36 +1202,31 @@ class LoomClient {
                         blockSize - (2 * WeavingThreadDisplayGap))
                 }
             }
-
         }
 
         ctx.globalAlpha = 1.0
         if (isJump) {
             // Jump pick: draw a dashed line around the (centered) jump pick,
             // and, if on the canvas, a solid line around the current pick
-            const jumpPickOffset = this.numpPickNumber.pick_number - startPick
             ctx.setLineDash([1, 3])
             ctx.strokeRect(
                 0,
-                canvas.height - (yOffset + (blockSize * (jumpPickOffset + 1))),
+                (canvas.height - blockSize) / 2,
                 canvas.width,
                 blockSize)
             ctx.setLineDash([])
-            const currentPickOffset = this.currentPickData.pick_number - startPick
-            if ((currentPickOffset >= 0) && (currentPickOffset < numPicksToShow)) {
-                ctx.strokeRect(
-                    0,
-                    canvas.height - (yOffset + (blockSize * (currentPickOffset + 1))),
-                    canvas.width,
-                    blockSize)
-            }
+            const currentPickOffset = this.currentPickData.total_pick_number - centerTotalPickNumber
+            ctx.strokeRect(
+                0,
+                ((canvas.height - blockSize) / 2) - (blockSize * (currentPickOffset)),
+                canvas.width,
+                blockSize)
         } else {
             // No jump pick number; draw a solid line around the (centered) current pick
             ctx.setLineDash([])
-            const currentPickOffset = this.currentPickData.pick_number - startPick
             ctx.strokeRect(
                 0,
-                canvas.height - (yOffset + (blockSize * (currentPickOffset + 1))),
+                (canvas.height - blockSize) / 2,
                 canvas.width,
                 blockSize)
         }
@@ -1363,7 +1386,7 @@ class LoomClient {
         let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
 
         let disableJump = true
-        if (asIntOrNull(jumpTotalPickNumberElt.value) != this.numpPickNumber.total_picks) {
+        if (asIntOrNull(jumpTotalPickNumberElt.value) != this.jumpPickNumber.total_pick_number) {
             jumpTotalPickNumberElt.style.backgroundColor = "pink"
             disableJump = false
         } else {
@@ -1385,7 +1408,7 @@ class LoomClient {
     async handleJumpToPickReset(event) {
         const jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
         jumpTotalPickNumberElt.value = ""
-        const command = { "type": "jump_to_pick", "total_picks": null }
+        const command = { "type": "jump_to_pick", "total_pick_number": null }
         await this.sendCommand(command)
         event.preventDefault()
     }
@@ -1398,7 +1421,7 @@ class LoomClient {
     async handleJumpToPickSubmit(event) {
         const jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
         const jumpTotalPickNumber = asIntOrNull(jumpTotalPickNumberElt.value)
-        const command = { "type": "jump_to_pick", "total_picks": jumpTotalPickNumber }
+        const command = { "type": "jump_to_pick", "total_pick_number": jumpTotalPickNumber }
         await this.sendCommand(command)
         jumpTotalPickNumberElt.select()
         event.preventDefault()
