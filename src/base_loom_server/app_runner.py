@@ -224,15 +224,10 @@ class AppRunner:
         js_translation_str = json.dumps(self.translation_dict, indent=4)
         display_js = display_js.replace("{ translation_dict }", js_translation_str)
 
-        assert self.loom_server is not None
-        is_mock = self.loom_server.mock_loom is not None
-        display_debug_controls = "block" if is_mock else "none"
-
         display_html = display_html.format(
             lang_str=self.html_lang_value,
             display_css=display_css,
             display_js=display_js,
-            display_debug_controls=display_debug_controls,
             **self.translation_dict,
         )
 

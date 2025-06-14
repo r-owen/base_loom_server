@@ -107,7 +107,9 @@ class BaseLoomServer:
         self.translation_dict = translation_dict
         self.verbose = verbose
         self.loom_info = client_replies.LoomInfo(
-            num_shafts=num_shafts, serial_port=serial_port
+            num_shafts=num_shafts,
+            serial_port=serial_port,
+            is_mock=serial_port == MOCK_PORT_NAME,
         )
         self.db_path: pathlib.Path = (
             DEFAULT_DATABASE_PATH if db_path is None else db_path
@@ -308,7 +310,7 @@ class BaseLoomServer:
         try:
             self.loom_connecting = True
             await self.report_loom_connection_state()
-            if self.loom_info.serial_port == MOCK_PORT_NAME:
+            if self.loom_info.is_mock:
                 assert self.mock_loom_type is not None  # make mypy happy
                 self.mock_loom = self.mock_loom_type(
                     num_shafts=self.loom_info.num_shafts, verbose=self.verbose

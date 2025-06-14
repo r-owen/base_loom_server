@@ -875,6 +875,10 @@ class LoomClient {
         const msg = nodata ? "" : `${this.settings.loom_name} ${this.loomInfo.num_shafts}`
         loominfoElt.textContent = msg
         document.title = msg
+        if (this.loomInfo != null) {
+            let debugDivElt = document.getElementById("debug_div")
+            debugDivElt.style.display = this.loomInfo.is_mock ? "block" : "none"
+        }
     }
 
     /*

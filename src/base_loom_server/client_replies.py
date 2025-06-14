@@ -114,6 +114,7 @@ class LoomInfo:
     type: str = dataclasses.field(init=False, default="LoomInfo")
     num_shafts: int
     serial_port: str
+    is_mock: bool
 
 
 @dataclasses.dataclass
