@@ -1,5 +1,14 @@
 # Version History
 
+## ?
+
+* Improve the weaving display:
+
+  * Show pattern from bottom to top. Woven parts (in the bottom half) will be dark. Rows with negative pick numbers are shown very lightly, as a hint as to the overall pattern.
+  * If "Separate repeats" is checked, show gaps in the unwoven part in the top half (but not the woven part below). You can see the effect by jumping ahead far enough that the end of a repeat is shown in the top half, then checking and unchecking the "Separate repeats" box.
+
+* Provide context in the translation file "default.json" to aid translators.
+
 ## 0.19.4 2025-06-11
 
 * Bug fixes in Threading:
@@ -69,7 +78,6 @@ Remove a source of flicker by only updating the visible pattern.
 
 Try to prevent an unwanted stale next-pick request when the loom server connects to the loom (which is when a user connects to the server).
 Do this by purging the read buffer.
-
 
 ## 0.16.0 2025-04-25
 
@@ -203,6 +211,3 @@ Fix a display bug: patterns at pick 0 could not be displayed, due to an undefine
 ## 0.1 2025-02-03
 
 Initial prerelease.
-
-
-
