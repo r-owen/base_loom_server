@@ -10,13 +10,15 @@ This page assumes you have done all the [basics](index.md):
 
 ## Pattern Display
 
-The pattern is displayed as a picture that shows woven fabric below and potential future fabric above.
-(This is the opposite of the usual US drawdown).
-Note that the display is a bit naive, in that it shows all threads as the same thickness
-and does not display multi-layer patterns (such as doubleweave) correctly.
+The pattern is displayed as a picture that shows woven fabric below,
+and potential future fabric, somewhat grayed out, above.
+(This is the opposite of the usual US drawdown direction.)
 
 In addition, a very faint echo of the pattern is shown below pick number 0.
 This may give you a better overview of the pattern as you start to weave.
+
+Note that the display is naive; it shows all threads as the same thickness,
+and does not display multi-layer patterns, such as doubleweave, correctly.
 
 ## Weave Direction
 
@@ -27,7 +29,7 @@ prefixed by an arrow showing the direction of the next group of warp ends.
 How you change direction depends on the loom:
 
 * Séguin looms allow you to change direction by pressing the direction button in web browser display,
-  or pressing the UNW button on the dobby unit. Both work. Use whichever you prefer.
+  or pressing the UNW button on the dobby unit. Both work equally well; use whichever you prefer.
 
 * Toika looms can be operated in one of two ways, specified by **Direction control**
   in the [Settings](settings.md) panel:
@@ -63,11 +65,12 @@ In detail:
 
   * The jump input box will have a white background and the jump button will be disabled.
 
-  * The pattern display will show the new pick in the center row, with a dotted box around it.
+  * The pattern display will show the jump-to pick in the center row, with a dotted box around it.
 
 * Advance to the next pick by pressing the loom's pedal.
 
-* Until you advance to the next pick, you may request a different jump (in case you got it wrong the first time) or cancel it.
+* Until you advance to the next pick, you may request a different jump
+  (in case you got it wrong the first time) or cancel it.
   To cancel the jump you may do any of the following:
 
   * Press the "Reset" button to the right of "Jump".
