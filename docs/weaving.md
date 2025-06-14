@@ -15,29 +15,32 @@ The pattern is displayed as a picture that shows woven fabric below and potentia
 Note that the display is a bit naive, in that it shows all threads as the same thickness
 and does not display multi-layer patterns (such as doubleweave) correctly.
 
+In addition, a very faint echo of the pattern is shown below pick number 0.
+This may give you a better overview of the pattern as you start to weave.
+
 ## Weave Direction
 
 The Weaving "Direction" button shows "Weave" (in black) or "Unweave" (in red).
 [Threading](threading.md) also has a direction button that shows "Thread" (in black) or "Unthread" (in red),
 prefixed by an arrow showing the direction of the next group of warp ends.
 
-  How you change direction depends on the loom:
+How you change direction depends on the loom:
 
-  * Séguin looms allow you to change direction by pressing the direction button in web browser display,
-    or pressing the UNW button on the dobby unit. Both work. Use whichever you prefer.
+* Séguin looms allow you to change direction by pressing the direction button in web browser display,
+  or pressing the UNW button on the dobby unit. Both work. Use whichever you prefer.
 
-  * Toika looms can be operated in one of two ways, specified by **Direction control**
-    in the [Settings](settings.md) panel:
+* Toika looms can be operated in one of two ways, specified by **Direction control**
+  in the [Settings](settings.md) panel:
 
-      * **Software**: push the direction button (Weave/Unweave if weaving, Thread/Unthread if threading)
+    * **Software**: push the direction button (Weave/Unweave if weaving, Thread/Unthread if threading)
         in the web browser display to change direction.
-        <b>The physical REVERSE button on the dobby head is ignored</b>.
+        **The physical REVERSE button on the dobby head is ignored.**
 
-      * **Loom**: press the physical REVERSE button on the dobby head to change direction.
-        <b>Warning: the displayed direction does not update until you command the next pick!</b>.
+    * **Loom**: press the physical REVERSE button on the dobby head to change direction.
+        **Warning: the displayed direction does not update until you command the next pick!**
         This is because Toika looms only report direction when requesting a pick.
-  
-  * For other looms, see the loom-specific documentation with the software package.
+
+* For other looms, see the loom-specific documentation with the software package.
 
 ## Pick Color
 
@@ -58,20 +61,20 @@ In detail:
 * Press the "return" keyboard key or click the "Jump" button on the web page to send the requested jump to the server.
   You will see several changes:
 
-    * The jump input box will have a white background and the jump button will be disabled.
+  * The jump input box will have a white background and the jump button will be disabled.
 
-    * The pattern display will show the new pick in the center row, with a dotted box around it.
+  * The pattern display will show the new pick in the center row, with a dotted box around it.
 
 * Advance to the next pick by pressing the loom's pedal.
 
 * Until you advance to the next pick, you may request a different jump (in case you got it wrong the first time) or cancel it.
   To cancel the jump you may do any of the following:
 
-    * Press the "Reset" button to the right of "Jump".
+  * Press the "Reset" button to the right of "Jump".
 
-    * Reload the page.
+  * Reload the page.
 
-    * Select a new pattern.
+  * Select a new pattern.
 
 ## Repeating
 
@@ -80,6 +83,9 @@ The exact behavior is controlled by the `Separate repeats` checkbox:
 
 * "On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
   The first advance will lower all shafts, as a signal that you have finished weaving or unweaving one pattern repeat. That is the "separator".
+
+  This will be displayed as a blank row in the center of the pattern display, and also between repeats
+  in the display of unwoven fabric above the center.
 
 * "Off" (unchecked): there is no indication that you have reached the end of the pattern.
   The next pick will be pick 1 of the pattern, if weaving, or the last pick, if unweaving.
