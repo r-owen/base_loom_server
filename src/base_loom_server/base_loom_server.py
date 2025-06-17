@@ -37,6 +37,8 @@ MAX_PATTERNS = 25
 DEFAULT_DATABASE_PATH = pathlib.Path.home() / "loom_server_database.sqlite"
 SETTINGS_FILE_NAME = "loom_server_settings.json"
 
+MAX_THREAD_GROUP_SIZE = 10
+
 
 MOCK_PORT_NAME = "mock"
 
@@ -138,7 +140,7 @@ class BaseLoomServer:
             # notification when the direction changes.
             direction_control = DirectionControlEnum.SOFTWARE
 
-        settings = client_replies.Settings(
+        self.settings = client_replies.Settings(
             loom_name=self.default_name,
             direction_control=direction_control,
             thread_group_size=4,
@@ -146,35 +148,7 @@ class BaseLoomServer:
             thread_back_to_front=True,
         )
         self.settings_path = self.db_path.parent / SETTINGS_FILE_NAME
-        if self.settings_path.exists():
-            try:
-                with open(self.settings_path, "r") as f:
-                    settings_dict = json.load(f)
-                for key, value in settings_dict.items():
-                    if key == "type":
-                        continue
-                    default_value = getattr(settings, key, None)
-                    if default_value is None:
-                        self.log.warning(
-                            f"Ignoring setting {key}={value!r}; uknown key"
-                        )
-                    else:
-                        try:
-                            cast_value = type(default_value)(value)
-                        except Exception:
-                            self.log.warning(
-                                f"Ignoring setting {key}={value!r}; wrong type or invalid enum value"
-                            )
-                        else:
-                            setattr(settings, key, cast_value)
-            except Exception as e:
-                self.log.warning(
-                    f"Deleting settings file {self.settings_path} because read failed: {e!r}"
-                )
-                self.settings_path.unlink()
-        else:
-            self.log.info(f"Settings file {self.settings_path} does not exist")
-        self.settings = settings
+        self.load_settings()
         self.save_settings()
 
         self.websocket: WebSocket | None = None
@@ -566,20 +540,43 @@ class BaseLoomServer:
         bad_keys = list()
         new_settings = copy.copy(self.settings)
         for key, value in vars(command).items():
+            # Check values
             if key == "type":
                 continue
-
-            old_value = getattr(self.settings, key, ...)
-            if old_value is ...:
-                bad_keys.append(key)
-                continue
-            try:
-                cast_value = type(old_value)(value)
-            except Exception as e:
-                raise CommandError(f"Invalid {key}={value!r}: {e}")
-            setattr(new_settings, key, cast_value)
+            elif key == "direction_control":
+                value = DirectionControlEnum(value)
+                if self.supports_full_direction_control:
+                    if value is not DirectionControlEnum.FULL:
+                        raise CommandError(
+                            f"invalid {key}={value!r}: loom supports full direction control"
+                        )
+                elif value is DirectionControlEnum.FULL:
+                    raise CommandError(
+                        f"invalid {key}={value!r}: loom doesn't support full direction control"
+                    )
+            else:
+                expected_type = dict(
+                    loom_name=str,
+                    thread_group_size=int,
+                    thread_right_to_left=bool,
+                    thread_back_to_front=bool,
+                ).get(key)
+                if expected_type is None:
+                    bad_keys.append(key)
+                    continue
+                if not isinstance(value, expected_type):
+                    raise CommandError(
+                        f"invalid {key}={value!r}: must be type {expected_type}"
+                    )
+                if key == "thread_group_size":
+                    assert isinstance(value, int)  # Make mypy happy
+                    if value < 1 or value > MAX_THREAD_GROUP_SIZE:
+                        raise CommandError(
+                            f"invalid {key}={value!r}: must be in range [1, {MAX_THREAD_GROUP_SIZE}]"
+                        )
+            setattr(new_settings, key, value)
         if bad_keys:
-            raise CommandError(f"Settings command failed: invalid keys {bad_keys}")
+            raise CommandError(f"Invalid settings names {bad_keys}")
         self.settings = new_settings
         await self.report_settings()
         self.save_settings()
@@ -677,6 +674,69 @@ class BaseLoomServer:
         self.current_pattern.increment_end_number(
             thread_low_to_high=self.thread_low_to_high
         )
+
+    def load_settings(self) -> None:
+        """Read the settings file, if it exists.
+
+        Usable entries will replace the values in `self.settings`
+        (which must already be set to a valid value).
+        Unusable entries will be ignored, with a logged warning.
+        """
+        if not self.settings_path.exists():
+            self.log.info(f"Settings file {self.settings_path} does not exist")
+            return
+
+        try:
+            with open(self.settings_path, "r") as f:
+                settings_dict = json.load(f)
+        except Exception as e:
+            self.log.warning(
+                f"Deleting settings file {self.settings_path} because it could not be read as json: {e!r}"
+            )
+            self.settings_path.unlink()
+            return
+
+        for key, value in settings_dict.items():
+            if key == "type":
+                continue
+            default_value = getattr(self.settings, key, None)
+            if default_value is None:
+                self.log.warning(f"Ignoring setting {key}={value!r}: uknown key")
+                continue
+
+            if key == "direction_control":
+                try:
+                    value = DirectionControlEnum(value)
+                except Exception:
+                    self.log.warning(
+                        f"Ignoring setting {key}={value!r}: invalid enum value"
+                    )
+                    continue
+
+                if self.supports_full_direction_control:
+                    if value is not DirectionControlEnum.FULL:
+                        self.log.warning(
+                            f"Ingoring setting {key}={value!r}: loom supports full direction control"
+                        )
+                        continue
+                elif value is DirectionControlEnum.FULL:
+                    self.log.warning(
+                        f"Ignoring setting {key}={value!r}: loom doesn't support full direction control"
+                    )
+                    continue
+
+            if not isinstance(value, type(default_value)):
+                self.log.warning(f"Ignoring setting {key}={value!r}: invalid value")
+                continue
+
+            if key == "thread_group_size":
+                if value < 1 or value > MAX_THREAD_GROUP_SIZE:
+                    self.log.warning(
+                        f"Ignoring setting {key}={value!r}: not in range [1, {MAX_THREAD_GROUP_SIZE}"
+                    )
+                    continue
+
+            setattr(self.settings, key, value)
 
     async def read_client_loop(self) -> None:
         """Read and process commands from the client."""

@@ -1,8 +1,10 @@
 import base64
 import contextlib
+import copy
 import dataclasses
 import importlib.resources
 import itertools
+import json
 import pathlib
 import random
 import sys
@@ -19,9 +21,15 @@ from fastapi.testclient import TestClient
 from fastapi.websockets import WebSocket
 from starlette.testclient import WebSocketTestSession
 
-from .base_loom_server import BaseLoomServer
+from .base_loom_server import MAX_THREAD_GROUP_SIZE, SETTINGS_FILE_NAME, BaseLoomServer
 from .base_mock_loom import BaseMockLoom
-from .enums import ConnectionStateEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
+from .enums import (
+    ConnectionStateEnum,
+    DirectionControlEnum,
+    MessageSeverityEnum,
+    ModeEnum,
+    ShaftStateEnum,
+)
 from .reduced_pattern import (
     DEFAULT_THREAD_GROUP_SIZE,
     NUM_ITEMS_FOR_REPEAT_SEPARATOR,
@@ -269,6 +277,36 @@ def command_next_pick(
             # Ignore info-level status messages
             continue
         assert_replies_equal(reply, expected_reply)
+
+
+def command_settings(
+    client: Client, should_fail: bool = False, **settings: Any
+) -> None:
+    """Send a  setting command and check the replies."""
+    settings_cmd = settings.copy()
+    initial_settings = copy.copy(client.loom_server.settings)
+    settings_cmd["type"] = "settings"
+    replies = send_command(client, settings_cmd, should_fail=should_fail)
+    if should_fail:
+        assert len(replies) == 1
+        assert client.loom_server.settings == initial_settings
+    else:
+        assert len(replies) == 2
+        reported_settings = replies[0]
+        for key, value in settings.items():
+            assert reported_settings[key] == value
+        for key, value in reported_settings.items():
+            assert getattr(client.loom_server.settings, key) == value
+    if client.loom_server.direction_forward:
+        assert client.loom_server.thread_low_to_high == (
+            client.loom_server.settings.thread_back_to_front
+            == client.loom_server.settings.thread_right_to_left
+        )
+    else:
+        assert client.loom_server.thread_low_to_high != (
+            client.loom_server.settings.thread_back_to_front
+            == client.loom_server.settings.thread_right_to_left
+        )
 
 
 def select_pattern(
@@ -947,6 +985,148 @@ class BaseTestLoomServer:
             )
             assert selected_pattern == reduced_pattern
 
+    def test_settings_command(self) -> None:
+        with self.create_test_client(app=self.app) as client:
+            initial_settings = copy.copy(client.loom_server.settings)
+            if client.loom_server.supports_full_direction_control:
+                assert initial_settings.direction_control is DirectionControlEnum.FULL
+            else:
+                assert (
+                    initial_settings.direction_control is not DirectionControlEnum.FULL
+                )
+            for direction_control, should_fail in {
+                DirectionControlEnum.FULL: (
+                    (DirectionControlEnum.LOOM, True),
+                    (DirectionControlEnum.SOFTWARE, True),
+                    (DirectionControlEnum.FULL, False),
+                ),
+                DirectionControlEnum.SOFTWARE: (
+                    (DirectionControlEnum.LOOM, False),
+                    (DirectionControlEnum.SOFTWARE, False),
+                    (DirectionControlEnum.FULL, True),
+                ),
+                DirectionControlEnum.LOOM: (
+                    (DirectionControlEnum.SOFTWARE, False),
+                    (DirectionControlEnum.LOOM, False),
+                    (DirectionControlEnum.FULL, True),
+                ),
+            }[initial_settings.direction_control]:
+                command_settings(
+                    client, direction_control=direction_control, should_fail=should_fail
+                )
+
+            for loom_name in ("", "?", "Séguin Loom"):
+                command_settings(client, loom_name=loom_name)
+
+            for thread_group_size in (1, 2, MAX_THREAD_GROUP_SIZE):
+                command_settings(client, thread_group_size=thread_group_size)
+            for bad_thread_group_size in (-1, 0, MAX_THREAD_GROUP_SIZE + 1):
+                command_settings(
+                    client, thread_group_size=bad_thread_group_size, should_fail=True
+                )
+
+            for thread_back_to_front in (
+                not initial_settings.thread_back_to_front,
+                initial_settings.thread_back_to_front,
+            ):
+                command_settings(client, thread_back_to_front=thread_back_to_front)
+            for bad_bool in ("hello", 0, 1):
+                command_settings(
+                    client,
+                    thread_back_to_front=bad_bool,
+                    should_fail=True,
+                )
+
+            for thread_right_to_left in (
+                not initial_settings.thread_right_to_left,
+                initial_settings.thread_right_to_left,
+            ):
+                command_settings(client, thread_right_to_left=thread_right_to_left)
+            for bad_bool in ("hello", 0, 1):
+                command_settings(
+                    client,
+                    thread_right_to_left=bad_bool,
+                    should_fail=True,
+                )
+
+    def test_settings_file(self) -> None:
+        with self.create_test_client(app=self.app) as client:
+            default_settings = copy.copy(client.loom_server.settings)
+            supports_full_direction_control = (
+                client.loom_server.supports_full_direction_control
+            )
+
+        # Test settings files with no  usable data.
+        # The resulting settings should match the default.
+        for unusable_settings_json in ("", "?", "} not json", "{'not_a_key': true}"):
+            with tempfile.TemporaryDirectory() as temp_dir:
+                db_path = pathlib.Path(temp_dir) / "loom_server_database.sqlite"
+                settings_path = pathlib.Path(temp_dir) / SETTINGS_FILE_NAME
+
+                with settings_path.open("w") as f:
+                    f.write(unusable_settings_json)
+
+                with self.create_test_client(
+                    app=self.app,
+                    db_path=db_path,
+                ) as client:
+                    assert client.loom_server.settings_path == settings_path
+                    assert client.loom_server.settings == default_settings
+                    if supports_full_direction_control:
+                        assert (
+                            client.loom_server.settings.direction_control
+                            is DirectionControlEnum.FULL
+                        )
+                    else:
+                        assert (
+                            client.loom_server.settings.direction_control
+                            is not DirectionControlEnum.FULL
+                        )
+
+        # Test some valid settings files.
+        if supports_full_direction_control:
+            good_direction_control = DirectionControlEnum.FULL
+        else:
+            good_direction_control = (
+                DirectionControlEnum.LOOM
+                if default_settings.direction_control is DirectionControlEnum.SOFTWARE
+                else DirectionControlEnum.SOFTWARE
+            )
+        for good_settings_dict in (
+            dict(
+                loom_name="a name",
+                direction_control=good_direction_control,
+                thread_group_size=1,
+                thread_back_to_front=False,
+                thread_right_to_left=True,
+                extra_key=14,
+            ),
+            dict(
+                loom_name="",
+                direction_control=good_direction_control,
+                thread_group_size=MAX_THREAD_GROUP_SIZE,
+                thread_back_to_front=True,
+                thread_right_to_left=False,
+                different_extra_key="hello",
+            ),
+        ):
+            with tempfile.TemporaryDirectory() as temp_dir:
+                db_path = pathlib.Path(temp_dir) / "loom_server_database.sqlite"
+                settings_path = pathlib.Path(temp_dir) / SETTINGS_FILE_NAME
+
+                with settings_path.open("w") as f:
+                    json.dump(good_settings_dict, f)
+
+                with self.create_test_client(
+                    app=self.app,
+                    db_path=db_path,
+                ) as client:
+                    for key, value in good_settings_dict.items():
+                        if "extra" in key:
+                            assert not hasattr(client.loom_server.settings, key)
+                        else:
+                            assert getattr(client.loom_server.settings, key) == value
+
     def test_upload(self) -> None:
         with self.create_test_client(
             app=self.app,
@@ -1044,7 +1224,6 @@ class BaseTestLoomServer:
                 with test_client.websocket_connect("/ws") as websocket:
                     loom_server: BaseLoomServer = test_client.app.state.loom_server  # type: ignore
                     assert loom_server.mock_loom is not None
-                    assert loom_server.settings.loom_name == loom_server.default_name
                     assert loom_server.loom_info.num_shafts == num_shafts
 
                     client = Client(
