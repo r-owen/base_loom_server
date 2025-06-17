@@ -154,6 +154,8 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number">increment_end_number</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.load_settings">load_settings</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.read_client_loop">read_client_loop</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.read_loom_loop">read_loom_loop</a>
@@ -522,6 +524,11 @@ Increment pick_number in the current direction.</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_end_number">increment_end_number</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Increment end_number0 in the current direction.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.load_settings" title="base_loom_server.base_loom_server.BaseLoomServer.load_settings">load_settings</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Read the settings file, if it exists.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.read_client_loop" title="base_loom_server.base_loom_server.BaseLoomServer.read_client_loop">read_client_loop</a></span>
@@ -1373,6 +1380,26 @@ would be decremented to 0.</p>
 </p>
 <div class="mkapi-document">
 <p>Increment end_number0 in the current direction.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.load_settings">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.load_settings" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.load_settings" title="base_loom_server.base_loom_server.BaseLoomServer.load_settings">load_settings</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Read the settings file, if it exists.</p>
+<p>Usable entries will replace the values in <code>self.settings</code>
+(which must already be set to a valid value).
+Unusable entries will be ignored, with a logged warning.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.read_client_loop">
 <span class="mkapi-object-link">

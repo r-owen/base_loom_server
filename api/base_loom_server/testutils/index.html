@@ -122,6 +122,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.command_next_pick">command_next_pick</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.command_settings">command_settings</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.select_pattern">select_pattern</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.send_command">send_command</a>
@@ -141,6 +143,10 @@
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence">test_pattern_persistence</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer.test_select_pattern">test_select_pattern</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer.test_settings_command">test_settings_command</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer.test_settings_file">test_settings_file</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer.test_upload">test_upload</a>
     </li>
@@ -246,6 +252,11 @@ Command the next threading end group and test the replies.</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.command_next_pick" title="base_loom_server.testutils.command_next_pick">command_next_pick</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Command the next pick and test the replies.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.command_settings" title="base_loom_server.testutils.command_settings">command_settings</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Send a  setting command and check the replies.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.select_pattern" title="base_loom_server.testutils.select_pattern">select_pattern</a></span>
@@ -495,6 +506,20 @@ Is a jump pending?</p>
 </ul>
 </div>
 </div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.command_settings">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.command_settings" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.testutils.command_settings" title="base_loom_server.testutils.command_settings">command_settings</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">client</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span><span class="mkapi-comma">, </span><span class="mkapi-arg">should_fail</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-comma">, </span><span class="mkapi-star">**</span><span class="mkapi-arg">settings</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="typing.Any">Any</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Send a  setting command and check the replies.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.select_pattern">
 <span class="mkapi-object-link">
 
@@ -714,6 +739,12 @@ is ignored).</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_select_pattern" title="base_loom_server.testutils.BaseTestLoomServer.test_select_pattern">test_select_pattern</a></span></p>
 </li>
 <li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_settings_command" title="base_loom_server.testutils.BaseTestLoomServer.test_settings_command">test_settings_command</a></span></p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_settings_file" title="base_loom_server.testutils.BaseTestLoomServer.test_settings_file">test_settings_file</a></span></p>
+</li>
+<li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_upload" title="base_loom_server.testutils.BaseTestLoomServer.test_upload">test_upload</a></span></p>
 </li>
 <li>
@@ -850,6 +881,36 @@ Create a test client fixture.</p>
 </span><span class="mkapi-object-kind">method</span>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_select_pattern" title="base_loom_server.testutils.BaseTestLoomServer.test_select_pattern">test_select_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_settings_command">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_settings_command" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_settings_command" title="base_loom_server.testutils.BaseTestLoomServer.test_settings_command">test_settings_command</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_settings_file">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_settings_file" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_settings_file" title="base_loom_server.testutils.BaseTestLoomServer.test_settings_file">test_settings_file</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document"></div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_upload">

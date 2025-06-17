@@ -1194,7 +1194,70 @@
 <span class="normal">1045</span>
 <span class="normal">1046</span>
 <span class="normal">1047</span>
-<span class="normal">1048</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">1048</span>
+<span class="normal">1049</span>
+<span class="normal">1050</span>
+<span class="normal">1051</span>
+<span class="normal">1052</span>
+<span class="normal">1053</span>
+<span class="normal">1054</span>
+<span class="normal">1055</span>
+<span class="normal">1056</span>
+<span class="normal">1057</span>
+<span class="normal">1058</span>
+<span class="normal">1059</span>
+<span class="normal">1060</span>
+<span class="normal">1061</span>
+<span class="normal">1062</span>
+<span class="normal">1063</span>
+<span class="normal">1064</span>
+<span class="normal">1065</span>
+<span class="normal">1066</span>
+<span class="normal">1067</span>
+<span class="normal">1068</span>
+<span class="normal">1069</span>
+<span class="normal">1070</span>
+<span class="normal">1071</span>
+<span class="normal">1072</span>
+<span class="normal">1073</span>
+<span class="normal">1074</span>
+<span class="normal">1075</span>
+<span class="normal">1076</span>
+<span class="normal">1077</span>
+<span class="normal">1078</span>
+<span class="normal">1079</span>
+<span class="normal">1080</span>
+<span class="normal">1081</span>
+<span class="normal">1082</span>
+<span class="normal">1083</span>
+<span class="normal">1084</span>
+<span class="normal">1085</span>
+<span class="normal">1086</span>
+<span class="normal">1087</span>
+<span class="normal">1088</span>
+<span class="normal">1089</span>
+<span class="normal">1090</span>
+<span class="normal">1091</span>
+<span class="normal">1092</span>
+<span class="normal">1093</span>
+<span class="normal">1094</span>
+<span class="normal">1095</span>
+<span class="normal">1096</span>
+<span class="normal">1097</span>
+<span class="normal">1098</span>
+<span class="normal">1099</span>
+<span class="normal">1100</span>
+<span class="normal">1101</span>
+<span class="normal">1102</span>
+<span class="normal">1103</span>
+<span class="normal">1104</span>
+<span class="normal">1105</span>
+<span class="normal">1106</span>
+<span class="normal">1107</span>
+<span class="normal">1108</span>
+<span class="normal">1109</span>
+<span class="normal">1110</span>
+<span class="normal">1111</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;BaseLoomServer&quot;</span><span class="p">,</span>
@@ -1232,6 +1295,8 @@
 
 <span class="n">DEFAULT_DATABASE_PATH</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;loom_server_database.sqlite&quot;</span>
 <span class="n">SETTINGS_FILE_NAME</span> <span class="o">=</span> <span class="s2">&quot;loom_server_settings.json&quot;</span>
+
+<span class="n">MAX_THREAD_GROUP_SIZE</span> <span class="o">=</span> <span class="mi">10</span>
 
 
 <span class="n">MOCK_PORT_NAME</span> <span class="o">=</span> <span class="s2">&quot;mock&quot;</span>
@@ -1303,7 +1368,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span> <span class="o">=</span> <span class="n">translation_dict</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_info</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">LoomInfo</span><span class="p">(</span>
-            <span class="n">num_shafts</span><span class="o">=</span><span class="n">num_shafts</span><span class="p">,</span> <span class="n">serial_port</span><span class="o">=</span><span class="n">serial_port</span>
+            <span class="n">num_shafts</span><span class="o">=</span><span class="n">num_shafts</span><span class="p">,</span>
+            <span class="n">serial_port</span><span class="o">=</span><span class="n">serial_port</span><span class="p">,</span>
+            <span class="n">is_mock</span><span class="o">=</span><span class="n">serial_port</span> <span class="o">==</span> <span class="n">MOCK_PORT_NAME</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">DEFAULT_DATABASE_PATH</span> <span class="k">if</span> <span class="n">db_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">db_path</span>
@@ -1332,7 +1399,7 @@
             <span class="c1"># notification when the direction changes.</span>
             <span class="n">direction_control</span> <span class="o">=</span> <span class="n">DirectionControlEnum</span><span class="o">.</span><span class="n">SOFTWARE</span>
 
-        <span class="n">settings</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">Settings</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">Settings</span><span class="p">(</span>
             <span class="n">loom_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_name</span><span class="p">,</span>
             <span class="n">direction_control</span><span class="o">=</span><span class="n">direction_control</span><span class="p">,</span>
             <span class="n">thread_group_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
@@ -1340,35 +1407,7 @@
             <span class="n">thread_back_to_front</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">SETTINGS_FILE_NAME</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">settings_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">settings_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="n">default_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">default_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">; uknown key&quot;</span>
-                        <span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="n">cast_value</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">default_value</span><span class="p">)(</span><span class="n">value</span><span class="p">)</span>
-                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                                <span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">; wrong type or invalid enum value&quot;</span>
-                            <span class="p">)</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="nb">setattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">cast_value</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Deleting settings file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="si">}</span><span class="s2"> because read failed: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Settings file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="si">}</span><span class="s2"> does not exist&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_settings</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_settings</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1504,7 +1543,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loom_connecting</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_loom_connection_state</span><span class="p">()</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_info</span><span class="o">.</span><span class="n">serial_port</span> <span class="o">==</span> <span class="n">MOCK_PORT_NAME</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_info</span><span class="o">.</span><span class="n">is_mock</span><span class="p">:</span>
                 <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="c1"># make mypy happy</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom_type</span><span class="p">(</span>
                     <span class="n">num_shafts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loom_info</span><span class="o">.</span><span class="n">num_shafts</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span>
@@ -1711,14 +1750,15 @@
             <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;cannot jump to a pick&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;no pattern&quot;</span><span class="p">)</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_picks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpPickNumber</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pick_number</span><span class="p">,</span> <span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="n">compute_num_within_and_repeats</span><span class="p">(</span>
-                <span class="n">total_num</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_picks</span><span class="p">,</span> <span class="n">repeat_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">num_picks</span>
+                <span class="n">total_num</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span><span class="p">,</span>
+                <span class="n">repeat_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">num_picks</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpPickNumber</span><span class="p">(</span>
-                <span class="n">total_picks</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_picks</span><span class="p">,</span>
+                <span class="n">total_pick_number</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span><span class="p">,</span>
                 <span class="n">pick_number</span><span class="o">=</span><span class="n">pick_number</span><span class="p">,</span>
                 <span class="n">pick_repeat_number</span><span class="o">=</span><span class="n">pick_repeat_number</span><span class="p">,</span>
             <span class="p">)</span>
@@ -1759,20 +1799,43 @@
         <span class="n">bad_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="n">new_settings</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">command</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Check values</span>
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span>
                 <span class="k">continue</span>
-
-            <span class="n">old_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">old_value</span> <span class="ow">is</span> <span class="o">...</span><span class="p">:</span>
-                <span class="n">bad_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-                <span class="k">continue</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">cast_value</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">old_value</span><span class="p">)(</span><span class="n">value</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">new_settings</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">cast_value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;direction_control&quot;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">DirectionControlEnum</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">supports_full_direction_control</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">DirectionControlEnum</span><span class="o">.</span><span class="n">FULL</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: loom supports full direction control&quot;</span>
+                        <span class="p">)</span>
+                <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">DirectionControlEnum</span><span class="o">.</span><span class="n">FULL</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: loom doesn&#39;t support full direction control&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">expected_type</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">loom_name</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                    <span class="n">thread_group_size</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                    <span class="n">thread_right_to_left</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span>
+                    <span class="n">thread_back_to_front</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">bad_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: must be type </span><span class="si">{</span><span class="n">expected_type</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;thread_group_size&quot;</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>  <span class="c1"># Make mypy happy</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">MAX_THREAD_GROUP_SIZE</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: must be in range [1, </span><span class="si">{</span><span class="n">MAX_THREAD_GROUP_SIZE</span><span class="si">}</span><span class="s2">]&quot;</span>
+                        <span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">new_settings</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">bad_keys</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Settings command failed: invalid keys </span><span class="si">{</span><span class="n">bad_keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid settings names </span><span class="si">{</span><span class="n">bad_keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">new_settings</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_settings</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_settings</span><span class="p">()</span>
@@ -1870,6 +1933,69 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">increment_end_number</span><span class="p">(</span>
             <span class="n">thread_low_to_high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_low_to_high</span>
         <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">load_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.load_settings"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.load_settings" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the settings file, if it exists.</span>
+
+<span class="sd">        Usable entries will replace the values in `self.settings`</span>
+<span class="sd">        (which must already be set to a valid value).</span>
+<span class="sd">        Unusable entries will be ignored, with a logged warning.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Settings file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="si">}</span><span class="s2"> does not exist&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">settings_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Deleting settings file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="si">}</span><span class="s2"> because it could not be read as json: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">settings_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">default_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">default_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: uknown key&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;direction_control&quot;</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">DirectionControlEnum</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: invalid enum value&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">supports_full_direction_control</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">DirectionControlEnum</span><span class="o">.</span><span class="n">FULL</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Ingoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: loom supports full direction control&quot;</span>
+                        <span class="p">)</span>
+                        <span class="k">continue</span>
+                <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">DirectionControlEnum</span><span class="o">.</span><span class="n">FULL</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: loom doesn&#39;t support full direction control&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">default_value</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: invalid value&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;thread_group_size&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">MAX_THREAD_GROUP_SIZE</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: not in range [1, </span><span class="si">{</span><span class="n">MAX_THREAD_GROUP_SIZE</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">continue</span>
+
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">read_client_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.read_client_loop"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.read_client_loop" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read and process commands from the client.&quot;&quot;&quot;</span>
@@ -2047,7 +2173,7 @@
             <span class="n">pick_repeat_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">reply</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">CurrentPickNumber</span><span class="p">(</span>
-            <span class="n">total_picks</span><span class="o">=</span><span class="n">compute_total_num</span><span class="p">(</span>
+            <span class="n">total_pick_number</span><span class="o">=</span><span class="n">compute_total_num</span><span class="p">(</span>
                 <span class="n">num_within</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">pick_number</span><span class="p">,</span>
                 <span class="n">repeat_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span><span class="p">,</span>
                 <span class="n">repeat_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">num_picks</span><span class="p">,</span>

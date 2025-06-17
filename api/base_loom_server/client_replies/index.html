@@ -214,7 +214,7 @@ The current threading end numbers and repeat number</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.client_replies.CurrentPickNumber" title="base_loom_server.client_replies.CurrentPickNumber">CurrentPickNumber</a></span>
  <span class="mkapi-dash">&mdash;</span>
-The current total_picks, pick_number and pick_repeat_number</p>
+The current total_pick_number, pick_number and pick_repeat_number</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.client_replies.Direction" title="base_loom_server.client_replies.Direction">Direction</a></span>
@@ -229,7 +229,7 @@ Pending end and repeat numbers</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.client_replies.JumpPickNumber" title="base_loom_server.client_replies.JumpPickNumber">JumpPickNumber</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Pending total_picks, pick_number, and pick_repeat_number</p>
+Pending total_pick_number, pick_number, and pick_repeat_number</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.client_replies.LoomConnectionState" title="base_loom_server.client_replies.LoomConnectionState">LoomConnectionState</a></span>
@@ -336,10 +336,10 @@ If end_number0 is 0 then end_number1 will also be zero
 <i class="fa-regular fa-square-minus"></i>
 </span>
 </span><span class="mkapi-object-kind">dataclass</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.client_replies.CurrentPickNumber" title="base_loom_server.client_replies.CurrentPickNumber">CurrentPickNumber</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">total_picks</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span></span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.client_replies.CurrentPickNumber" title="base_loom_server.client_replies.CurrentPickNumber">CurrentPickNumber</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">total_pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span></span>
 </p>
 <div class="mkapi-document">
-<p>The current total_picks, pick_number and pick_repeat_number</p>
+<p>The current total_pick_number, pick_number and pick_repeat_number</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.client_replies.Direction">
 <span class="mkapi-object-link">
@@ -378,11 +378,11 @@ If end_number0 is 0 then end_number1 will also be zero
 <i class="fa-regular fa-square-minus"></i>
 </span>
 </span><span class="mkapi-object-kind">dataclass</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.client_replies.JumpPickNumber" title="base_loom_server.client_replies.JumpPickNumber">JumpPickNumber</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">total_picks</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-paren">)</span></span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.client_replies.JumpPickNumber" title="base_loom_server.client_replies.JumpPickNumber">JumpPickNumber</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">total_pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-paren">)</span></span>
 </p>
 <div class="mkapi-document">
-<p>Pending total_picks, pick_number, and pick_repeat_number</p>
-<p>If total_picks is not None then pick_number and pick_repeat_number
+<p>Pending total_pick_number, pick_number, and pick_repeat_number</p>
+<p>If total_pick_number is not None then pick_number and pick_repeat_number
 must also not be None.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.client_replies.LoomConnectionState">
@@ -408,7 +408,7 @@ must also not be None.</p>
 <i class="fa-regular fa-square-minus"></i>
 </span>
 </span><span class="mkapi-object-kind">dataclass</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.client_replies.LoomInfo" title="base_loom_server.client_replies.LoomInfo">LoomInfo</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">num_shafts</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">serial_port</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span></span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.client_replies.LoomInfo" title="base_loom_server.client_replies.LoomInfo">LoomInfo</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">num_shafts</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">serial_port</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">is_mock</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span></span>
 </p>
 <div class="mkapi-document">
 <p>Information about the loom</p>

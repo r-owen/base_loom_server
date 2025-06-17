@@ -338,7 +338,8 @@
 <span class="normal">189</span>
 <span class="normal">190</span>
 <span class="normal">191</span>
-<span class="normal">192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="normal">192</span>
+<span class="normal">193</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">dataclasses</span>
 
 <span class="kn">from</span> <span class="nn">.enums</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ConnectionStateEnum</span><span class="p">,</span>
@@ -387,10 +388,10 @@
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">CurrentPickNumber</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.CurrentPickNumber"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.CurrentPickNumber" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The current total_picks, pick_number and pick_repeat_number&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The current total_pick_number, pick_number and pick_repeat_number&quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;CurrentPickNumber&quot;</span><span class="p">)</span>
-    <span class="n">total_picks</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">total_pick_number</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">pick_number</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">pick_repeat_number</span><span class="p">:</span> <span class="nb">int</span>
 
@@ -417,24 +418,24 @@
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">JumpPickNumber</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.JumpPickNumber"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.JumpPickNumber" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pending total_picks, pick_number, and pick_repeat_number</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pending total_pick_number, pick_number, and pick_repeat_number</span>
 
-<span class="sd">    If total_picks is not None then pick_number and pick_repeat_number</span>
+<span class="sd">    If total_pick_number is not None then pick_number and pick_repeat_number</span>
 <span class="sd">    must also not be None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">)</span>
-    <span class="n">total_picks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">total_pick_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">pick_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">pick_repeat_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_picks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_pick_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span><span class="si">=}</span><span class="s2"> and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span><span class="si">=}</span><span class="s2"> must not be None &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;if </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total_picks</span><span class="si">=}</span><span class="s2"> is not None&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;if </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total_pick_number</span><span class="si">=}</span><span class="s2"> is not None&quot;</span>
             <span class="p">)</span>
 
 
@@ -454,6 +455,7 @@
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;LoomInfo&quot;</span><span class="p">)</span>
     <span class="n">num_shafts</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">serial_port</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">is_mock</span><span class="p">:</span> <span class="nb">bool</span>
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>

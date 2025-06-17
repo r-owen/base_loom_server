@@ -157,10 +157,13 @@
 <li>Selected the Weaving mode.</li>
 </ul>
 <h2 id="pattern-display">Pattern Display</h2>
-<p>The pattern is displayed as a picture that shows woven fabric below and potential future fabric above.
-(This is the opposite of the usual US drawdown).
-Note that the display is a bit naive, in that it shows all threads as the same thickness
-and does not display multi-layer patterns (such as doubleweave) correctly.</p>
+<p>The pattern is displayed as a picture that shows woven fabric below,
+and potential future fabric, somewhat grayed out, above.
+(This is the opposite of the usual US drawdown direction.)</p>
+<p>In addition, a very faint echo of the pattern is shown below pick number 0.
+This may give you a better overview of the pattern as you start to weave.</p>
+<p>Note that the display is naive; it shows all threads as the same thickness,
+and does not display multi-layer patterns, such as doubleweave, correctly.</p>
 <h2 id="weave-direction">Weave Direction</h2>
 <p>The Weaving "Direction" button shows "Weave" (in black) or "Unweave" (in red).
 <a href="../threading/">Threading</a> also has a direction button that shows "Thread" (in black) or "Unthread" (in red),
@@ -169,20 +172,20 @@ prefixed by an arrow showing the direction of the next group of warp ends.</p>
 <ul>
 <li>
 <p>Séguin looms allow you to change direction by pressing the direction button in web browser display,
-    or pressing the UNW button on the dobby unit. Both work. Use whichever you prefer.</p>
+  or pressing the UNW button on the dobby unit. Both work equally well; use whichever you prefer.</p>
 </li>
 <li>
 <p>Toika looms can be operated in one of two ways, specified by <strong>Direction control</strong>
-    in the <a href="../settings/">Settings</a> panel:</p>
+  in the <a href="../settings/">Settings</a> panel:</p>
 <ul>
 <li>
 <p><strong>Software</strong>: push the direction button (Weave/Unweave if weaving, Thread/Unthread if threading)
     in the web browser display to change direction.
-    <b>The physical REVERSE button on the dobby head is ignored</b>.</p>
+    <strong>The physical REVERSE button on the dobby head is ignored.</strong></p>
 </li>
 <li>
 <p><strong>Loom</strong>: press the physical REVERSE button on the dobby head to change direction.
-    <b>Warning: the displayed direction does not update until you command the next pick!</b>.
+    <strong>Warning: the displayed direction does not update until you command the next pick!</strong>
     This is because Toika looms only report direction when requesting a pick.</p>
 </li>
 </ul>
@@ -207,22 +210,21 @@ In detail:</p>
 <li>
 <p>Press the "return" keyboard key or click the "Jump" button on the web page to send the requested jump to the server.
   You will see several changes:</p>
-<ul>
+</li>
 <li>
 <p>The jump input box will have a white background and the jump button will be disabled.</p>
 </li>
 <li>
-<p>The pattern display will show the new pick in the center row, with a dotted box around it.</p>
-</li>
-</ul>
+<p>The pattern display will show the jump-to pick in the center row, with a dotted box around it.</p>
 </li>
 <li>
 <p>Advance to the next pick by pressing the loom's pedal.</p>
 </li>
 <li>
-<p>Until you advance to the next pick, you may request a different jump (in case you got it wrong the first time) or cancel it.
+<p>Until you advance to the next pick, you may request a different jump
+  (in case you got it wrong the first time) or cancel it.
   To cancel the jump you may do any of the following:</p>
-<ul>
+</li>
 <li>
 <p>Press the "Reset" button to the right of "Jump".</p>
 </li>
@@ -233,20 +235,18 @@ In detail:</p>
 <p>Select a new pattern.</p>
 </li>
 </ul>
-</li>
-</ul>
 <h2 id="repeating">Repeating</h2>
 <p>The software will automatically repeat patterns if you weave or unweave beyond the end.
 The exact behavior is controlled by the <code>Separate repeats</code> checkbox:</p>
 <ul>
-<li>
-<p>"On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
-  The first advance will lower all shafts, as a signal that you have finished weaving or unweaving one pattern repeat. That is the "separator".</p>
-</li>
-<li>
-<p>"Off" (unchecked): there is no indication that you have reached the end of the pattern.
-  The next pick will be pick 1 of the pattern, if weaving, or the last pick, if unweaving.</p>
-</li>
+<li>"On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
+  The first advance will lower all shafts, as a signal that you have finished weaving or unweaving one pattern repeat. That is the "separator".</li>
+</ul>
+<p>This will be displayed as a blank row in the center of the pattern display, and also between repeats
+  in the display of unwoven fabric above the center.</p>
+<ul>
+<li>"Off" (unchecked): there is no indication that you have reached the end of the pattern.
+  The next pick will be pick 1 of the pattern, if weaving, or the last pick, if unweaving.</li>
 </ul>
 <p>The default value of <code>Separate repeats</code> is "on" if the pattern has more than 20 picks, "off" otherwise.
 The idea behind this is that frequent separator picks are annoying for short patterns, but having a separator pick is useful for long patterns.</p>
