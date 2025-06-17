@@ -1508,8 +1508,8 @@ class LoomClient {
             "type": "settings",
             "loom_name": loomNameInputElt.value,
             "direction_control": asIntOrNull(directionControlElt.value),
-            "thread_right_to_left": asIntOrNull(threadRightToLeftElt.value),
-            "thread_back_to_front": asIntOrNull(threadBackToFrontElt.value),
+            "thread_right_to_left": asBooleanOrNull(threadRightToLeftElt.value),
+            "thread_back_to_front": asBooleanOrNull(threadBackToFrontElt.value),
             "thread_group_size": asIntOrNull(defaultThreadGroupSize.value),
         }
         await this.sendCommand(command)
@@ -1596,6 +1596,13 @@ Return null if value is "", else return parseInt(value)
 */
 function asIntOrNull(value) {
     return value == "" ? null : parseInt(value)
+}
+
+/*
+Return null if value is "", else return bool
+*/
+function asBooleanOrNull(value) {
+    return value == "" ? null : Boolean(parseInt(value))
 }
 
 function preventDefaults(event) {

@@ -1,5 +1,9 @@
 # Version History
 
+## 0.20.1 2025-06-17
+
+* Fix a bug in the Settings panel triggered by the server being pickier about data types.
+
 ## 0.20.0 2025-06-17
 
 * Improve the Weaving pattern display:
