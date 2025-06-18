@@ -1,5 +1,14 @@
 # Version History
 
+## 0.21.2 2025-06-17
+
+* Bug fixes for uploading patterns:
+
+  * The Upload button had no effect if used to upload the same file twice.
+  * When uploading a file whose name matched the current file, the old version was still displayed.
+
+* After drag-and-drop, restore the correct background color.
+
 ## 0.20.1 2025-06-17
 
 * Fix a bug in the Settings panel triggered by the server being pickier about data types.
