@@ -267,8 +267,7 @@ class LoomClient {
         this.threadLowToHigh = true
         this.loomInfo = null
         this.settings = null
-
-        // this.init()
+        this.backgroundColor = window.getComputedStyle(document.body).getPropertyValue("background-color")
     }
 
     init() {
@@ -283,20 +282,12 @@ class LoomClient {
         });
 
         ["dragenter", "dragover"].forEach(eventName => {
-            dropAreaElt.addEventListener(eventName, highlight)
+            dropAreaElt.addEventListener(eventName, this.setBackgroundColor.bind(this, dropAreaElt, "#E6E6FA"))
         });
 
         ["dragleave", "drop"].forEach(eventName => {
-            dropAreaElt.addEventListener(eventName, unhighlight)
+            dropAreaElt.addEventListener(eventName, this.setBackgroundColor.bind(this, dropAreaElt, this.backgroundColor))
         })
-
-        function highlight(event) {
-            dropAreaElt.style.backgroundColor = "#E6E6FA"
-        }
-
-        function unhighlight(event) {
-            dropAreaElt.style.backgroundColor = "#FFFFFF"
-        }
 
         dropAreaElt.addEventListener("drop", this.handleDrop.bind(this))
 
@@ -1572,6 +1563,10 @@ class LoomClient {
         this.commandFutures[commandDict.type] = newFuture
         await this.sendCommand(commandDict)
         return newFuture
+    }
+
+    setBackgroundColor(element, color) {
+        element.style.backgroundColor = color
     }
 }
 
