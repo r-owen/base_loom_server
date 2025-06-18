@@ -104,7 +104,7 @@ class PatternDatabase:
 
         Args:
             pattern: The pattern to add. The associated cache fields
-                are set to default values:
+                are set to values from the pattern:
 
                 * pick_number
                 * pick_repeat_number
