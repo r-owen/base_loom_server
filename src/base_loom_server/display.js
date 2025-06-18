@@ -291,6 +291,9 @@ class LoomClient {
 
         dropAreaElt.addEventListener("drop", this.handleDrop.bind(this))
 
+        let uploadButton = document.getElementById("upload_button")
+        uploadButton.addEventListener("click", this.handleUploadButton.bind(this))
+
         let tabWeavingElt = document.getElementById("mode_weaving")
         tabWeavingElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.WEAVING))
 
@@ -1248,13 +1251,29 @@ class LoomClient {
     */
     async handleDrop(event) {
         await this.handleFileList(event.dataTransfer.files)
+        if (event != null) {
+            event.preventDefault()
+        }
+    }
+
+    async handleUploadButton(event) {
+        let fileInputElt = document.getElementById('file_input')
+        fileInputElt.click()
+        if (event != null) {
+            event.preventDefault()
+        }
     }
 
     /*
-    Handle pattern files from the file_list button
+    Handle pattern files from the hidden file_input element
     */
     async handleFileInput(event) {
         await this.handleFileList(event.target.files)
+        // Reset file list so one can upload the same file again
+        event.target.value = ""
+        if (event != null) {
+            event.preventDefault()
+        }
     }
 
     /*
