@@ -1261,7 +1261,7 @@ class LoomClient {
     Handle pattern file upload from the button and drag-and-drop
     (the latter after massaging the data with handleDrop).
     
-    Send the "file" and "select_pattern" commands.
+    Send the "upload" and "select_pattern" commands.
     */
     async handleFileList(fileList) {
         let commandProblemElt = document.getElementById("command_problem")
@@ -1294,7 +1294,7 @@ class LoomClient {
                 } else {
                     data = await readTextFile(file, "utf-8")
                 }
-                const fileCommand = { "type": "file", "name": file.name, "data": data }
+                const fileCommand = { "type": "upload", "name": file.name, "data": data }
                 let replyDict = await this.sendCommandAndWait(fileCommand)
                 if (!replyDict.success) {
                     return

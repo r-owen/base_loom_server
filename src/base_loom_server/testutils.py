@@ -452,7 +452,7 @@ def upload_pattern(
         data = filepath.read_text()
     replies = send_command(
         client,
-        dict(type="file", name=filepath.name, data=data),
+        dict(type="upload", name=filepath.name, data=data),
         should_fail=should_fail,
     )
     if should_fail:

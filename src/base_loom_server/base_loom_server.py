@@ -436,25 +436,6 @@ class BaseLoomServer:
         self.direction_forward = command.forward
         await self.report_direction()
 
-    async def cmd_file(self, command: SimpleNamespace) -> None:
-        suffix = command.name[-4:]
-        if self.verbose:
-            self.log.info(
-                f"{self}: read weaving pattern {command.name!r}: data={command.data[0:80]!r}...",
-            )
-        pattern_data = read_pattern_data(command.data, suffix=suffix, name=command.name)
-        pattern = reduced_pattern_from_pattern_data(
-            name=command.name, data=pattern_data
-        )
-        # max_shaft_num needs +1 because pattern.threading is 0-based
-        max_shaft_num = max(pattern.threading) + 1
-        if max_shaft_num > self.loom_info.num_shafts:
-            raise CommandError(
-                f"Pattern {command.name!r} max shaft {max_shaft_num} > {self.loom_info.num_shafts}"
-            )
-        pattern.thread_group_size = self.settings.thread_group_size
-        await self.add_pattern(pattern)
-
     async def cmd_jump_to_end(self, command: SimpleNamespace) -> None:
         if self.current_pattern is None:
             raise CommandError(
@@ -511,8 +492,6 @@ class BaseLoomServer:
 
     async def cmd_select_pattern(self, command: SimpleNamespace) -> None:
         name = command.name
-        if self.current_pattern is not None and self.current_pattern.name == name:
-            return
         await self.select_pattern(name)
         await self.clear_jumps()
 
@@ -596,6 +575,28 @@ class BaseLoomServer:
             await self.mock_loom.oob_command(command.command)
         else:
             self.log.warning(f"Ignoring oob command {command.command!r}: no mock loom")
+
+    async def cmd_upload(self, command: SimpleNamespace) -> None:
+        suffix = command.name[-4:]
+        if self.verbose:
+            self.log.info(
+                f"{self}: read weaving pattern {command.name!r}: data={command.data[0:80]!r}...",
+            )
+        pattern_data = read_pattern_data(command.data, suffix=suffix, name=command.name)
+        pattern = reduced_pattern_from_pattern_data(
+            name=command.name, data=pattern_data
+        )
+        # Check that the pattern does not require too many shafts.
+        # max_shaft_num needs +1 because pattern.threading is 0-based.
+        max_shaft_num = max(pattern.threading) + 1
+        if max_shaft_num > self.loom_info.num_shafts:
+            raise CommandError(
+                f"Pattern {command.name!r} max shaft {max_shaft_num} > {self.loom_info.num_shafts}"
+            )
+
+        pattern.thread_group_size = self.settings.thread_group_size
+
+        await self.add_pattern(pattern)
 
     def get_threading_shaft_word(self) -> int:
         if self.current_pattern is None:
