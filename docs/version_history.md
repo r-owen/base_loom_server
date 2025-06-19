@@ -1,5 +1,9 @@
 # Version History
 
+## 0.21.3 2025-06-18
+
+* Bug fix: if the loom controlled direction, and the direction was forward, text for the direction buttons was gray, instead of black.
+
 ## 0.21.2 2025-06-17
 
 * Bug fixes for uploading patterns:
