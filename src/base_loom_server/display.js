@@ -855,9 +855,13 @@ class LoomClient {
             weaveDirectionElt.textContent = t("Weave")
             threadDirectionElt.classList.remove("direction_undo")
             weaveDirectionElt.classList.remove("direction_undo")
+            threadDirectionElt.classList.add("direction_do")
+            weaveDirectionElt.classList.add("direction_do")
         } else {
             threadDirectionElt.textContent = `${threadArrow} ${t("Unthread")}`
             weaveDirectionElt.textContent = t("Unweave")
+            threadDirectionElt.classList.remove("direction_do")
+            weaveDirectionElt.classList.remove("direction_do")
             threadDirectionElt.classList.add("direction_undo")
             weaveDirectionElt.classList.add("direction_undo")
         }
