@@ -132,6 +132,22 @@ canvas {
     border: 1px solid #000000;
 }
 
+/* Exclude borders and padding from dimensions 
+
+This makes it easier to set the size of contained canvases.
+*/
+div {
+    box-sizing: border-box;
+}
+
+#shafts_canvas {
+    border-width: 0px;
+}
+
+#shafts_canvas_container {
+    flex-direction: row;
+}
+
 #debug_div {
     margin-right: 10px;
 }

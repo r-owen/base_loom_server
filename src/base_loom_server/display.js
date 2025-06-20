@@ -17,6 +17,12 @@ const WeavingThreadDisplayGap = 1
 
 const WeavingThreadHalfWidth = 10
 
+const ShaftRaisedHeight = 20
+const ShaftLoweredHeight = 5
+const ShaftMinWidth = 5
+const ShaftMaxWidth = 21
+const ShaftSeparation = 2
+
 const NullDirectionData = {
     "forward": null,
 }
@@ -72,11 +78,23 @@ const SeverityEnum = {
     "ERROR": 3,
 }
 
+const ShaftStateEnum = {
+    UNKNOWN: 0,
+    DONE: 1,
+    MOVING: 2,
+    ERROR: 3,
+}
+
 const ShaftStateTranslationDict = {
     0: "?",
-    1: "done",
-    2: "moving",
-    3: "error",
+    1: "Done",
+    2: "Moving",
+    3: "Error",
+}
+
+const NullShaftStateData = {
+    "state": ShaftStateEnum.UNKNOWN,
+    "shaft_word": 0,
 }
 
 let ConnectionStateEnum = {}
@@ -104,23 +122,23 @@ class TimeoutError extends Error {
     }
 }
 
-/* Return the largest odd integer <= value
+/* Return the largest odd integer <= rounded value
 
 The description isn't quite right for negative values;
 those are first truncated towards 0, then made more negative if needed.
 */
-function asOddReduced(value) {
-    let ret = Math.trunc(value)
+function asOddDecreased(value) {
+    let ret = Math.round(value)
     return ret % 2 == 0 ? ret - 1 : ret
 }
 
-/* Return the largest odd integer >= value
+/* Return the largest odd integer >= rounded value
 
 The description isn't quite right for negative values;
 those are first truncated towards 0, then made more positive if needed.
 */
 function asOddIncreased(value) {
-    let ret = Math.trunc(value)
+    let ret = Math.round(value)
     return ret % 2 == 0 ? ret + 1 : ret
 }
 
@@ -267,6 +285,7 @@ class LoomClient {
         this.threadLowToHigh = true
         this.loomInfo = null
         this.settings = null
+        this.shaftState = NullShaftStateData
         this.backgroundColor = window.getComputedStyle(document.body).getPropertyValue("background-color")
     }
 
@@ -378,7 +397,8 @@ class LoomClient {
         let patternMenu = document.getElementById("pattern_menu")
         patternMenu.addEventListener("change", this.handlePatternMenu.bind(this))
 
-        addEventListener("resize", (this.displayThreadingOrWeavingPattern.bind(this)))
+        addEventListener("resize", (this.displayCanvases.bind(this)))
+        screen.orientation.addEventListener("change", this.displayCanvases.bind(this))
     }
 
     /*
@@ -543,20 +563,23 @@ class LoomClient {
             this.jumpPickData = NullPickData
             let patternMenu = document.getElementById("pattern_menu")
             patternMenu.value = this.currentPattern.name
+            this.displayCanvases()
         } else if (datadict.type == "SeparateThreadingRepeats") {
             this.separateThreadingRepeatsData = datadict
             let separateThreadingRepeatsCheckbox = document.getElementById("separate_threading_repeats")
             separateThreadingRepeatsCheckbox.checked = datadict.separate
+            this.displayCanvases()
         } else if (datadict.type == "SeparateWeavingRepeats") {
             this.separateWeavingRepeatsData = datadict
             let separateWeavingRepeatsCheckbox = document.getElementById("separate_weaving_repeats")
             separateWeavingRepeatsCheckbox.checked = datadict.separate
-            this.displayWeavingPattern()
+            this.displayCanvases()
         } else if (datadict.type == "Settings") {
             this.settings = datadict
             this.displaySettings()
         } else if (datadict.type == "ShaftState") {
-            this.displayShaftState(datadict)
+            this.shaftState = datadict
+            this.displayShaftState()
         } else if (datadict.type == "StatusMessage") {
             resetCommandProblemMessage = false
             this.statusMessage = datadict
@@ -580,6 +603,79 @@ class LoomClient {
 
     isConnected() {
         return this.loomConnectionState.state == ConnectionStateEnum.connected
+    }
+
+    /*
+    Display the canvases that should be visible
+    */
+    displayCanvases(event) {
+        if (this.mode != ModeEnum.SETTINGS) {
+            this.displayShaftState()
+        }
+        if (this.mode == ModeEnum.THREADING) {
+            this.displayThreadingPattern(event)
+        } else if (this.mode == ModeEnum.WEAVING) {
+            this.displayWeavingPattern(event)
+        }
+    }
+
+    /*
+    Display threading and weaving direction (thread/unthread, weave/unweave).
+    */
+    displayDirection() {
+        if (!this.settings) {
+            return
+        }
+        let threadDirectionElt = document.getElementById("thread_direction")
+        let weaveDirectionElt = document.getElementById("weave_direction")
+        let threadArrowPointsLeft = this.settings.thread_right_to_left
+        if (!this.direction.forward) {
+            threadArrowPointsLeft = !threadArrowPointsLeft
+        }
+        const threadArrow = threadArrowPointsLeft ? "←" : "→"
+
+        if (this.direction.forward) {
+            threadDirectionElt.textContent = `${threadArrow} ${t("Thread")}`
+            weaveDirectionElt.textContent = t("Weave")
+            threadDirectionElt.classList.remove("direction_undo")
+            weaveDirectionElt.classList.remove("direction_undo")
+            threadDirectionElt.classList.add("direction_do")
+            weaveDirectionElt.classList.add("direction_do")
+        } else {
+            threadDirectionElt.textContent = `${threadArrow} ${t("Unthread")}`
+            weaveDirectionElt.textContent = t("Unweave")
+            threadDirectionElt.classList.remove("direction_do")
+            weaveDirectionElt.classList.remove("direction_do")
+            threadDirectionElt.classList.add("direction_undo")
+            weaveDirectionElt.classList.add("direction_undo")
+        }
+    }
+
+    /*
+    Display the current end numbers.
+    */
+    displayEnds() {
+        let totalEndNumber0Elt = document.getElementById("total_end_number0")
+        let totalEndNumber1Elt = document.getElementById("total_end_number1")
+        let endNumber0Elt = document.getElementById("end_number0")
+        let endNumber1Elt = document.getElementById("end_number1")
+        let endsPerRepeatElt = document.getElementById("ends_per_repeat")
+        let repeatNumberElt = document.getElementById("end_repeat_number")
+        if (!this.currentPattern) {
+            this.currentEndData = NullEndData
+        }
+        let maxTotalEndNumber1 = this.currentEndData.total_end_number1
+        let maxEndNumber1 = this.currentEndData.end_number1
+        if (this.currentEndData.end_number0 > 0) {
+            maxTotalEndNumber1 -= 1
+            maxEndNumber1 -= 1
+        }
+        totalEndNumber0Elt.textContent = nullToDefault(this.currentEndData.total_end_number0)
+        totalEndNumber1Elt.textContent = nullToDefault(maxTotalEndNumber1)
+        endNumber0Elt.textContent = "(" + nullToDefault(this.currentEndData.end_number0)
+        endNumber1Elt.textContent = nullToDefault(maxEndNumber1)
+        endsPerRepeatElt.textContent = nullToDefault(this.currentPattern.threading.length, "?") + ","
+        repeatNumberElt.textContent = nullToDefault(this.currentEndData.end_repeat_number) + ")"
     }
 
     /*
@@ -621,34 +717,93 @@ class LoomClient {
     }
 
     /*
-    Display ShaftState
+    Display shaft state on the "shafts_canvas" element.
     */
-    displayShaftState(datadict) {
-        let text = ""
-        let textColor = "black"
-        if (datadict.state == 1) {
-            // Move is done; display shaft numbers
-            let raisedShaftList = []
-            let bitmask = BigInt(datadict.shaft_word)
-            let shaft_number = 1
-
-            while (bitmask !== 0n) {
-                if (bitmask & 1n) {
-                    raisedShaftList.push(shaft_number)
-                }
-                bitmask >>= 1n
-                shaft_number++
-            }
-            text = raisedShaftList.join(" ")
-        } else {
-            text = t(ShaftStateTranslationDict[datadict.state])
-            if (datadict.state == 3) {
-                textColor = "red"
-            }
+    displayShaftState() {
+        if ((this.mode == ModeEnum.SETTINGS) || (this.loomInfo == null)) {
+            return
         }
-        let shaftStateElt = document.getElementById("shaft_state")
-        shaftStateElt.textContent = text
-        shaftStateElt.style.color = textColor
+        let canvas = document.getElementById("shafts_canvas")
+
+        // Make resizing work better,
+        // and, in the case of height, prevent the height growing with each new shed.
+        canvas.width = 100
+
+        // Set ctx.font after setting canvas size, to avoid the font being displayed at the wrong size.
+        const endLabelElt = document.getElementById("end_label")
+
+        let ctx = canvas.getContext("2d")
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        let rect = document.getElementById("shafts_canvas_container").getBoundingClientRect()
+
+        const availableWidth = asOddDecreased(rect.width)
+
+        // Measure space required for the max shaft number -- 2 digits.
+        // We could measure the space required for shaft "1" separately, but keep it simple.
+        const font = window.getComputedStyle(endLabelElt).font
+        ctx.font = font  // For initial measurements to set size; set again later after setting size
+        const fontMeas = ctx.measureText("32")
+        const fontHeight = asOddIncreased(fontMeas.fontBoundingBoxAscent + fontMeas.fontBoundingBoxDescent)
+        const fontHalfHeight = (fontHeight + 1) / 2
+        const fontHalfWidth = asOddIncreased((fontMeas.actualBoundingBoxLeft + fontMeas.actualBoundingBoxRight) / 2)
+
+        const availableBlockWidth = ((availableWidth - (2 * fontHalfWidth)) / (this.loomInfo.num_shafts - 1)) - ShaftSeparation
+        const blockWidth = asOddDecreased(Math.max(ShaftMinWidth, Math.min(ShaftMaxWidth, availableBlockWidth)))
+        const blockAndSepWidth = blockWidth + ShaftSeparation
+
+        canvas.width = this.loomInfo.num_shafts * blockAndSepWidth + 4 // 4 avoids cutoff at the right
+        canvas.height = Math.max(ShaftRaisedHeight, fontHeight) + fontHeight
+
+        // Set the font again, now that the canvas size has been set 
+        ctx.font = font
+        // Set properties such that the position for fillText is the center of the text
+        ctx.textBaseline = "middle"
+        ctx.textAlign = "center"
+
+        const firstBlockStartX = Math.floor(ShaftSeparation / 2)
+        let bitmask = BigInt(this.shaftState.shaft_word)
+        if (this.shaftState.state == ShaftStateEnum.DONE) {
+            // Display shaft numbers 1, 4, 8, ...
+            const firstBlockCenterX = Math.floor((ShaftSeparation + blockWidth) / 2)
+            for (let shaftIndex = 0; shaftIndex < this.loomInfo.num_shafts; shaftIndex++) {
+                const shaftNum = shaftIndex + 1
+                if ((shaftNum % 4 == 0) || (shaftNum == 1)) {
+                    ctx.fillText(
+                        shaftNum,
+                        firstBlockCenterX + (blockAndSepWidth * shaftIndex),
+                        canvas.height - fontHalfHeight,
+                    )
+                }
+            }
+
+            const blockMinY = canvas.height - fontHeight
+            // Motion done; display shafts graphically
+            for (let shaftIndex = 0; shaftIndex < this.loomInfo.num_shafts; shaftIndex++) {
+                let bitValue = bitmask & (1n << BigInt(shaftIndex))
+                let blockHeight = bitValue == 0n ? ShaftLoweredHeight : ShaftRaisedHeight
+                ctx.fillRect(
+                    shaftIndex * blockAndSepWidth + firstBlockStartX,
+                    blockMinY,
+                    blockWidth,
+                    -blockHeight,
+                )
+            }
+
+        } else {
+            // Display shaft state as a word
+            let stateText = ShaftStateTranslationDict[this.shaftState.state]
+            if (this.shaftState.state == ShaftStateEnum.ERROR) {
+                ctx.fillStyle = "red"
+            }
+            ctx.textAlign = "left"
+            ctx.fillText(
+                t(stateText),
+                0,
+                Math.round(canvas.height / 2),
+            )
+        }
+
     }
 
     /*
@@ -667,33 +822,6 @@ class LoomClient {
         let statusElt = document.getElementById("status")
         statusElt.textContent = text
         statusElt.style.color = textColor
-    }
-
-    /*
-    Display the current end numbers.
-    */
-    displayEnds() {
-        let totalEndNumber0Elt = document.getElementById("total_end_number0")
-        let totalEndNumber1Elt = document.getElementById("total_end_number1")
-        let endNumber0Elt = document.getElementById("end_number0")
-        let endNumber1Elt = document.getElementById("end_number1")
-        let endsPerRepeatElt = document.getElementById("ends_per_repeat")
-        let repeatNumberElt = document.getElementById("end_repeat_number")
-        if (!this.currentPattern) {
-            this.currentEndData = NullEndData
-        }
-        let maxTotalEndNumber1 = this.currentEndData.total_end_number1
-        let maxEndNumber1 = this.currentEndData.end_number1
-        if (this.currentEndData.end_number0 > 0) {
-            maxTotalEndNumber1 -= 1
-            maxEndNumber1 -= 1
-        }
-        totalEndNumber0Elt.textContent = nullToDefault(this.currentEndData.total_end_number0)
-        totalEndNumber1Elt.textContent = nullToDefault(maxTotalEndNumber1)
-        endNumber0Elt.textContent = "(" + nullToDefault(this.currentEndData.end_number0)
-        endNumber1Elt.textContent = nullToDefault(maxEndNumber1)
-        endsPerRepeatElt.textContent = nullToDefault(this.currentPattern.threading.length, "?") + ","
-        repeatNumberElt.textContent = nullToDefault(this.currentEndData.end_repeat_number) + ")"
     }
 
     /*
@@ -827,46 +955,6 @@ class LoomClient {
         }
     }
 
-    displayThreadingOrWeavingPattern(event) {
-        if (this.mode == ModeEnum.THREADING) {
-            this.displayThreadingPattern(event)
-        } else if (this.mode == ModeEnum.WEAVING) {
-            this.displayWeavingPattern(event)
-        }
-    }
-
-    /*
-    Display threading and weaving direction (thread/unthread, weave/unweave).
-    */
-    displayDirection() {
-        if (!this.settings) {
-            return
-        }
-        let threadDirectionElt = document.getElementById("thread_direction")
-        let weaveDirectionElt = document.getElementById("weave_direction")
-        let threadArrowPointsLeft = this.settings.thread_right_to_left
-        if (!this.direction.forward) {
-            threadArrowPointsLeft = !threadArrowPointsLeft
-        }
-        const threadArrow = threadArrowPointsLeft ? "←" : "→"
-
-        if (this.direction.forward) {
-            threadDirectionElt.textContent = `${threadArrow} ${t("Thread")}`
-            weaveDirectionElt.textContent = t("Weave")
-            threadDirectionElt.classList.remove("direction_undo")
-            weaveDirectionElt.classList.remove("direction_undo")
-            threadDirectionElt.classList.add("direction_do")
-            weaveDirectionElt.classList.add("direction_do")
-        } else {
-            threadDirectionElt.textContent = `${threadArrow} ${t("Unthread")}`
-            weaveDirectionElt.textContent = t("Unweave")
-            threadDirectionElt.classList.remove("direction_do")
-            weaveDirectionElt.classList.remove("direction_do")
-            threadDirectionElt.classList.add("direction_undo")
-            weaveDirectionElt.classList.add("direction_undo")
-        }
-    }
-
     displayLoomInfo() {
         let loominfoElt = document.getElementById("loom_info")
         const nodata = (this.loomInfo == null) || (this.settings == null)
@@ -893,13 +981,17 @@ class LoomClient {
         let canvas = document.getElementById("threading_canvas")
         let endLabelElt = document.getElementById("end_label")
         let ctx = canvas.getContext("2d")
+
+        // Make resizing work better,
+        // and, in the case of height, prevent the height growing with each new shed.
+        canvas.width = 150
+        canvas.height = 100
+
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-        canvas.width = 101
-        canvas.height = 51
         let rect = document.getElementById("threading_canvas_container").getBoundingClientRect()
-        canvas.width = asOddReduced(rect.width - 2)  // 2 for 1px border
-        canvas.height = asOddReduced(rect.height - 2)  // 2 for 1px border
+        canvas.width = asOddDecreased(rect.width)
+        canvas.height = asOddDecreased(rect.height)
 
         if (!this.currentPattern) {
             // Now that it's the right size, leave it blank
@@ -917,14 +1009,16 @@ class LoomClient {
         }
         const groupSize = endNumber1 - endNumber0
         ctx.font = window.getComputedStyle(endLabelElt).font
+        // Set properties such that the position for fillText is the center of the text
         ctx.textBaseline = "middle"
         ctx.textAlign = "center"
         // Measure the space required for a shaft number (max 2 digits)
         const fontMeas = ctx.measureText("59")
-        const fontHeight = Math.ceil(fontMeas.actualBoundingBoxAscent + fontMeas.actualBoundingBoxDescent)
-        const blockWidth = asOddIncreased(Math.ceil(fontMeas.width) + ThreadingWidthGap)
+        const fontHeight = Math.ceil(fontMeas.fontBoundingBoxAscent + fontMeas.fontBoundingBoxDescent)
+        const blockWidth = asOddIncreased(fontMeas.width + ThreadingWidthGap)
         const blockHalfWidth = (blockWidth - 1) / 2
         const centerX = ((canvas.width + 1) / 2)
+
 
         // Compute number of ends per end number (out how far apart to space the end numbers)
         // Display as many as one number per group, but no more than one every 4 ends
@@ -1003,17 +1097,18 @@ class LoomClient {
 
             const xBarCenter = centerX + xOffset + (blockWidth * (centerSlotIndex - slotIndex))
             if (shaft1OnBottom) {
-                yShaftNumberBaseline = canvas.height - verticalDelta * (shaftIndex + 0.5) - fontMeas.actualBoundingBoxDescent
+                yShaftNumberBaseline = canvas.height - verticalDelta * (shaftIndex + 0.5) - fontMeas.fontBoundingBoxDescent
             } else {
-                yShaftNumberBaseline = canvas.height - verticalDelta * (this.loomInfo.num_shafts - shaftIndex - 0.5) - fontMeas.actualBoundingBoxDescent
+                yShaftNumberBaseline = canvas.height - verticalDelta * (this.loomInfo.num_shafts - shaftIndex - 0.5) - fontMeas.fontBoundingBoxDescent
             }
 
             /* Display end number, if wanted, above this bar */
             if ((endIndex + 1 - displayEndNumberOffset) % numEndsPerEndNumber == 0) {
                 ctx.fillStyle = "black"
-                ctx.fillText(endIndex + 1 + endNumberOffset,
+                ctx.fillText(
+                    endIndex + 1 + endNumberOffset,
                     xBarCenter,
-                    fontMeas.actualBoundingBoxAscent + halfTopGap + 2,
+                    fontMeas.fontBoundingBoxAscent + halfTopGap + 2,
                 )
             }
 
@@ -1044,7 +1139,8 @@ class LoomClient {
 
                 // Display shaft number
                 ctx.fillStyle = "black"
-                ctx.fillText(shaftIndex + 1,
+                ctx.fillText(
+                    shaftIndex + 1,
                     xBarCenter,
                     yShaftNumberBaseline,
                 )
@@ -1079,12 +1175,14 @@ class LoomClient {
         let pickColorCtx = pickColorCanvas.getContext("2d")
         pickColorCtx.clearRect(0, 0, pickColorCanvas.width, pickColorCanvas.height)
 
-        canvas.width = 101
-        canvas.height = 51
+        // Make resizing work better,
+        // and, in the case of height, prevent the height growing with each new shed.
+        canvas.width = 150
+        canvas.height = 100
 
         let rect = document.getElementById("pattern_canvas_container").getBoundingClientRect()
-        canvas.width = asOddReduced(rect.width - 2)  // 2 for 1px border
-        canvas.height = asOddReduced(rect.height - 2)  // 2 for 1px border
+        canvas.width = asOddDecreased(rect.width)
+        canvas.height = asOddDecreased(rect.height)
 
         if (!this.currentPattern) {
             return
@@ -1120,13 +1218,13 @@ class LoomClient {
             pickColorCtx.fillStyle = pickColorGradient
             pickColorCtx.fillRect(0, 0, pickColorCanvas.width, pickColorCanvas.height)
         }
-        const blockSize = asOddReduced(Math.min(
+        const blockSize = asOddDecreased(Math.min(
             Math.max(Math.round(canvas.width / numEnds), MinBlockSize),
             Math.max(Math.round(canvas.height / numPicks), MinBlockSize),
             MaxBlockSize))
 
         const numEndsToShow = Math.min(numEnds, Math.floor(canvas.width / blockSize))
-        const numPicksToShow = asOddReduced(Math.ceil(canvas.height / blockSize))
+        const numPicksToShow = asOddDecreased(Math.ceil(canvas.height / blockSize))
 
         let warpGradients = {}
         for (let i = 0; i < numEndsToShow; i++) {
