@@ -1,5 +1,10 @@
 # Version History
 
+## 0.22 2025-06-20
+
+* Display shaft state graphically.
+* Improve display when changing orientation between portrait and landscape.
+
 ## 0.21.3 2025-06-18
 
 * Bug fix: if the loom controlled direction, and the direction was forward, text for the direction buttons was gray, instead of black.
