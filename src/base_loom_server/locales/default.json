@@ -24,12 +24,12 @@
   "Jump": "Label for the button that applies the requested jump",
   "Left to right": "Setting to thread from left to right",
   "Loom name": "Name of the loom to display in the web interface",
-  "Loom": "",
+  "Loom": "Direction control: Loom (typically a button on the dobby head)",
   "lost connection to server": "Error message if the connection from the user to the loom server drops",
-  "Moving": "Loom shafts are in motion",
+  "Moving": "Loom shafts are moving",
   "Next Pick": "Button label for debug control that tells the mock loom to request the next pick (or thread group)",
   "no pattern": "Displayed if no weaving pattern has been selected",
-  "of": "",
+  "of": "As in '5 of 10'",
   "Pattern": "Label for weaving pattern menu",
   "Pick": "Label for current weft pick number",
   "Read message": "Label for debug display of the most recent message read from the loom",
@@ -42,7 +42,7 @@
   "Shafts": "Label for display of which shafts are raised",
   "Separate repeats": "Should there be a separator row, with all shafts down, after each pattern repeat?",
   "Settings": "Tab heading for the Settings panel",
-  "Software": "Loom direction is controlled by the web software",
+  "Software": "Direction control: Software (the web interface)",
   "Status": "Label for status display",
   "Thread": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front",
   "Threading": "Tab heading for the Threading panel",
@@ -53,5 +53,5 @@
   "Upload": "Button label to upload weaving pattern files",
   "Weave": "Weaving direction: go forward to weave new cloth",
   "Weaving": "Tab heading for the weaving panel",
-  "?": "No translation needed"
+  "?": "Unknown state; typically needs no translation"
 }
