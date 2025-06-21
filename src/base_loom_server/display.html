@@ -35,6 +35,13 @@
             </select>
         </div>
         <div class="flex-row">
+            <label for="setting_end1_on_right">{Warp end 1}</label>
+            <select name="setting_end1_on_right" id="setting_end1_on_right">
+                <option value="1">{On the right}</option>
+                <option value="0">{On the left}</option>
+            </select>
+        </div>
+        <div class="flex-row">
             <label>{Thread}</label>
             <select name="setting_thread_right_to_left" id="setting_thread_right_to_left">
                 <option value="1">{Right to left}</option>
@@ -187,7 +194,7 @@
 
     <div style="display:none;" id="debug_div">
         <hr>
-        <div class="flex-row">Debug (mock loom)</div>
+        <div class="flex-row">{Debug (mock loom)}</div>
         
         <div class="flex-row">
             <label>{Command mock loom}</label>

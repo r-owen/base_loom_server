@@ -10,6 +10,7 @@
   "Command mock loom": "Komenna tekopuut",
   "connected": "liittynyt",
   "connecting": "liittymässä",
+  "Debug (mock loom)": "Virheenjäljitys (mallikangaspuu)",
   "Default threading group size": "Säikeisryhmän oletuskoko",
   "Direction control": "Suunnan ohjaus",
   "Direction": "Suunta",
@@ -30,6 +31,8 @@
   "Next Pick": "Seuraava Sukkulanheitto",
   "no pattern": "ei mallia",
   "of": "/",
+  "On the left": "Vasemmalla",
+  "On the right": "Oikealla",
   "Pattern": "Mallikerta",
   "Pick": "Sukkulanheitto",
   "Read message": "Luettu viesti",
@@ -51,6 +54,7 @@
   "Unthread": "Poista lanka",
   "Unweave": "Kudoksen purkaminen",
   "Upload": "Lataa",
+  "Warp end 1": "Loimippää 1",
   "Weave": "Kutoa",
   "Weaving": "Kutominen"
 }

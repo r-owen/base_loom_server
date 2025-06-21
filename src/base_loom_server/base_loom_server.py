@@ -39,6 +39,9 @@ SETTINGS_FILE_NAME = "loom_server_settings.json"
 
 MAX_THREAD_GROUP_SIZE = 10
 
+# Maximum weaving pattern data to log
+MAX_LOG_PATTERN_LEN = 100
+
 
 MOCK_PORT_NAME = "mock"
 
@@ -143,6 +146,7 @@ class BaseLoomServer:
         self.settings = client_replies.Settings(
             loom_name=self.default_name,
             direction_control=direction_control,
+            end1_on_right=True,
             thread_group_size=4,
             thread_right_to_left=True,
             thread_back_to_front=True,
@@ -536,6 +540,7 @@ class BaseLoomServer:
             else:
                 expected_type = dict(
                     loom_name=str,
+                    end1_on_right=bool,
                     thread_group_size=int,
                     thread_right_to_left=bool,
                     thread_back_to_front=bool,
@@ -579,8 +584,11 @@ class BaseLoomServer:
     async def cmd_upload(self, command: SimpleNamespace) -> None:
         suffix = command.name[-4:]
         if self.verbose:
+            cmd_data = command.data
+            if len(cmd_data) > MAX_LOG_PATTERN_LEN:
+                cmd_data = cmd_data[0:MAX_LOG_PATTERN_LEN] + "..."
             self.log.info(
-                f"{self}: read weaving pattern {command.name!r}: data={command.data[0:80]!r}...",
+                f"{self}: read weaving pattern {command.name!r}: data={cmd_data!r}",
             )
         pattern_data = read_pattern_data(command.data, suffix=suffix, name=command.name)
         pattern = reduced_pattern_from_pattern_data(
@@ -646,9 +654,7 @@ class BaseLoomServer:
                 await self.clear_jumps()
                 await self.report_current_end_numbers()
             case ModeEnum.SETTINGS:
-                self.log.warning("Mode SETTINGS not yet supported")
-            case ModeEnum.TEST:
-                raise RuntimeError("Test mode is not yet supported")
+                self.log.warning("Next pick ignored in SETTINGS mode")
             case _:
                 raise RuntimeError(f"Invalid mode={self.mode!r}.")
 
@@ -767,8 +773,11 @@ class BaseLoomServer:
                     command = SimpleNamespace(**data)
                     if self.verbose:
                         msg_summary = str(command)
-                        if len(msg_summary) > 80:
-                            msg_summary = msg_summary[0:80] + "..."
+                        if (
+                            command.type == "upload"
+                            and len(msg_summary) > MAX_LOG_PATTERN_LEN
+                        ):
+                            msg_summary = msg_summary[0:MAX_LOG_PATTERN_LEN] + "..."
                         self.log.info(f"{self}: read command {msg_summary}")
                     cmd_handler = getattr(self, f"cmd_{cmd_type}", None)
                 except Exception as e:
@@ -1063,20 +1072,21 @@ class BaseLoomServer:
             reply: The reply to write, as a dataclass. It should have
                 a "type" field whose value is a string.
         """
+        reply_dict = dataclasses.asdict(reply)
+        if self.verbose:
+            reply_str = str(reply_dict)
+            if reply.type == "ReducedPattern" and len(reply_str) > MAX_LOG_PATTERN_LEN:
+                reply_str = reply_str[0:MAX_LOG_PATTERN_LEN] + "..."
+        else:
+            reply_str = ""
+
         if self.client_connected:
-            assert self.websocket is not None
-            reply_dict = dataclasses.asdict(reply)
+            assert self.websocket is not None  # make mypy happy
             if self.verbose:
-                reply_str = str(reply_dict)
-                if len(reply_str) > 120:
-                    reply_str = reply_str[0:120] + "..."
                 self.log.info(f"{self}: reply to client: {reply_str}")
             await self.websocket.send_json(reply_dict)
         else:
             if self.verbose:
-                reply_str = str(reply)
-                if len(reply_str) > 120:
-                    reply_str = reply_str[0:120] + "..."
                 self.log.info(f"{self}: do not send reply {reply_str}; not connected")
 
     async def write_to_loom(self, data: bytes | bytearray | str) -> None:

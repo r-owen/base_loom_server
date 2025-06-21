@@ -146,6 +146,7 @@ class Settings:
     type: str = dataclasses.field(init=False, default="Settings")
     loom_name: str
     direction_control: DirectionControlEnum
+    end1_on_right: bool
     thread_group_size: int
     thread_right_to_left: bool
     thread_back_to_front: bool

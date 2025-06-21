@@ -40,7 +40,6 @@ class ModeEnum(enum.IntEnum):
     WEAVE = 1
     THREAD = 2
     SETTINGS = 3
-    TEST = 4
 
 
 class ShaftStateEnum(enum.IntEnum):
