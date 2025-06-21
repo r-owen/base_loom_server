@@ -12,8 +12,13 @@ This page assumes you have done all the [basics](index.md):
 
 ## Threading Direction
 
-The [Settings][settings.md] panel contains several settings specific to threading.
-In particular, you can choose whether to thread right-to-left or left-to-right, and whether to display threading for front-to-back or back-to-front.
+The [Settings][settings.md] panel contains two settings specific to threading:
+
+Thread from right-to-left or left-to-right.
+
+Thread from back-to-front or front-to-back, which this only affects the display.
+Front-to-back mode rotates the pattern 180 degrees, as if seen from the back of the loom:
+shaft 1 is at the bottom, and warp end 1 is at the other edge than specified by the "Warp end 1 on" [setting][settings.md].
 
 ## Threading Display
 
