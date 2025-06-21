@@ -10,6 +10,7 @@
   "Command mock loom": "Komenna tekopuut",
   "connected": "liittynyt",
   "connecting": "liittymässä",
+  "Debug (mock loom)": "Virheenjäljitys (mallikangaspuu)",
   "Default threading group size": "Säikeisryhmän oletuskoko",
   "Direction control": "Suunnan ohjaus",
   "Direction": "Suunta",
@@ -22,6 +23,7 @@
   "Jump to end": "Hyppää loppuun",
   "Jump to pick": "Hyppää heittoon",
   "Jump": "Hyppää ",
+  "Left": "Vasemmalla",
   "Left to right": "Vasemmalta oikealle",
   "Loom name": "Kangaspuiden nimi",
   "Loom": "Kangaspuut",
@@ -36,6 +38,7 @@
   "ready": "valmis",
   "repeat": "toista",
   "Reset": "Resetoi",
+  "Right": "Oikealla",
   "Right to left": "Oikealta vasemmalle",
   "Save": "Säästää",
   "Sent command": "Lähetetty käsky",
@@ -51,6 +54,7 @@
   "Unthread": "Poista lanka",
   "Unweave": "Kudoksen purkaminen",
   "Upload": "Lataa",
+  "Warp end 1 on": "Loimippää 1",
   "Weave": "Kutoa",
   "Weaving": "Kutominen"
 }

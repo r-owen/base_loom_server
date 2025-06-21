@@ -189,28 +189,30 @@ class AppRunner:
         html_lang_value = "en"
         language_code = locale.getlocale(locale.LC_CTYPE)[0] or ""
         self.log.info(f"Locale: {language_code!r}")
+        language_codes = []
         if language_code and language_code != "C":
+            language_codes.append(language_code)
             short_language_code = language_code.split("_")[0]
-            for lc in (short_language_code, language_code):
-                translation_name = lc + ".json"
-                translation_file = LOCALE_FILES.joinpath(translation_name)
-                if translation_file.is_file():
-                    html_lang_value = short_language_code
-                    self.log.info(f"Loading translation file {translation_name!r}")
-                    locale_dict = json.loads(
-                        translation_file.read_text(encoding="utf_8")
+            if short_language_code != language_code:
+                language_codes.append(short_language_code)
+        for lc in language_codes:
+            translation_name = lc + ".json"
+            translation_file = LOCALE_FILES.joinpath(translation_name)
+            if translation_file.is_file():
+                html_lang_value = short_language_code
+                self.log.info(f"Loading translation file {translation_name!r}")
+                locale_dict = json.loads(translation_file.read_text(encoding="utf_8"))
+                purged_locale_dict = {
+                    key: value
+                    for key, value in locale_dict.items()
+                    if value is not None
+                }
+                if purged_locale_dict != locale_dict:
+                    self.log.warning(
+                        f"Some entries in translation file {translation_name!r} "
+                        "have null entries"
                     )
-                    purged_locale_dict = {
-                        key: value
-                        for key, value in locale_dict.items()
-                        if value is not None
-                    }
-                    if purged_locale_dict != locale_dict:
-                        self.log.warning(
-                            f"Some entries in translation file {translation_name!r} "
-                            "have null entries"
-                        )
-                    translation_dict.update(purged_locale_dict)
+                translation_dict.update(purged_locale_dict)
         return html_lang_value, translation_dict
 
     async def get(self) -> HTMLResponse:

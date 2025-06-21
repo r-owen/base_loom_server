@@ -1018,6 +1018,18 @@ class BaseTestLoomServer:
             for loom_name in ("", "?", "Séguin Loom"):
                 command_settings(client, loom_name=loom_name)
 
+            for end1_on_right in (
+                not initial_settings.end1_on_right,
+                initial_settings.end1_on_right,
+            ):
+                command_settings(client, end1_on_right=end1_on_right)
+            for bad_bool in ("hello", 0, 1):
+                command_settings(
+                    client,
+                    end1_on_right=bad_bool,
+                    should_fail=True,
+                )
+
             for thread_group_size in (1, 2, MAX_THREAD_GROUP_SIZE):
                 command_settings(client, thread_group_size=thread_group_size)
             for bad_thread_group_size in (-1, 0, MAX_THREAD_GROUP_SIZE + 1):
@@ -1096,6 +1108,7 @@ class BaseTestLoomServer:
             dict(
                 loom_name="a name",
                 direction_control=good_direction_control,
+                end1_on_right=False,
                 thread_group_size=1,
                 thread_back_to_front=False,
                 thread_right_to_left=True,
@@ -1104,6 +1117,7 @@ class BaseTestLoomServer:
             dict(
                 loom_name="",
                 direction_control=good_direction_control,
+                end1_on_right=True,
                 thread_group_size=MAX_THREAD_GROUP_SIZE,
                 thread_back_to_front=True,
                 thread_right_to_left=False,

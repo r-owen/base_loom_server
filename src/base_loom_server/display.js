@@ -411,6 +411,9 @@ class LoomClient {
         let settingLoomNameForm = document.getElementById("setting_loom_name_form")
         settingLoomNameForm.addEventListener("submit", this.sendSettings.bind(this))
 
+        let settingEnd1OnRightElt = document.getElementById("setting_end1_on_right")
+        settingEnd1OnRightElt.addEventListener("change", this.sendSettings.bind(this))
+
         let settingThreadBackToFrontElt = document.getElementById("setting_thread_back_to_front")
         settingThreadBackToFrontElt.addEventListener("change", this.sendSettings.bind(this))
 
@@ -832,7 +835,7 @@ class LoomClient {
         if (this.mode != ModeEnum.THREADING) {
             return
         }
-        let end1OnRight = this.settings.thread_back_to_front
+        let end1OnRight = Boolean(this.settings.end1_on_right) == Boolean(this.settings.thread_back_to_front)
         let shaft1OnBottom = this.settings.thread_back_to_front
         let canvas = document.getElementById("threading_canvas")
         let endLabelElt = document.getElementById("end_label")
@@ -1022,6 +1025,8 @@ class LoomClient {
             return
         }
 
+        const end1OnRight = this.settings.end1_on_right
+
         let pickColorCanvas = document.getElementById("pick_color")
         let canvas = document.getElementById("pattern_canvas")
 
@@ -1085,7 +1090,7 @@ class LoomClient {
         let warpGradients = {}
         for (let i = 0; i < numEndsToShow; i++) {
             const threadColor = this.currentPattern.color_table[this.currentPattern.warp_colors[i]]
-            const xStart = canvas.width - blockSize * (i + 1)
+            const xStart = end1OnRight ? canvas.width - blockSize * (i + 1) : blockSize * i
             let warpGradient = ctx.createLinearGradient(xStart + WeavingThreadDisplayGap, 0, xStart + blockSize - (2 * WeavingThreadDisplayGap), 0)
             warpGradient.addColorStop(0, "lightgray")
             warpGradient.addColorStop(0.2, threadColor)
@@ -1140,11 +1145,12 @@ class LoomClient {
             const shaft_word = this.currentPattern.picks[pickIndex].shaft_word
             for (let end = 0; end < numEndsToShow; end++) {
                 const shaft = this.currentPattern.threading[end]
+                const xStart = end1OnRight ? canvas.width - blockSize * (end + 1) : blockSize * end
                 if (shaft_word & (1n << BigInt(shaft))) {
                     // Display warp end
                     ctx.fillStyle = warpGradients[end]
                     ctx.fillRect(
-                        canvas.width - blockSize * (end + 1) + WeavingThreadDisplayGap,
+                        xStart + WeavingThreadDisplayGap,
                         yStart,
                         blockSize - (2 * WeavingThreadDisplayGap),
                         blockSize)
@@ -1152,7 +1158,7 @@ class LoomClient {
                     // Display weft pick
                     ctx.fillStyle = pickGradient
                     ctx.fillRect(
-                        canvas.width - blockSize * (end + 1),
+                        xStart,
                         yStart + WeavingThreadDisplayGap,
                         blockSize,
                         blockSize - (2 * WeavingThreadDisplayGap))
@@ -1558,6 +1564,7 @@ class LoomClient {
     async sendSettings(event) {
         let loomNameInputElt = document.getElementById("setting_loom_name_input")
         let directionControlElt = document.getElementById("setting_direction_control")
+        let end1OnRightElt = document.getElementById("setting_end1_on_right")
         let threadRightToLeftElt = document.getElementById("setting_thread_right_to_left")
         let threadBackToFrontElt = document.getElementById("setting_thread_back_to_front")
         let defaultThreadGroupSize = document.getElementById("setting_thread_group_size")
@@ -1565,6 +1572,7 @@ class LoomClient {
             "type": "settings",
             "loom_name": loomNameInputElt.value,
             "direction_control": asIntOrNull(directionControlElt.value),
+            "end1_on_right": asBooleanOrNull(end1OnRightElt.value),
             "thread_right_to_left": asBooleanOrNull(threadRightToLeftElt.value),
             "thread_back_to_front": asBooleanOrNull(threadBackToFrontElt.value),
             "thread_group_size": asIntOrNull(defaultThreadGroupSize.value),

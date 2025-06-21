@@ -10,6 +10,7 @@
   "Command mock loom": "Commandez le métier à tisser fictif",
   "connected": "connecté",
   "connecting": "connectant",
+  "Debug (mock loom)": "Débogage (faux métier à tisser)",
   "Default threading group size": "Taille du groupe de threads par défaut",
   "Direction control": "Contrôle de la direction",
   "Direction": "Direction",
@@ -22,6 +23,7 @@
   "Jump to end": "Sauter à la trame",
   "Jump to pick": "Sauter à la sélection",
   "Jump": "Sauter",
+  "Left": "Gauche",
   "Left to right": "De gauche à droite",
   "Loom name": "Nom du métier à tisser",
   "Loom": "Métier à tisser",
@@ -36,6 +38,7 @@
   "ready": "prêt",
   "repeat": "répéter",
   "Reset": "Restaurer",
+  "Right": "Droite",
   "Right to left": "De droite à gauche",
   "Save": "Sauvegarder",
   "Sent command": "Commande envoyée",
@@ -51,6 +54,7 @@
   "Unthread": "Dévisser",
   "Unweave": "Détisser",
   "Upload": "Télécharger",
+  "Warp end 1 on": "Extrémité de chaîne 1 à",
   "Weave": "Tisser",
   "Weaving": "Tissage"
 }
