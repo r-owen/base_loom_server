@@ -1,5 +1,9 @@
 # Version History
 
+## 0.23 2025-06-23
+
+* Add a setting to show warp end 1 on the right or left.
+
 ## 0.22 2025-06-20
 
 * Display shaft state graphically.
