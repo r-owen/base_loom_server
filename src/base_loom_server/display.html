@@ -70,8 +70,8 @@
             <option>{Clear Recents}</option>
         </select>
         <form class="upload-form">
-            <input type="file" id="file_input" multiple accept=".dtx,.wif,.wpo" style="display:none;">
-            <button type="button" id="upload_button">{Upload}</button>
+            <input type="file" id="upload_file_input" multiple accept=".dtx,.wif,.wpo" style="display:none;">
+            <button type="button" id="upload_file_button">{Upload}</button>
         </form>
     </div>
 
@@ -88,13 +88,6 @@
             <div>
                 <canvas id="threading_canvas"></canvas>
             </div>
-        </div>
-    </div>
-
-   <div class="flex-row not-settings-flex">
-        <label>{Shafts}</label>
-        <div class="canvas-grid" id="shafts_canvas_container">
-            <canvas id="shafts_canvas"></canvas>
         </div>
     </div>
 
@@ -174,6 +167,13 @@
     <div class="flex-row weaving-flex" id="separate_weaving_repeats_grid">
         <label for="separate_weaving_repeats">{Separate repeats}?</label>
         <input type="checkbox" id="separate_weaving_repeats">
+    </div>
+
+   <div class="flex-row not-settings-flex">
+        <label>{Shafts}</label>
+        <div class="canvas-grid" id="shafts_canvas_container">
+            <canvas id="shafts_canvas"></canvas>
+        </div>
     </div>
 
     <div class="flex-row">
