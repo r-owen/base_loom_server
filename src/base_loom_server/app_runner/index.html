@@ -403,7 +403,9 @@
 <span class="normal">254</span>
 <span class="normal">255</span>
 <span class="normal">256</span>
-<span class="normal">257</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">argparse</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">importlib.resources</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">locale</span>
@@ -594,28 +596,30 @@
         <span class="n">html_lang_value</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span>
         <span class="n">language_code</span> <span class="o">=</span> <span class="n">locale</span><span class="o">.</span><span class="n">getlocale</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">LC_CTYPE</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Locale: </span><span class="si">{</span><span class="n">language_code</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">language_codes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">language_code</span> <span class="ow">and</span> <span class="n">language_code</span> <span class="o">!=</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+            <span class="n">language_codes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">language_code</span><span class="p">)</span>
             <span class="n">short_language_code</span> <span class="o">=</span> <span class="n">language_code</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">lc</span> <span class="ow">in</span> <span class="p">(</span><span class="n">short_language_code</span><span class="p">,</span> <span class="n">language_code</span><span class="p">):</span>
-                <span class="n">translation_name</span> <span class="o">=</span> <span class="n">lc</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span>
-                <span class="n">translation_file</span> <span class="o">=</span> <span class="n">LOCALE_FILES</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">translation_name</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">translation_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-                    <span class="n">html_lang_value</span> <span class="o">=</span> <span class="n">short_language_code</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading translation file </span><span class="si">{</span><span class="n">translation_name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="n">locale_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
-                        <span class="n">translation_file</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf_8&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">short_language_code</span> <span class="o">!=</span> <span class="n">language_code</span><span class="p">:</span>
+                <span class="n">language_codes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">short_language_code</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">lc</span> <span class="ow">in</span> <span class="n">language_codes</span><span class="p">:</span>
+            <span class="n">translation_name</span> <span class="o">=</span> <span class="n">lc</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span>
+            <span class="n">translation_file</span> <span class="o">=</span> <span class="n">LOCALE_FILES</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">translation_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">translation_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="n">html_lang_value</span> <span class="o">=</span> <span class="n">short_language_code</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading translation file </span><span class="si">{</span><span class="n">translation_name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">locale_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">translation_file</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf_8&quot;</span><span class="p">))</span>
+                <span class="n">purged_locale_dict</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">key</span><span class="p">:</span> <span class="n">value</span>
+                    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">locale_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="p">}</span>
+                <span class="k">if</span> <span class="n">purged_locale_dict</span> <span class="o">!=</span> <span class="n">locale_dict</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Some entries in translation file </span><span class="si">{</span><span class="n">translation_name</span><span class="si">!r}</span><span class="s2"> &quot;</span>
+                        <span class="s2">&quot;have null entries&quot;</span>
                     <span class="p">)</span>
-                    <span class="n">purged_locale_dict</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="n">key</span><span class="p">:</span> <span class="n">value</span>
-                        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">locale_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                    <span class="p">}</span>
-                    <span class="k">if</span> <span class="n">purged_locale_dict</span> <span class="o">!=</span> <span class="n">locale_dict</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Some entries in translation file </span><span class="si">{</span><span class="n">translation_name</span><span class="si">!r}</span><span class="s2"> &quot;</span>
-                            <span class="s2">&quot;have null entries&quot;</span>
-                        <span class="p">)</span>
-                    <span class="n">translation_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">purged_locale_dict</span><span class="p">)</span>
+                <span class="n">translation_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">purged_locale_dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">html_lang_value</span><span class="p">,</span> <span class="n">translation_dict</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HTMLResponse</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.app_runner.AppRunner.get"><a href="../../../api/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.get" title="Go to docs">docs</a></div>

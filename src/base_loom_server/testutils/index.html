@@ -1546,7 +1546,21 @@
 <span class="normal">1397</span>
 <span class="normal">1398</span>
 <span class="normal">1399</span>
-<span class="normal">1400</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
+<span class="normal">1400</span>
+<span class="normal">1401</span>
+<span class="normal">1402</span>
+<span class="normal">1403</span>
+<span class="normal">1404</span>
+<span class="normal">1405</span>
+<span class="normal">1406</span>
+<span class="normal">1407</span>
+<span class="normal">1408</span>
+<span class="normal">1409</span>
+<span class="normal">1410</span>
+<span class="normal">1411</span>
+<span class="normal">1412</span>
+<span class="normal">1413</span>
+<span class="normal">1414</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
@@ -2566,6 +2580,18 @@
             <span class="k">for</span> <span class="n">loom_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="s2">&quot;Séguin Loom&quot;</span><span class="p">):</span>
                 <span class="n">command_settings</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">loom_name</span><span class="o">=</span><span class="n">loom_name</span><span class="p">)</span>
 
+            <span class="k">for</span> <span class="n">end1_on_right</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="n">initial_settings</span><span class="o">.</span><span class="n">end1_on_right</span><span class="p">,</span>
+                <span class="n">initial_settings</span><span class="o">.</span><span class="n">end1_on_right</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="n">command_settings</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">end1_on_right</span><span class="o">=</span><span class="n">end1_on_right</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">bad_bool</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">command_settings</span><span class="p">(</span>
+                    <span class="n">client</span><span class="p">,</span>
+                    <span class="n">end1_on_right</span><span class="o">=</span><span class="n">bad_bool</span><span class="p">,</span>
+                    <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+
             <span class="k">for</span> <span class="n">thread_group_size</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MAX_THREAD_GROUP_SIZE</span><span class="p">):</span>
                 <span class="n">command_settings</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">thread_group_size</span><span class="o">=</span><span class="n">thread_group_size</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">bad_thread_group_size</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MAX_THREAD_GROUP_SIZE</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
@@ -2644,6 +2670,7 @@
             <span class="nb">dict</span><span class="p">(</span>
                 <span class="n">loom_name</span><span class="o">=</span><span class="s2">&quot;a name&quot;</span><span class="p">,</span>
                 <span class="n">direction_control</span><span class="o">=</span><span class="n">good_direction_control</span><span class="p">,</span>
+                <span class="n">end1_on_right</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">thread_group_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                 <span class="n">thread_back_to_front</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">thread_right_to_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -2652,6 +2679,7 @@
             <span class="nb">dict</span><span class="p">(</span>
                 <span class="n">loom_name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
                 <span class="n">direction_control</span><span class="o">=</span><span class="n">good_direction_control</span><span class="p">,</span>
+                <span class="n">end1_on_right</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">thread_group_size</span><span class="o">=</span><span class="n">MAX_THREAD_GROUP_SIZE</span><span class="p">,</span>
                 <span class="n">thread_back_to_front</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">thread_right_to_left</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>

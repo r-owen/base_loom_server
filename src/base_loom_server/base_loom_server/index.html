@@ -1258,7 +1258,17 @@
 <span class="normal">1109</span>
 <span class="normal">1110</span>
 <span class="normal">1111</span>
-<span class="normal">1112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">1112</span>
+<span class="normal">1113</span>
+<span class="normal">1114</span>
+<span class="normal">1115</span>
+<span class="normal">1116</span>
+<span class="normal">1117</span>
+<span class="normal">1118</span>
+<span class="normal">1119</span>
+<span class="normal">1120</span>
+<span class="normal">1121</span>
+<span class="normal">1122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;BaseLoomServer&quot;</span><span class="p">,</span>
@@ -1298,6 +1308,9 @@
 <span class="n">SETTINGS_FILE_NAME</span> <span class="o">=</span> <span class="s2">&quot;loom_server_settings.json&quot;</span>
 
 <span class="n">MAX_THREAD_GROUP_SIZE</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># Maximum weaving pattern data to log</span>
+<span class="n">MAX_LOG_PATTERN_LEN</span> <span class="o">=</span> <span class="mi">100</span>
 
 
 <span class="n">MOCK_PORT_NAME</span> <span class="o">=</span> <span class="s2">&quot;mock&quot;</span>
@@ -1403,6 +1416,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">Settings</span><span class="p">(</span>
             <span class="n">loom_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_name</span><span class="p">,</span>
             <span class="n">direction_control</span><span class="o">=</span><span class="n">direction_control</span><span class="p">,</span>
+            <span class="n">end1_on_right</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">thread_group_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
             <span class="n">thread_right_to_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">thread_back_to_front</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1796,6 +1810,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">expected_type</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
                     <span class="n">loom_name</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                    <span class="n">end1_on_right</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span>
                     <span class="n">thread_group_size</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
                     <span class="n">thread_right_to_left</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span>
                     <span class="n">thread_back_to_front</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span>
@@ -1839,8 +1854,11 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_upload"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_upload" title="Go to docs">docs</a></div>
         <span class="n">suffix</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">cmd_data</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">data</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmd_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">MAX_LOG_PATTERN_LEN</span><span class="p">:</span>
+                <span class="n">cmd_data</span> <span class="o">=</span> <span class="n">cmd_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">MAX_LOG_PATTERN_LEN</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: read weaving pattern </span><span class="si">{</span><span class="n">command</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">: data=</span><span class="si">{</span><span class="n">command</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">80</span><span class="p">]</span><span class="si">!r}</span><span class="s2">...&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: read weaving pattern </span><span class="si">{</span><span class="n">command</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">: data=</span><span class="si">{</span><span class="n">cmd_data</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="n">pattern_data</span> <span class="o">=</span> <span class="n">read_pattern_data</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="n">reduced_pattern_from_pattern_data</span><span class="p">(</span>
@@ -1906,9 +1924,7 @@
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_end_numbers</span><span class="p">()</span>
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Mode SETTINGS not yet supported&quot;</span><span class="p">)</span>
-            <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">TEST</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Test mode is not yet supported&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Next pick ignored in SETTINGS mode&quot;</span><span class="p">)</span>
             <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid mode=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
@@ -2027,8 +2043,11 @@
                     <span class="n">command</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                         <span class="n">msg_summary</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg_summary</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">80</span><span class="p">:</span>
-                            <span class="n">msg_summary</span> <span class="o">=</span> <span class="n">msg_summary</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">80</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
+                        <span class="k">if</span> <span class="p">(</span>
+                            <span class="n">command</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;upload&quot;</span>
+                            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg_summary</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">MAX_LOG_PATTERN_LEN</span>
+                        <span class="p">):</span>
+                            <span class="n">msg_summary</span> <span class="o">=</span> <span class="n">msg_summary</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">MAX_LOG_PATTERN_LEN</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: read command </span><span class="si">{</span><span class="n">msg_summary</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">cmd_handler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;cmd_</span><span class="si">{</span><span class="n">cmd_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -2323,20 +2342,21 @@
 <span class="sd">            reply: The reply to write, as a dataclass. It should have</span>
 <span class="sd">                a &quot;type&quot; field whose value is a string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reply_dict</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">reply_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">reply_dict</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">reply</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;ReducedPattern&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">reply_str</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">MAX_LOG_PATTERN_LEN</span><span class="p">:</span>
+                <span class="n">reply_str</span> <span class="o">=</span> <span class="n">reply_str</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">MAX_LOG_PATTERN_LEN</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reply_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_connected</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="n">reply_dict</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="c1"># make mypy happy</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="n">reply_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">reply_dict</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reply_str</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">120</span><span class="p">:</span>
-                    <span class="n">reply_str</span> <span class="o">=</span> <span class="n">reply_str</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">120</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: reply to client: </span><span class="si">{</span><span class="n">reply_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="o">.</span><span class="n">send_json</span><span class="p">(</span><span class="n">reply_dict</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="n">reply_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reply_str</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">120</span><span class="p">:</span>
-                    <span class="n">reply_str</span> <span class="o">=</span> <span class="n">reply_str</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">120</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: do not send reply </span><span class="si">{</span><span class="n">reply_str</span><span class="si">}</span><span class="s2">; not connected&quot;</span><span class="p">)</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.write_to_loom"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.write_to_loom" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">write_to_loom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
