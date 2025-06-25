@@ -1,5 +1,9 @@
 # Version History
 
+## 0.23.1 2025-06-25
+
+* Fix display of setting "warp end 1"; it was not updated based on the reported value.
+
 ## 0.23 2025-06-23
 
 * Add a setting to show warp end 1 on the right or left.
