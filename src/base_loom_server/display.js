@@ -1389,6 +1389,7 @@ class LoomClient {
         let jumpToEndResetElt = document.getElementById("jump_to_end_reset")
         let jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
         let disableJump = true
+        jumpTotalEndNumber0Elt.value = jumpTotalEndNumber0Elt.value.replace(/\D/g, "")
         if (asIntOrNull(jumpTotalEndNumber0Elt.value) != this.jumpEndData.total_end_number0) {
             jumpTotalEndNumber0Elt.style.backgroundColor = "pink"
             disableJump = false
@@ -1438,6 +1439,7 @@ class LoomClient {
         let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
 
         let disableJump = true
+        jumpTotalPickNumberElt.value = jumpTotalPickNumberElt.value.replace(/\D/g, "")
         if (asIntOrNull(jumpTotalPickNumberElt.value) != this.jumpPickNumber.total_pick_number) {
             jumpTotalPickNumberElt.style.backgroundColor = "pink"
             disableJump = false
