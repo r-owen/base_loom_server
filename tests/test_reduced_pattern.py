@@ -207,15 +207,14 @@ def test_end_number() -> None:
 
         # Check invalid end_number1
         for end_number0 in (0, 1, num_ends - 1, num_ends):
-            for end_number1 in (-1, 0, end_number0, num_ends + 2):
+            for end_number1 in (-1, 0, end_number0 - 1, num_ends + 1):
                 if end_number0 == 0 and end_number1 == 0:
                     continue
                 for thread_group_size in GROUP_SIZE_NUMBERS:
                     reduced_pattern.thread_group_size = thread_group_size
                     with pytest.raises(IndexError):
                         reduced_pattern.set_current_end_number(
-                            end_number0,
-                            end_number1=end_number1,
+                            end_number0, end_number1=end_number1
                         )
             assert reduced_pattern.end_number0 == 0
             assert reduced_pattern.end_repeat_number == 1
@@ -237,22 +236,25 @@ def test_end_number() -> None:
                 elif end_number0 + thread_group_size > num_ends:
                     # + 1 because the range is [end_number0, end_number1)
                     # as is typical for ranges, and end_number is 1-based
-                    expected_end_number1 = num_ends + 1
+                    expected_end_number1 = num_ends
                 else:
-                    expected_end_number1 = end_number0 + thread_group_size
+                    expected_end_number1 = end_number0 + thread_group_size - 1
 
                 assert reduced_pattern.end_number1 == expected_end_number1
 
                 shaft_word = reduced_pattern.get_threading_shaft_word()
-                expected_shaft_word = 0
-                shaft_set: set[int] = set()
-                for end_number in range(end_number0, expected_end_number1):
-                    shaft_index = reduced_pattern.threading[end_number - 1]
-                    if shaft_index < 0 or shaft_index in shaft_set:
-                        continue
-                    shaft_set.add(shaft_index)
-                    expected_shaft_word += 1 << shaft_index
-                assert shaft_word == expected_shaft_word
+                if end_number0 == 0:
+                    assert shaft_word == 0
+                else:
+                    expected_shaft_word = 0
+                    shaft_set: set[int] = set()
+                    for end_number in range(end_number0, expected_end_number1 + 1):
+                        shaft_index = reduced_pattern.threading[end_number - 1]
+                        if shaft_index < 0 or shaft_index in shaft_set:
+                            continue
+                        shaft_set.add(shaft_index)
+                        expected_shaft_word += 1 << shaft_index
+                    assert shaft_word == expected_shaft_word
 
             for initial_end_number0 in (0, 1, num_ends - 1, num_ends):
                 # Increment low to high
@@ -289,38 +291,38 @@ def test_end_number() -> None:
                 if initial_end_number0 == 0 or (
                     initial_end_number0 == 1 and not separate_repeats
                 ):
-                    # The next group ends at num_ends + 1
-                    # and repeat_number is decremented,
-                    # regardless of thread_group_size
-                    assert reduced_pattern.end_number1 == num_ends + 1
+                    # Start the next group; end_number1 = num_ends
+                    # and repeat_number is decremented.
+                    assert reduced_pattern.end_number1 == num_ends
                     assert reduced_pattern.end_number0 == max(
-                        reduced_pattern.end_number1 - thread_group_size, 1
+                        reduced_pattern.end_number1 + 1 - thread_group_size, 1
                     )
                     assert reduced_pattern.end_repeat_number == 0
                 elif initial_end_number0 == 1:
+                    # We are at the separation.
                     assert reduced_pattern.end_number0 == 0
                     assert reduced_pattern.end_number1 == 0
                     assert reduced_pattern.end_repeat_number == 1
                 elif initial_end_number0 > thread_group_size:
+                    # The next group size = thread_group_size.
                     assert (
                         reduced_pattern.end_number0
                         == initial_end_number0 - thread_group_size
                     )
                     assert (
                         reduced_pattern.end_number1
-                        == reduced_pattern.end_number0 + thread_group_size
+                        == reduced_pattern.end_number0 + thread_group_size - 1
                     )
                     assert reduced_pattern.end_repeat_number == 1
                 else:
-                    assert reduced_pattern.end_number0 == max(
-                        initial_end_number0 - thread_group_size, 1
-                    )
-                    assert reduced_pattern.end_number1 == initial_end_number0
+                    # The next group size < thread_group_size
+                    assert reduced_pattern.end_number0 == 1
+                    assert reduced_pattern.end_number1 == initial_end_number0 - 1
                     assert reduced_pattern.end_repeat_number == 1
 
-            for end_number1 in (initial_end_number0 + 1, num_ends + 1):
+            for end_number1 in (initial_end_number0 + 1, num_ends):
                 for end_repeat_number in (-1, 0, 5):
-                    if end_number1 > num_ends + 1:
+                    if end_number1 > num_ends:
                         continue
                     reduced_pattern.thread_group_size = thread_group_size
                     reduced_pattern.set_current_end_number(

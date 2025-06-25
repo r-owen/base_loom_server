@@ -7,7 +7,7 @@ const MinBlockSize = 11
 const MaxBlockSize = 21
 
 // Display gap on left and right edges of threading end numbers
-const ThreadingWidthGap = 3
+const ThreadingWidthGap = 5
 
 // Diplay gap between top of end color bar/outline rectangle and bottom of end number
 const ThreadingEndTopGap = 10
@@ -523,16 +523,10 @@ class LoomClient {
         if (!this.currentPattern) {
             this.currentEndData = NullEndData
         }
-        let maxTotalEndNumber1 = this.currentEndData.total_end_number1
-        let maxEndNumber1 = this.currentEndData.end_number1
-        if (this.currentEndData.end_number0 > 0) {
-            maxTotalEndNumber1 -= 1
-            maxEndNumber1 -= 1
-        }
         totalEndNumber0Elt.textContent = nullToDefault(this.currentEndData.total_end_number0)
-        totalEndNumber1Elt.textContent = nullToDefault(maxTotalEndNumber1)
+        totalEndNumber1Elt.textContent = nullToDefault(this.currentEndData.total_end_number1)
         endNumber0Elt.textContent = "(" + nullToDefault(this.currentEndData.end_number0)
-        endNumber1Elt.textContent = nullToDefault(maxEndNumber1)
+        endNumber1Elt.textContent = nullToDefault(this.currentEndData.end_number1)
         endsPerRepeatElt.textContent = nullToDefault(this.currentPattern.threading.length, "?") + ","
         repeatNumberElt.textContent = nullToDefault(this.currentEndData.end_repeat_number) + ")"
     }
@@ -868,7 +862,7 @@ class LoomClient {
             endNumber1 = this.jumpEndData.end_number1
             endNumberOffset = this.jumpEndData.total_end_number0 - this.jumpEndData.end_number0
         }
-        const groupSize = endNumber1 - endNumber0
+        const groupSize = endNumber0 == 0 ? 0 : endNumber1 - endNumber0 + 1
         ctx.font = window.getComputedStyle(endLabelElt).font
         // Set properties such that the position for fillText is the center of the text
         ctx.textBaseline = "middle"
@@ -913,10 +907,10 @@ class LoomClient {
 
         const centerSlotIndex = Math.round((numEndsToShow - 1) / 2)
 
-        const centerEndNumber = Math.round(Math.max(0, (endNumber0 + endNumber1 - 1) / 2))
+        const centerEndNumber = Math.round(Math.max(0, (endNumber0 + endNumber1) / 2))
 
         let minDarkEndIndex = endNumber0 - 1
-        let maxDarkEndIndex = endNumber1 - 2
+        let maxDarkEndIndex = endNumber1 - 1
 
 
         // Display a box around the group, unless the at end 0
@@ -929,7 +923,7 @@ class LoomClient {
             ctx.strokeRect(
                 centerX - Math.round(blockWidth * groupSize / 2),
                 blockHeight + ThreadingEndTopGap,
-                blockWidth * groupSize,
+                blockWidth * groupSize + 1,
                 canvas.height - blockHeight - 2,
             )
             ctx.globalAlpha = 1.0

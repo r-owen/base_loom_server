@@ -32,9 +32,9 @@ class CommandProblem:
 class CurrentEndNumber:
     """The current threading end numbers and repeat number
 
-    The range of end numbers is [end_number0, end_number1).
-    If end_number0 is 0 then end_number1 will also be zero
-    (no threads in range).
+    The range of end numbers is end_number0 through end_number1,
+    inclusive. If end_number0 is 0 then end_number1 will also be 0;
+    this indicates the beginning, or a gap between pattern repeats.
     """
 
     type: str = dataclasses.field(init=False, default="CurrentEndNumber")

@@ -542,9 +542,9 @@ class BaseTestLoomServer:
                     assert jump_end_reply == SimpleNamespace(
                         type="JumpEndNumber",
                         total_end_number0=total_end_number0,
-                        total_end_number1=total_end_number0 + 1,
+                        total_end_number1=total_end_number0,
                         end_number0=num_ends_in_pattern,
-                        end_number1=num_ends_in_pattern + 1,
+                        end_number1=num_ends_in_pattern,
                         end_repeat_number=end_repeat_number - 1,
                     )
                 else:
@@ -733,22 +733,27 @@ class BaseTestLoomServer:
                 expected_end_number0 = 0
                 expected_repeat_number = 1
                 while expected_repeat_number < 3:
-                    if expected_end_number1 == 0:
+                    # Compute new expected_end_number0 & expected_end_number1
+                    if expected_end_number0 == 0:
+                        # First actual pick of the pattern.
                         expected_end_number0 = 1
-                    elif expected_end_number1 <= num_ends_in_pattern:
-                        expected_end_number0 = expected_end_number1
+                    elif expected_end_number1 < num_ends_in_pattern:
+                        # We are not at the end of this pattern repeat.
+                        expected_end_number0 = expected_end_number1 + 1
                     else:
                         # Wrap around
                         expected_end_number0 = (
                             0 if pattern.separate_threading_repeats else 1
                         )
                         expected_repeat_number += 1
+
+                    # Compute new expected_end_number1
                     if expected_end_number0 == 0:
                         expected_end_number1 = 0
                     else:
                         expected_end_number1 = min(
-                            expected_end_number0 + thread_group_size,
-                            num_ends_in_pattern + 1,
+                            expected_end_number0 + thread_group_size - 1,
+                            num_ends_in_pattern,
                         )
                     command_next_end(
                         client=client,
@@ -757,7 +762,7 @@ class BaseTestLoomServer:
                         expected_repeat_number=expected_repeat_number,
                     )
 
-                # Change to unthreading (high to low)
+                # Change to high-to-low
                 change_direction(client)
                 assert not client.loom_server.thread_low_to_high
 
@@ -766,8 +771,8 @@ class BaseTestLoomServer:
                     if expected_end_number0 == 0 or (
                         expected_end_number0 == 1 and not separate_threading_repeats
                     ):
-                        # Wrap around
-                        expected_end_number1 = num_ends_in_pattern + 1
+                        # Wrap around -- start previous repeat
+                        expected_end_number1 = num_ends_in_pattern
                         expected_end_number0 = max(
                             1, num_ends_in_pattern + 1 - thread_group_size
                         )
@@ -776,7 +781,7 @@ class BaseTestLoomServer:
                         expected_end_number0 = 0
                         expected_end_number1 = 0
                     else:
-                        expected_end_number1 = expected_end_number0
+                        expected_end_number1 = expected_end_number0 - 1
                         expected_end_number0 = max(
                             1, expected_end_number0 - thread_group_size
                         )

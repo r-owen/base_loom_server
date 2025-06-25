@@ -158,7 +158,7 @@ class ReducedPattern:
         if self.end_number0 == 0:
             return 0
         shaft_set = {
-            self.threading[i] for i in range(self.end_number0 - 1, self.end_number1 - 1)
+            self.threading[i] for i in range(self.end_number0 - 1, self.end_number1)
         }
         shaft_word = sum(1 << shaft for shaft in shaft_set if shaft >= 0)
         return shaft_word
@@ -167,37 +167,41 @@ class ReducedPattern:
         """Increment self.end_number0 in the specified direction.
         Increment end_repeat_number as well, if appropriate.
 
-        End number is 1-based, but 0 means at start or end
+        End number is 1-based, but 0 means at start or between repeats
         (in which case there are no threads in the group).
         """
         self.check_end_number(self.end_number0)
         max_end_number = len(self.threading)
         new_end_number0 = 0
         # Initialize new_end_number1 to None to allow set_current_end_number
-        # to compute it, by default; there's at least one case where
-        # it is simpler to compute it here
+        # to compute it, if possible (most cases below).
         new_end_number1 = None
         new_end_repeat_number = self.end_repeat_number
         if thread_low_to_high:
             if self.end_number0 == 0:
                 new_end_number0 = 1
-            elif self.end_number1 > max_end_number:
+            elif self.end_number1 < max_end_number:
+                new_end_number0 = self.end_number1 + 1
+            else:
+                # At the end of one repeat; start the next.
                 new_end_number0 = 0 if self.separate_threading_repeats else 1
                 new_end_repeat_number += 1
-            else:
-                new_end_number0 = self.end_number1
         else:
             if self.end_number0 == 0 or (
                 self.end_number0 == 1 and not self.separate_threading_repeats
             ):
-                new_end_number1 = max_end_number + 1
-                new_end_number0 = max(new_end_number1 - self.thread_group_size, 1)
+                # Start the previous repeat.
+                new_end_number1 = max_end_number
+                new_end_number0 = max(new_end_number1 + 1 - self.thread_group_size, 1)
                 new_end_repeat_number -= 1
             elif self.end_number0 == 1:
+                # At beginning and separate_threading_repeats; gap is next.
                 new_end_number0 = 0
             else:
+                # We must compute end_number1 because the available group
+                # size may be smaller than the desired group size.
                 new_end_number0 = max(self.end_number0 - self.thread_group_size, 1)
-                new_end_number1 = self.end_number0
+                new_end_number1 = self.end_number0 - 1
         self.set_current_end_number(
             end_number0=new_end_number0,
             end_number1=new_end_number1,
@@ -226,11 +230,15 @@ class ReducedPattern:
         return next_pick_number
 
     def compute_end_number1(self, end_number0: int) -> int:
+        """Compute end_number1 given end_number0.
+
+        Uses the current value of end_repeat_number.
+        """
         self.check_end_number(end_number0)
         max_end_number = len(self.threading)
         if end_number0 == 0:
             return 0
-        return min(end_number0 + self.thread_group_size, max_end_number + 1)
+        return min(end_number0 + self.thread_group_size - 1, max_end_number)
 
     def set_current_end_number(
         self,
@@ -238,7 +246,7 @@ class ReducedPattern:
         end_number1: int | None = None,
         end_repeat_number: int | None = None,
     ) -> None:
-        """Set end_number0.
+        """Set end_number0, end_number1, and possibly end_repeat_number.
 
         Args:
             end_number0: New value for end_number0, the starting end number
@@ -248,8 +256,7 @@ class ReducedPattern:
                 If not None then the value must be:
 
                 * 0, if end_number0 = 0.
-                * In range end_number0 < end_number1 ≤ 1 + num shafts,
-                    if end_number0 ≠ 0.
+                * Else in range end_number0 <= end_number1 ≤ num ends.
             end_repeat_number: New value for end_repeat_number.
                 If None, use the current value.
 
@@ -263,10 +270,10 @@ class ReducedPattern:
             if end_number0 == 0:
                 if end_number1 != 0:
                     raise IndexError(f"{end_number1=} must be 0, since end_number0=0")
-            elif end_number1 > max_end_number + 1:
-                raise IndexError(f"{end_number1=} must be <= {max_end_number + 1}")
-            elif end_number1 <= end_number0:
-                raise IndexError(f"{end_number1=} must be > {end_number0=}")
+            elif end_number1 > max_end_number:
+                raise IndexError(f"{end_number1=} must be <= {max_end_number}")
+            elif end_number1 < end_number0:
+                raise IndexError(f"{end_number1=} must be >= {end_number0=}")
             self.end_number1 = end_number1
         else:
             self.end_number1 = self.compute_end_number1(end_number0=end_number0)
