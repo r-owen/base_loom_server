@@ -696,6 +696,8 @@ class LoomClient {
             directionControlElt.value = this.settings.direction_control
             directionControlDiv.style.display = "flex"
         }
+        let end1OnRightElt = document.getElementById("setting_end1_on_right")
+        end1OnRightElt.value = this.settings.end1_on_right ? "1" : "0"
         let threadRightToLeftElt = document.getElementById("setting_thread_right_to_left")
         threadRightToLeftElt.value = this.settings.thread_right_to_left ? "1" : "0"
         let threadBackToFrontElt = document.getElementById("setting_thread_back_to_front")
