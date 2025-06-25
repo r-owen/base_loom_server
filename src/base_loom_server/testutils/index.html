@@ -1560,7 +1560,12 @@
 <span class="normal">1411</span>
 <span class="normal">1412</span>
 <span class="normal">1413</span>
-<span class="normal">1414</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
+<span class="normal">1414</span>
+<span class="normal">1415</span>
+<span class="normal">1416</span>
+<span class="normal">1417</span>
+<span class="normal">1418</span>
+<span class="normal">1419</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
@@ -2104,9 +2109,9 @@
                     <span class="k">assert</span> <span class="n">jump_end_reply</span> <span class="o">==</span> <span class="n">SimpleNamespace</span><span class="p">(</span>
                         <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">,</span>
                         <span class="n">total_end_number0</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">,</span>
-                        <span class="n">total_end_number1</span><span class="o">=</span><span class="n">total_end_number0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">total_end_number1</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">,</span>
                         <span class="n">end_number0</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
-                        <span class="n">end_number1</span><span class="o">=</span><span class="n">num_ends_in_pattern</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">end_number1</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
                         <span class="n">end_repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -2295,22 +2300,27 @@
                 <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="n">expected_repeat_number</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="k">while</span> <span class="n">expected_repeat_number</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">expected_end_number1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># Compute new expected_end_number0 &amp; expected_end_number1</span>
+                    <span class="k">if</span> <span class="n">expected_end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c1"># First actual pick of the pattern.</span>
                         <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="mi">1</span>
-                    <span class="k">elif</span> <span class="n">expected_end_number1</span> <span class="o">&lt;=</span> <span class="n">num_ends_in_pattern</span><span class="p">:</span>
-                        <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="n">expected_end_number1</span>
+                    <span class="k">elif</span> <span class="n">expected_end_number1</span> <span class="o">&lt;</span> <span class="n">num_ends_in_pattern</span><span class="p">:</span>
+                        <span class="c1"># We are not at the end of this pattern repeat.</span>
+                        <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="n">expected_end_number1</span> <span class="o">+</span> <span class="mi">1</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c1"># Wrap around</span>
                         <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="p">(</span>
                             <span class="mi">0</span> <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="k">else</span> <span class="mi">1</span>
                         <span class="p">)</span>
                         <span class="n">expected_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                    <span class="c1"># Compute new expected_end_number1</span>
                     <span class="k">if</span> <span class="n">expected_end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="mi">0</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
-                            <span class="n">expected_end_number0</span> <span class="o">+</span> <span class="n">thread_group_size</span><span class="p">,</span>
-                            <span class="n">num_ends_in_pattern</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="n">expected_end_number0</span> <span class="o">+</span> <span class="n">thread_group_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="n">num_ends_in_pattern</span><span class="p">,</span>
                         <span class="p">)</span>
                     <span class="n">command_next_end</span><span class="p">(</span>
                         <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
@@ -2319,7 +2329,7 @@
                         <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
                     <span class="p">)</span>
 
-                <span class="c1"># Change to unthreading (high to low)</span>
+                <span class="c1"># Change to high-to-low</span>
                 <span class="n">change_direction</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">thread_low_to_high</span>
 
@@ -2328,8 +2338,8 @@
                     <span class="k">if</span> <span class="n">expected_end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span>
                         <span class="n">expected_end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">separate_threading_repeats</span>
                     <span class="p">):</span>
-                        <span class="c1"># Wrap around</span>
-                        <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="n">num_ends_in_pattern</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="c1"># Wrap around -- start previous repeat</span>
+                        <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="n">num_ends_in_pattern</span>
                         <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
                             <span class="mi">1</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">thread_group_size</span>
                         <span class="p">)</span>
@@ -2338,7 +2348,7 @@
                         <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
                         <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="mi">0</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="n">expected_end_number0</span>
+                        <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="n">expected_end_number0</span> <span class="o">-</span> <span class="mi">1</span>
                         <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
                             <span class="mi">1</span><span class="p">,</span> <span class="n">expected_end_number0</span> <span class="o">-</span> <span class="n">thread_group_size</span>
                         <span class="p">)</span>

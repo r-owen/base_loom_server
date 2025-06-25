@@ -561,7 +561,14 @@
 <span class="normal">412</span>
 <span class="normal">413</span>
 <span class="normal">414</span>
-<span class="normal">415</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;DEFAULT_THREAD_GROUP_SIZE&quot;</span><span class="p">,</span>
@@ -721,7 +728,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="n">shaft_set</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span><span class="p">)</span>
         <span class="p">}</span>
         <span class="n">shaft_word</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">shaft</span> <span class="k">for</span> <span class="n">shaft</span> <span class="ow">in</span> <span class="n">shaft_set</span> <span class="k">if</span> <span class="n">shaft</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">shaft_word</span>
@@ -730,37 +737,41 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment self.end_number0 in the specified direction.</span>
 <span class="sd">        Increment end_repeat_number as well, if appropriate.</span>
 
-<span class="sd">        End number is 1-based, but 0 means at start or end</span>
+<span class="sd">        End number is 1-based, but 0 means at start or between repeats</span>
 <span class="sd">        (in which case there are no threads in the group).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_end_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span><span class="p">)</span>
         <span class="n">max_end_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
         <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="c1"># Initialize new_end_number1 to None to allow set_current_end_number</span>
-        <span class="c1"># to compute it, by default; there&#39;s at least one case where</span>
-        <span class="c1"># it is simpler to compute it here</span>
+        <span class="c1"># to compute it, if possible (most cases below).</span>
         <span class="n">new_end_number1</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">new_end_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span>
         <span class="k">if</span> <span class="n">thread_low_to_high</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">&gt;</span> <span class="n">max_end_number</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">&lt;</span> <span class="n">max_end_number</span><span class="p">:</span>
+                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># At the end of one repeat; start the next.</span>
                 <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="k">else</span> <span class="mi">1</span>
                 <span class="n">new_end_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span>
             <span class="p">):</span>
-                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="n">max_end_number</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">new_end_number1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># Start the previous repeat.</span>
+                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="n">max_end_number</span>
+                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">new_end_number1</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="n">new_end_repeat_number</span> <span class="o">-=</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># At beginning and separate_threading_repeats; gap is next.</span>
                 <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># We must compute end_number1 because the available group</span>
+                <span class="c1"># size may be smaller than the desired group size.</span>
                 <span class="n">new_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span>
+                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_current_end_number</span><span class="p">(</span>
             <span class="n">end_number0</span><span class="o">=</span><span class="n">new_end_number0</span><span class="p">,</span>
             <span class="n">end_number1</span><span class="o">=</span><span class="n">new_end_number1</span><span class="p">,</span>
@@ -789,11 +800,15 @@
         <span class="k">return</span> <span class="n">next_pick_number</span>
 
     <span class="k">def</span> <span class="nf">compute_end_number1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end_number0</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute end_number1 given end_number0.</span>
+
+<span class="sd">        Uses the current value of end_repeat_number.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_end_number</span><span class="p">(</span><span class="n">end_number0</span><span class="p">)</span>
         <span class="n">max_end_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
-        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">end_number0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">,</span> <span class="n">max_end_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">end_number0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_end_number</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_current_end_number</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number" title="Go to docs">docs</a></div>
         <span class="bp">self</span><span class="p">,</span>
@@ -801,7 +816,7 @@
         <span class="n">end_number1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">end_repeat_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set end_number0.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set end_number0, end_number1, and possibly end_repeat_number.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            end_number0: New value for end_number0, the starting end number</span>
@@ -811,8 +826,7 @@
 <span class="sd">                If not None then the value must be:</span>
 
 <span class="sd">                * 0, if end_number0 = 0.</span>
-<span class="sd">                * In range end_number0 &lt; end_number1 ≤ 1 + num shafts,</span>
-<span class="sd">                    if end_number0 ≠ 0.</span>
+<span class="sd">                * Else in range end_number0 &lt;= end_number1 ≤ num ends.</span>
 <span class="sd">            end_repeat_number: New value for end_repeat_number.</span>
 <span class="sd">                If None, use the current value.</span>
 
@@ -826,10 +840,10 @@
             <span class="k">if</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">end_number1</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">end_number1</span><span class="si">=}</span><span class="s2"> must be 0, since end_number0=0&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">end_number1</span> <span class="o">&gt;</span> <span class="n">max_end_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">end_number1</span><span class="si">=}</span><span class="s2"> must be &lt;= </span><span class="si">{</span><span class="n">max_end_number</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">end_number1</span> <span class="o">&lt;=</span> <span class="n">end_number0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">end_number1</span><span class="si">=}</span><span class="s2"> must be &gt; </span><span class="si">{</span><span class="n">end_number0</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">end_number1</span> <span class="o">&gt;</span> <span class="n">max_end_number</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">end_number1</span><span class="si">=}</span><span class="s2"> must be &lt;= </span><span class="si">{</span><span class="n">max_end_number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">end_number1</span> <span class="o">&lt;</span> <span class="n">end_number0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">end_number1</span><span class="si">=}</span><span class="s2"> must be &gt;= </span><span class="si">{</span><span class="n">end_number0</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">=</span> <span class="n">end_number1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_end_number1</span><span class="p">(</span><span class="n">end_number0</span><span class="o">=</span><span class="n">end_number0</span><span class="p">)</span>

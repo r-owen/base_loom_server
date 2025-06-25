@@ -374,9 +374,9 @@
 <span class="k">class</span> <span class="nc">CurrentEndNumber</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.CurrentEndNumber"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.CurrentEndNumber" title="Go to docs">docs</a></div>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The current threading end numbers and repeat number</span>
 
-<span class="sd">    The range of end numbers is [end_number0, end_number1).</span>
-<span class="sd">    If end_number0 is 0 then end_number1 will also be zero</span>
-<span class="sd">    (no threads in range).</span>
+<span class="sd">    The range of end numbers is end_number0 through end_number1,</span>
+<span class="sd">    inclusive. If end_number0 is 0 then end_number1 will also be 0;</span>
+<span class="sd">    this indicates the beginning, or a gap between pattern repeats.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;CurrentEndNumber&quot;</span><span class="p">)</span>
