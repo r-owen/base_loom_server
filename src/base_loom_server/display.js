@@ -218,7 +218,6 @@ function readTextFile(file, encoding = "utf-8") {
 /* Translate a phrase using TranslationDict */
 function t(phrase) {
     if (!(phrase in TranslationDict)) {
-        throw error
         console.log(`Missing translation key: "${phrase}"`)
         return phrase
     }
@@ -812,7 +811,7 @@ class LoomClient {
         let textColor = "black"
         if (this.isConnected() && (this.statusMessage != null)) {
             text = this.statusMessage.message
-            textColor = SeverityColors[datadict.severity]
+            textColor = SeverityColors[this.statusMessage.severity]
         } else if (!this.isConnected()) {
             this.statusMessage = null
             textColor = "red"  // loom must be connected to weave
@@ -1225,7 +1224,12 @@ class LoomClient {
         const datadict = JSON.parse(event.data)
         let resetCommandProblemMessage = true
         if (datadict.type == "CommandDone") {
-            if (!datadict.success) {
+            if (datadict.success) {
+                if (this.statusMessage != null) {
+                    this.statusMessage = null
+                    this.displayStatusMessage()
+                }
+            } else {
                 resetCommandProblemMessage = false
                 commandProblemElt.textContent = truncateStr(datadict.message)
                 commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
