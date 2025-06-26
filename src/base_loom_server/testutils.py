@@ -143,7 +143,7 @@ def command_next_end(
         expected_replies += [
             dict(
                 type="JumpEndNumber",
-                end_number=None,
+                end_number0=None,
                 end_repeat_number=None,
             ),
         ]
@@ -927,6 +927,10 @@ class BaseTestLoomServer:
             assert client.loom_server.direction_forward
 
     def test_pattern_persistence(self) -> None:
+        """Test pattern persistence, including current location.
+
+        Check that the location is saved when it changes.
+        """
         rnd = random.Random(47)
         pattern_list = []
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -937,18 +941,72 @@ class BaseTestLoomServer:
                 db_path=db_path,
             ) as client:
                 # Select a few patterns; for each one jump to some random
-                # pick (including actually going to that pick).
+                # pick and some random end_number0, including actually
+                # going to that pick or end.
                 assert len(ALL_PATTERN_PATHS) > 3
                 for path in (ALL_PATTERN_PATHS[0], ALL_PATTERN_PATHS[3]):
+
+                    # If needed, go to weaving mode
+                    if client.loom_server.mode != ModeEnum.WEAVE:
+                        replies = send_command(
+                            client, dict(type="mode", mode=ModeEnum.WEAVE)
+                        )
+                        assert len(replies) == 2
+                        assert replies[0] == dict(type="Mode", mode=ModeEnum.WEAVE)
+
                     pattern = select_pattern(client=client, pattern_name=path.name)
-                    pattern_list.append(pattern)
-                    pattern.pick_number = rnd.randrange(0, len(pattern.picks))
-                    pattern.pick_repeat_number = rnd.randrange(1, 10)
-                    pattern.thread_group_size = rnd.randrange(1, 10)
+                    num_ends_in_pattern = len(pattern.threading)
                     num_picks_in_pattern = len(pattern.picks)
+
+                    pattern_list.append(pattern)
+                    pick_number = rnd.randrange(0, num_picks_in_pattern)
+                    pick_repeat_number = rnd.randrange(1, 10)
+                    thread_group_size = rnd.randrange(1, 10)
+
+                    end_number0 = rnd.randrange(0, num_ends_in_pattern)
+                    end_number1 = (
+                        0
+                        if end_number0 == 0
+                        else min(
+                            end_number0 + thread_group_size - 1, num_ends_in_pattern
+                        )
+                    )
+                    end_repeat_number = rnd.randrange(1, 10)
+
+                    separate_threading_repeats = rnd.choice((True, False))
+                    separate_weaving_repeats = rnd.choice((True, False))
+
+                    if pattern.separate_threading_repeats != separate_threading_repeats:
+                        replies = send_command(
+                            client,
+                            dict(
+                                type="separate_threading_repeats",
+                                separate=separate_threading_repeats,
+                            ),
+                        )
+                        assert len(replies) == 2
+                        assert replies[0] == dict(
+                            type="SeparateThreadingRepeats",
+                            separate=separate_threading_repeats,
+                        )
+
+                    if pattern.separate_weaving_repeats != separate_weaving_repeats:
+                        replies = send_command(
+                            client,
+                            dict(
+                                type="separate_weaving_repeats",
+                                separate=separate_weaving_repeats,
+                            ),
+                        )
+                        assert len(replies) == 2
+                        assert replies[0] == dict(
+                            type="SeparateWeavingRepeats",
+                            separate=separate_weaving_repeats,
+                        )
+
                     total_pick_number = compute_total_num(
-                        num_within=pattern.pick_number,
-                        repeat_number=pattern.pick_repeat_number,
+                        num_within=pick_number,
+                        repeat_number=pick_repeat_number,
                         repeat_len=num_picks_in_pattern,
                     )
                     replies = send_command(
@@ -957,52 +1015,102 @@ class BaseTestLoomServer:
                     )
                     assert len(replies) == 2
                     if total_pick_number == 0:
-                        assert replies[0] == dict(
-                            type="JumpPickNumber",
-                            total_pick_number=0,
-                            pick_number=0,
-                            pick_repeat_number=1,
-                        )
-                    elif pattern.pick_number == 0 and total_pick_number != 0:
+                        assert total_pick_number == 0
+                        assert pick_number == 0
+                        assert pick_repeat_number == 1
+                    elif pick_number == 0 and total_pick_number != 0:
                         # Special case: report the last pick of the previous
                         # repeat, rather than the magic "0" pick_number
-                        assert replies[0] == dict(
-                            type="JumpPickNumber",
-                            total_pick_number=total_pick_number,
-                            pick_number=num_picks_in_pattern,
-                            pick_repeat_number=pattern.pick_repeat_number - 1,
-                        )
-                    else:
-                        assert replies[0] == dict(
-                            type="JumpPickNumber",
-                            total_pick_number=total_pick_number,
-                            pick_number=pattern.pick_number,
-                            pick_repeat_number=pattern.pick_repeat_number,
-                        )
-                    expected_pick_number = pattern.pick_number
-                    expected_shaft_word = pattern.get_pick(
-                        expected_pick_number
-                    ).shaft_word
+                        pick_number = num_picks_in_pattern
+                        pick_repeat_number -= 1
+                    assert replies[0] == dict(
+                        type="JumpPickNumber",
+                        total_pick_number=total_pick_number,
+                        pick_number=pick_number,
+                        pick_repeat_number=pick_repeat_number,
+                    )
+                    expected_shaft_word = pattern.get_pick(pick_number).shaft_word
                     command_next_pick(
                         client=client,
                         jump_pending=True,
-                        expected_pick_number=expected_pick_number,
-                        expected_repeat_number=pattern.pick_repeat_number,
+                        expected_pick_number=pick_number,
+                        expected_repeat_number=pick_repeat_number,
                         expected_shaft_word=expected_shaft_word,
                     )
+
+                    # Now advance to the desired end.
+                    # First set mode to threading and set thread group size,
+                    # Then jump to the pick and advance.
+                    replies = send_command(
+                        client, dict(type="mode", mode=ModeEnum.THREAD)
+                    )
+                    assert len(replies) == 2
+                    assert replies[0] == dict(type="Mode", mode=ModeEnum.THREAD)
 
                     replies = send_command(
                         client,
                         dict(
                             type="thread_group_size",
-                            group_size=pattern.thread_group_size,
+                            group_size=thread_group_size,
                         ),
                     )
                     assert len(replies) == 2
                     assert replies[0] == dict(
                         type="ThreadGroupSize",
-                        group_size=pattern.thread_group_size,
+                        group_size=thread_group_size,
                     )
+
+                    total_end_number0 = compute_total_num(
+                        num_within=end_number0,
+                        repeat_number=end_repeat_number,
+                        repeat_len=num_ends_in_pattern,
+                    )
+                    total_end_number1 = compute_total_num(
+                        num_within=end_number1,
+                        repeat_number=end_repeat_number,
+                        repeat_len=num_ends_in_pattern,
+                    )
+                    replies = send_command(
+                        client,
+                        dict(type="jump_to_end", total_end_number0=total_end_number0),
+                    )
+                    if total_end_number0 == 0:
+                        assert total_end_number1 == 0
+                        assert end_number0 == 0
+                        assert end_number1 == 0
+                        assert end_repeat_number == 1
+                    elif end_number0 == 0 and total_end_number0 != 0:
+                        # Special case: report the last end of the previous
+                        # repeat, rather than the magic "0" end_number0
+                        end_repeat_number -= 1
+                        end_number0 = num_ends_in_pattern
+                        end_number1 = num_ends_in_pattern
+                    assert replies[0] == dict(
+                        type="JumpEndNumber",
+                        total_end_number0=total_end_number0,
+                        total_end_number1=total_end_number1,
+                        end_number0=end_number0,
+                        end_number1=end_number1,
+                        end_repeat_number=end_repeat_number,
+                    )
+
+                    command_next_end(
+                        client=client,
+                        jump_pending=True,
+                        expected_end_number0=end_number0,
+                        expected_end_number1=end_number1,
+                        expected_repeat_number=end_repeat_number,
+                    )
+
+                    assert pattern.pick_number == pick_number
+                    assert pattern.pick_repeat_number == pick_repeat_number
+                    assert pattern.end_number0 == end_number0
+                    assert pattern.end_number1 == end_number1
+                    assert pattern.end_repeat_number == end_repeat_number
+                    assert (
+                        pattern.separate_threading_repeats == separate_threading_repeats
+                    )
+                    assert pattern.separate_weaving_repeats == separate_weaving_repeats
 
             # This expects that first pattern 0 and then pattern 3
             # was selected from ALL_PATTERN_PATHS:
