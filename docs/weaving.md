@@ -14,9 +14,6 @@ The pattern is displayed as a picture that shows woven fabric below,
 and potential future fabric, somewhat grayed out, above.
 (This is the opposite of the usual US drawdown direction.)
 
-In addition, a very faint echo of the pattern is shown below pick number 0.
-This may give you a better overview of the pattern as you start to weave.
-
 A [setting](settings.md) allows you to specify whether warp end 1 is shown at the right or left.
 
 Note that the display is naive; it shows all threads as the same thickness,
