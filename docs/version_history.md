@@ -1,5 +1,18 @@
 # Version History
 
+## 0.24 2025-06-26
+
+* Prohibit weaving or threading beyond the beginning of the pattern.
+* Eliminate the faint ghost display of picks < 0 in the Weaving panel. It is no longer as useful and was potentially confusing.
+* Bug fix: threading direction did not take the new end1_on_right setting into account.
+* Bug fix: status messages were not displayed.
+
+Changes for maintainers and authors of loom-specific packages:
+
+* Added a command-line script `check_translation_files` to check the completeness of language translation files.
+* BaseLoomServer.handle_next_pick_request now returns a boolean indicating whether or not a new shed was sent to the loom.
+  Loom-specific software for looms that do not report shaft state (e.g. Toika) should use this to decide whether or not to report the shaft state.
+
 ## 0.23.1 2025-06-25
 
 * Fix display of setting "warp end 1"; it was not updated based on the reported value.
