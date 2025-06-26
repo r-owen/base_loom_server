@@ -194,17 +194,16 @@ class BaseLoomServer:
     def thread_low_to_high(self) -> bool:
         """Return True if threading (or unthreading) is currently low to high.
 
-        Takes into account forward_direction (threading or unthreading)
-        and threading settings, but not jump_to_end.
+        Takes into account settings and self.direction_forward.
         """
-        low_to_high_if_forward = (
+        low_to_high = (
             self.settings.thread_back_to_front == self.settings.thread_right_to_left
         )
-        return (
-            low_to_high_if_forward
-            if self.direction_forward
-            else not low_to_high_if_forward
-        )
+        if not self.settings.end1_on_right:
+            low_to_high = not low_to_high
+        if not self.direction_forward:
+            low_to_high = not low_to_high
+        return low_to_high
 
     @property
     def loom_connected(self) -> bool:

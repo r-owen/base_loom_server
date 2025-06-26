@@ -298,16 +298,15 @@ def command_settings(
             assert reported_settings[key] == value
         for key, value in reported_settings.items():
             assert getattr(client.loom_server.settings, key) == value
-    if client.loom_server.direction_forward:
-        assert client.loom_server.thread_low_to_high == (
-            client.loom_server.settings.thread_back_to_front
-            == client.loom_server.settings.thread_right_to_left
-        )
-    else:
-        assert client.loom_server.thread_low_to_high != (
-            client.loom_server.settings.thread_back_to_front
-            == client.loom_server.settings.thread_right_to_left
-        )
+    expected_thread_low_to_high = (
+        client.loom_server.settings.thread_back_to_front
+        == client.loom_server.settings.thread_right_to_left
+    )
+    if not client.loom_server.direction_forward:
+        expected_thread_low_to_high = not expected_thread_low_to_high
+    if not client.loom_server.settings.end1_on_right:
+        expected_thread_low_to_high = not expected_thread_low_to_high
+    assert client.loom_server.thread_low_to_high == expected_thread_low_to_high
 
 
 def select_pattern(
@@ -738,6 +737,12 @@ class BaseTestLoomServer:
                 ),
             ):
                 print(f"{separate_threading_repeats=}, {thread_group_size=}")
+
+                # Restore initial state that we care about.
+                client.loom_server.settings.end1_on_right = True
+                client.loom_server.settings.thread_back_to_front = True
+                client.loom_server.settings.thread_right_to_left = True
+                client.loom_server.direction_forward = True
                 pattern.set_current_end_number(end_number0=0, end_repeat_number=1)
                 expected_end_number0 = 0
                 expected_end_number1 = 0
@@ -819,9 +824,46 @@ class BaseTestLoomServer:
                 assert pattern.end_number1 == expected_end_number1
                 assert pattern.end_repeat_number == expected_repeat_number
 
-                # Go back to threading low to high
-                change_direction(client)
+                # Toggle low_to_high by toggling end1_at_right
+                command_settings(
+                    client, end1_on_right=not client.loom_server.settings.end1_on_right
+                )
                 assert client.loom_server.thread_low_to_high
+
+                command_next_end(
+                    client=client,
+                    expected_end_number0=1,
+                    expected_end_number1=min(num_ends_in_pattern, thread_group_size),
+                    expected_repeat_number=1,
+                )
+
+                # Toggle low_to_high by toggling thread_back_to_front
+                command_settings(
+                    client,
+                    thread_back_to_front=not client.loom_server.settings.thread_back_to_front,
+                )
+                assert not client.loom_server.thread_low_to_high
+
+                command_next_end(
+                    client=client,
+                    expected_end_number0=0,
+                    expected_end_number1=0,
+                    expected_repeat_number=1,
+                )
+
+                # Toggle low_to_high by toggling thread_right_to_left
+                command_settings(
+                    client,
+                    thread_right_to_left=not client.loom_server.settings.thread_right_to_left,
+                )
+                assert client.loom_server.thread_low_to_high
+
+                command_next_end(
+                    client=client,
+                    expected_end_number0=1,
+                    expected_end_number1=min(num_ends_in_pattern, thread_group_size),
+                    expected_repeat_number=1,
+                )
 
     def test_next_pick(self) -> None:
         pattern_name = ALL_PATTERN_PATHS[2].name
