@@ -39,6 +39,7 @@ dev = [
 
 [project.scripts]
 run_example_loom = "base_loom_server.main:run_example_loom"
+check_translation_files = "base_loom_server.check_translation_files:check_translation_files"
 
 [project.urls]
 Homepage = "https://pypi.org/project/base-loom-server/"
