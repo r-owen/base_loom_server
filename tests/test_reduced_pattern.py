@@ -186,12 +186,12 @@ def test_end_number() -> None:
         reduced_pattern = reduced_pattern_from_pattern_data(
             name=filepath.name, data=full_pattern
         )
+        num_ends = len(reduced_pattern.threading)
+
         separate_repeats = not separate_repeats
         reduced_pattern.separate_threading_repeats = separate_repeats
-        num_ends = len(reduced_pattern.threading)
-        NUM_ITER = 2
-        assert num_ends > NUM_ITER  # for some tests below to work
         assert reduced_pattern.end_number0 == 0
+        assert reduced_pattern.end_number1 == 0
         assert reduced_pattern.end_repeat_number == 1
 
         # Check invalid end_number0
@@ -226,6 +226,7 @@ def test_end_number() -> None:
                 reduced_pattern.thread_group_size = thread_group_size
             assert reduced_pattern.thread_group_size == initial_thread_group_size
 
+        # Test set_current_end_number and get_threading_shaft_word
         for thread_group_size in GROUP_SIZE_NUMBERS:
             reduced_pattern.thread_group_size = thread_group_size
             # Test get_threading_group
@@ -256,83 +257,104 @@ def test_end_number() -> None:
                         expected_shaft_word += 1 << shaft_index
                     assert shaft_word == expected_shaft_word
 
-            for initial_end_number0 in (0, 1, num_ends - 1, num_ends):
-                # Increment low to high
-                reduced_pattern.thread_group_size = thread_group_size
-                reduced_pattern.set_current_end_number(
-                    end_number0=initial_end_number0,
-                    end_repeat_number=1,
-                )
-                reduced_pattern.increment_end_number(thread_low_to_high=True)
-                if initial_end_number0 == 0:
-                    # The next group starts at one,
-                    # regardless of thread_group_size
-                    assert reduced_pattern.end_number0 == 1
-                    assert reduced_pattern.end_repeat_number == 1
-                elif initial_end_number0 + thread_group_size > num_ends:
-                    # The group extends past the end, so reset to 0 or 1
-                    # depending on separate_threading_repeats
-                    assert reduced_pattern.end_number0 == 0 if separate_repeats else 1
-                    assert reduced_pattern.end_repeat_number == 2
-                else:
-                    assert (
-                        reduced_pattern.end_number0
-                        == initial_end_number0 + thread_group_size
-                    )
-                    assert reduced_pattern.end_repeat_number == 1
+        # Test compute_end_number and increment_end_number
+        for thread_group_size in GROUP_SIZE_NUMBERS:
+            reduced_pattern.thread_group_size = thread_group_size
 
-                # Increment high to low
-                reduced_pattern.thread_group_size = thread_group_size
+            for expected_end_number0 in (0, 1, num_ends - 1, num_ends):
+                expected_repeat_number = 1
                 reduced_pattern.set_current_end_number(
-                    initial_end_number0,
-                    end_repeat_number=1,
+                    end_number0=expected_end_number0,
+                    end_number1=None,
+                    end_repeat_number=expected_repeat_number,
                 )
-                reduced_pattern.increment_end_number(thread_low_to_high=False)
-                if initial_end_number0 == 0 or (
-                    initial_end_number0 == 1 and not separate_repeats
-                ):
-                    # Start the next group; end_number1 = num_ends
-                    # and repeat_number is decremented.
-                    assert reduced_pattern.end_number1 == num_ends
-                    assert reduced_pattern.end_number0 == max(
-                        reduced_pattern.end_number1 + 1 - thread_group_size, 1
-                    )
-                    assert reduced_pattern.end_repeat_number == 0
-                elif initial_end_number0 == 1:
-                    # We are at the separation.
-                    assert reduced_pattern.end_number0 == 0
-                    assert reduced_pattern.end_number1 == 0
-                    assert reduced_pattern.end_repeat_number == 1
-                elif initial_end_number0 > thread_group_size:
-                    # The next group size = thread_group_size.
-                    assert (
-                        reduced_pattern.end_number0
-                        == initial_end_number0 - thread_group_size
-                    )
-                    assert (
-                        reduced_pattern.end_number1
-                        == reduced_pattern.end_number0 + thread_group_size - 1
-                    )
-                    assert reduced_pattern.end_repeat_number == 1
-                else:
-                    # The next group size < thread_group_size
-                    assert reduced_pattern.end_number0 == 1
-                    assert reduced_pattern.end_number1 == initial_end_number0 - 1
-                    assert reduced_pattern.end_repeat_number == 1
+                expected_end_number1 = reduced_pattern.end_number1
+                assert reduced_pattern.end_number0 == expected_end_number0
+                assert reduced_pattern.end_repeat_number == expected_repeat_number
 
-            for end_number1 in (initial_end_number0 + 1, num_ends):
-                for end_repeat_number in (-1, 0, 5):
-                    if end_number1 > num_ends:
-                        continue
-                    reduced_pattern.thread_group_size = thread_group_size
-                    reduced_pattern.set_current_end_number(
-                        end_number0=initial_end_number0,
-                        end_number1=end_number1,
-                        end_repeat_number=end_repeat_number,
+                # Increment low to high through 3rd repeat
+                while expected_repeat_number < 3:
+                    if expected_end_number1 == num_ends:
+                        # Start a new repeat
+                        if separate_repeats:
+                            expected_end_number0 = 0
+                            expected_end_number1 = 0
+                        else:
+                            expected_end_number0 = 1
+                            expected_end_number1 = min(num_ends, thread_group_size)
+                        expected_repeat_number += 1
+                    elif expected_end_number0 == 0:
+                        expected_end_number0 = 1
+                        expected_end_number1 = min(num_ends, thread_group_size)
+                    else:
+                        expected_end_number0 = min(
+                            num_ends, expected_end_number0 + thread_group_size
+                        )
+                        expected_end_number1 = min(
+                            num_ends, expected_end_number0 + thread_group_size - 1
+                        )
+                    assert (
+                        expected_end_number0,
+                        expected_end_number1,
+                        expected_repeat_number,
+                    ) == reduced_pattern.compute_next_end_numbers(
+                        thread_low_to_high=True
                     )
-                    assert reduced_pattern.end_number0 == initial_end_number0
-                    assert reduced_pattern.end_number1 == end_number1
-                    assert reduced_pattern.end_repeat_number == end_repeat_number
+                    reduced_pattern.increment_end_number(thread_low_to_high=True)
+                    assert reduced_pattern.end_number0 == expected_end_number0
+                    assert reduced_pattern.end_number1 == expected_end_number1
+                    assert reduced_pattern.end_repeat_number == expected_repeat_number
+
+                # Increment to beginning
+                while True:
+                    if expected_end_number0 == 0 and expected_repeat_number == 1:
+                        break
+
+                    if (
+                        expected_end_number0 == 1
+                        and expected_repeat_number == 1
+                        and not separate_repeats
+                    ):
+                        # Special case; go to end_number0 = 0,
+                        # even though not separating repeats.
+                        expected_end_number0 = 0
+                        expected_end_number1 = 0
+                    elif expected_end_number0 == 1 and separate_repeats:
+                        expected_end_number0 = 0
+                        expected_end_number1 = 0
+                    elif (expected_end_number0 == 0 and separate_repeats) or (
+                        expected_end_number0 == 1 and not separate_repeats
+                    ):
+                        expected_end_number0 = max(1, num_ends + 1 - thread_group_size)
+                        expected_end_number1 = min(
+                            num_ends, expected_end_number0 + thread_group_size - 1
+                        )
+                        expected_repeat_number -= 1
+                    else:
+                        expected_end_number1 = expected_end_number0 - 1
+                        expected_end_number0 = max(
+                            1, expected_end_number0 - thread_group_size
+                        )
+                    assert (
+                        expected_end_number0,
+                        expected_end_number1,
+                        expected_repeat_number,
+                    ) == reduced_pattern.compute_next_end_numbers(
+                        thread_low_to_high=False
+                    )
+                    reduced_pattern.increment_end_number(thread_low_to_high=False)
+                    assert reduced_pattern.end_number0 == expected_end_number0
+                    assert reduced_pattern.end_number1 == expected_end_number1
+                    assert reduced_pattern.end_repeat_number == expected_repeat_number
+
+                # At the beginning; test going past it
+                with pytest.raises(IndexError):
+                    reduced_pattern.compute_next_end_numbers(thread_low_to_high=False)
+                with pytest.raises(IndexError):
+                    reduced_pattern.increment_end_number(thread_low_to_high=False)
+                assert reduced_pattern.end_number0 == 0
+                assert reduced_pattern.end_number1 == 0
+                assert reduced_pattern.end_repeat_number == 1
 
 
 def test_pick_number() -> None:
@@ -345,9 +367,11 @@ def test_pick_number() -> None:
         )
         separate_repeats = not separate_repeats
         reduced_pattern.separate_weaving_repeats = separate_repeats
+
         num_picks = len(reduced_pattern.picks)
-        NUM_ITER = 3
-        assert num_picks > NUM_ITER  # for some tests below to work
+
+        # Test check_pick_number and set_current_pick_number
+        # on some bad values
         assert reduced_pattern.pick_number == 0
         assert reduced_pattern.pick_repeat_number == 1
         for pick_number in (-1, num_picks + 1):
@@ -357,50 +381,74 @@ def test_pick_number() -> None:
                 reduced_pattern.set_current_pick_number(pick_number)
         assert reduced_pattern.pick_number == 0
         assert reduced_pattern.pick_repeat_number == 1
+
+        # Test check_pick_number and set_current_pick_number
+        # on some good values.
         for pick_number in (0, 1, num_picks - 1, num_picks):
             reduced_pattern.check_pick_number(pick_number)
             reduced_pattern.set_current_pick_number(pick_number)
             assert reduced_pattern.pick_number == pick_number
             assert reduced_pattern.pick_repeat_number == 1
 
-        # Go forward, but not past the end,
-        # then back up to the beginning (0 if separating repeats, else 1)
-        # then back up past the beginning
-        reduced_pattern.set_current_pick_number(0)
-        for i in range(NUM_ITER):
+        # Go forward into repeat 3
+        expected_pick_number = 0
+        expected_repeat_number = 1
+        reduced_pattern.set_current_pick_number(pick_number=expected_pick_number)
+        reduced_pattern.pick_repeat_number = expected_repeat_number
+        while expected_repeat_number < 3:
+            expected_pick_number += 1
+            if expected_pick_number > num_picks:
+                expected_pick_number = 0 if separate_repeats else 1
+                expected_repeat_number += 1
+            assert (
+                expected_pick_number,
+                expected_repeat_number,
+            ) == reduced_pattern.compute_next_pick_numbers(direction_forward=True)
+
             returned_pick_number = reduced_pattern.increment_pick_number(
                 direction_forward=True
             )
-            assert returned_pick_number == i + 1
-            assert reduced_pattern.pick_number == returned_pick_number
-            assert reduced_pattern.pick_repeat_number == 1
-        end_num = 0 if separate_repeats else 1
-        for i in range(NUM_ITER, end_num, -1):
-            reduced_pattern.increment_pick_number(direction_forward=False)
-            assert reduced_pattern.pick_number == i - 1
-            assert reduced_pattern.pick_repeat_number == 1
-        for i in range(NUM_ITER):
-            reduced_pattern.increment_pick_number(direction_forward=False)
-            assert reduced_pattern.pick_number == num_picks - i
-            assert reduced_pattern.pick_repeat_number == 0
+            assert returned_pick_number == expected_pick_number
+            assert reduced_pattern.pick_number == expected_pick_number
+            assert reduced_pattern.pick_repeat_number == expected_repeat_number
 
-        # Go backwards from the end, but not past the beginning,
-        # then go fowards to the end,
-        # then go past the end
-        reduced_pattern.set_current_pick_number(num_picks)
-        for i in range(NUM_ITER):
+        # Go backwards to the beginning
+        while True:
+            if expected_pick_number == 0 and expected_repeat_number == 1:
+                break
+
+            if (
+                expected_pick_number == 1
+                and expected_repeat_number == 1
+                and not separate_repeats
+            ):
+                # Special case: add separator at beginning,
+                # even though we don't separate
+                expected_pick_number = 0
+            elif (expected_pick_number == 0 and separate_repeats) or (
+                expected_pick_number == 1 and not separate_repeats
+            ):
+                expected_pick_number = num_picks
+                expected_repeat_number -= 1
+            else:
+                expected_pick_number -= 1
+            assert (
+                expected_pick_number,
+                expected_repeat_number,
+            ) == reduced_pattern.compute_next_pick_numbers(direction_forward=False)
+
             returned_pick_number = reduced_pattern.increment_pick_number(
                 direction_forward=False
             )
-            assert returned_pick_number == num_picks - i - 1
-            assert reduced_pattern.pick_number == returned_pick_number
-            assert reduced_pattern.pick_repeat_number == 0
-        for i in range(NUM_ITER, 0, -1):
-            reduced_pattern.increment_pick_number(direction_forward=True)
-            assert reduced_pattern.pick_number == 1 + num_picks - i
-            assert reduced_pattern.pick_repeat_number == 0
-        offset = 0 if separate_repeats else 1
-        for i in range(NUM_ITER):
-            reduced_pattern.increment_pick_number(direction_forward=True)
-            assert reduced_pattern.pick_number == i + offset
-            assert reduced_pattern.pick_repeat_number == 1
+            assert returned_pick_number == expected_pick_number
+            assert reduced_pattern.pick_number == expected_pick_number
+            assert reduced_pattern.pick_repeat_number == expected_repeat_number
+
+        # At the beginning; try to go past it
+        with pytest.raises(IndexError):
+            reduced_pattern.compute_next_pick_numbers(direction_forward=False)
+        with pytest.raises(IndexError):
+            reduced_pattern.increment_pick_number(direction_forward=False)
+        assert reduced_pattern.end_number0 == 0
+        assert reduced_pattern.end_number1 == 0
+        assert reduced_pattern.end_repeat_number == 1

@@ -135,6 +135,126 @@ class ReducedPattern:
         if pick_number > len(self.picks):
             raise IndexError(f"{pick_number=} > {len(self.picks)}")
 
+    def compute_end_number1(self, end_number0: int) -> int:
+        """Compute end_number1 given end_number0.
+
+        Uses the current value of end_repeat_number.
+        """
+        self.check_end_number(end_number0)
+        max_end_number = len(self.threading)
+        if end_number0 == 0:
+            return 0
+        return min(end_number0 + self.thread_group_size - 1, max_end_number)
+
+    def compute_next_end_numbers(
+        self, thread_low_to_high: bool
+    ) -> tuple[int, int, int]:
+        """Compute the next (end_number0, end_number1, end_repeat_number)
+        in the specified direction.
+
+        End number is 1-based, but 0 means at start or between repeats
+        (in which case there are no threads in the group).
+
+        Raises:
+            IndexError: If trying to increment past the start of threading.
+            IndexError: if self.end_number0 is invalid.
+        """
+        self.check_end_number(self.end_number0)
+        if (
+            self.end_number0 == 0
+            and self.end_repeat_number == 1
+            and not thread_low_to_high
+        ):
+            raise IndexError()
+
+        max_end_number = len(self.threading)
+        new_end_number0 = 0
+        # Initialize new_end_number1 to None to allow set_current_end_number
+        # to compute it, if possible (most cases below).
+        new_end_number1 = None
+        new_end_repeat_number = self.end_repeat_number
+        if thread_low_to_high:
+            if self.end_number0 == 0:
+                new_end_number0 = 1
+            elif self.end_number1 < max_end_number:
+                new_end_number0 = self.end_number1 + 1
+            else:
+                # At the end of one repeat; start the next.
+                new_end_number0 = 0 if self.separate_threading_repeats else 1
+                new_end_repeat_number += 1
+        else:
+            if self.end_number0 == 1 and (
+                self.separate_threading_repeats or self.end_repeat_number == 1
+            ):
+                # We are at the beginning of a pattern repeat and
+                # either we separate repeats or it is the very first.
+                # Go to end 0.
+                new_end_number0 = 0
+            elif self.end_number0 == 0 or (
+                self.end_number0 == 1 and not self.separate_threading_repeats
+            ):
+                # Start the previous repeat.
+                new_end_number1 = max_end_number
+                new_end_number0 = max(new_end_number1 + 1 - self.thread_group_size, 1)
+                new_end_repeat_number -= 1
+            else:
+                # We are still threading the current pattern repeat.
+                # We must compute end_number1 because the available group
+                # size may be smaller than the desired group size.
+                new_end_number0 = max(self.end_number0 - self.thread_group_size, 1)
+                new_end_number1 = self.end_number0 - 1
+        if new_end_number1 is None:
+            if new_end_number0 == 0:
+                new_end_number1 = 0
+            else:
+                new_end_number1 = min(
+                    new_end_number0 + self.thread_group_size - 1, max_end_number
+                )
+
+        return (new_end_number0, new_end_number1, new_end_repeat_number)
+
+    def compute_next_pick_numbers(self, direction_forward: bool) -> tuple[int, int]:
+        """Compute (next pick_number, pick_repeat_number)
+        in the specified direction.
+
+        Raises:
+            IndexError: If trying to increment past the start of weaving.
+        """
+        self.check_pick_number(self.pick_number)
+        if (
+            self.pick_number == 0
+            and self.pick_repeat_number == 1
+            and not direction_forward
+        ):
+            raise IndexError()
+
+        # Start by assuming the common case.
+        next_pick_repeat_number = self.pick_repeat_number
+        next_pick_number = (
+            self.pick_number + 1 if direction_forward else self.pick_number - 1
+        )
+
+        # Handle special cases: end of pattern repeats
+        if direction_forward:
+            if self.pick_number == len(self.picks):
+                # At the end; start a new repeat.
+                next_pick_number = 0 if self.separate_weaving_repeats else 1
+                next_pick_repeat_number += 1
+        else:
+            if self.pick_number == 1 and (
+                self.separate_weaving_repeats or self.pick_repeat_number == 1
+            ):
+                # At the beginning of a repeat, and either we
+                # separate repeats or it is the very first. Go to pick 0.
+                next_pick_number = 0
+            elif self.pick_number == 0 or (
+                self.pick_number == 1 and not self.separate_weaving_repeats
+            ):
+                # Start the previous repeat.
+                next_pick_number = len(self.picks)
+                next_pick_repeat_number -= 1
+        return (next_pick_number, next_pick_repeat_number)
+
     def get_current_pick(self) -> Pick:
         """Get the current pick."""
         return self.get_pick(self.pick_number)
@@ -169,43 +289,18 @@ class ReducedPattern:
 
         End number is 1-based, but 0 means at start or between repeats
         (in which case there are no threads in the group).
+
+        Raises:
+            IndexError: If trying to increment past the start of threading.
+            IndexError: if self.end_number0 is invalid.
         """
-        self.check_end_number(self.end_number0)
-        max_end_number = len(self.threading)
-        new_end_number0 = 0
-        # Initialize new_end_number1 to None to allow set_current_end_number
-        # to compute it, if possible (most cases below).
-        new_end_number1 = None
-        new_end_repeat_number = self.end_repeat_number
-        if thread_low_to_high:
-            if self.end_number0 == 0:
-                new_end_number0 = 1
-            elif self.end_number1 < max_end_number:
-                new_end_number0 = self.end_number1 + 1
-            else:
-                # At the end of one repeat; start the next.
-                new_end_number0 = 0 if self.separate_threading_repeats else 1
-                new_end_repeat_number += 1
-        else:
-            if self.end_number0 == 0 or (
-                self.end_number0 == 1 and not self.separate_threading_repeats
-            ):
-                # Start the previous repeat.
-                new_end_number1 = max_end_number
-                new_end_number0 = max(new_end_number1 + 1 - self.thread_group_size, 1)
-                new_end_repeat_number -= 1
-            elif self.end_number0 == 1:
-                # At beginning and separate_threading_repeats; gap is next.
-                new_end_number0 = 0
-            else:
-                # We must compute end_number1 because the available group
-                # size may be smaller than the desired group size.
-                new_end_number0 = max(self.end_number0 - self.thread_group_size, 1)
-                new_end_number1 = self.end_number0 - 1
+        end_number0, end_number1, end_repeat_number = self.compute_next_end_numbers(
+            thread_low_to_high=thread_low_to_high
+        )
         self.set_current_end_number(
-            end_number0=new_end_number0,
-            end_number1=new_end_number1,
-            end_repeat_number=new_end_repeat_number,
+            end_number0=end_number0,
+            end_number1=end_number1,
+            end_repeat_number=end_repeat_number,
         )
 
     def increment_pick_number(self, direction_forward: bool) -> int:
@@ -214,31 +309,14 @@ class ReducedPattern:
         Increment pick_repeat_number as well, if appropriate.
 
         Return the new pick number.
+
+        Raises:
+            IndexError: If trying to increment past the start of weaving.
         """
-        self.check_pick_number(self.pick_number)
-        next_pick_number = self.pick_number + (1 if direction_forward else -1)
-
-        if next_pick_number < 0 or (
-            next_pick_number == 0 and not self.separate_weaving_repeats
-        ):
-            self.pick_repeat_number -= 1
-            next_pick_number = len(self.picks)
-        elif next_pick_number > len(self.picks):
-            self.pick_repeat_number += 1
-            next_pick_number = 0 if self.separate_weaving_repeats else 1
-        self.pick_number = next_pick_number
-        return next_pick_number
-
-    def compute_end_number1(self, end_number0: int) -> int:
-        """Compute end_number1 given end_number0.
-
-        Uses the current value of end_repeat_number.
-        """
-        self.check_end_number(end_number0)
-        max_end_number = len(self.threading)
-        if end_number0 == 0:
-            return 0
-        return min(end_number0 + self.thread_group_size - 1, max_end_number)
+        self.pick_number, self.pick_repeat_number = self.compute_next_pick_numbers(
+            direction_forward=direction_forward
+        )
+        return self.pick_number
 
     def set_current_end_number(
         self,

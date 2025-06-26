@@ -1,6 +1,8 @@
 {
   "and": "",
   "another client took control": "Displayed if another web client takes the connection",
+  "At start of threading": "Displayed if you try to advance past end < 0",
+  "At start of weaving": "Displayed if you try to advance past pick < 0",
   "Back to front":  "Setting to thread from the back of the loom to the front",
   "cannot jump to a pick": "'pick' is a weft thread'",
   "cannot jump to an end": "'end' is a warp thread",
@@ -29,6 +31,7 @@
   "lost connection to server": "Error message if the connection from the user to the loom server drops",
   "Moving": "Loom shafts are moving",
   "Next Pick": "Button label for debug control that tells the mock loom to request the next pick (or thread group)",
+  "Number must be": "Example: user-specified numeric value must be <= 0",
   "no pattern": "Displayed if no weaving pattern has been selected",
   "of": "As in '5 of 10'",
   "On the left": "Setting: Warp end 1 on the left",

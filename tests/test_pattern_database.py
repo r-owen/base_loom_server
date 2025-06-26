@@ -164,7 +164,7 @@ async def test_create_database() -> None:
         assert initial_pattern_names == expected_pattern_names
 
 
-async def test_update_threading_end_number() -> None:
+async def test_update_end_number() -> None:
     with tempfile.NamedTemporaryFile() as f:
         dbpath = pathlib.Path(f.name)
         db = await create_pattern_database(dbpath)
@@ -183,7 +183,7 @@ async def test_update_threading_end_number() -> None:
         assert pattern_names == expected_pattern_names
 
         for pattern_name, end_number0, end_number1, end_repeat_number in (
-            (pattern_names[0], 50, 51, -5),
+            (pattern_names[0], 50, 51, 0),
             (pattern_names[1], 3, 42, 49),
             (pattern_names[0], 0, 0, 1),
             (pattern_names[2], 15, 60, 101),
@@ -220,7 +220,7 @@ async def test_update_pick_number() -> None:
         assert pattern_names == expected_pattern_names
 
         for pattern_name, pick_number, pick_repeat_number in (
-            (pattern_names[0], 50, -5),
+            (pattern_names[0], 50, 0),
             (pattern_names[1], 3, 49),
             (pattern_names[0], 0, 1),
             (pattern_names[2], 15, 101),

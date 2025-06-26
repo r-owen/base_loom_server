@@ -448,9 +448,10 @@ class BaseLoomServer:
         if command.total_end_number0 is None:
             self.jump_end = client_replies.JumpEndNumber()
         else:
-            total_end_number0 = command.total_end_number0
+            if command.total_end_number0 < 0:
+                raise CommandError(self.t("Number must be") + " >= 0")
             end_number0, end_repeat_number = compute_num_within_and_repeats(
-                total_num=total_end_number0,
+                total_num=command.total_end_number0,
                 repeat_len=self.current_pattern.num_ends,
             )
             end_number1 = self.current_pattern.compute_end_number1(
@@ -463,7 +464,7 @@ class BaseLoomServer:
             )
 
             self.jump_end = client_replies.JumpEndNumber(
-                total_end_number0=total_end_number0,
+                total_end_number0=command.total_end_number0,
                 total_end_number1=total_end_number1,
                 end_number0=end_number0,
                 end_number1=end_number1,
@@ -479,6 +480,8 @@ class BaseLoomServer:
         if command.total_pick_number is None:
             self.jump_pick = client_replies.JumpPickNumber()
         else:
+            if command.total_pick_number < 0:
+                raise CommandError(self.t("Number must be") + " >= 0")
             pick_number, pick_repeat_number = compute_num_within_and_repeats(
                 total_num=command.total_pick_number,
                 repeat_len=self.current_pattern.num_picks,
@@ -629,7 +632,16 @@ class BaseLoomServer:
                         self.jump_pick.pick_number
                     )
                 else:
-                    self.increment_pick_number()
+                    try:
+                        self.increment_pick_number()
+                    except IndexError:
+                        await self.write_to_client(
+                            client_replies.StatusMessage(
+                                message=self.t("At start of weaving"),
+                                severity=MessageSeverityEnum.ERROR,
+                            )
+                        )
+                        return
                 if self.jump_pick.pick_repeat_number is not None:
                     self.current_pattern.pick_repeat_number = (
                         self.jump_pick.pick_repeat_number
@@ -647,8 +659,17 @@ class BaseLoomServer:
                         end_repeat_number=self.jump_end.end_repeat_number,
                     )
                 else:
-                    self.increment_end_number()
-
+                    try:
+                        self.increment_end_number()
+                    except IndexError:
+                        print("Next end raised IndexError")
+                        await self.write_to_client(
+                            client_replies.StatusMessage(
+                                message=self.t("At start of threading"),
+                                severity=MessageSeverityEnum.ERROR,
+                            )
+                        )
+                        return
                 shaft_word = self.get_threading_shaft_word()
                 await self.write_shafts_to_loom(shaft_word)
                 await self.clear_jumps()

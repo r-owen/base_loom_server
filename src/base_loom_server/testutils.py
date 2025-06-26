@@ -122,7 +122,8 @@ def command_next_end(
 
     Args:
         client: Client fixture.
-        expected_end_number0: Expected end number of the next end group.
+        expected_end_number0: Expected end number0 of the next end group.
+        expected_end_number1: Expected end number1 of the next end group.
         expected_repeat_number: Expected repeat number of the next end group.
         jump_pending: Is a jump pending?
     """
@@ -503,7 +504,7 @@ class BaseTestLoomServer:
                 (1, 4),
                 ("cancel", "next", "nothing"),
                 (0, 1, num_ends_in_pattern // 3, num_ends_in_pattern),
-                (-1, 0, 1, 2),
+                (1, 2),
             ):
                 replies = send_command(
                     client, dict(type="thread_group_size", group_size=thread_group_size)
@@ -588,6 +589,25 @@ class BaseTestLoomServer:
                     case _:
                         raise RuntimeError(f"Unsupported {post_action=!r}")
 
+            # Test jumping to invalid ends, including
+            # that the bad command doesn't change the pattern's end numbers.
+            end_field_names = ("end_number0", "end_number1", "end_repeat_number")
+            current_end_data = {
+                field_name: getattr(client.loom_server.current_pattern, field_name)
+                for field_name in end_field_names
+            }
+            for bad_total_end_number0 in (-1, -2):
+                send_command(
+                    client,
+                    dict(type="jump_to_end", total_end_number0=bad_total_end_number0),
+                    should_fail=True,
+                )
+                for field_name in end_field_names:
+                    assert (
+                        getattr(client.loom_server.current_pattern, field_name)
+                        == current_end_data[field_name]
+                    )
+
     def test_jump_to_pick(self) -> None:
         pattern_name = ALL_PATTERN_PATHS[3].name
 
@@ -606,7 +626,7 @@ class BaseTestLoomServer:
             for post_action, pick_number, pick_repeat_number in itertools.product(
                 ("cancel", "next", "nothing"),
                 (0, 1, num_picks_in_pattern // 3, num_picks_in_pattern),
-                (-1, 0, 1, 2),
+                (1, 2),
             ):
                 total_pick_number = compute_total_num(
                     num_within=pick_number,
@@ -673,6 +693,25 @@ class BaseTestLoomServer:
                     case _:
                         raise RuntimeError(f"Unsupported {post_action=!r}")
 
+            # Test jumping to invalid picks, including
+            # that the bad command doesn't change the pattern's pick numbers.
+            pick_field_names = ("pick_number", "pick_repeat_number")
+            current_pick_data = {
+                field_name: getattr(client.loom_server.current_pattern, field_name)
+                for field_name in pick_field_names
+            }
+            for bad_total_pick_number in (-1, -2):
+                send_command(
+                    client,
+                    dict(type="jump_to_pick", total_pick_number=bad_total_pick_number),
+                    should_fail=True,
+                )
+                for field_name in pick_field_names:
+                    assert (
+                        getattr(client.loom_server.current_pattern, field_name)
+                        == current_pick_data[field_name]
+                    )
+
     def test_next_end(self) -> None:
         pattern_name = ALL_PATTERN_PATHS[1].name
 
@@ -733,28 +772,12 @@ class BaseTestLoomServer:
                 expected_end_number0 = 0
                 expected_repeat_number = 1
                 while expected_repeat_number < 3:
-                    # Compute new expected_end_number0 & expected_end_number1
-                    if expected_end_number0 == 0:
-                        # First actual pick of the pattern.
-                        expected_end_number0 = 1
-                    elif expected_end_number1 < num_ends_in_pattern:
-                        # We are not at the end of this pattern repeat.
-                        expected_end_number0 = expected_end_number1 + 1
-                    else:
-                        # Wrap around
-                        expected_end_number0 = (
-                            0 if pattern.separate_threading_repeats else 1
-                        )
-                        expected_repeat_number += 1
+                    (
+                        expected_end_number0,
+                        expected_end_number1,
+                        expected_repeat_number,
+                    ) = pattern.compute_next_end_numbers(thread_low_to_high=True)
 
-                    # Compute new expected_end_number1
-                    if expected_end_number0 == 0:
-                        expected_end_number1 = 0
-                    else:
-                        expected_end_number1 = min(
-                            expected_end_number0 + thread_group_size - 1,
-                            num_ends_in_pattern,
-                        )
                     command_next_end(
                         client=client,
                         expected_end_number0=expected_end_number0,
@@ -766,27 +789,16 @@ class BaseTestLoomServer:
                 change_direction(client)
                 assert not client.loom_server.thread_low_to_high
 
-                iter_past_beginning = 0
-                while iter_past_beginning < 2:
-                    if expected_end_number0 == 0 or (
-                        expected_end_number0 == 1 and not separate_threading_repeats
-                    ):
-                        # Wrap around -- start previous repeat
-                        expected_end_number1 = num_ends_in_pattern
-                        expected_end_number0 = max(
-                            1, num_ends_in_pattern + 1 - thread_group_size
-                        )
-                        expected_repeat_number -= 1
-                    elif expected_end_number0 == 1:
-                        expected_end_number0 = 0
-                        expected_end_number1 = 0
-                    else:
-                        expected_end_number1 = expected_end_number0 - 1
-                        expected_end_number0 = max(
-                            1, expected_end_number0 - thread_group_size
-                        )
-                    if expected_repeat_number <= 0:
-                        iter_past_beginning += 1
+                # Make enough advances to get to the beginning
+                while True:
+                    try:
+                        (
+                            expected_end_number0,
+                            expected_end_number1,
+                            expected_repeat_number,
+                        ) = pattern.compute_next_end_numbers(thread_low_to_high=False)
+                    except IndexError:
+                        break
 
                     command_next_end(
                         client=client,
@@ -794,9 +806,20 @@ class BaseTestLoomServer:
                         expected_end_number1=expected_end_number1,
                         expected_repeat_number=expected_repeat_number,
                     )
-                assert expected_repeat_number <= 0
+                assert expected_repeat_number == 1
+                assert expected_end_number0 == 0
 
-                # Go back to threading
+                # Another advance should be rejected,
+                # without changing the end numbers in the pattern.
+                send_command(client, dict(type="oobcommand", command="n"))
+                reply = client.receive_dict()
+                assert reply["message"] == "At start of threading"
+                assert reply["severity"] == MessageSeverityEnum.ERROR
+                assert pattern.end_number0 == expected_end_number0
+                assert pattern.end_number1 == expected_end_number1
+                assert pattern.end_repeat_number == expected_repeat_number
+
+                # Go back to threading low to high
                 change_direction(client)
                 assert client.loom_server.thread_low_to_high
 
@@ -808,18 +831,15 @@ class BaseTestLoomServer:
             upload_patterns=ALL_PATTERN_PATHS[0:3],
         ) as client:
             pattern = select_pattern(client=client, pattern_name=pattern_name)
-            num_picks_in_pattern = len(pattern.picks)
 
             # Make enough forward picks to get into the 3rd repeat
             expected_pick_number = 0
             expected_repeat_number = 1
-            i = 0
-            while not (expected_repeat_number == 3 and expected_pick_number > 2):
-                i += 1
-                expected_pick_number += 1
-                if expected_pick_number > num_picks_in_pattern:
-                    expected_pick_number = 0 if pattern.separate_weaving_repeats else 1
-                    expected_repeat_number += 1
+            assert client.loom_server.direction_forward
+            while True:
+                expected_pick_number, expected_repeat_number = (
+                    pattern.compute_next_pick_numbers(direction_forward=True)
+                )
                 expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
                 command_next_pick(
                     client=client,
@@ -827,20 +847,20 @@ class BaseTestLoomServer:
                     expected_repeat_number=expected_repeat_number,
                     expected_shaft_word=expected_shaft_word,
                 )
+                if expected_repeat_number == 3:
+                    break
 
             change_direction(client=client)
+            assert not client.loom_server.direction_forward
 
-            # Now go backwards at least two picks past the beginning
-            end_pick_number = num_picks_in_pattern - 2
-            while not (
-                expected_pick_number == end_pick_number and expected_repeat_number == 0
-            ):
-                expected_pick_number -= 1
-                if (expected_pick_number < 0) or (
-                    expected_pick_number == 0 and not pattern.separate_weaving_repeats
-                ):
-                    expected_pick_number = num_picks_in_pattern
-                    expected_repeat_number -= 1
+            # Now go backwards to the beginning
+            while True:
+                try:
+                    expected_pick_number, expected_repeat_number = (
+                        pattern.compute_next_pick_numbers(direction_forward=False)
+                    )
+                except IndexError:
+                    break
                 expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
                 command_next_pick(
                     client=client,
@@ -848,20 +868,21 @@ class BaseTestLoomServer:
                     expected_repeat_number=expected_repeat_number,
                     expected_shaft_word=expected_shaft_word,
                 )
-            assert expected_pick_number == end_pick_number
-            assert expected_repeat_number == 0
+            assert expected_pick_number == 0
+            assert expected_repeat_number == 1
+
+            # Another advance should be rejected,
+            # without changing the pick numbers in the pattern.
+            send_command(client, dict(type="oobcommand", command="n"))
+            reply = client.receive_dict()
+            assert reply["message"] == "At start of weaving"
+            assert reply["severity"] == MessageSeverityEnum.ERROR
+            assert pattern.pick_number == expected_pick_number
+            assert pattern.pick_repeat_number == expected_repeat_number
 
             # Change direction to forward
             change_direction(client)
-            expected_pick_number += 1
-
-            expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
-            command_next_pick(
-                client=client,
-                expected_pick_number=expected_pick_number,
-                expected_repeat_number=expected_repeat_number,
-                expected_shaft_word=expected_shaft_word,
-            )
+            assert client.loom_server.direction_forward
 
     def test_pattern_persistence(self) -> None:
         rnd = random.Random(47)
@@ -879,8 +900,8 @@ class BaseTestLoomServer:
                 for path in (ALL_PATTERN_PATHS[0], ALL_PATTERN_PATHS[3]):
                     pattern = select_pattern(client=client, pattern_name=path.name)
                     pattern_list.append(pattern)
-                    pattern.pick_number = rnd.randrange(2, len(pattern.picks))
-                    pattern.pick_repeat_number = rnd.randrange(-10, 10)
+                    pattern.pick_number = rnd.randrange(0, len(pattern.picks))
+                    pattern.pick_repeat_number = rnd.randrange(1, 10)
                     pattern.thread_group_size = rnd.randrange(1, 10)
                     num_picks_in_pattern = len(pattern.picks)
                     total_pick_number = compute_total_num(

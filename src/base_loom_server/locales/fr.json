@@ -1,6 +1,8 @@
 {
   "and": "et",
   "another client took control": "une autre cliente a pris le contrôle",
+  "At start of threading": "Au début de l'enfilage",
+  "At start of weaving": "Au début du tissage",
   "Back to front": "Retour à l'avant",
   "cannot jump to a pick": "Impossible d’accéder à une sélection",
   "cannot jump to an end": "Impossible de sauter jusqu'à la fin",
@@ -29,6 +31,7 @@
   "lost connection to server": "perte de connexion au serveur",
   "Moving": "Émouvant",
   "Next Pick": "Choix Suivant",
+  "Number must be": "Le nombre doit être",
   "no pattern": "pas de motif",
   "of": "de",
   "On the left": "à Gauche",

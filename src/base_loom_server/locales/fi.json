@@ -1,6 +1,8 @@
 {
   "and": "ja",
   "another client took control": "toinen asiakas otti hallinnan",
+  "At start of threading": "Langoituksen alussa",
+  "At start of weaving": "Kutomisen alussa",
   "Back to front": "Takaisin etuun",
   "cannot jump to a pick": "ei voi hypätä heittoon",
   "cannot jump to an end": "ei voi hypätä loppuun",
@@ -29,6 +31,7 @@
   "lost connection to server": "yhteys palvelimeen katkes",
   "Moving": "Liikkuu",
   "Next Pick": "Seuraava Sukkulanheitto",
+  "Number must be": "Luvun on oltava",  
   "no pattern": "ei mallia",
   "of": "/",
   "On the left": "Vasemmalla",

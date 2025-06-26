@@ -47,6 +47,11 @@ CACHE_FIELD_NAMES = (
     "separate_threading_repeats",
 )
 
+REPEAT_FIELD_NAMES = {
+    "pick_repeat_number",
+    "end_repeat_number",
+}
+
 
 class PatternDatabase:
     """sqlite database to hold ReducedPattern instances
@@ -167,7 +172,11 @@ class PatternDatabase:
         pattern_dict = json.loads(row["pattern_json"])
         pattern = ReducedPattern.from_dict(pattern_dict)
         for field_name in CACHE_FIELD_NAMES:
-            setattr(pattern, field_name, row[field_name])
+            value = row[field_name]
+            if field_name in REPEAT_FIELD_NAMES and value < 0:
+                # From an older version that allowed jump numbers < 0
+                value = 0
+            setattr(pattern, field_name, value)
         return pattern
 
     async def get_pattern_names(self) -> list[str]:
