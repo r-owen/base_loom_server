@@ -1116,14 +1116,13 @@ class LoomClient {
                 totalPickNumber += 1
                 pickNumber = (pickNumber % numPicks) + 1
             }
-            if (pickNumber == 0) {
+            if ((totalPickNumber <= 0) || (pickNumber == 0)) {
                 continue
             }
+
             let pickIndex = pickNumber - 1
 
-            if (totalPickNumber <= 0) {
-                ctx.globalAlpha = 0.1
-            } else if (rowIndex <= lastColoredRowIndex) {
+            if (rowIndex <= lastColoredRowIndex) {
                 ctx.globalAlpha = 1.0
             } else {
                 ctx.globalAlpha = 0.3
