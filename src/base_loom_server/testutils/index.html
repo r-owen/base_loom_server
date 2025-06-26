@@ -86,6 +86,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/constants/">base_loom_server.constants</a>
@@ -1565,7 +1567,178 @@
 <span class="normal">1416</span>
 <span class="normal">1417</span>
 <span class="normal">1418</span>
-<span class="normal">1419</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
+<span class="normal">1419</span>
+<span class="normal">1420</span>
+<span class="normal">1421</span>
+<span class="normal">1422</span>
+<span class="normal">1423</span>
+<span class="normal">1424</span>
+<span class="normal">1425</span>
+<span class="normal">1426</span>
+<span class="normal">1427</span>
+<span class="normal">1428</span>
+<span class="normal">1429</span>
+<span class="normal">1430</span>
+<span class="normal">1431</span>
+<span class="normal">1432</span>
+<span class="normal">1433</span>
+<span class="normal">1434</span>
+<span class="normal">1435</span>
+<span class="normal">1436</span>
+<span class="normal">1437</span>
+<span class="normal">1438</span>
+<span class="normal">1439</span>
+<span class="normal">1440</span>
+<span class="normal">1441</span>
+<span class="normal">1442</span>
+<span class="normal">1443</span>
+<span class="normal">1444</span>
+<span class="normal">1445</span>
+<span class="normal">1446</span>
+<span class="normal">1447</span>
+<span class="normal">1448</span>
+<span class="normal">1449</span>
+<span class="normal">1450</span>
+<span class="normal">1451</span>
+<span class="normal">1452</span>
+<span class="normal">1453</span>
+<span class="normal">1454</span>
+<span class="normal">1455</span>
+<span class="normal">1456</span>
+<span class="normal">1457</span>
+<span class="normal">1458</span>
+<span class="normal">1459</span>
+<span class="normal">1460</span>
+<span class="normal">1461</span>
+<span class="normal">1462</span>
+<span class="normal">1463</span>
+<span class="normal">1464</span>
+<span class="normal">1465</span>
+<span class="normal">1466</span>
+<span class="normal">1467</span>
+<span class="normal">1468</span>
+<span class="normal">1469</span>
+<span class="normal">1470</span>
+<span class="normal">1471</span>
+<span class="normal">1472</span>
+<span class="normal">1473</span>
+<span class="normal">1474</span>
+<span class="normal">1475</span>
+<span class="normal">1476</span>
+<span class="normal">1477</span>
+<span class="normal">1478</span>
+<span class="normal">1479</span>
+<span class="normal">1480</span>
+<span class="normal">1481</span>
+<span class="normal">1482</span>
+<span class="normal">1483</span>
+<span class="normal">1484</span>
+<span class="normal">1485</span>
+<span class="normal">1486</span>
+<span class="normal">1487</span>
+<span class="normal">1488</span>
+<span class="normal">1489</span>
+<span class="normal">1490</span>
+<span class="normal">1491</span>
+<span class="normal">1492</span>
+<span class="normal">1493</span>
+<span class="normal">1494</span>
+<span class="normal">1495</span>
+<span class="normal">1496</span>
+<span class="normal">1497</span>
+<span class="normal">1498</span>
+<span class="normal">1499</span>
+<span class="normal">1500</span>
+<span class="normal">1501</span>
+<span class="normal">1502</span>
+<span class="normal">1503</span>
+<span class="normal">1504</span>
+<span class="normal">1505</span>
+<span class="normal">1506</span>
+<span class="normal">1507</span>
+<span class="normal">1508</span>
+<span class="normal">1509</span>
+<span class="normal">1510</span>
+<span class="normal">1511</span>
+<span class="normal">1512</span>
+<span class="normal">1513</span>
+<span class="normal">1514</span>
+<span class="normal">1515</span>
+<span class="normal">1516</span>
+<span class="normal">1517</span>
+<span class="normal">1518</span>
+<span class="normal">1519</span>
+<span class="normal">1520</span>
+<span class="normal">1521</span>
+<span class="normal">1522</span>
+<span class="normal">1523</span>
+<span class="normal">1524</span>
+<span class="normal">1525</span>
+<span class="normal">1526</span>
+<span class="normal">1527</span>
+<span class="normal">1528</span>
+<span class="normal">1529</span>
+<span class="normal">1530</span>
+<span class="normal">1531</span>
+<span class="normal">1532</span>
+<span class="normal">1533</span>
+<span class="normal">1534</span>
+<span class="normal">1535</span>
+<span class="normal">1536</span>
+<span class="normal">1537</span>
+<span class="normal">1538</span>
+<span class="normal">1539</span>
+<span class="normal">1540</span>
+<span class="normal">1541</span>
+<span class="normal">1542</span>
+<span class="normal">1543</span>
+<span class="normal">1544</span>
+<span class="normal">1545</span>
+<span class="normal">1546</span>
+<span class="normal">1547</span>
+<span class="normal">1548</span>
+<span class="normal">1549</span>
+<span class="normal">1550</span>
+<span class="normal">1551</span>
+<span class="normal">1552</span>
+<span class="normal">1553</span>
+<span class="normal">1554</span>
+<span class="normal">1555</span>
+<span class="normal">1556</span>
+<span class="normal">1557</span>
+<span class="normal">1558</span>
+<span class="normal">1559</span>
+<span class="normal">1560</span>
+<span class="normal">1561</span>
+<span class="normal">1562</span>
+<span class="normal">1563</span>
+<span class="normal">1564</span>
+<span class="normal">1565</span>
+<span class="normal">1566</span>
+<span class="normal">1567</span>
+<span class="normal">1568</span>
+<span class="normal">1569</span>
+<span class="normal">1570</span>
+<span class="normal">1571</span>
+<span class="normal">1572</span>
+<span class="normal">1573</span>
+<span class="normal">1574</span>
+<span class="normal">1575</span>
+<span class="normal">1576</span>
+<span class="normal">1577</span>
+<span class="normal">1578</span>
+<span class="normal">1579</span>
+<span class="normal">1580</span>
+<span class="normal">1581</span>
+<span class="normal">1582</span>
+<span class="normal">1583</span>
+<span class="normal">1584</span>
+<span class="normal">1585</span>
+<span class="normal">1586</span>
+<span class="normal">1587</span>
+<span class="normal">1588</span>
+<span class="normal">1589</span>
+<span class="normal">1590</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
@@ -1689,7 +1862,8 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        client: Client fixture.</span>
-<span class="sd">        expected_end_number0: Expected end number of the next end group.</span>
+<span class="sd">        expected_end_number0: Expected end number0 of the next end group.</span>
+<span class="sd">        expected_end_number1: Expected end number1 of the next end group.</span>
 <span class="sd">        expected_repeat_number: Expected repeat number of the next end group.</span>
 <span class="sd">        jump_pending: Is a jump pending?</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1709,7 +1883,7 @@
         <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
             <span class="nb">dict</span><span class="p">(</span>
                 <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">,</span>
-                <span class="n">end_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">end_number0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">end_repeat_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="p">),</span>
         <span class="p">]</span>
@@ -1864,16 +2038,15 @@
             <span class="k">assert</span> <span class="n">reported_settings</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reported_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">assert</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span>
-    <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">thread_low_to_high</span> <span class="o">==</span> <span class="p">(</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_back_to_front</span>
-            <span class="o">==</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_right_to_left</span>
-        <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">thread_low_to_high</span> <span class="o">!=</span> <span class="p">(</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_back_to_front</span>
-            <span class="o">==</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_right_to_left</span>
-        <span class="p">)</span>
+    <span class="n">expected_thread_low_to_high</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_back_to_front</span>
+        <span class="o">==</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_right_to_left</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">:</span>
+        <span class="n">expected_thread_low_to_high</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">expected_thread_low_to_high</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">end1_on_right</span><span class="p">:</span>
+        <span class="n">expected_thread_low_to_high</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">expected_thread_low_to_high</span>
+    <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">thread_low_to_high</span> <span class="o">==</span> <span class="n">expected_thread_low_to_high</span>
 
 
 <span class="k">def</span> <span class="nf">select_pattern</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.testutils.select_pattern"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.select_pattern" title="Go to docs">docs</a></div>
@@ -2070,7 +2243,7 @@
                 <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
                 <span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">,</span> <span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;nothing&quot;</span><span class="p">),</span>
                 <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span> <span class="o">//</span> <span class="mi">3</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span><span class="p">),</span>
-                <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="n">replies</span> <span class="o">=</span> <span class="n">send_command</span><span class="p">(</span>
                     <span class="n">client</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;thread_group_size&quot;</span><span class="p">,</span> <span class="n">group_size</span><span class="o">=</span><span class="n">thread_group_size</span><span class="p">)</span>
@@ -2155,6 +2328,25 @@
                     <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported </span><span class="si">{</span><span class="n">post_action</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+            <span class="c1"># Test jumping to invalid ends, including</span>
+            <span class="c1"># that the bad command doesn&#39;t change the pattern&#39;s end numbers.</span>
+            <span class="n">end_field_names</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;end_number0&quot;</span><span class="p">,</span> <span class="s2">&quot;end_number1&quot;</span><span class="p">,</span> <span class="s2">&quot;end_repeat_number&quot;</span><span class="p">)</span>
+            <span class="n">current_end_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">field_name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">end_field_names</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">bad_total_end_number0</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">send_command</span><span class="p">(</span>
+                    <span class="n">client</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="n">bad_total_end_number0</span><span class="p">),</span>
+                    <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">end_field_names</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="p">(</span>
+                        <span class="nb">getattr</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+                        <span class="o">==</span> <span class="n">current_end_data</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
+                    <span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">test_jump_to_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick" title="Go to docs">docs</a></div>
         <span class="n">pattern_name</span> <span class="o">=</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
 
@@ -2173,7 +2365,7 @@
             <span class="k">for</span> <span class="n">post_action</span><span class="p">,</span> <span class="n">pick_number</span><span class="p">,</span> <span class="n">pick_repeat_number</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
                 <span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">,</span> <span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;nothing&quot;</span><span class="p">),</span>
                 <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_picks_in_pattern</span> <span class="o">//</span> <span class="mi">3</span><span class="p">,</span> <span class="n">num_picks_in_pattern</span><span class="p">),</span>
-                <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="n">total_pick_number</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
                     <span class="n">num_within</span><span class="o">=</span><span class="n">pick_number</span><span class="p">,</span>
@@ -2240,6 +2432,25 @@
                     <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported </span><span class="si">{</span><span class="n">post_action</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+            <span class="c1"># Test jumping to invalid picks, including</span>
+            <span class="c1"># that the bad command doesn&#39;t change the pattern&#39;s pick numbers.</span>
+            <span class="n">pick_field_names</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;pick_number&quot;</span><span class="p">,</span> <span class="s2">&quot;pick_repeat_number&quot;</span><span class="p">)</span>
+            <span class="n">current_pick_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">field_name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">pick_field_names</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">bad_total_pick_number</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">send_command</span><span class="p">(</span>
+                    <span class="n">client</span><span class="p">,</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="n">bad_total_pick_number</span><span class="p">),</span>
+                    <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">pick_field_names</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="p">(</span>
+                        <span class="nb">getattr</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+                        <span class="o">==</span> <span class="n">current_pick_data</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
+                    <span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">test_next_end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_next_end"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_next_end" title="Go to docs">docs</a></div>
         <span class="n">pattern_name</span> <span class="o">=</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
 
@@ -2266,6 +2477,12 @@
                 <span class="p">),</span>
             <span class="p">):</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">separate_threading_repeats</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">thread_group_size</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Restore initial state that we care about.</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">end1_on_right</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_back_to_front</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_right_to_left</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="n">pattern</span><span class="o">.</span><span class="n">set_current_end_number</span><span class="p">(</span><span class="n">end_number0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_repeat_number</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
                 <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="mi">0</span>
@@ -2300,28 +2517,12 @@
                 <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="n">expected_repeat_number</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="k">while</span> <span class="n">expected_repeat_number</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
-                    <span class="c1"># Compute new expected_end_number0 &amp; expected_end_number1</span>
-                    <span class="k">if</span> <span class="n">expected_end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="c1"># First actual pick of the pattern.</span>
-                        <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="mi">1</span>
-                    <span class="k">elif</span> <span class="n">expected_end_number1</span> <span class="o">&lt;</span> <span class="n">num_ends_in_pattern</span><span class="p">:</span>
-                        <span class="c1"># We are not at the end of this pattern repeat.</span>
-                        <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="n">expected_end_number1</span> <span class="o">+</span> <span class="mi">1</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="c1"># Wrap around</span>
-                        <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="p">(</span>
-                            <span class="mi">0</span> <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="k">else</span> <span class="mi">1</span>
-                        <span class="p">)</span>
-                        <span class="n">expected_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="p">(</span>
+                        <span class="n">expected_end_number0</span><span class="p">,</span>
+                        <span class="n">expected_end_number1</span><span class="p">,</span>
+                        <span class="n">expected_repeat_number</span><span class="p">,</span>
+                    <span class="p">)</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">compute_next_end_numbers</span><span class="p">(</span><span class="n">thread_low_to_high</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-                    <span class="c1"># Compute new expected_end_number1</span>
-                    <span class="k">if</span> <span class="n">expected_end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
-                            <span class="n">expected_end_number0</span> <span class="o">+</span> <span class="n">thread_group_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
-                            <span class="n">num_ends_in_pattern</span><span class="p">,</span>
-                        <span class="p">)</span>
                     <span class="n">command_next_end</span><span class="p">(</span>
                         <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
                         <span class="n">expected_end_number0</span><span class="o">=</span><span class="n">expected_end_number0</span><span class="p">,</span>
@@ -2333,27 +2534,16 @@
                 <span class="n">change_direction</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">thread_low_to_high</span>
 
-                <span class="n">iter_past_beginning</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">while</span> <span class="n">iter_past_beginning</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">expected_end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span>
-                        <span class="n">expected_end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">separate_threading_repeats</span>
-                    <span class="p">):</span>
-                        <span class="c1"># Wrap around -- start previous repeat</span>
-                        <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="n">num_ends_in_pattern</span>
-                        <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
-                            <span class="mi">1</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">thread_group_size</span>
-                        <span class="p">)</span>
-                        <span class="n">expected_repeat_number</span> <span class="o">-=</span> <span class="mi">1</span>
-                    <span class="k">elif</span> <span class="n">expected_end_number0</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
-                        <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">expected_end_number1</span> <span class="o">=</span> <span class="n">expected_end_number0</span> <span class="o">-</span> <span class="mi">1</span>
-                        <span class="n">expected_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
-                            <span class="mi">1</span><span class="p">,</span> <span class="n">expected_end_number0</span> <span class="o">-</span> <span class="n">thread_group_size</span>
-                        <span class="p">)</span>
-                    <span class="k">if</span> <span class="n">expected_repeat_number</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">iter_past_beginning</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c1"># Make enough advances to get to the beginning</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="p">(</span>
+                            <span class="n">expected_end_number0</span><span class="p">,</span>
+                            <span class="n">expected_end_number1</span><span class="p">,</span>
+                            <span class="n">expected_repeat_number</span><span class="p">,</span>
+                        <span class="p">)</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">compute_next_end_numbers</span><span class="p">(</span><span class="n">thread_low_to_high</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                        <span class="k">break</span>
 
                     <span class="n">command_next_end</span><span class="p">(</span>
                         <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
@@ -2361,11 +2551,59 @@
                         <span class="n">expected_end_number1</span><span class="o">=</span><span class="n">expected_end_number1</span><span class="p">,</span>
                         <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
                     <span class="p">)</span>
-                <span class="k">assert</span> <span class="n">expected_repeat_number</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+                <span class="k">assert</span> <span class="n">expected_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
+                <span class="k">assert</span> <span class="n">expected_end_number0</span> <span class="o">==</span> <span class="mi">0</span>
 
-                <span class="c1"># Go back to threading</span>
-                <span class="n">change_direction</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+                <span class="c1"># Another advance should be rejected,</span>
+                <span class="c1"># without changing the end numbers in the pattern.</span>
+                <span class="n">send_command</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;oobcommand&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s2">&quot;n&quot;</span><span class="p">))</span>
+                <span class="n">reply</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">receive_dict</span><span class="p">()</span>
+                <span class="k">assert</span> <span class="n">reply</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;At start of threading&quot;</span>
+                <span class="k">assert</span> <span class="n">reply</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span>
+                <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="n">expected_end_number0</span>
+                <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">==</span> <span class="n">expected_end_number1</span>
+                <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="n">expected_repeat_number</span>
+
+                <span class="c1"># Toggle low_to_high by toggling end1_at_right</span>
+                <span class="n">command_settings</span><span class="p">(</span>
+                    <span class="n">client</span><span class="p">,</span> <span class="n">end1_on_right</span><span class="o">=</span><span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">end1_on_right</span>
+                <span class="p">)</span>
                 <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">thread_low_to_high</span>
+
+                <span class="n">command_next_end</span><span class="p">(</span>
+                    <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+                    <span class="n">expected_end_number0</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">expected_end_number1</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">num_ends_in_pattern</span><span class="p">,</span> <span class="n">thread_group_size</span><span class="p">),</span>
+                    <span class="n">expected_repeat_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Toggle low_to_high by toggling thread_back_to_front</span>
+                <span class="n">command_settings</span><span class="p">(</span>
+                    <span class="n">client</span><span class="p">,</span>
+                    <span class="n">thread_back_to_front</span><span class="o">=</span><span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_back_to_front</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">thread_low_to_high</span>
+
+                <span class="n">command_next_end</span><span class="p">(</span>
+                    <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+                    <span class="n">expected_end_number0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">expected_end_number1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">expected_repeat_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Toggle low_to_high by toggling thread_right_to_left</span>
+                <span class="n">command_settings</span><span class="p">(</span>
+                    <span class="n">client</span><span class="p">,</span>
+                    <span class="n">thread_right_to_left</span><span class="o">=</span><span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_right_to_left</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">thread_low_to_high</span>
+
+                <span class="n">command_next_end</span><span class="p">(</span>
+                    <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+                    <span class="n">expected_end_number0</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">expected_end_number1</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">num_ends_in_pattern</span><span class="p">,</span> <span class="n">thread_group_size</span><span class="p">),</span>
+                    <span class="n">expected_repeat_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">test_next_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_next_pick"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_next_pick" title="Go to docs">docs</a></div>
         <span class="n">pattern_name</span> <span class="o">=</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
@@ -2375,18 +2613,15 @@
             <span class="n">upload_patterns</span><span class="o">=</span><span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span>
         <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
             <span class="n">pattern</span> <span class="o">=</span> <span class="n">select_pattern</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="n">pattern_name</span><span class="o">=</span><span class="n">pattern_name</span><span class="p">)</span>
-            <span class="n">num_picks_in_pattern</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">picks</span><span class="p">)</span>
 
             <span class="c1"># Make enough forward picks to get into the 3rd repeat</span>
             <span class="n">expected_pick_number</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">expected_repeat_number</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="n">expected_repeat_number</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">expected_pick_number</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">):</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">expected_pick_number</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="n">expected_pick_number</span> <span class="o">&gt;</span> <span class="n">num_picks_in_pattern</span><span class="p">:</span>
-                    <span class="n">expected_pick_number</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">separate_weaving_repeats</span> <span class="k">else</span> <span class="mi">1</span>
-                    <span class="n">expected_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">direction_forward</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">expected_pick_number</span><span class="p">,</span> <span class="n">expected_repeat_number</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">pattern</span><span class="o">.</span><span class="n">compute_next_pick_numbers</span><span class="p">(</span><span class="n">direction_forward</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="p">)</span>
                 <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span><span class="n">expected_pick_number</span><span class="p">)</span><span class="o">.</span><span class="n">shaft_word</span>
                 <span class="n">command_next_pick</span><span class="p">(</span>
                     <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
@@ -2394,20 +2629,20 @@
                     <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
                     <span class="n">expected_shaft_word</span><span class="o">=</span><span class="n">expected_shaft_word</span><span class="p">,</span>
                 <span class="p">)</span>
+                <span class="k">if</span> <span class="n">expected_repeat_number</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="k">break</span>
 
             <span class="n">change_direction</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">direction_forward</span>
 
-            <span class="c1"># Now go backwards at least two picks past the beginning</span>
-            <span class="n">end_pick_number</span> <span class="o">=</span> <span class="n">num_picks_in_pattern</span> <span class="o">-</span> <span class="mi">2</span>
-            <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span>
-                <span class="n">expected_pick_number</span> <span class="o">==</span> <span class="n">end_pick_number</span> <span class="ow">and</span> <span class="n">expected_repeat_number</span> <span class="o">==</span> <span class="mi">0</span>
-            <span class="p">):</span>
-                <span class="n">expected_pick_number</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">expected_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-                    <span class="n">expected_pick_number</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pattern</span><span class="o">.</span><span class="n">separate_weaving_repeats</span>
-                <span class="p">):</span>
-                    <span class="n">expected_pick_number</span> <span class="o">=</span> <span class="n">num_picks_in_pattern</span>
-                    <span class="n">expected_repeat_number</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="c1"># Now go backwards to the beginning</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">expected_pick_number</span><span class="p">,</span> <span class="n">expected_repeat_number</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">pattern</span><span class="o">.</span><span class="n">compute_next_pick_numbers</span><span class="p">(</span><span class="n">direction_forward</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="k">break</span>
                 <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span><span class="n">expected_pick_number</span><span class="p">)</span><span class="o">.</span><span class="n">shaft_word</span>
                 <span class="n">command_next_pick</span><span class="p">(</span>
                     <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
@@ -2415,22 +2650,27 @@
                     <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
                     <span class="n">expected_shaft_word</span><span class="o">=</span><span class="n">expected_shaft_word</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="k">assert</span> <span class="n">expected_pick_number</span> <span class="o">==</span> <span class="n">end_pick_number</span>
-            <span class="k">assert</span> <span class="n">expected_repeat_number</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="k">assert</span> <span class="n">expected_pick_number</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="k">assert</span> <span class="n">expected_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
+
+            <span class="c1"># Another advance should be rejected,</span>
+            <span class="c1"># without changing the pick numbers in the pattern.</span>
+            <span class="n">send_command</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;oobcommand&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s2">&quot;n&quot;</span><span class="p">))</span>
+            <span class="n">reply</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">receive_dict</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">reply</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;At start of weaving&quot;</span>
+            <span class="k">assert</span> <span class="n">reply</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span>
+            <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="n">expected_pick_number</span>
+            <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="n">expected_repeat_number</span>
 
             <span class="c1"># Change direction to forward</span>
             <span class="n">change_direction</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
-            <span class="n">expected_pick_number</span> <span class="o">+=</span> <span class="mi">1</span>
-
-            <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span><span class="n">expected_pick_number</span><span class="p">)</span><span class="o">.</span><span class="n">shaft_word</span>
-            <span class="n">command_next_pick</span><span class="p">(</span>
-                <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
-                <span class="n">expected_pick_number</span><span class="o">=</span><span class="n">expected_pick_number</span><span class="p">,</span>
-                <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
-                <span class="n">expected_shaft_word</span><span class="o">=</span><span class="n">expected_shaft_word</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">direction_forward</span>
 
     <span class="k">def</span> <span class="nf">test_pattern_persistence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test pattern persistence, including current location.</span>
+
+<span class="sd">        Check that the location is saved when it changes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rnd</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">47</span><span class="p">)</span>
         <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
@@ -2441,18 +2681,72 @@
                 <span class="n">db_path</span><span class="o">=</span><span class="n">db_path</span><span class="p">,</span>
             <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
                 <span class="c1"># Select a few patterns; for each one jump to some random</span>
-                <span class="c1"># pick (including actually going to that pick).</span>
+                <span class="c1"># pick and some random end_number0, including actually</span>
+                <span class="c1"># going to that pick or end.</span>
                 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ALL_PATTERN_PATHS</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span>
                 <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">3</span><span class="p">]):</span>
+
+                    <span class="c1"># If needed, go to weaving mode</span>
+                    <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span><span class="p">:</span>
+                        <span class="n">replies</span> <span class="o">=</span> <span class="n">send_command</span><span class="p">(</span>
+                            <span class="n">client</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span><span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+                        <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span><span class="p">)</span>
+
                     <span class="n">pattern</span> <span class="o">=</span> <span class="n">select_pattern</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="n">pattern_name</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                    <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
-                    <span class="n">pattern</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">=</span> <span class="n">rnd</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">picks</span><span class="p">))</span>
-                    <span class="n">pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="n">rnd</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-                    <span class="n">pattern</span><span class="o">.</span><span class="n">thread_group_size</span> <span class="o">=</span> <span class="n">rnd</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                    <span class="n">num_ends_in_pattern</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
                     <span class="n">num_picks_in_pattern</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">picks</span><span class="p">)</span>
+
+                    <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+                    <span class="n">pick_number</span> <span class="o">=</span> <span class="n">rnd</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_picks_in_pattern</span><span class="p">)</span>
+                    <span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="n">rnd</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                    <span class="n">thread_group_size</span> <span class="o">=</span> <span class="n">rnd</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+                    <span class="n">end_number0</span> <span class="o">=</span> <span class="n">rnd</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span><span class="p">)</span>
+                    <span class="n">end_number1</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="mi">0</span>
+                        <span class="k">if</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span>
+                        <span class="k">else</span> <span class="nb">min</span><span class="p">(</span>
+                            <span class="n">end_number0</span> <span class="o">+</span> <span class="n">thread_group_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">end_repeat_number</span> <span class="o">=</span> <span class="n">rnd</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+                    <span class="n">separate_threading_repeats</span> <span class="o">=</span> <span class="n">rnd</span><span class="o">.</span><span class="n">choice</span><span class="p">((</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+                    <span class="n">separate_weaving_repeats</span> <span class="o">=</span> <span class="n">rnd</span><span class="o">.</span><span class="n">choice</span><span class="p">((</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+
+                    <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="o">!=</span> <span class="n">separate_threading_repeats</span><span class="p">:</span>
+                        <span class="n">replies</span> <span class="o">=</span> <span class="n">send_command</span><span class="p">(</span>
+                            <span class="n">client</span><span class="p">,</span>
+                            <span class="nb">dict</span><span class="p">(</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;separate_threading_repeats&quot;</span><span class="p">,</span>
+                                <span class="n">separate</span><span class="o">=</span><span class="n">separate_threading_repeats</span><span class="p">,</span>
+                            <span class="p">),</span>
+                        <span class="p">)</span>
+                        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+                        <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;SeparateThreadingRepeats&quot;</span><span class="p">,</span>
+                            <span class="n">separate</span><span class="o">=</span><span class="n">separate_threading_repeats</span><span class="p">,</span>
+                        <span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">separate_weaving_repeats</span> <span class="o">!=</span> <span class="n">separate_weaving_repeats</span><span class="p">:</span>
+                        <span class="n">replies</span> <span class="o">=</span> <span class="n">send_command</span><span class="p">(</span>
+                            <span class="n">client</span><span class="p">,</span>
+                            <span class="nb">dict</span><span class="p">(</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;separate_weaving_repeats&quot;</span><span class="p">,</span>
+                                <span class="n">separate</span><span class="o">=</span><span class="n">separate_weaving_repeats</span><span class="p">,</span>
+                            <span class="p">),</span>
+                        <span class="p">)</span>
+                        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+                        <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;SeparateWeavingRepeats&quot;</span><span class="p">,</span>
+                            <span class="n">separate</span><span class="o">=</span><span class="n">separate_weaving_repeats</span><span class="p">,</span>
+                        <span class="p">)</span>
+
                     <span class="n">total_pick_number</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
-                        <span class="n">num_within</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">pick_number</span><span class="p">,</span>
-                        <span class="n">repeat_number</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span><span class="p">,</span>
+                        <span class="n">num_within</span><span class="o">=</span><span class="n">pick_number</span><span class="p">,</span>
+                        <span class="n">repeat_number</span><span class="o">=</span><span class="n">pick_repeat_number</span><span class="p">,</span>
                         <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_picks_in_pattern</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="n">replies</span> <span class="o">=</span> <span class="n">send_command</span><span class="p">(</span>
@@ -2461,52 +2755,102 @@
                     <span class="p">)</span>
                     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
                     <span class="k">if</span> <span class="n">total_pick_number</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span>
-                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">,</span>
-                            <span class="n">total_pick_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                            <span class="n">pick_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                            <span class="n">pick_repeat_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                        <span class="p">)</span>
-                    <span class="k">elif</span> <span class="n">pattern</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">total_pick_number</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">assert</span> <span class="n">total_pick_number</span> <span class="o">==</span> <span class="mi">0</span>
+                        <span class="k">assert</span> <span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span>
+                        <span class="k">assert</span> <span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">total_pick_number</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="c1"># Special case: report the last pick of the previous</span>
                         <span class="c1"># repeat, rather than the magic &quot;0&quot; pick_number</span>
-                        <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span>
-                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">,</span>
-                            <span class="n">total_pick_number</span><span class="o">=</span><span class="n">total_pick_number</span><span class="p">,</span>
-                            <span class="n">pick_number</span><span class="o">=</span><span class="n">num_picks_in_pattern</span><span class="p">,</span>
-                            <span class="n">pick_repeat_number</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
-                        <span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span>
-                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">,</span>
-                            <span class="n">total_pick_number</span><span class="o">=</span><span class="n">total_pick_number</span><span class="p">,</span>
-                            <span class="n">pick_number</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">pick_number</span><span class="p">,</span>
-                            <span class="n">pick_repeat_number</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span><span class="p">,</span>
-                        <span class="p">)</span>
-                    <span class="n">expected_pick_number</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">pick_number</span>
-                    <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span>
-                        <span class="n">expected_pick_number</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">shaft_word</span>
+                        <span class="n">pick_number</span> <span class="o">=</span> <span class="n">num_picks_in_pattern</span>
+                        <span class="n">pick_repeat_number</span> <span class="o">-=</span> <span class="mi">1</span>
+                    <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">,</span>
+                        <span class="n">total_pick_number</span><span class="o">=</span><span class="n">total_pick_number</span><span class="p">,</span>
+                        <span class="n">pick_number</span><span class="o">=</span><span class="n">pick_number</span><span class="p">,</span>
+                        <span class="n">pick_repeat_number</span><span class="o">=</span><span class="n">pick_repeat_number</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span><span class="n">pick_number</span><span class="p">)</span><span class="o">.</span><span class="n">shaft_word</span>
                     <span class="n">command_next_pick</span><span class="p">(</span>
                         <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
                         <span class="n">jump_pending</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                        <span class="n">expected_pick_number</span><span class="o">=</span><span class="n">expected_pick_number</span><span class="p">,</span>
-                        <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span><span class="p">,</span>
+                        <span class="n">expected_pick_number</span><span class="o">=</span><span class="n">pick_number</span><span class="p">,</span>
+                        <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">pick_repeat_number</span><span class="p">,</span>
                         <span class="n">expected_shaft_word</span><span class="o">=</span><span class="n">expected_shaft_word</span><span class="p">,</span>
                     <span class="p">)</span>
+
+                    <span class="c1"># Now advance to the desired end.</span>
+                    <span class="c1"># First set mode to threading and set thread group size,</span>
+                    <span class="c1"># Then jump to the pick and advance.</span>
+                    <span class="n">replies</span> <span class="o">=</span> <span class="n">send_command</span><span class="p">(</span>
+                        <span class="n">client</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">THREAD</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+                    <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">THREAD</span><span class="p">)</span>
 
                     <span class="n">replies</span> <span class="o">=</span> <span class="n">send_command</span><span class="p">(</span>
                         <span class="n">client</span><span class="p">,</span>
                         <span class="nb">dict</span><span class="p">(</span>
                             <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;thread_group_size&quot;</span><span class="p">,</span>
-                            <span class="n">group_size</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">,</span>
+                            <span class="n">group_size</span><span class="o">=</span><span class="n">thread_group_size</span><span class="p">,</span>
                         <span class="p">),</span>
                     <span class="p">)</span>
                     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
                     <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span>
                         <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;ThreadGroupSize&quot;</span><span class="p">,</span>
-                        <span class="n">group_size</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">,</span>
+                        <span class="n">group_size</span><span class="o">=</span><span class="n">thread_group_size</span><span class="p">,</span>
                     <span class="p">)</span>
+
+                    <span class="n">total_end_number0</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
+                        <span class="n">num_within</span><span class="o">=</span><span class="n">end_number0</span><span class="p">,</span>
+                        <span class="n">repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
+                        <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">total_end_number1</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
+                        <span class="n">num_within</span><span class="o">=</span><span class="n">end_number1</span><span class="p">,</span>
+                        <span class="n">repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
+                        <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">replies</span> <span class="o">=</span> <span class="n">send_command</span><span class="p">(</span>
+                        <span class="n">client</span><span class="p">,</span>
+                        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">),</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">total_end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">assert</span> <span class="n">total_end_number1</span> <span class="o">==</span> <span class="mi">0</span>
+                        <span class="k">assert</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span>
+                        <span class="k">assert</span> <span class="n">end_number1</span> <span class="o">==</span> <span class="mi">0</span>
+                        <span class="k">assert</span> <span class="n">end_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">total_end_number0</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c1"># Special case: report the last end of the previous</span>
+                        <span class="c1"># repeat, rather than the magic &quot;0&quot; end_number0</span>
+                        <span class="n">end_repeat_number</span> <span class="o">-=</span> <span class="mi">1</span>
+                        <span class="n">end_number0</span> <span class="o">=</span> <span class="n">num_ends_in_pattern</span>
+                        <span class="n">end_number1</span> <span class="o">=</span> <span class="n">num_ends_in_pattern</span>
+                    <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">,</span>
+                        <span class="n">total_end_number0</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">,</span>
+                        <span class="n">total_end_number1</span><span class="o">=</span><span class="n">total_end_number1</span><span class="p">,</span>
+                        <span class="n">end_number0</span><span class="o">=</span><span class="n">end_number0</span><span class="p">,</span>
+                        <span class="n">end_number1</span><span class="o">=</span><span class="n">end_number1</span><span class="p">,</span>
+                        <span class="n">end_repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                    <span class="n">command_next_end</span><span class="p">(</span>
+                        <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+                        <span class="n">jump_pending</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">expected_end_number0</span><span class="o">=</span><span class="n">end_number0</span><span class="p">,</span>
+                        <span class="n">expected_end_number1</span><span class="o">=</span><span class="n">end_number1</span><span class="p">,</span>
+                        <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                    <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="n">pick_number</span>
+                    <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="n">pick_repeat_number</span>
+                    <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="n">end_number0</span>
+                    <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">==</span> <span class="n">end_number1</span>
+                    <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="n">end_repeat_number</span>
+                    <span class="k">assert</span> <span class="p">(</span>
+                        <span class="n">pattern</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="o">==</span> <span class="n">separate_threading_repeats</span>
+                    <span class="p">)</span>
+                    <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">separate_weaving_repeats</span> <span class="o">==</span> <span class="n">separate_weaving_repeats</span>
 
             <span class="c1"># This expects that first pattern 0 and then pattern 3</span>
             <span class="c1"># was selected from ALL_PATTERN_PATHS:</span>

@@ -86,6 +86,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/constants/">base_loom_server.constants</a>
@@ -1268,7 +1270,38 @@
 <span class="normal">1119</span>
 <span class="normal">1120</span>
 <span class="normal">1121</span>
-<span class="normal">1122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">1122</span>
+<span class="normal">1123</span>
+<span class="normal">1124</span>
+<span class="normal">1125</span>
+<span class="normal">1126</span>
+<span class="normal">1127</span>
+<span class="normal">1128</span>
+<span class="normal">1129</span>
+<span class="normal">1130</span>
+<span class="normal">1131</span>
+<span class="normal">1132</span>
+<span class="normal">1133</span>
+<span class="normal">1134</span>
+<span class="normal">1135</span>
+<span class="normal">1136</span>
+<span class="normal">1137</span>
+<span class="normal">1138</span>
+<span class="normal">1139</span>
+<span class="normal">1140</span>
+<span class="normal">1141</span>
+<span class="normal">1142</span>
+<span class="normal">1143</span>
+<span class="normal">1144</span>
+<span class="normal">1145</span>
+<span class="normal">1146</span>
+<span class="normal">1147</span>
+<span class="normal">1148</span>
+<span class="normal">1149</span>
+<span class="normal">1150</span>
+<span class="normal">1151</span>
+<span class="normal">1152</span>
+<span class="normal">1153</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;BaseLoomServer&quot;</span><span class="p">,</span>
@@ -1464,17 +1497,16 @@
     <span class="k">def</span> <span class="nf">thread_low_to_high</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.thread_low_to_high"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.thread_low_to_high" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if threading (or unthreading) is currently low to high.</span>
 
-<span class="sd">        Takes into account forward_direction (threading or unthreading)</span>
-<span class="sd">        and threading settings, but not jump_to_end.</span>
+<span class="sd">        Takes into account settings and self.direction_forward.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">low_to_high_if_forward</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">low_to_high</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_back_to_front</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_right_to_left</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">low_to_high_if_forward</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span>
-            <span class="k">else</span> <span class="ow">not</span> <span class="n">low_to_high_if_forward</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">end1_on_right</span><span class="p">:</span>
+            <span class="n">low_to_high</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">low_to_high</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">:</span>
+            <span class="n">low_to_high</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">low_to_high</span>
+        <span class="k">return</span> <span class="n">low_to_high</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">loom_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.loom_connected"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.loom_connected" title="Go to docs">docs</a></div>
@@ -1718,9 +1750,10 @@
         <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpEndNumber</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">total_end_number0</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span>
+            <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;Number must be&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &gt;= 0&quot;</span><span class="p">)</span>
             <span class="n">end_number0</span><span class="p">,</span> <span class="n">end_repeat_number</span> <span class="o">=</span> <span class="n">compute_num_within_and_repeats</span><span class="p">(</span>
-                <span class="n">total_num</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">,</span>
+                <span class="n">total_num</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span><span class="p">,</span>
                 <span class="n">repeat_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">num_ends</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">end_number1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">compute_end_number1</span><span class="p">(</span>
@@ -1733,7 +1766,7 @@
             <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpEndNumber</span><span class="p">(</span>
-                <span class="n">total_end_number0</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">,</span>
+                <span class="n">total_end_number0</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span><span class="p">,</span>
                 <span class="n">total_end_number1</span><span class="o">=</span><span class="n">total_end_number1</span><span class="p">,</span>
                 <span class="n">end_number0</span><span class="o">=</span><span class="n">end_number0</span><span class="p">,</span>
                 <span class="n">end_number1</span><span class="o">=</span><span class="n">end_number1</span><span class="p">,</span>
@@ -1749,6 +1782,8 @@
         <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpPickNumber</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;Number must be&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &gt;= 0&quot;</span><span class="p">)</span>
             <span class="n">pick_number</span><span class="p">,</span> <span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="n">compute_num_within_and_repeats</span><span class="p">(</span>
                 <span class="n">total_num</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span><span class="p">,</span>
                 <span class="n">repeat_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">num_picks</span><span class="p">,</span>
@@ -1881,16 +1916,24 @@
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">get_threading_shaft_word</span><span class="p">()</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">handle_next_pick_request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">handle_next_pick_request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle next pick request from loom.</span>
 
 <span class="sd">        Call this from handle_loom_reply.</span>
 
 <span class="sd">        Figure out the next pick, send it to the loom,</span>
-<span class="sd">        and report the information to the client.</span>
+<span class="sd">        and report the current pick or end numbers to the client</span>
+<span class="sd">        (if we were not at the beginning of the work).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            did_advance: True if the loom was sent the next set of shafts.</span>
+<span class="sd">                False if in Setting mode, or no current pattern,</span>
+<span class="sd">                or attemped to go beyond the start of the pattern.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="p">:</span>
-            <span class="k">return</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">did_advance</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span><span class="p">:</span>
                 <span class="c1"># Command a new pick, if there is one.</span>
@@ -1899,7 +1942,16 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_number</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">increment_pick_number</span><span class="p">()</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">increment_pick_number</span><span class="p">()</span>
+                    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
+                            <span class="n">client_replies</span><span class="o">.</span><span class="n">StatusMessage</span><span class="p">(</span>
+                                <span class="n">message</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;At start of weaving&quot;</span><span class="p">),</span>
+                                <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">False</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_repeat_number</span>
@@ -1908,6 +1960,7 @@
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="n">pick</span><span class="o">.</span><span class="n">shaft_word</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_pick_number</span><span class="p">()</span>
+                <span class="n">did_advance</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">THREAD</span><span class="p">:</span>
                 <span class="c1"># Advance to the next thread group, if there is one</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span><span class="o">.</span><span class="n">end_number0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1917,16 +1970,27 @@
                         <span class="n">end_repeat_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span><span class="o">.</span><span class="n">end_repeat_number</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">increment_end_number</span><span class="p">()</span>
-
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">increment_end_number</span><span class="p">()</span>
+                    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Next end raised IndexError&quot;</span><span class="p">)</span>
+                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
+                            <span class="n">client_replies</span><span class="o">.</span><span class="n">StatusMessage</span><span class="p">(</span>
+                                <span class="n">message</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;At start of threading&quot;</span><span class="p">),</span>
+                                <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">False</span>
                 <span class="n">shaft_word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_threading_shaft_word</span><span class="p">()</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="n">shaft_word</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_end_numbers</span><span class="p">()</span>
+                <span class="n">did_advance</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Next pick ignored in SETTINGS mode&quot;</span><span class="p">)</span>
             <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid mode=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">did_advance</span>
 
     <span class="k">def</span> <span class="nf">increment_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment pick_number in the current direction.</span>

@@ -86,6 +86,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../check_translation_files/">base_loom_server.check_translation_files</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
@@ -439,7 +441,12 @@ Client fixture.</p>
 <li>
 <p><span class="mkapi-item-name">expected_end_number0</span> : 
 <span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
-Expected end number of the next end group.</p>
+Expected end number0 of the next end group.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">expected_end_number1</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
+Expected end number1 of the next end group.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name">expected_repeat_number</span> : 
@@ -733,7 +740,9 @@ is ignored).</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_next_pick" title="base_loom_server.testutils.BaseTestLoomServer.test_next_pick">test_next_pick</a></span></p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence" title="base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence">test_pattern_persistence</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence" title="base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence">test_pattern_persistence</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Test pattern persistence, including current location.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_select_pattern" title="base_loom_server.testutils.BaseTestLoomServer.test_select_pattern">test_select_pattern</a></span></p>
@@ -867,7 +876,10 @@ Create a test client fixture.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence" title="base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence">test_pattern_persistence</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Test pattern persistence, including current location.</p>
+<p>Check that the location is saved when it changes.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_select_pattern">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">

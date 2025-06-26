@@ -86,6 +86,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../check_translation_files/">base_loom_server.check_translation_files</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
@@ -124,6 +126,12 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.check_pick_number">check_pick_number</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">compute_end_number1</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers">compute_next_end_numbers</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers">compute_next_pick_numbers</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.get_current_pick">get_current_pick</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.get_pick">get_pick</a>
@@ -133,8 +141,6 @@
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.increment_end_number">increment_end_number</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number">increment_pick_number</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">compute_end_number1</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number">set_current_end_number</a>
     </li>
@@ -388,6 +394,23 @@ Raise IndexError if end_number0 out of range.</p>
 Raise IndexError if pick_number out of range.</p>
 </li>
 <li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">compute_end_number1</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Compute end_number1 given end_number0.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers" title="base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers">compute_next_end_numbers</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Compute the next (end_number0, end_number1, end_repeat_number)
+in the specified direction.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers" title="base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers">compute_next_pick_numbers</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Compute (next pick_number, pick_repeat_number)
+in the specified direction.</p>
+</li>
+<li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.get_current_pick" title="base_loom_server.reduced_pattern.ReducedPattern.get_current_pick">get_current_pick</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Get the current pick.</p>
@@ -412,11 +435,6 @@ Increment end_repeat_number as well, if appropriate.</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number" title="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number">increment_pick_number</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Increment pick_number in the specified direction.</p>
-</li>
-<li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">compute_end_number1</a></span>
- <span class="mkapi-dash">&mdash;</span>
-Compute end_number1 given end_number0.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number" title="base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number">set_current_end_number</a></span>
@@ -565,6 +583,101 @@ See get_pick_number for more information.</p>
 </ul>
 </div>
 </div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">compute_end_number1</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">end_number0</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document">
+<p>Compute end_number1 given end_number0.</p>
+<p>Uses the current value of end_repeat_number.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers" title="base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers">compute_next_end_numbers</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">thread_low_to_high</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">tuple[int, int, int]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Compute the next (end_number0, end_number1, end_repeat_number)
+in the specified direction.</p>
+<p>End number is 1-based, but 0 means at start or between repeats
+(in which case there are no threads in the group).</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">IndexError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If trying to increment past the start of threading.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">IndexError</span>
+ <span class="mkapi-dash">&mdash;</span>
+if self.end_number0 is invalid.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers" title="base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers">compute_next_pick_numbers</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">direction_forward</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">tuple[int, int]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Compute (next pick_number, pick_repeat_number)
+in the specified direction.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">IndexError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If trying to increment past the start of weaving.</p>
+</li>
+</ul>
+</div>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.get_current_pick">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -654,6 +767,28 @@ If <span class="mkapi-tooltip" title="base_loom_server.reduced_pattern.ReducedPa
 Increment end_repeat_number as well, if appropriate.</p>
 <p>End number is 1-based, but 0 means at start or between repeats
 (in which case there are no threads in the group).</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">IndexError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If trying to increment past the start of threading.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">IndexError</span>
+ <span class="mkapi-dash">&mdash;</span>
+if self.end_number0 is invalid.</p>
+</li>
+</ul>
+</div>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number">
 <span class="mkapi-object-link">
@@ -673,24 +808,23 @@ Increment end_repeat_number as well, if appropriate.</p>
 <p>Increment pick_number in the specified direction.</p>
 <p>Increment pick_repeat_number as well, if appropriate.</p>
 <p>Return the new pick number.</p>
-</div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">
+<p class="mkapi-section">
 <span class="mkapi-object-link">
-<span class="mkapi-parent-toggle" title="Toggle class names">
-<i class="fa-solid fa-square-plus"></i>
-</span>
-
-<a href="../../../src/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="Go to source">source</a>
-<span class="mkapi-document-toggle" title="Toggle all docs">
+<span class="mkapi-section-toggle" title="Toggle raises">
 <i class="fa-regular fa-square-minus"></i>
 </span>
-</span><span class="mkapi-object-kind">method</span>
-<span class="mkapi-object-parent">
-<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1">compute_end_number1</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">end_number0</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</span>
+<span class="mkapi-section-name">Raises</span>
 </p>
-<div class="mkapi-document">
-<p>Compute end_number1 given end_number0.</p>
-<p>Uses the current value of end_repeat_number.</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">IndexError</span>
+ <span class="mkapi-dash">&mdash;</span>
+If trying to increment past the start of weaving.</p>
+</li>
+</ul>
+</div>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number">
 <span class="mkapi-object-link">

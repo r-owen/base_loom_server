@@ -86,6 +86,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/constants/">base_loom_server.constants</a>
@@ -425,7 +427,16 @@
 <span class="normal">276</span>
 <span class="normal">277</span>
 <span class="normal">278</span>
-<span class="normal">279</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PatternDatabase&quot;</span><span class="p">,</span> <span class="s2">&quot;create_pattern_database&quot;</span><span class="p">]</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PatternDatabase&quot;</span><span class="p">,</span> <span class="s2">&quot;create_pattern_database&quot;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -473,6 +484,11 @@
     <span class="s2">&quot;separate_weaving_repeats&quot;</span><span class="p">,</span>
     <span class="s2">&quot;separate_threading_repeats&quot;</span><span class="p">,</span>
 <span class="p">)</span>
+
+<span class="n">REPEAT_FIELD_NAMES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;pick_repeat_number&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;end_repeat_number&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 
 
 <span class="k">class</span> <span class="nc">PatternDatabase</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.pattern_database.PatternDatabase"><a href="../../../api/base_loom_server/pattern_database/#base_loom_server.pattern_database.PatternDatabase" title="Go to docs">docs</a></div>
@@ -594,7 +610,11 @@
         <span class="n">pattern_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;pattern_json&quot;</span><span class="p">])</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="n">ReducedPattern</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">pattern_dict</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">CACHE_FIELD_NAMES</span><span class="p">:</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="n">field_name</span><span class="p">])</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">REPEAT_FIELD_NAMES</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># From an older version that allowed jump numbers &lt; 0</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pattern</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">get_pattern_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span><div class="mkapi-source-link" id="base_loom_server.pattern_database.PatternDatabase.get_pattern_names"><a href="../../../api/base_loom_server/pattern_database/#base_loom_server.pattern_database.PatternDatabase.get_pattern_names" title="Go to docs">docs</a></div>

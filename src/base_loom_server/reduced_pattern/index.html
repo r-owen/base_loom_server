@@ -86,6 +86,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/constants/">base_loom_server.constants</a>
@@ -568,7 +570,85 @@
 <span class="normal">419</span>
 <span class="normal">420</span>
 <span class="normal">421</span>
-<span class="normal">422</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span>
+<span class="normal">438</span>
+<span class="normal">439</span>
+<span class="normal">440</span>
+<span class="normal">441</span>
+<span class="normal">442</span>
+<span class="normal">443</span>
+<span class="normal">444</span>
+<span class="normal">445</span>
+<span class="normal">446</span>
+<span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span>
+<span class="normal">450</span>
+<span class="normal">451</span>
+<span class="normal">452</span>
+<span class="normal">453</span>
+<span class="normal">454</span>
+<span class="normal">455</span>
+<span class="normal">456</span>
+<span class="normal">457</span>
+<span class="normal">458</span>
+<span class="normal">459</span>
+<span class="normal">460</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
+<span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
+<span class="normal">475</span>
+<span class="normal">476</span>
+<span class="normal">477</span>
+<span class="normal">478</span>
+<span class="normal">479</span>
+<span class="normal">480</span>
+<span class="normal">481</span>
+<span class="normal">482</span>
+<span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span>
+<span class="normal">486</span>
+<span class="normal">487</span>
+<span class="normal">488</span>
+<span class="normal">489</span>
+<span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span>
+<span class="normal">494</span>
+<span class="normal">495</span>
+<span class="normal">496</span>
+<span class="normal">497</span>
+<span class="normal">498</span>
+<span class="normal">499</span>
+<span class="normal">500</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;DEFAULT_THREAD_GROUP_SIZE&quot;</span><span class="p">,</span>
@@ -705,6 +785,126 @@
         <span class="k">if</span> <span class="n">pick_number</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picks</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pick_number</span><span class="si">=}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picks</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">compute_end_number1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end_number0</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute end_number1 given end_number0.</span>
+
+<span class="sd">        Uses the current value of end_repeat_number.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_end_number</span><span class="p">(</span><span class="n">end_number0</span><span class="p">)</span>
+        <span class="n">max_end_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">end_number0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_end_number</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">compute_next_end_numbers</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers" title="Go to docs">docs</a></div>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">thread_low_to_high</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the next (end_number0, end_number1, end_repeat_number)</span>
+<span class="sd">        in the specified direction.</span>
+
+<span class="sd">        End number is 1-based, but 0 means at start or between repeats</span>
+<span class="sd">        (in which case there are no threads in the group).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError: If trying to increment past the start of threading.</span>
+<span class="sd">            IndexError: if self.end_number0 is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_end_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">thread_low_to_high</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">()</span>
+
+        <span class="n">max_end_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
+        <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Initialize new_end_number1 to None to allow set_current_end_number</span>
+        <span class="c1"># to compute it, if possible (most cases below).</span>
+        <span class="n">new_end_number1</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">new_end_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span>
+        <span class="k">if</span> <span class="n">thread_low_to_high</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">&lt;</span> <span class="n">max_end_number</span><span class="p">:</span>
+                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># At the end of one repeat; start the next.</span>
+                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="k">else</span> <span class="mi">1</span>
+                <span class="n">new_end_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="p">):</span>
+                <span class="c1"># We are at the beginning of a pattern repeat and</span>
+                <span class="c1"># either we separate repeats or it is the very first.</span>
+                <span class="c1"># Go to end 0.</span>
+                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span>
+            <span class="p">):</span>
+                <span class="c1"># Start the previous repeat.</span>
+                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="n">max_end_number</span>
+                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">new_end_number1</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">new_end_repeat_number</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># We are still threading the current pattern repeat.</span>
+                <span class="c1"># We must compute end_number1 because the available group</span>
+                <span class="c1"># size may be smaller than the desired group size.</span>
+                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">new_end_number1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">new_end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                    <span class="n">new_end_number0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_end_number</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">new_end_number0</span><span class="p">,</span> <span class="n">new_end_number1</span><span class="p">,</span> <span class="n">new_end_repeat_number</span><span class="p">)</span>
+<div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers" title="Go to docs">docs</a></div>
+    <span class="k">def</span> <span class="nf">compute_next_pick_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute (next pick_number, pick_repeat_number)</span>
+<span class="sd">        in the specified direction.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError: If trying to increment past the start of weaving.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">direction_forward</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">()</span>
+
+        <span class="c1"># Start by assuming the common case.</span>
+        <span class="n">next_pick_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span>
+        <span class="n">next_pick_number</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">direction_forward</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Handle special cases: end of pattern repeats</span>
+        <span class="k">if</span> <span class="n">direction_forward</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picks</span><span class="p">):</span>
+                <span class="c1"># At the end; start a new repeat.</span>
+                <span class="n">next_pick_number</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span> <span class="k">else</span> <span class="mi">1</span>
+                <span class="n">next_pick_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="p">):</span>
+                <span class="c1"># At the beginning of a repeat, and either we</span>
+                <span class="c1"># separate repeats or it is the very first. Go to pick 0.</span>
+                <span class="n">next_pick_number</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span>
+            <span class="p">):</span>
+                <span class="c1"># Start the previous repeat.</span>
+                <span class="n">next_pick_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picks</span><span class="p">)</span>
+                <span class="n">next_pick_repeat_number</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">next_pick_number</span><span class="p">,</span> <span class="n">next_pick_repeat_number</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">get_current_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pick</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.get_current_pick"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.get_current_pick" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current pick.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span><span class="p">)</span>
@@ -739,43 +939,18 @@
 
 <span class="sd">        End number is 1-based, but 0 means at start or between repeats</span>
 <span class="sd">        (in which case there are no threads in the group).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError: If trying to increment past the start of threading.</span>
+<span class="sd">            IndexError: if self.end_number0 is invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">check_end_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span><span class="p">)</span>
-        <span class="n">max_end_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
-        <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># Initialize new_end_number1 to None to allow set_current_end_number</span>
-        <span class="c1"># to compute it, if possible (most cases below).</span>
-        <span class="n">new_end_number1</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">new_end_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span>
-        <span class="k">if</span> <span class="n">thread_low_to_high</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">&lt;</span> <span class="n">max_end_number</span><span class="p">:</span>
-                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># At the end of one repeat; start the next.</span>
-                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="k">else</span> <span class="mi">1</span>
-                <span class="n">new_end_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span>
-            <span class="p">):</span>
-                <span class="c1"># Start the previous repeat.</span>
-                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="n">max_end_number</span>
-                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">new_end_number1</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="n">new_end_repeat_number</span> <span class="o">-=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="c1"># At beginning and separate_threading_repeats; gap is next.</span>
-                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># We must compute end_number1 because the available group</span>
-                <span class="c1"># size may be smaller than the desired group size.</span>
-                <span class="n">new_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">end_number0</span><span class="p">,</span> <span class="n">end_number1</span><span class="p">,</span> <span class="n">end_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_next_end_numbers</span><span class="p">(</span>
+            <span class="n">thread_low_to_high</span><span class="o">=</span><span class="n">thread_low_to_high</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_current_end_number</span><span class="p">(</span>
-            <span class="n">end_number0</span><span class="o">=</span><span class="n">new_end_number0</span><span class="p">,</span>
-            <span class="n">end_number1</span><span class="o">=</span><span class="n">new_end_number1</span><span class="p">,</span>
-            <span class="n">end_repeat_number</span><span class="o">=</span><span class="n">new_end_repeat_number</span><span class="p">,</span>
+            <span class="n">end_number0</span><span class="o">=</span><span class="n">end_number0</span><span class="p">,</span>
+            <span class="n">end_number1</span><span class="o">=</span><span class="n">end_number1</span><span class="p">,</span>
+            <span class="n">end_repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">increment_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number" title="Go to docs">docs</a></div>
@@ -784,31 +959,14 @@
 <span class="sd">        Increment pick_repeat_number as well, if appropriate.</span>
 
 <span class="sd">        Return the new pick number.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError: If trying to increment past the start of weaving.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">check_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span><span class="p">)</span>
-        <span class="n">next_pick_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">direction_forward</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">next_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="n">next_pick_number</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span>
-        <span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">-=</span> <span class="mi">1</span>
-            <span class="n">next_pick_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picks</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">next_pick_number</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picks</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">next_pick_number</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span> <span class="k">else</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">=</span> <span class="n">next_pick_number</span>
-        <span class="k">return</span> <span class="n">next_pick_number</span>
-
-    <span class="k">def</span> <span class="nf">compute_end_number1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end_number0</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_end_number1" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute end_number1 given end_number0.</span>
-
-<span class="sd">        Uses the current value of end_repeat_number.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">check_end_number</span><span class="p">(</span><span class="n">end_number0</span><span class="p">)</span>
-        <span class="n">max_end_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
-        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">end_number0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_end_number</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_next_pick_numbers</span><span class="p">(</span>
+            <span class="n">direction_forward</span><span class="o">=</span><span class="n">direction_forward</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span>
 
     <span class="k">def</span> <span class="nf">set_current_end_number</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number" title="Go to docs">docs</a></div>
         <span class="bp">self</span><span class="p">,</span>
