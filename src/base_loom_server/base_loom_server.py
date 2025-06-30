@@ -84,6 +84,7 @@ class BaseLoomServer:
     # Definitely overide `default_name` and `mock_loom_type`.
     baud_rate = 9600
     default_name = "base"
+    help_url = "https://r-owen.github.io/base_loom_server/"
     loom_reports_direction = True
     loom_reports_motion = True
     mock_loom_type: type[BaseMockLoom] | None = None
