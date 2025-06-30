@@ -30,6 +30,8 @@ The bold word shows the current mode.
 The links above give detailed instructions for using each mode.
 But before you dive into that, read the next section about pattern files:
 
+In addition, the "?" link on the same line opens documentation in a new browser tab.
+
 ## Upload and Select Pattern Files
 
 Before you can weave or thread, you must upload one or more pattern files to the loom server.

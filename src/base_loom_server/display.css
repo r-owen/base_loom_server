@@ -50,7 +50,11 @@ select {
 }
 
 #group_size_label {
-    margin-left: 1em;
+    margin-inline-start: 1em;
+}
+
+#help_link_div {
+    margin-inline-start: 10px;
 }
 
 #mode {

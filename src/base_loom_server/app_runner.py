@@ -227,6 +227,7 @@ class AppRunner:
         display_js = display_js.replace("{ translation_dict }", js_translation_str)
 
         display_html = display_html.format(
+            help_url=self.loom_server.help_url,
             lang_str=self.html_lang_value,
             display_css=display_css,
             display_js=display_js,
