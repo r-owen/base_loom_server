@@ -1,5 +1,9 @@
 # Version History
 
+## 0.25 ??
+
+* Add a help link.
+
 ## 0.24 2025-06-26
 
 * Prohibit weaving or threading beyond the beginning of the pattern.
