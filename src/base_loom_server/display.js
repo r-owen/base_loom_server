@@ -12,6 +12,9 @@ const ThreadingWidthGap = 5
 // Diplay gap between top of end color bar/outline rectangle and bottom of end number
 const ThreadingEndTopGap = 10
 
+const ThreadedAlpha = 0.8
+const UnthreadedAlpha = 0.3
+
 // Display gap on left and right edges of warp and top and bottom edges of weft thread
 const WeavingThreadDisplayGap = 1
 
@@ -343,7 +346,6 @@ class LoomClient {
         this.separateThreadingRepeatsData = NullSeparateData
         this.separateWeavingRepeatsData = NullSeparateData
         this.threadGroupSize = 4
-        this.threadLowToHigh = true
         this.loomInfo = null
         this.settings = null
         this.shaftState = NullShaftStateData
@@ -830,8 +832,22 @@ class LoomClient {
         if (this.mode != ModeEnum.THREADING) {
             return
         }
-        let end1OnRight = Boolean(this.settings.end1_on_right) == Boolean(this.settings.thread_back_to_front)
-        let shaft1OnBottom = this.settings.thread_back_to_front
+        if (this.settings == null) {
+            return
+        }
+        const end1OnRight = Boolean(this.settings.end1_on_right) == Boolean(this.settings.thread_back_to_front)
+        const shaft1OnBottom = this.settings.thread_back_to_front
+
+        // Are we adding threads from lowToHigh?
+        // Used to determine which threads are already threaded, and thus to make them darker.
+        // This is not affected by threading/unthreading, unlike BaseLoomServer.thread_low_to_high.
+        let lowToHigh = (
+            this.settings.thread_back_to_front == this.settings.thread_right_to_left
+        )
+        if (!this.settings.end1_on_right) {
+            lowToHigh = !lowToHigh
+        }
+
         let canvas = document.getElementById("threading_canvas")
         let endLabelElt = document.getElementById("end_label")
         let ctx = canvas.getContext("2d")
@@ -873,7 +889,6 @@ class LoomClient {
         const blockHalfWidth = (blockWidth - 1) / 2
         const centerX = ((canvas.width + 1) / 2)
 
-
         // Compute number of ends per end number (out how far apart to space the end numbers)
         // Display as many as one number per group, but no more than one every 4 ends
         // and leave enough space that we can display 4-digit end numbers plus a bit of gap
@@ -905,17 +920,18 @@ class LoomClient {
         }
 
         const centerSlotIndex = Math.round((numEndsToShow - 1) / 2)
-
         const centerEndNumber = Math.round(Math.max(0, (endNumber0 + endNumber1) / 2))
 
         let minDarkEndIndex = endNumber0 - 1
         let maxDarkEndIndex = endNumber1 - 1
 
+        console.log("centerSlotIndex", centerSlotIndex, "centerEndNumber", centerEndNumber, "minDarkEndIndex", minDarkEndIndex, "maxDarkEndIndex", maxDarkEndIndex)
+
 
         // Display a box around the group, unless the at end 0
         if (endNumber0 > 0) {
             if (isJump) {
-                ctx.globalAlpha = 0.3
+                ctx.globalAlpha = UnthreadedAlpha
             } else {
                 ctx.globalAlpha = 1.0
             }
@@ -941,10 +957,12 @@ class LoomClient {
             if (endIndex < 0 || endIndex >= this.currentPattern.threading.length) {
                 continue
             }
-            if (isJump || (endIndex < minDarkEndIndex) || (endIndex > maxDarkEndIndex)) {
-                ctx.globalAlpha = 0.3
+            if (endIndex < minDarkEndIndex) {
+                ctx.globalAlpha = lowToHigh ? ThreadedAlpha : UnthreadedAlpha
+            } else if (endIndex > maxDarkEndIndex) {
+                ctx.globalAlpha = lowToHigh ? UnthreadedAlpha : ThreadedAlpha
             } else {
-                ctx.globalAlpha = 1.0
+                ctx.globalAlpha = isJump ? UnthreadedAlpha : 1.0
             }
 
             const shaftIndex = this.currentPattern.threading[endIndex]
@@ -1058,7 +1076,7 @@ class LoomClient {
             return
         }
         if (centerPickNumber == 0) {
-            // Advance the display below the center, but not at or above it
+            // We are at a gap
             centerTotalPickNumber += 1
         }
 
@@ -1096,7 +1114,7 @@ class LoomClient {
 
         let yOffset = Math.floor((canvas.height - (blockSize * numPicksToShow)) / 2)
 
-        // Set initial totalPicknum and pickNum to 1 fewer than the first row to show,
+        // Set initial totalPicknum and pickNum to 1 fewer than the first row to display,
         // then increment the values at the start of the display loop.
         let totalPickNumber = centerTotalPickNumber - ((numPicksToShow - 1) / 2) - 1
         let pickNumber = ((totalPickNumber - 1) % numPicks) + 1
@@ -1109,8 +1127,10 @@ class LoomClient {
 
         for (let rowIndex = 0; rowIndex < numPicksToShow; rowIndex++) {
             if ((centerPickNumber == 0) && (rowIndex == centerRowIndex)) {
+                // Display a gap for the current pick.
                 pickNumber = 0
             } else if (separateRepeats && (rowIndex > centerRowIndex) && (pickNumber == numPicks)) {
+                // Display a gap for this future pick.
                 pickNumber = 0
             } else {
                 totalPickNumber += 1
@@ -1560,29 +1580,6 @@ class LoomClient {
     }
 
     /*
-    Handle settings form submit
-    */
-    async sendSettings(event) {
-        let loomNameInputElt = document.getElementById("setting_loom_name_input")
-        let directionControlElt = document.getElementById("setting_direction_control")
-        let end1OnRightElt = document.getElementById("setting_end1_on_right")
-        let threadRightToLeftElt = document.getElementById("setting_thread_right_to_left")
-        let threadBackToFrontElt = document.getElementById("setting_thread_back_to_front")
-        let defaultThreadGroupSize = document.getElementById("setting_thread_group_size")
-        const command = {
-            "type": "settings",
-            "loom_name": loomNameInputElt.value,
-            "direction_control": asIntOrNull(directionControlElt.value),
-            "end1_on_right": asBooleanOrNull(end1OnRightElt.value),
-            "thread_right_to_left": asBooleanOrNull(threadRightToLeftElt.value),
-            "thread_back_to_front": asBooleanOrNull(threadBackToFrontElt.value),
-            "thread_group_size": asIntOrNull(defaultThreadGroupSize.value),
-        }
-        await this.sendCommand(command)
-        event.preventDefault()
-    }
-
-    /*
     Handle settings form reset
     */
     async handleSettingsReset(event) {
@@ -1684,6 +1681,34 @@ class LoomClient {
         return newFuture
     }
 
+    /*
+    Handle settings form submit
+    */
+    async sendSettings(event) {
+        let loomNameInputElt = document.getElementById("setting_loom_name_input")
+        let directionControlElt = document.getElementById("setting_direction_control")
+        let end1OnRightElt = document.getElementById("setting_end1_on_right")
+        let threadRightToLeftElt = document.getElementById("setting_thread_right_to_left")
+        let threadBackToFrontElt = document.getElementById("setting_thread_back_to_front")
+        let defaultThreadGroupSize = document.getElementById("setting_thread_group_size")
+        const command = {
+            "type": "settings",
+            "loom_name": loomNameInputElt.value,
+            "direction_control": asIntOrNull(directionControlElt.value),
+            "end1_on_right": asBooleanOrNull(end1OnRightElt.value),
+            "thread_right_to_left": asBooleanOrNull(threadRightToLeftElt.value),
+            "thread_back_to_front": asBooleanOrNull(threadBackToFrontElt.value),
+            "thread_group_size": asIntOrNull(defaultThreadGroupSize.value),
+        }
+        await this.sendCommand(command)
+        event.preventDefault()
+    }
+
+    /*
+    Set the background color of an element.
+ 
+    Intended for use as a callback, e.g. for drag-and-drop.
+    */
     setBackgroundColor(element, color) {
         element.style.backgroundColor = color
     }
