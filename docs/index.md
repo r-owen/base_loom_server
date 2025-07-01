@@ -21,8 +21,7 @@ The server has three modes, which are listed at the top of the web page: Weaving
 
 * [Threading](threading.md) will help you thread the loom, by lifting shafts for groups of threads.
 
-* [Settings](settings.md) allows you specify a few settings that the server remembers.
-  ([Threading](threading.md) also has two settings that allow you to specify how you prefer to thread.)
+* [Settings](settings.md) allows you specify settings that apply to all weaving pattern files.
 
 Click on the word to select that mode.
 The bold word shows the current mode.

@@ -30,8 +30,8 @@ It is also an intermediate step when repeating a threading sequence, unless "Sep
 
 Special cases that may only be supported by WIF files:
 
-* Ends that are threaded through heddles on more than one shaft are only shown threaded on the lowest-numbered shaft, ignoring 0.
 * Ends that are only threaded on shaft 0 (meaning not threaded through heddles on any shaft) are displayed without a shaft number.
+* Ends that are threaded through heddles on more than one shaft are only shown threaded on the lowest-numbered shaft, ignoring shaft 0.
 
 ## Threading Direction
 
