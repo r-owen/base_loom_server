@@ -45,6 +45,11 @@ input[type=text] {
     font-size: 80%;
 }
 
+input[type=checkbox] {
+    width: calc(8px + 0.5vh + 0.5vw);
+    height: calc(8px + 0.5vh + 0.5vw);
+}
+
 select {
     font-size: 90%;
 }
