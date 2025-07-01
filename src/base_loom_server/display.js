@@ -835,15 +835,13 @@ class LoomClient {
         if (this.settings == null) {
             return
         }
-        const end1OnRight = Boolean(this.settings.end1_on_right) == Boolean(this.settings.thread_back_to_front)
         const shaft1OnBottom = this.settings.thread_back_to_front
+        const rightToLeft = this.settings.thread_right_to_left
 
         // Are we adding threads from lowToHigh?
         // Used to determine which threads are already threaded, and thus to make them darker.
         // This is not affected by threading/unthreading, unlike BaseLoomServer.thread_low_to_high.
-        let lowToHigh = (
-            this.settings.thread_back_to_front == this.settings.thread_right_to_left
-        )
+        let lowToHigh = (this.settings.thread_back_to_front == this.settings.thread_right_to_left)
         if (!this.settings.end1_on_right) {
             lowToHigh = !lowToHigh
         }
@@ -867,17 +865,13 @@ class LoomClient {
             // Now that it's the right size, leave it blank
             return
         }
-        let endNumber0 = this.currentPattern.end_number0
-        let endNumber1 = this.currentPattern.end_number1
-        let endNumberOffset = this.currentEndData.total_end_number0 - this.currentPattern.end_number0
-        let isJump = false
-        if (this.jumpEndData.end_number0 != null) {
-            isJump = true
-            endNumber0 = this.jumpEndData.end_number0
-            endNumber1 = this.jumpEndData.end_number1
-            endNumberOffset = this.jumpEndData.total_end_number0 - this.jumpEndData.end_number0
-        }
-        const groupSize = endNumber0 == 0 ? 0 : endNumber1 - endNumber0 + 1
+        const isJump = this.jumpEndData.end_number0 != null
+        const endData = isJump ? this.jumpEndData : this.currentEndData
+        const endNumber0 = endData.end_number0
+        const totalEndNumber0 = endData.total_end_number0
+        const totalEndNumber1 = endData.total_end_number1
+        const groupSize = totalEndNumber1 - totalEndNumber0 + 1
+        const separateThreadingRepeats = this.separateThreadingRepeatsData.separate
         ctx.font = window.getComputedStyle(endLabelElt).font
         // Set properties such that the position for fillText is the center of the text
         ctx.textBaseline = "middle"
@@ -886,7 +880,6 @@ class LoomClient {
         const fontMeas = ctx.measureText("59")
         const fontHeight = Math.ceil(fontMeas.fontBoundingBoxAscent + fontMeas.fontBoundingBoxDescent)
         const blockWidth = asOddIncreased(fontMeas.width + ThreadingWidthGap)
-        const blockHalfWidth = (blockWidth - 1) / 2
         const centerX = ((canvas.width + 1) / 2)
 
         // Compute number of ends per end number (out how far apart to space the end numbers)
@@ -894,80 +887,103 @@ class LoomClient {
         // and leave enough space that we can display 4-digit end numbers plus a bit of gap
         // (thus measure the width of 5 digits instead of 4).
         const fourDigitWidth = ctx.measureText("9999").width
-        const minNumEndsPerEndNumber = Math.max(4, Math.ceil(fourDigitWidth / blockWidth))
-        const numEndsPerEndNumber = groupSize > 0 ? Math.ceil(minNumEndsPerEndNumber / groupSize) * groupSize : minNumEndsPerEndNumber
-        const displayEndNumberOffset = groupSize > 0 ? endNumber0 % numEndsPerEndNumber : 1
+        const numEndsPerEndNumber = Math.max(4, Math.ceil(fourDigitWidth / blockWidth))
+        const displayEndNumberOffset = totalEndNumber0 % numEndsPerEndNumber
 
         let blockHeight = asOddIncreased(fontHeight)
         const numEnds = this.currentPattern.warp_colors.length
         const remainingHeight = canvas.height - (blockHeight + fontHeight) - ThreadingEndTopGap
         const verticalDelta = Math.floor(remainingHeight / this.loomInfo.num_shafts)
 
-        const numEndSlots = Math.floor(canvas.width / blockWidth)
-        let numEndsToShow = Math.min(numEnds * 2 + 1, numEndSlots)  // 1 is for showing 0
-        let xOffset = 0
-        if (groupSize % 2 == 0) {
-            // groupSize is even; make numEndsToShow even
-            if (numEndsToShow % 2 != 0) {
-                numEndsToShow -= 1
-            }
-            xOffset = -blockHalfWidth
-        } else {
-            // groupSize is odd; make numEndsToShow odd
-            if (numEndsToShow % 2 == 0) {
-                numEndsToShow -= 1
+        let numEndsToShow = Math.round(canvas.width / blockWidth)
+        // numEndsToShow and groupSize must both be odd or both be even
+        if ((groupSize % 2) != (numEndsToShow % 2)) {
+            numEndsToShow -= 1
+        }
+        const leftBarCenterX = centerX - Math.ceil((numEndsToShow - 1) * blockWidth / 2)
+        const rightBarCenterX = leftBarCenterX + ((numEndsToShow - 1) * blockWidth)
+
+        const slotIndexGroupStart = (numEndsToShow - groupSize) / 2
+        const slotIndexGroupEnd = slotIndexGroupStart + groupSize - 1
+
+        // Display a box around the group
+        ctx.globalAlpha = isJump ? UnthreadedAlpha : 1.0
+        const rectWidth = blockWidth * groupSize
+        ctx.strokeRect(
+            centerX - Math.round(rectWidth / 2),
+            blockHeight + ThreadingEndTopGap,
+            rectWidth,
+            canvas.height - blockHeight - 2,
+        )
+        ctx.globalAlpha = 1.0
+
+        // This code relies on displaying ends in the order already threaded to not yet threaded.
+        // That simplifies the algorithm for leaving a gap between repeats.
+
+        // Initialize totalEndNumber to the value just before the first end to show
+        // (because the value is incremented at the beginning of the loop).
+        let totalEndNumber = lowToHigh ? totalEndNumber0 - slotIndexGroupStart - 1 : totalEndNumber1 + slotIndexGroupStart + 1
+        if (endNumber0 == 0) {
+            if (lowToHigh) {
+                // Offset to leave room for the gap in the middle.
+                // I am not sure why this is needed.
+                totalEndNumber += 1
             }
         }
-
-        const centerSlotIndex = Math.round((numEndsToShow - 1) / 2)
-        const centerEndNumber = Math.round(Math.max(0, (endNumber0 + endNumber1) / 2))
-
-        let minDarkEndIndex = endNumber0 - 1
-        let maxDarkEndIndex = endNumber1 - 1
-
-        console.log("centerSlotIndex", centerSlotIndex, "centerEndNumber", centerEndNumber, "minDarkEndIndex", minDarkEndIndex, "maxDarkEndIndex", maxDarkEndIndex)
-
-
-        // Display a box around the group, unless the at end 0
-        if (endNumber0 > 0) {
-            if (isJump) {
-                ctx.globalAlpha = UnthreadedAlpha
-            } else {
-                ctx.globalAlpha = 1.0
-            }
-            ctx.strokeRect(
-                centerX - Math.round(blockWidth * groupSize / 2),
-                blockHeight + ThreadingEndTopGap,
-                blockWidth * groupSize + 1,
-                canvas.height - blockHeight - 2,
-            )
-            ctx.globalAlpha = 1.0
+        let endNumber = ((totalEndNumber - 1) % numEnds) + 1
+        if (endNumber < 0) {
+            endNumber += numEnds
         }
-
-        let endIndex = 0  // declare for later use
         let yShaftNumberBaseline = 0  // declare for later use
         const halfTopGap = Math.floor(ThreadingEndTopGap / 2)
         for (let slotIndex = 0; slotIndex < numEndsToShow; slotIndex++) {
-            if (end1OnRight) {
-                endIndex = centerEndNumber + slotIndex - centerSlotIndex - 1
-            } else {
-                endIndex = centerEndNumber + (numEndsToShow - slotIndex - 1) - centerSlotIndex - 1
-            }
-
-            if (endIndex < 0 || endIndex >= this.currentPattern.threading.length) {
+            if ((slotIndex == slotIndexGroupStart) && (endNumber0 == 0)) {
+                // Display the group to be threaded as a gap.
+                // Set endNumber appropriately for the next group of threads after this gap.
+                endNumber = lowToHigh ? 0 : numEnds + 1
                 continue
             }
-            if (endIndex < minDarkEndIndex) {
-                ctx.globalAlpha = lowToHigh ? ThreadedAlpha : UnthreadedAlpha
-            } else if (endIndex > maxDarkEndIndex) {
-                ctx.globalAlpha = lowToHigh ? UnthreadedAlpha : ThreadedAlpha
+            if (lowToHigh) {
+                endNumber += 1
+                if (endNumber > numEnds) {
+                    if (separateThreadingRepeats & (slotIndex > slotIndexGroupEnd)) {
+                        // Display a gap in the to-be-threaded area.
+                        endNumber = 0
+                        continue
+                    }
+                    // Do not display a gap; advance to the next end.
+                    endNumber = 1
+                }
+                totalEndNumber += 1
+            } else {
+                endNumber -= 1
+                if (endNumber < 1) {
+                    // Display a gap in the to-be-threaded area.
+                    if (separateThreadingRepeats && (slotIndex > slotIndexGroupEnd)) {
+                        endNumber = numEnds + 1
+                        continue
+                    }
+                    // Do not display a gap; advance to the next end.
+                    endNumber = numEnds
+                }
+                totalEndNumber -= 1
+            }
+            if (totalEndNumber <= 0) {
+                continue
+            }
+
+            let endIndex = endNumber - 1
+
+            if (slotIndex < slotIndexGroupStart) {
+                ctx.globalAlpha = ThreadedAlpha
+            } else if (slotIndex > slotIndexGroupEnd) {
+                ctx.globalAlpha = UnthreadedAlpha
             } else {
                 ctx.globalAlpha = isJump ? UnthreadedAlpha : 1.0
             }
 
             const shaftIndex = this.currentPattern.threading[endIndex]
-
-            const xBarCenter = centerX + xOffset + (blockWidth * (centerSlotIndex - slotIndex))
+            const xBarCenter = rightToLeft ? rightBarCenterX - (blockWidth * slotIndex) : leftBarCenterX + (blockWidth * slotIndex)
             if (shaft1OnBottom) {
                 yShaftNumberBaseline = canvas.height - verticalDelta * (shaftIndex + 0.5) - fontMeas.fontBoundingBoxDescent
             } else {
@@ -975,10 +991,10 @@ class LoomClient {
             }
 
             /* Display end number, if wanted, above this bar */
-            if ((endIndex + 1 - displayEndNumberOffset) % numEndsPerEndNumber == 0) {
+            if ((totalEndNumber - displayEndNumberOffset) % numEndsPerEndNumber == 0) {
                 ctx.fillStyle = "black"
                 ctx.fillText(
-                    endIndex + 1 + endNumberOffset,
+                    totalEndNumber,
                     xBarCenter,
                     fontMeas.fontBoundingBoxAscent + halfTopGap + 2,
                 )
@@ -1706,7 +1722,7 @@ class LoomClient {
 
     /*
     Set the background color of an element.
- 
+     
     Intended for use as a callback, e.g. for drag-and-drop.
     */
     setBackgroundColor(element, color) {
