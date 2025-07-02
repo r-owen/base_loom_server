@@ -1,9 +1,14 @@
 # Version History
 
-## 0.25 ??
+## 0.25 2025-07-02
 
 * Add a help link.
-* Threading display: show threaded ends darker than unthreaded ends.
+* Threading display improvements:
+
+  * Show threaded ends darker than unthreaded ends.
+  * Show repeats, if there is room.
+
+* Fix two links in the documentation.
 
 ## 0.24 2025-06-26
 
