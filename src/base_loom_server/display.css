@@ -24,10 +24,6 @@ button {
     font-size: 80%;
 }
 
-button.toggle_button {
-    border-radius: 0px;
-}
-
 button.direction_undo {
     color: red;
     border-style: inset;
@@ -39,49 +35,6 @@ button.direction_do:disabled {
 
 button:hover:enabled {
     background-color: #ddd
-}
-
-input[type=text] {
-    font-size: 80%;
-}
-
-input[type=checkbox] {
-    width: calc(8px + 0.5vh + 0.5vw);
-    height: calc(8px + 0.5vh + 0.5vw);
-}
-
-select {
-    font-size: 90%;
-}
-
-#group_size_label {
-    margin-inline-start: 1em;
-}
-
-#help_link_div {
-    margin-inline-start: 10px;
-}
-
-#mode {
-    margin-bottom: 10px;
-}
-
-#upload_patterns {
-    background-color: #0000;
-    border-radius: 8px;
-    font-size: 80%;
-}
-
-#upload_patterns:hover:enabled {
-    background-color: #ddd
-}
-
-#thread_direction:disabled {
-    border: 0px;
-}
-
-#weave_direction:disabled {
-    border: 0px;
 }
 
 /* Style the tab bar mode buttons */
@@ -105,6 +58,29 @@ button.tab_active:hover {
     background-color: #0000;
 }
 
+button.toggle_button {
+    border-radius: 0px;
+}
+
+canvas {
+    border: 1px solid #000000;
+}
+
+/* Exclude borders and padding from dimensions 
+
+This makes it easier to set the size of contained canvases.
+*/
+div {
+    box-sizing: border-box;
+}
+
+div.canvas-grid {
+    display: grid;
+    flex: 1;
+    gap: 5px;
+    margin: 5px;
+}
+
 div.flex-column {
     display: flex;
     flex-direction: column;
@@ -125,28 +101,48 @@ div.flex-row {
     margin-bottom: 5px;
 }
 
+input[type=text] {
+    font-size: 80%;
+}
+
+/* Make the Separate repeats?" checkboxes larger. This is especially important on macOS Safari */
+input[type=checkbox] {
+    width: calc(8px + 0.5vh + 0.5vw);
+    height: calc(8px + 0.5vh + 0.5vw);
+}
+
+select {
+    font-size: 90%;
+}
+
+#debug_div {
+    margin-right: 10px;
+}
+
+#group_size_label {
+    margin-inline-start: 1em;
+}
+
+#help_link_div {
+    margin-inline-start: 10px;
+}
+
+#mode {
+    margin-bottom: 10px;
+}
+
 #pattern_menu {
     /* the following doesn't seem to do anything, at least on on macOS Safari */
     text-overflow: ellipsis;
 }
 
-div.canvas-grid {
-    display: grid;
+#pick_color {
     flex: 1;
-    gap: 5px;
-    margin: 5px;
-}
-
-canvas {
-    border: 1px solid #000000;
-}
-
-/* Exclude borders and padding from dimensions 
-
-This makes it easier to set the size of contained canvases.
-*/
-div {
-    box-sizing: border-box;
+    height: 12px;
+    background-color: rgba(0, 0, 0, 0);
+    border-style: solid;
+    border-width: 1px;
+    margin-right: 10px;
 }
 
 #shafts_canvas {
@@ -157,19 +153,24 @@ div {
     flex-direction: row;
 }
 
-#debug_div {
-    margin-right: 10px;
+#thread_direction:disabled {
+    border: 0px;
 }
 
 #total_pick_number {
     margin-right: 5px;
 }
 
-#pick_color {
-    flex: 1;
-    height: 12px;
-    background-color: rgba(0, 0, 0, 0);
-    border-style: solid;
-    border-width: 1px;
-    margin-right: 10px;
+#upload_patterns {
+    background-color: #0000;
+    border-radius: 8px;
+    font-size: 80%;
+}
+
+#upload_patterns:hover:enabled {
+    background-color: #ddd
+}
+
+#weave_direction:disabled {
+    border: 0px;
 }
