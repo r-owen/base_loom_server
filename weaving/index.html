@@ -162,6 +162,8 @@
 <p>The pattern is displayed as a picture that shows woven fabric below,
 and potential future fabric, somewhat grayed out, above.
 (This is the opposite of the usual US drawdown direction.)</p>
+<p>The unwoven fabric will include a gap between each pattern repeat if "Separate repeats?" is checked.
+See <a href="#repeating">Repeating</a> for more information.</p>
 <p>A <a href="../settings/">setting</a> allows you to specify whether warp end 1 is shown at the right or left.</p>
 <p>Note that the display is naive; it shows all threads as the same thickness,
 and does not display multi-layer patterns, such as doubleweave, correctly.</p>
@@ -238,7 +240,7 @@ In detail:</p>
 </ul>
 <h2 id="repeating">Repeating</h2>
 <p>The software will automatically repeat patterns if you weave or unweave beyond the end.
-The exact behavior is controlled by the <code>Separate repeats</code> checkbox:</p>
+The exact behavior is controlled by the "Separate repeats?" checkbox:</p>
 <ul>
 <li>"On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
   The first advance will lower all shafts, as a signal that you have finished weaving or unweaving one pattern repeat. That is the "separator".</li>
@@ -249,10 +251,10 @@ The exact behavior is controlled by the <code>Separate repeats</code> checkbox:<
 <li>"Off" (unchecked): there is no indication that you have reached the end of the pattern.
   The next pick will be pick 1 of the pattern, if weaving, or the last pick, if unweaving.</li>
 </ul>
-<p>The default value of <code>Separate repeats</code> is "on" if the pattern has more than 20 picks, "off" otherwise.
-The idea behind this is that frequent separator picks are annoying for short patterns, but having a separator pick is useful for long patterns.</p>
+<p>The default value of "Separate repeats?" is checked (on) if the pattern has more than 20 picks, unchecked (off) otherwise.
+The idea is that frequent separator picks are annoying for short patterns, but having a separator pick is useful for long patterns.</p>
 <p><a href="../threading/">Threading</a> has a checkbox with the same name that does the same basic thing.
-However, the value of the Weaving and Threading <code>Separate repeats</code> checkboxes are independent of each other,
+However, the value of the Weaving and Threading "Separate repeats?" checkboxes are independent of each other,
 and may also be different for different patterns. They are saved in the pattern database.</p>
               
             </div>

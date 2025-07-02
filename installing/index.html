@@ -150,12 +150,11 @@ that is based on <a href="https://pypi.org/project/base-loom-server/">base_loom_
 <li>
 <p>Pick your Computer</p>
 <p>Decide which computer you will use to run the loom server.
-Any macOS, Windows, or linux computer will work.
-The software uses minimal resources, so an old, slow computer is fine.
-A Raspberry Pi (model 4 or better) will work, but will be a bit slow when uploading patterns.
+Any macOS, Windows, or linux computer will work, and a laptop is a fine choice,
+especially as you can run your web browser on the same machine that runs the server.</p>
+<p>The software uses minimal resources, so an old, slow computer is fine.
+A Raspberry Pi (I suggest model 4 or better) will work, but will be a bit slow when uploading patterns.
 A used Mac Mini is a great choice if you have a spare keyboard and monitor to get it set up.</p>
-<p>(You may also run your web browser on the same computer. This avoids the need for wifi,
-but may make it harder to put the display where it can easily be seen.)</p>
 </li>
 <li>
 <p>Install <a href="https://www.python.org/downloads/">Python</a> 3.11 or later.</p>
@@ -211,12 +210,12 @@ The next step depends on the operating system:</p>
 <li>
 <p>Install the loom server software.</p>
 <p>From here on I will assume you are installing <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.
-For <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a> replace "toika" with "seguin".
-On the command line:</p>
-<pre><code>python -m pip install toika_loom_server
-</code></pre>
-<p>Use <code>sudo</code> on Raspberry Pi to avoid having to hunt for the loom server executable in <code>~/.local/bin</code>:</p>
+For <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a> replace "toika" with "seguin".</p>
+<p>On Raspberry Pi, it is convenient to install with <code>sudo</code> to avoid having to hunt for the loom server executable in <code>~/.local/bin</code>:</p>
 <pre><code>sudo python -m pip install toika_loom_server
+</code></pre>
+<p>On other operating systems you can probably skip <code>sudo</code>, and Windows does not support <code>sudo</code>:</p>
+<pre><code>python -m pip install toika_loom_server
 </code></pre>
 <p>In either case, watch pip's output. Near the end it should tell you where it installed <code>run_toika_loom</code>.</p>
 </li>

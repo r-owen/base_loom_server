@@ -407,7 +407,8 @@
 <span class="normal">256</span>
 <span class="normal">257</span>
 <span class="normal">258</span>
-<span class="normal">259</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">argparse</span>
+<span class="normal">259</span>
+<span class="normal">260</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">importlib.resources</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">locale</span>
@@ -636,6 +637,7 @@
         <span class="n">display_js</span> <span class="o">=</span> <span class="n">display_js</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;{ translation_dict }&quot;</span><span class="p">,</span> <span class="n">js_translation_str</span><span class="p">)</span>
 
         <span class="n">display_html</span> <span class="o">=</span> <span class="n">display_html</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">help_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">help_url</span><span class="p">,</span>
             <span class="n">lang_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">html_lang_value</span><span class="p">,</span>
             <span class="n">display_css</span><span class="o">=</span><span class="n">display_css</span><span class="p">,</span>
             <span class="n">display_js</span><span class="o">=</span><span class="n">display_js</span><span class="p">,</span>
