@@ -46,7 +46,7 @@
   "Save": "Button that submits a new loom name",
   "Sent command": "Label for debug display of the most recent command sent to the loom server",
   "Shafts": "Label for display of which shafts are raised",
-  "Separate repeats": "Should there be a separator row, with all shafts down, after each pattern repeat?",
+  "Separate repeats?": "Should there be a separator row, with all shafts down, after each pattern repeat?",
   "Settings": "Tab heading for the Settings panel",
   "Software": "Direction control: Software (the web interface)",
   "Status": "Label for status display",
