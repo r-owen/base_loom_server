@@ -221,7 +221,7 @@ function readTextFile(file, encoding = "utf-8") {
 /* Translate a phrase using TranslationDict */
 function t(phrase) {
     if (!(phrase in TranslationDict)) {
-        console.log(`Missing translation key: "${phrase}"`)
+        console.warn(`Missing translation key: "${phrase}"`)
         return phrase
     }
     return TranslationDict[phrase]
@@ -651,7 +651,7 @@ class LoomClient {
                 elt.style.display = "flex"
             }
         } else {
-            console.log("Unrecognized mode", this.mode)
+            console.warn("Unrecognized mode", this.mode)
         }
         if (modeButton != null) {
             modeButton.classList.add("tab_active")
@@ -832,9 +832,6 @@ class LoomClient {
         if (this.mode != ModeEnum.THREADING) {
             return
         }
-        if (this.settings == null) {
-            return
-        }
         const shaft1OnBottom = this.settings.thread_back_to_front
         const rightToLeft = this.settings.thread_right_to_left
 
@@ -861,10 +858,14 @@ class LoomClient {
         canvas.width = asOddDecreased(rect.width)
         canvas.height = asOddDecreased(rect.height)
 
-        if (!this.currentPattern) {
+        if ((this.settings == null)
+            || (this.separateThreadingRepeatsData.separate == null)
+            || (this.currentEndData.end_number0 == null)
+            || !this.currentPattern) {
             // Now that it's the right size, leave it blank
             return
         }
+
         const isJump = this.jumpEndData.end_number0 != null
         const endData = isJump ? this.jumpEndData : this.currentEndData
         const endNumber0 = endData.end_number0
@@ -1051,6 +1052,8 @@ class LoomClient {
 
     /*
     Display weaving pattern on the "pattern_canvas" element.
+
+    A no-op if not in WEAVING mode.
      
     Center the jump or current pick vertically.
     */
@@ -1079,12 +1082,14 @@ class LoomClient {
         canvas.width = asOddDecreased(rect.width)
         canvas.height = asOddDecreased(rect.height)
 
-        if (!this.currentPattern) {
+        if ((this.settings == null)
+            || (this.separateWeavingRepeatsData.separate == null)
+            || (this.currentPickData.pick_number == null)
+            || !this.currentPattern) {
+            // Now that it's the right size, leave it blank
             return
         }
-        if (this.separateWeavingRepeatsData.separate == null) {
-            return
-        }
+
         const separateRepeats = this.separateWeavingRepeatsData.separate
         const numEnds = this.currentPattern.warp_colors.length
         const numPicks = this.currentPattern.picks.length
@@ -1284,7 +1289,6 @@ class LoomClient {
             if (color == null) {
                 color = "#ffffff"
             }
-            console.log("CommandProblem")
             commandProblemElt.textContent = truncateStr(datadict.message)
             commandProblemElt.style.color = color
         } else if (datadict.type == "CurrentEndNumber") {
@@ -1376,12 +1380,12 @@ class LoomClient {
             this.separateThreadingRepeatsData = datadict
             let separateThreadingRepeatsCheckbox = document.getElementById("separate_threading_repeats")
             separateThreadingRepeatsCheckbox.checked = datadict.separate
-            this.displayCanvases()
+            this.displayThreadingPattern()
         } else if (datadict.type == "SeparateWeavingRepeats") {
             this.separateWeavingRepeatsData = datadict
             let separateWeavingRepeatsCheckbox = document.getElementById("separate_weaving_repeats")
             separateWeavingRepeatsCheckbox.checked = datadict.separate
-            this.displayCanvases()
+            this.displayWeavingPattern()
         } else if (datadict.type == "Settings") {
             this.settings = datadict
             this.displaySettings()
@@ -1400,8 +1404,7 @@ class LoomClient {
             let threadGroupSizeMenu = document.getElementById("thread_group_size")
             threadGroupSizeMenu.value = this.threadGroupSize
         } else {
-            console.log(`Unknown message type ${datadict.type
-                } `, datadict)
+            console.warn(`Unknown message type ${datadict.type}`, datadict)
         }
         if (resetCommandProblemMessage) {
             commandProblemElt.textContent = ""
