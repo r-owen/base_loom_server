@@ -887,7 +887,8 @@ class LoomClient {
         // and leave enough space that we can display 4-digit end numbers plus a bit of gap
         // (thus measure the width of 5 digits instead of 4).
         const fourDigitWidth = ctx.measureText("9999").width
-        const numEndsPerEndNumber = Math.max(4, Math.ceil(fourDigitWidth / blockWidth))
+        const minEndsPerEndNumber = Math.ceil(fourDigitWidth / blockWidth)
+        const numEndsPerEndNumber = Math.max(4, minEndsPerEndNumber)
         const displayEndNumberOffset = totalEndNumber0 % numEndsPerEndNumber
 
         let blockHeight = asOddIncreased(fontHeight)
@@ -936,6 +937,8 @@ class LoomClient {
         }
         let yShaftNumberBaseline = 0  // declare for later use
         const halfTopGap = Math.floor(ThreadingEndTopGap / 2)
+        const firstAllowedNumberedSlotIndex = minEndsPerEndNumber - 1
+        const lastAllowedNumberedSlotIndex = numEndsToShow - minEndsPerEndNumber
         for (let slotIndex = 0; slotIndex < numEndsToShow; slotIndex++) {
             if ((slotIndex == slotIndexGroupStart) && (endNumber0 == 0)) {
                 // Display the group to be threaded as a gap.
@@ -991,7 +994,9 @@ class LoomClient {
             }
 
             /* Display end number, if wanted, above this bar */
-            if ((totalEndNumber - displayEndNumberOffset) % numEndsPerEndNumber == 0) {
+            if (((totalEndNumber - displayEndNumberOffset) % numEndsPerEndNumber == 0)
+                && (slotIndex >= firstAllowedNumberedSlotIndex)
+                && (slotIndex <= lastAllowedNumberedSlotIndex)) {
                 ctx.fillStyle = "black"
                 ctx.fillText(
                     totalEndNumber,
