@@ -14,6 +14,9 @@ The pattern is displayed as a picture that shows woven fabric below,
 and potential future fabric, somewhat grayed out, above.
 (This is the opposite of the usual US drawdown direction.)
 
+The unwoven fabric will include a gap between each pattern repeat if "Separate repeats" is checked.
+See [Repeating](#repeating) for more information.
+
 A [setting](settings.md) allows you to specify whether warp end 1 is shown at the right or left.
 
 Note that the display is naive; it shows all threads as the same thickness,
@@ -81,7 +84,7 @@ In detail:
 ## Repeating
 
 The software will automatically repeat patterns if you weave or unweave beyond the end.
-The exact behavior is controlled by the `Separate repeats` checkbox:
+The exact behavior is controlled by the "Separate repeats" checkbox:
 
 * "On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
   The first advance will lower all shafts, as a signal that you have finished weaving or unweaving one pattern repeat. That is the "separator".
@@ -92,9 +95,9 @@ The exact behavior is controlled by the `Separate repeats` checkbox:
 * "Off" (unchecked): there is no indication that you have reached the end of the pattern.
   The next pick will be pick 1 of the pattern, if weaving, or the last pick, if unweaving.
 
-The default value of `Separate repeats` is "on" if the pattern has more than 20 picks, "off" otherwise.
+The default value of "Separate repeats" is "on" if the pattern has more than 20 picks, "off" otherwise.
 The idea behind this is that frequent separator picks are annoying for short patterns, but having a separator pick is useful for long patterns.
 
 [Threading](threading.md) has a checkbox with the same name that does the same basic thing.
-However, the value of the Weaving and Threading `Separate repeats` checkboxes are independent of each other,
+However, the value of the Weaving and Threading "Separate repeats" checkboxes are independent of each other,
 and may also be different for different patterns. They are saved in the pattern database.

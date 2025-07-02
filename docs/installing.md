@@ -10,13 +10,12 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
 1. Pick your Computer
 
     Decide which computer you will use to run the loom server.
-    Any macOS, Windows, or linux computer will work.
-    The software uses minimal resources, so an old, slow computer is fine.
-    A Raspberry Pi (model 4 or better) will work, but will be a bit slow when uploading patterns.
-    A used Mac Mini is a great choice if you have a spare keyboard and monitor to get it set up.
+    Any macOS, Windows, or linux computer will work, and a laptop is a fine choice,
+    especially as you can run your web browser on the same machine that runs the server.
 
-    (You may also run your web browser on the same computer. This avoids the need for wifi,
-    but may make it harder to put the display where it can easily be seen.)
+    The software uses minimal resources, so an old, slow computer is fine.
+    A Raspberry Pi (I suggest model 4 or better) will work, but will be a bit slow when uploading patterns.
+    A used Mac Mini is a great choice if you have a spare keyboard and monitor to get it set up.
 
 2. Install [Python](https://www.python.org/downloads/) 3.11 or later.
 
@@ -65,14 +64,15 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
 
     From here on I will assume you are installing [toika_loom_server](https://pypi.org/project/toika-loom-server/).
     For [seguin_loom_server](https://pypi.org/project/seguin-loom-server/) replace "toika" with "seguin".
-    On the command line:
-    
-        python -m pip install toika_loom_server
 
-    Use `sudo` on Raspberry Pi to avoid having to hunt for the loom server executable in `~/.local/bin`:
+    On Raspberry Pi, it is convenient to install with `sudo` to avoid having to hunt for the loom server executable in `~/.local/bin`:
 
         sudo python -m pip install toika_loom_server
     
+    On other operating systems you can probably skip `sudo`, and Windows does not support `sudo`:
+
+        python -m pip install toika_loom_server
+
     In either case, watch pip's output. Near the end it should tell you where it installed `run_toika_loom`.
 
 5. Find the installed loom server executable:

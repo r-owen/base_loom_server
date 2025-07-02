@@ -10,7 +10,7 @@ The first step is to [install](installing.md) the software. Once you have done t
 ## Connect to the Loom Server
 
 Connect to the loom server using any modern web browser (e.g. on a phone, tablet, or laptop).
-The address will be `http://*hostname*.local:8000` where *hostname* is the host name
+The address will be "http://*hostname*.local:8000" where *hostname* is the host name
 of the loom server computer, as determined in [Installing](installing.md).
 
 ## Select the Mode

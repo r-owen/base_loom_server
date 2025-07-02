@@ -12,26 +12,26 @@ This page assumes you have done all the [basics](index.md):
 
 ## Threading Direction
 
-The [Settings][settings.md] panel contains two settings specific to threading:
+The [Settings](settings.md) panel contains two settings specific to threading:
 
 Thread from right-to-left or left-to-right.
 
 Thread from back-to-front or front-to-back, which this only affects the display.
 Front-to-back mode rotates the pattern 180 degrees, as if seen from the back of the loom:
-shaft 1 is at the bottom, and warp end 1 is at the other edge than specified by the "Warp end 1 on" [setting][settings.md].
+shaft 1 is at the bottom, and warp end 1 is at the other edge than specified by the "Warp end 1 on" [setting](settings.md).
 
 ## Threading Display
 
 Threading is displayed as a picture that shows a group of threads (vertical colored bars) and the shaft they go through (numbers that interrupt the colored bars).
 It also shows warp end numbers above some threads.
 
-Warp end 0 is special: it has no shafts and no warp thread. It is the first pick when starting to thread a pattern.
-It is also an intermediate step when repeating a threading sequence, unless "Separate repeats" is unchecked.
+If "Separate repeats" is checked you will see a gap between unthreaded repeats.
+See [Repeating](#repeating) for more information.
 
 Special cases that may only be supported by WIF files:
 
 * Ends that are only threaded on shaft 0 (meaning not threaded through heddles on any shaft) are displayed without a shaft number.
-* Ends that are threaded through heddles on more than one shaft are only shown threaded on the lowest-numbered shaft, ignoring shaft 0.
+* Ends that are threaded through heddles on more than one shaft are only shown threaded on the lowest-numbered shaft (ignoring non-existent shaft 0).
 
 ## Threading Direction
 
@@ -79,7 +79,7 @@ You can change the group size whenever you like; the change takes effect for the
 ## Repeating
 
 The software will automatically repeat threading if you thread beyond the end.
-However, like [Weaving](weaving.md), the transition depends on the `Separate repeats` checkbox:
+However, like [Weaving](weaving.md), the transition depends on the "Separate repeats" checkbox:
 
 * "On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
   The first advance will lower all shafts, as a signal that you have finished threading or unthreading one pattern repeat. That is the "separator".
@@ -87,8 +87,8 @@ However, like [Weaving](weaving.md), the transition depends on the `Separate rep
 * "Off" (unchecked): there is no indication that you have reached the end of threading.
   The next advance will start the next repeat of threading or unthreading.
 
-The default value of `Separate repeats` is "on" if the pattern has more than 20 warp threads, "off" otherwise.
-The idea behind this is that frequent separator picks are annoying for short threading sequences, but having a separator pick is useful for long sequences.
+The default value of "Separate repeats" is "on" if the pattern has more than 20 warp threads, "off" otherwise.
+The idea behind this is that frequent separator "picks" are annoying for short threading sequences (and add wear and tear to the dobby mechanism), but having a separator "pick" is useful for long sequences.
 
-Note that the value of the Weaving and Threading `Separate repeats` checkboxes are independent of each other,
+Note that the value of the Weaving and Threading "Separate repeats" checkboxes are independent of each other,
 and may also be different for different patterns. They are saved in the pattern database.
