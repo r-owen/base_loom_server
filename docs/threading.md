@@ -25,7 +25,7 @@ shaft 1 is at the bottom, and warp end 1 is at the other edge than specified by 
 Threading is displayed as a picture that shows a group of threads (vertical colored bars) and the shaft they go through (numbers that interrupt the colored bars).
 It also shows warp end numbers above some threads.
 
-If "Separate repeats" is checked you will see a gap between unthreaded repeats.
+If "Separate repeats?" is checked you will see a gap between unthreaded repeats.
 See [Repeating](#repeating) for more information.
 
 Special cases that may only be supported by WIF files:
@@ -79,7 +79,7 @@ You can change the group size whenever you like; the change takes effect for the
 ## Repeating
 
 The software will automatically repeat threading if you thread beyond the end.
-However, like [Weaving](weaving.md), the transition depends on the "Separate repeats" checkbox:
+However, like [Weaving](weaving.md), the transition depends on the "Separate repeats?" checkbox:
 
 * "On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
   The first advance will lower all shafts, as a signal that you have finished threading or unthreading one pattern repeat. That is the "separator".
@@ -87,8 +87,8 @@ However, like [Weaving](weaving.md), the transition depends on the "Separate rep
 * "Off" (unchecked): there is no indication that you have reached the end of threading.
   The next advance will start the next repeat of threading or unthreading.
 
-The default value of "Separate repeats" is "on" if the pattern has more than 20 warp threads, "off" otherwise.
-The idea behind this is that frequent separator "picks" are annoying for short threading sequences (and add wear and tear to the dobby mechanism), but having a separator "pick" is useful for long sequences.
+The default value of "Separate repeats?" is checked (on) if the pattern has more than 20 warp threads, unchecked (off) otherwise.
+The idea is that frequent separator "picks" are annoying for short threading sequences, but having a separator "pick" is useful for long sequences.
 
-Note that the value of the Weaving and Threading "Separate repeats" checkboxes are independent of each other,
+Note that the value of the Weaving and Threading "Separate repeats?" checkboxes are independent of each other,
 and may also be different for different patterns. They are saved in the pattern database.
