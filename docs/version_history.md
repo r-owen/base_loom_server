@@ -3,8 +3,7 @@
 ## 0.25 ??
 
 * Add a help link.
-* Threading display: show threads beyond one pattern repeat,
-  and show threaded ends darker than unthreaded ends.
+* Threading display: show threaded ends darker than unthreaded ends.
 
 ## 0.24 2025-06-26
 
