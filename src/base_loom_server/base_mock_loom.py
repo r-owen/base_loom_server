@@ -69,6 +69,18 @@ class BaseMockLoom(abc.ABC):
         # A threading version for use with fastapi.testclient.TestClient
         # which is, alas, synchronous.
         self.command_threading_event = threading.Event()
+        self.__post_init__()
+
+    def __post_init__(self) -> None:
+        """Subclases may override this method, preferably instead of
+        overriding the constructor.
+
+        Called at the end of the constructor.
+
+        By default this is a no-op so subclases need not call
+        `super().__post_init__()`
+        """
+        pass
 
     async def start(self) -> None:
         self.reader, self.writer = open_mock_connection(terminator=self.terminator)

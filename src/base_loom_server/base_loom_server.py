@@ -178,6 +178,7 @@ class BaseLoomServer:
         self.jump_end = client_replies.JumpEndNumber()
         self.mode = ModeEnum.WEAVE
         self.direction_forward = True
+        self.__post_init__()
 
     @abc.abstractmethod
     async def handle_loom_reply(self, reply_bytes: bytes) -> None:
@@ -210,6 +211,17 @@ class BaseLoomServer:
         if not self.direction_forward:
             low_to_high = not low_to_high
         return low_to_high
+
+    def __post_init__(self) -> None:
+        """Subclases may override this method, preferably instead of
+        overriding the constructor.
+
+        Called at the end of the constructor.
+
+        By default this is a no-op so subclases need not call
+        `super().__post_init__()`
+        """
+        pass
 
     def load_translation_file_for_current_locale(self) -> None:
         """Load language translation files based on locale.
