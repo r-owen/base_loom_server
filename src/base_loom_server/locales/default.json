@@ -25,6 +25,7 @@
   "Jump to end": "Jump to warp end number...",
   "Jump to pick": "Jump to weft pick number...",
   "Jump": "Label for the button that applies the requested jump",
+  "Language": "Label for a language setting",
   "Left to right": "Setting: thread from left to right",
   "Loom name": "Name of the loom to display in the web interface",
   "Loom": "Direction control: Loom (typically a button on the dobby head)",
