@@ -67,9 +67,17 @@
   Two examples are `ExampleMockLoom` in this package and `MockLoom`
   in [toika_loom_server](https://pypi.org/project/toika-loom-server/).
 
+  For simplicity and future compatibility, try to avoid overriding the constructor.
+  Instead, perform loom-specific initialization by overriding the `__post_init__` method
+  (which is normally a no-op, so you need not call `super().__post_init__`).
+
 * Write a subclass of `BaseLoomServer` that talks to the loom.
   Two examples are `ExampleLoomServer` in this package and `LoomServer`
   in [toika_loom_server](https://pypi.org/project/toika-loom-server/).
+
+  For simplicity and future compatibility, try to avoid overriding the constructor.
+  Instead, perform loom-specific initialization by overriding the `__post_init__` method
+  (which is normally a no-op, so you need not call `super().__post_init__`).
 
 * Write a `main.py` like the one in this package, to run your loom server.
 

@@ -2,19 +2,33 @@
 
 [base_loom_server](https://pypi.org/project/base-loom-server/) supports foreign language translations (for the web display, but not this documentation).
 
-At present only one translation available: is a rather poor French translation.
-Help from others to add and improve language support would be most welcome.
+At present only a few translations are available, and none have been properly vetted.
+Help from others to improve the existing translations and add new ones would be most welcome.
+Weaving terminology is somewhat obscure, so translation tools may miss important subtleties. 
 
-Each language is supported by a separate yaml file in `src/locales`.
+Each language is supported by a separate json file in `src/locales`.
+The name of each translation file is the native name of the language, for example `Français.json`.
 
-Each translation file must have name *language_code*.js, where  *language_code* is a standard language code as reported by the Python `locale` library.
-Here is one [list of codes](https://stackoverflow.com/questions/3191664/list-of-all-locales-and-their-short-codes).
-On macOS and unix you can see a list of supported locales with terminal command `locale -a`.
+The file `src/locales/default.json` lists all the words and phrases for which translations are wanted.
+the values are context, which are purely intended to help the translator understand the word or phrase; they are ignored by the software.
+In addition to those entries there are a few [metadata keys](#metadata-keys).
 
-The file `src/locales/default.yaml` lists all the words and phrases for which translations are wanted. The values provide a description that may help to understand the word or phrase. These values are ignored by the software.The keys are the same in each translation file, but the values are the translated word or phrase. A good way to start is to copy `src/locales/default.yaml` to the new language file, then replace each value string with the translated string.
+The keys in the translation files are the same as in `default.json`, but the values are the translated word or phrase.
+One way to start is to copy `src/locales/default.json` to the new language file, then replace each context string with the translated string.
 
-An incomplete file is better than none; missing entries will be shown in English.
+To add or change translation files, fork the project on github.
 
-It is possible to have two files for a given language: one that uses a more general language code, and the other that uses a more specific code. If you do this, the more general file is read first, then the more specific file. Thus the more specific file need only have entries that differ from the general file.
+If you are not confident of your translations, please append " (preliminary)", suitably translated, to the name.
+For example: "Français (préliminaire).json".
 
-In order for a translation file to be used, the locale of the server computer must be set correctly.
+An incomplete file is better than none. Missing entries will be shown in English.
+
+## Metadata Keys
+
+There are several optional keys that provide metadata:
+
+* **_direction**: whether the language is read left-to-right (value `ltr`, the default) or right-to-left (value `rtl`).
+* **_extends**: the name of another language file of which this is a variant, without the ".json" suffix.
+  If you specify `_extends` then you need only specify the items that differ from the file named in `_extends`.
+  For example file `Québécois.json` could specify `"_extends"="Français"`.
+* **_language_code**: the ISO 639-1 language code for the language, e.g. `fr` for `Français`. Here is [one list](https://www.w3schools.com/tags/ref_language_codes.asp). This may help text-to-speech software. If omitted the value is "en".

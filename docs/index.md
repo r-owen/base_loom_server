@@ -1,9 +1,20 @@
 # Loom Server
 
-A loom server is a package based on [base_loom_server](https://pypi.org/project/base-loom-server/) that allows you to control a dobby loom from a web browser (e.g. on a phone or tablet). Two examples are [seguin_loom_server](https://pypi.org/project/seguin-loom-server/)
-and [toika_loom_server](https://pypi.org/project/toika-loom-server/).
+A loom server allows you to control a computer-controlled loom from a web browser on a phone, tablet or computer. Features include:
 
-This document explains how to use any of these loom servers (though there may be a few loom-specific differences that are described in that package's documentation).
+* Direct support for three types of weaving pattern files: WIF (.wif), Fiberworks (.dtx), and WeavePoint (.wpo).
+* Support for weaving and threading.
+* Settings to accommodate your preferences.
+* Preliminary support for multiple languages (the translation files need work; contributions welcome).
+* Runs on all major operating systems.
+* The software is free and uses the generous MIT license.
+
+I maintain software to control [Toika](https://pypi.org/project/toika-loom-server/)
+and [Séguin](https://pypi.org/project/seguin-loom-server/) looms.
+The base package [base_loom_server](https://pypi.org/project/base-loom-server/) does most of the work,
+so it is easy to [support other looms](coding.md).
+
+This document explains how to use these loom servers.
 
 The first step is to [install](installing.md) the software. Once you have done that, read on:
 
@@ -13,23 +24,25 @@ Connect to the loom server using any modern web browser (e.g. on a phone, tablet
 The address will be "http://*hostname*.local:8000" where *hostname* is the host name
 of the loom server computer, as determined in [Installing](installing.md).
 
+If you are running the web browser and web server on the same computer, you can skip the hostname and connect to "http://localhost:8000".
+
 ## Select the Mode
 
-The server has three modes, which are listed at the top of the web page: Weaving, Threading, and Settings:
+The server has three modes, which are listed at the top of the web page:
 
 * [Weaving](weaving.md) is used to weave fabric; this is by far the most common mode.
 
-* [Threading](threading.md) will help you thread the loom, by lifting shafts for groups of threads.
+* [Threading](threading.md) helps you thread the loom, by lifting shafts for groups of threads.
 
 * [Settings](settings.md) allows you specify settings that apply to all weaving pattern files.
 
 Click on the word to select that mode.
 The bold word shows the current mode.
 
-The links above give detailed instructions for using each mode.
+The links above give detailed instructions for each mode.
 But before you dive into that, read the next section about pattern files:
 
-In addition, the "?" link on the same line opens documentation in a new browser tab.
+In addition, the "?" link on the same line as the mode tabs opens documentation in a new browser tab.
 
 ## Upload and Select Pattern Files
 
@@ -55,9 +68,6 @@ So please be careful.
 To clear out the pattern menu (which may become cluttered over time),
 select "Clear Recents", the last item in the pattern menu.
 This clears out information for all patterns except the current pattern.
-
-You can also restart the loom server with the **--reset-db** command-line argument.
-This can be useful if upgrading to a new version of the loom software that has an incompatible database format.
 
 ## Multiple Connections
 
