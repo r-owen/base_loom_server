@@ -1,7 +1,6 @@
 import argparse
 import importlib.resources
 import json
-import locale
 import logging
 import pathlib
 from contextlib import asynccontextmanager
@@ -16,7 +15,6 @@ from .constants import LOG_NAME
 from .enums import DirectionControlEnum
 
 PKG_FILES = importlib.resources.files("base_loom_server")
-LOCALE_FILES = PKG_FILES.joinpath("locales")
 
 
 class AppRunner:
@@ -57,8 +55,6 @@ class AppRunner:
         self.favicon = favicon
         self.app_package_name = app_package_name
         self.loom_server: BaseLoomServer | None = None
-        self.html_lang_value: str = "en"
-        self.translation_dict: dict[str, str] = {}
 
         # There must be a better way to do this,
         # but everything I have tried fails,
@@ -151,69 +147,16 @@ class AppRunner:
         for the entire time the web server is running. This is because
         the loom server speaks to one loom and serves at most one user.
         """
-        self.html_lang_value, self.translation_dict = self.get_translation_info()
-
         parser = self.create_argument_parser()
         args = parser.parse_args()
         for uvicorn_arg in ("host", "port", "log_level"):
             if getattr(args, uvicorn_arg, None) is not None:
                 delattr(args, uvicorn_arg)
 
-        async with self.server_class(
-            **vars(args),
-            translation_dict=self.translation_dict,
-        ) as self.loom_server:
+        async with self.server_class(**vars(args)) as self.loom_server:
             # Store the server as state for unit tests
             app.state.loom_server = self.loom_server
             yield
-
-    def get_translation_info(self) -> tuple[str, dict[str, str]]:
-        """Get the HTML lang value and translation dict for the current
-        locale.
-
-        The HTML lang value is the value of the HTML lang tag:
-        f"<html lang="{html_lang_value}>"
-
-        Note: HTML lang value is "en" unless a translation file is present.
-        If a translation file is present, the value is the short language code
-        returned by the locale module. This is because more detail is not
-        needed, and because it is is difficult to translate locale names
-        return by the locale module to valid HTML lang values.
-        """
-        # Read a dict of key: None and turn into a dict of key: key
-        default_dict = json.loads(
-            LOCALE_FILES.joinpath("default.json").read_text(encoding="utf_8")
-        )
-        translation_dict = {key: key for key in default_dict}
-
-        html_lang_value = "en"
-        language_code = locale.getlocale(locale.LC_CTYPE)[0] or ""
-        self.log.info(f"Locale: {language_code!r}")
-        language_codes = []
-        if language_code and language_code != "C":
-            language_codes.append(language_code)
-            short_language_code = language_code.split("_")[0]
-            if short_language_code != language_code:
-                language_codes.append(short_language_code)
-        for lc in language_codes:
-            translation_name = lc + ".json"
-            translation_file = LOCALE_FILES.joinpath(translation_name)
-            if translation_file.is_file():
-                html_lang_value = short_language_code
-                self.log.info(f"Loading translation file {translation_name!r}")
-                locale_dict = json.loads(translation_file.read_text(encoding="utf_8"))
-                purged_locale_dict = {
-                    key: value
-                    for key, value in locale_dict.items()
-                    if value is not None
-                }
-                if purged_locale_dict != locale_dict:
-                    self.log.warning(
-                        f"Some entries in translation file {translation_name!r} "
-                        "have null entries"
-                    )
-                translation_dict.update(purged_locale_dict)
-        return html_lang_value, translation_dict
 
     async def get(self) -> HTMLResponse:
         """Endpoint to get the main page."""
@@ -223,15 +166,15 @@ class AppRunner:
         display_css = PKG_FILES.joinpath("display.css").read_text(encoding="utf_8")
 
         display_js = PKG_FILES.joinpath("display.js").read_text(encoding="utf_8")
-        js_translation_str = json.dumps(self.translation_dict, indent=4)
+        js_translation_str = json.dumps(self.loom_server.translation_dict, indent=4)
         display_js = display_js.replace("{ translation_dict }", js_translation_str)
 
         display_html = display_html.format(
             help_url=self.loom_server.help_url,
-            lang_str=self.html_lang_value,
+            lang_str=self.loom_server.html_lang_value,
             display_css=display_css,
             display_js=display_js,
-            **self.translation_dict,
+            **self.loom_server.translation_dict,
         )
 
         return HTMLResponse(display_html)

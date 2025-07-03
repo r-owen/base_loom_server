@@ -12,7 +12,6 @@ class ExampleLoomServer(BaseLoomServer):
         num_shafts: The number of shafts the loom has.
         serial_port: The name of the serial port, e.g. "/dev/tty0".
             If the name is "mock" then use a mock loom.
-        translation_dict: Language translation dict.
         reset_db: If True, delete the old database and create a new one.
         verbose: If True, log diagnostic information.
         name: User-assigned loom name.

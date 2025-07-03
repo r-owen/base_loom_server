@@ -11,7 +11,9 @@ import asyncio
 import copy
 import dataclasses
 import enum
+import importlib.resources
 import json
+import locale
 import logging
 import pathlib
 from types import SimpleNamespace, TracebackType
@@ -45,6 +47,9 @@ MAX_LOG_PATTERN_LEN = 100
 
 MOCK_PORT_NAME = "mock"
 
+PKG_FILES = importlib.resources.files("base_loom_server")
+LOCALE_FILES = PKG_FILES.joinpath("locales")
+
 
 class CloseCode(enum.IntEnum):
     """WebSocket close codes
@@ -72,7 +77,6 @@ class BaseLoomServer:
         num_shafts: The number of shafts the loom has.
         serial_port: The name of the serial port, e.g. "/dev/tty0".
             If the name is "mock" then use a mock loom.
-        translation_dict: Language translation dict.
         reset_db: If True, delete the old database and create a new one.
         verbose: If True, log diagnostic information.
         db_path: Path to the pattern database. Specify None for the
@@ -95,7 +99,6 @@ class BaseLoomServer:
         *,
         num_shafts: int,
         serial_port: str,
-        translation_dict: dict[str, str],
         reset_db: bool,
         verbose: bool,
         db_path: pathlib.Path | None = None,
@@ -110,7 +113,7 @@ class BaseLoomServer:
             )
 
         self.serial_port = serial_port
-        self.translation_dict = translation_dict
+        self.load_translation_file_for_current_locale()
         self.verbose = verbose
         self.loom_info = client_replies.LoomInfo(
             num_shafts=num_shafts,
@@ -160,7 +163,9 @@ class BaseLoomServer:
         self.loom_connecting = False
         self.loom_disconnecting = False
         self.client_connected = False
-        self.shaft_state: ShaftStateEnum = ShaftStateEnum.UNKNOWN
+        self.shaft_state: ShaftStateEnum = (
+            ShaftStateEnum.UNKNOWN if self.loom_reports_motion else ShaftStateEnum.DONE
+        )
         self.shaft_word = 0
         self.mock_loom: BaseMockLoom | None = None
         self.loom_reader: StreamReaderType | None = None
@@ -205,6 +210,65 @@ class BaseLoomServer:
         if not self.direction_forward:
             low_to_high = not low_to_high
         return low_to_high
+
+    def load_translation_file_for_current_locale(self) -> None:
+        """Load language translation files based on locale.
+
+        Set two attributes:
+
+        * html_lang_code
+        * translation_dict
+        """
+        # Read the default data, a a dict of key: contexxt (which is ignored)
+        # and turn into a dict of key: key
+        default_dict = json.loads(
+            LOCALE_FILES.joinpath("default.json").read_text(encoding="utf_8")
+        )
+        translation_dict = {key: key for key in default_dict}
+
+        html_lang_value = "en"
+        language_code = locale.getlocale(locale.LC_CTYPE)[0] or ""
+        self.log.info(f"Locale: {language_code!r}")
+        language_codes = []
+        if language_code and language_code != "C":
+            language_codes.append(language_code)
+            short_language_code = language_code.split("_")[0]
+            if short_language_code != language_code:
+                language_codes.append(short_language_code)
+        for lc in language_codes:
+            translation_name = lc + ".json"
+            translation_file = LOCALE_FILES.joinpath(translation_name)
+            if translation_file.is_file():
+                try:
+                    locale_dict = self.read_translation_file(translation_name)
+                except Exception as e:
+                    self.log.warning(
+                        f"Failed to read translation file {translation_name}: {e!r}. Continuing without it"
+                    )
+                html_lang_value = short_language_code
+                translation_dict.update(locale_dict)
+        self.html_lang_value = html_lang_value
+        self.translation_dict = translation_dict
+
+    def read_translation_file(self, filename) -> dict[str, str]:
+        """Read and parse the specified language translation file.
+
+        Return the result, after purging (and warning of) any null entries.
+        """
+        translation_file = LOCALE_FILES.joinpath(filename)
+        if not translation_file.is_file():
+            raise FileNotFoundError(f"Translation file {filename} not found")
+        self.log.info(f"Loading translation file {filename!r}")
+        translation_dict = json.loads(translation_file.read_text(encoding="utf_8"))
+        purged_translation_dict = {
+            key: value for key, value in translation_dict.items() if value is not None
+        }
+        if purged_translation_dict != translation_dict:
+            self.log.warning(
+                f"Some entries in translation file {filename!r} "
+                "have null values, which are ignored."
+            )
+        return purged_translation_dict
 
     @property
     def loom_connected(self) -> bool:
