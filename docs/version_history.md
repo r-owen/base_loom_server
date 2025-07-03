@@ -1,5 +1,29 @@
 # Version History
 
+## 0.26 2025-07-05
+
+* Add a Language setting to the Settings panel.
+* Properly support right-to-left languages.
+* Increased the size of checkboxes.
+
+Changes for maintainers and authors of loom-specific packages:
+
+* Warning: most loom-specific packages will need trivial changes, including  `toika_loom_server` and `seguin_loom_server`.
+* BaseLoomServer and subclasses no longer have the `translation_dict` constructor argument.
+  As a result, loom-specific packages that override the constructor must be updated.
+  You can simply delete that one constructor argument, but it is better to replace the entire constructor override
+  with an override of the new `__post_init__` method, as per the next item.
+* Added `__post__init__` methods to both `BaseLoomServer` and `BaseMockLoom`.
+  These methods take no arguments and return None.
+  They are intended to eliminate the need to override the constructor, which eliminates the duplication
+  of constructor arguments, making it less likely that future changes will be needed as `base_loom_server` evolves.
+  For example `toika_loom_server`'s `LoomServer` and `MockLoom` classes use this method to check
+  that the number of shafts is a multiple of 8 (as required by Toika's API).
+* Changed the language translation files as follows (see [Translations](translations.md) for details):
+
+  * Each file name is the native name of the language, rather than the language code.
+  * Added a few metadata entries.
+
 ## 0.25 2025-07-02
 
 * Add a help link.
