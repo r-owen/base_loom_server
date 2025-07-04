@@ -1428,6 +1428,7 @@ class BaseTestLoomServer:
                         expected_types = {
                             "JumpEndNumber",
                             "JumpPickNumber",
+                            "LanguageNames",
                             "LoomConnectionState",
                             "LoomInfo",
                             "Mode",
@@ -1506,6 +1507,8 @@ class BaseTestLoomServer:
                                         if field_name == "type":
                                             continue
                                         assert value is None
+                                case "LanguageNames":
+                                    assert "English" in reply.languages
                                 case "LoomConnectionState":
                                     if reply.state not in good_connection_states:
                                         raise AssertionError(

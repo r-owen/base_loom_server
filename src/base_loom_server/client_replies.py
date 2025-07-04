@@ -99,6 +99,14 @@ class JumpPickNumber:
 
 
 @dataclasses.dataclass
+class LanguageNames:
+    """Supported languages"""
+
+    type: str = dataclasses.field(init=False, default="LanguageNames")
+    languages: list[str]
+
+
+@dataclasses.dataclass
 class LoomConnectionState:
     """The state of the server's connection to the loom"""
 
@@ -144,6 +152,7 @@ class SeparateWeavingRepeats:
 @dataclasses.dataclass
 class Settings:
     type: str = dataclasses.field(init=False, default="Settings")
+    language: str
     loom_name: str
     direction_control: DirectionControlEnum
     end1_on_right: bool

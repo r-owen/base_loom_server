@@ -13,7 +13,6 @@ import dataclasses
 import enum
 import importlib.resources
 import json
-import locale
 import logging
 import pathlib
 from types import SimpleNamespace, TracebackType
@@ -31,6 +30,7 @@ from .enums import DirectionControlEnum, MessageSeverityEnum, ModeEnum, ShaftSta
 from .mock_streams import StreamReaderType, StreamWriterType
 from .pattern_database import PatternDatabase
 from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
+from .translations import get_language_names, get_translation_dict
 from .utils import compute_num_within_and_repeats, compute_total_num
 
 # The maximum number of patterns that can be in the history
@@ -113,7 +113,6 @@ class BaseLoomServer:
             )
 
         self.serial_port = serial_port
-        self.load_translation_file_for_current_locale()
         self.verbose = verbose
         self.loom_info = client_replies.LoomInfo(
             num_shafts=num_shafts,
@@ -149,6 +148,7 @@ class BaseLoomServer:
 
         self.settings = client_replies.Settings(
             loom_name=self.default_name,
+            language="English",
             direction_control=direction_control,
             end1_on_right=True,
             thread_group_size=4,
@@ -156,6 +156,9 @@ class BaseLoomServer:
             thread_back_to_front=True,
         )
         self.settings_path = self.db_path.parent / SETTINGS_FILE_NAME
+        self.translation_dict = get_translation_dict(
+            language=self.settings.language, logger=self.log
+        )
         self.load_settings()
         self.save_settings()
 
@@ -222,64 +225,6 @@ class BaseLoomServer:
         `super().__post_init__()`
         """
         pass
-
-    def load_translation_file_for_current_locale(self) -> None:
-        """Load language translation files based on locale.
-
-        Set two attributes:
-
-        * html_lang_code
-        * translation_dict
-        """
-        # Read the default data, a a dict of key: contexxt (which is ignored)
-        # and turn into a dict of key: key
-        default_dict = json.loads(
-            LOCALE_FILES.joinpath("default.json").read_text(encoding="utf_8")
-        )
-        translation_dict = {key: key for key in default_dict}
-
-        language_code = "en"
-        language_code = locale.getlocale(locale.LC_CTYPE)[0] or ""
-        self.log.info(f"Locale: {language_code!r}")
-        language_codes = []
-        if language_code and language_code != "C":
-            language_codes.append(language_code)
-            short_language_code = language_code.split("_")[0]
-            if short_language_code != language_code:
-                language_codes.append(short_language_code)
-        for lc in language_codes:
-            translation_name = lc + ".json"
-            translation_file = LOCALE_FILES.joinpath(translation_name)
-            if translation_file.is_file():
-                try:
-                    locale_dict = self.read_translation_file(translation_name)
-                except Exception as e:
-                    self.log.warning(
-                        f"Failed to read translation file {translation_name}: {e!r}. Continuing without it"
-                    )
-                language_code = short_language_code
-                translation_dict.update(locale_dict)
-        self.translation_dict = translation_dict
-
-    def read_translation_file(self, filename) -> dict[str, str]:
-        """Read and parse the specified language translation file.
-
-        Return the result, after purging (and warning of) any null entries.
-        """
-        translation_file = LOCALE_FILES.joinpath(filename)
-        if not translation_file.is_file():
-            raise FileNotFoundError(f"Translation file {filename} not found")
-        self.log.info(f"Loading translation file {filename!r}")
-        translation_dict = json.loads(translation_file.read_text(encoding="utf_8"))
-        purged_translation_dict = {
-            key: value for key, value in translation_dict.items() if value is not None
-        }
-        if purged_translation_dict != translation_dict:
-            self.log.warning(
-                f"Some entries in translation file {filename!r} "
-                "have null values, which are ignored."
-            )
-        return purged_translation_dict
 
     @property
     def loom_connected(self) -> bool:
@@ -615,6 +560,14 @@ class BaseLoomServer:
                     raise CommandError(
                         f"invalid {key}={value!r}: loom doesn't support full direction control"
                     )
+            elif key == "language":
+                if value != self.settings.language:
+                    try:
+                        self.translation_dict = get_translation_dict(
+                            language=value, logger=self.log
+                        )
+                    except Exception as e:
+                        raise CommandError(f"Failed to load language {value!r}: {e!r}")
             else:
                 expected_type = dict(
                     loom_name=str,
@@ -839,6 +792,15 @@ class BaseLoomServer:
                     )
                     continue
 
+            elif key == "language":
+                try:
+                    self.translation_dict = get_translation_dict(
+                        language=value, logger=self.log
+                    )
+                except Exception as e:
+                    self.log.error(f"Failed to load translation dict {value!r}: {e!r}")
+                    continue
+
             if not isinstance(value, type(default_value)):
                 self.log.warning(f"Ignoring setting {key}={value!r}: invalid value")
                 continue
@@ -987,6 +949,7 @@ class BaseLoomServer:
         """
         await self.report_loom_connection_state()
         await self.write_to_client(self.loom_info)
+        await self.report_language_names()
         await self.report_settings()
         await self.report_mode()
         await self.report_pattern_names()
@@ -1129,6 +1092,10 @@ class BaseLoomServer:
         client_reply = client_replies.ThreadGroupSize(
             group_size=self.current_pattern.thread_group_size
         )
+        await self.write_to_client(client_reply)
+
+    async def report_language_names(self) -> None:
+        client_reply = client_replies.LanguageNames(languages=get_language_names())
         await self.write_to_client(client_reply)
 
     async def report_direction(self) -> None:
