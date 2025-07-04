@@ -406,6 +406,9 @@ class LoomClient {
         let separateWeavingRepeatsCheckbox = document.getElementById("separate_weaving_repeats")
         separateWeavingRepeatsCheckbox.addEventListener("change", this.handleSeparateRepeats.bind(this, false))
 
+        let settingLanguageElt = document.getElementById("setting_language")
+        settingLanguageElt.addEventListener("change", this.sendSettings.bind(this))
+
         let settingDirectionControlElt = document.getElementById("setting_direction_control")
         settingDirectionControlElt.addEventListener("change", this.sendSettings.bind(this))
 
@@ -562,6 +565,26 @@ class LoomClient {
         this.handleJumpToPickInput(null)
     }
 
+    /*
+    Display a list of language names the Language menu in the Settings panel.
+
+    The argument is a list of language names.
+    */
+    displayLanguageNames(languages) {
+        let settingLanguageElt = document.getElementById("setting_language")
+
+        // Purge existing items
+        while (settingLanguageElt.options.length > 0) {
+            select.remove(0)
+        }
+
+        // Add new items
+        for (let language of languages) {
+            let option = new Option(language)
+            settingLanguageElt.options.add(option)
+        }
+    }
+
     displayLoomInfo() {
         let loominfoElt = document.getElementById("loom_info")
         const nodata = (this.loomInfo == null) || (this.settings == null)
@@ -682,6 +705,12 @@ class LoomClient {
         let loomNameInputElt = document.getElementById("setting_loom_name_input")
         const loomNameHasFocus = document.activeElement == loomNameInputElt
         loomNameInputElt.value = this.settings.loom_name
+
+        let langaugesMenu = document.getElementById("setting_language")
+        if (this.settings != null) {
+            langaugesMenu.value = this.settings.language
+        }
+
         let directionControlDiv = document.getElementById("setting_direction_control_div")
         let directionControlElt = document.getElementById("setting_direction_control")
         if (this.settings.direction_control == DirectionControlEnum.FULL) {
@@ -1304,6 +1333,8 @@ class LoomClient {
         } else if (datadict.type == "JumpPickNumber") {
             this.jumpPickNumber = datadict
             this.displayJumpPick()
+        } else if (datadict.type == "LanguageNames") {
+            this.displayLanguageNames(datadict.languages)
         } else if (datadict.type == "LoomConnectionState") {
             this.loomConnectionState = datadict
             this.displayStatusMessage()
@@ -1699,13 +1730,16 @@ class LoomClient {
     */
     async sendSettings(event) {
         let loomNameInputElt = document.getElementById("setting_loom_name_input")
+        let settingLanguageElt = document.getElementById("setting_language")
         let directionControlElt = document.getElementById("setting_direction_control")
         let end1OnRightElt = document.getElementById("setting_end1_on_right")
         let threadRightToLeftElt = document.getElementById("setting_thread_right_to_left")
         let threadBackToFrontElt = document.getElementById("setting_thread_back_to_front")
         let defaultThreadGroupSize = document.getElementById("setting_thread_group_size")
+        const languageChanged = settingLanguageElt.value != this.settings.language
         const command = {
             "type": "settings",
+            "language": settingLanguageElt.value,
             "loom_name": loomNameInputElt.value,
             "direction_control": asIntOrNull(directionControlElt.value),
             "end1_on_right": asBooleanOrNull(end1OnRightElt.value),
@@ -1713,7 +1747,10 @@ class LoomClient {
             "thread_back_to_front": asBooleanOrNull(threadBackToFrontElt.value),
             "thread_group_size": asIntOrNull(defaultThreadGroupSize.value),
         }
-        await this.sendCommand(command)
+        let replyDict = await this.sendCommandAndWait(command)
+        if (replyDict.success && languageChanged) {
+            window.location.reload()
+        }
         event.preventDefault()
     }
 
