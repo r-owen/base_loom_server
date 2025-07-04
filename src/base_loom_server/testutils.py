@@ -41,7 +41,7 @@ from .utils import compute_total_num
 WebSocketType: TypeAlias = WebSocket | WebSocketTestSession
 
 _PKG_NAME = "base_loom_server"
-TEST_DATA_FILES = importlib.resources.files(_PKG_NAME).joinpath("test_data")
+TEST_DATA_FILES = importlib.resources.files(_PKG_NAME) / "test_data" / "pattern_files"
 
 # in Python 3.11 mypy complains: "Traversable" has no attribute "glob"
 ALL_PATTERN_PATHS = (
