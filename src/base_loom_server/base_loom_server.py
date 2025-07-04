@@ -238,7 +238,7 @@ class BaseLoomServer:
         )
         translation_dict = {key: key for key in default_dict}
 
-        html_lang_value = "en"
+        language_code = "en"
         language_code = locale.getlocale(locale.LC_CTYPE)[0] or ""
         self.log.info(f"Locale: {language_code!r}")
         language_codes = []
@@ -257,9 +257,8 @@ class BaseLoomServer:
                     self.log.warning(
                         f"Failed to read translation file {translation_name}: {e!r}. Continuing without it"
                     )
-                html_lang_value = short_language_code
+                language_code = short_language_code
                 translation_dict.update(locale_dict)
-        self.html_lang_value = html_lang_value
         self.translation_dict = translation_dict
 
     def read_translation_file(self, filename) -> dict[str, str]:
