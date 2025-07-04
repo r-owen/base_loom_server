@@ -728,9 +728,6 @@ class LoomClient {
         // and, in the case of height, prevent the height growing with each new shed.
         canvas.width = 100
 
-        // Set ctx.font after setting canvas size, to avoid the font being displayed at the wrong size.
-        const endLabelElt = document.getElementById("end_label")
-
         let ctx = canvas.getContext("2d")
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -740,6 +737,7 @@ class LoomClient {
 
         // Measure space required for the max shaft number -- 2 digits.
         // We could measure the space required for shaft "1" separately, but keep it simple.
+        const endLabelElt = document.getElementById("end_label")
         const font = window.getComputedStyle(endLabelElt).font
         ctx.font = font  // For initial measurements to set size; set again later after setting size
         const fontMeas = ctx.measureText("32")
@@ -832,19 +830,8 @@ class LoomClient {
         if (this.mode != ModeEnum.THREADING) {
             return
         }
-        const shaft1OnBottom = this.settings.thread_back_to_front
-        const rightToLeft = this.settings.thread_right_to_left
-
-        // Are we adding threads from lowToHigh?
-        // Used to determine which threads are already threaded, and thus to make them darker.
-        // This is not affected by threading/unthreading, unlike BaseLoomServer.thread_low_to_high.
-        let lowToHigh = (this.settings.thread_back_to_front == this.settings.thread_right_to_left)
-        if (!this.settings.end1_on_right) {
-            lowToHigh = !lowToHigh
-        }
 
         let canvas = document.getElementById("threading_canvas")
-        let endLabelElt = document.getElementById("end_label")
         let ctx = canvas.getContext("2d")
 
         // Make resizing work better,
@@ -866,6 +853,14 @@ class LoomClient {
             return
         }
 
+        // Are we adding threads from lowToHigh?
+        // Used to determine which threads are already threaded, and thus to make them darker.
+        // This is not affected by threading/unthreading, unlike BaseLoomServer.thread_low_to_high.
+        let lowToHigh = (this.settings.thread_back_to_front == this.settings.thread_right_to_left)
+        if (!this.settings.end1_on_right) {
+            lowToHigh = !lowToHigh
+        }
+
         const isJump = this.jumpEndData.end_number0 != null
         const endData = isJump ? this.jumpEndData : this.currentEndData
         const endNumber0 = endData.end_number0
@@ -873,6 +868,10 @@ class LoomClient {
         const totalEndNumber1 = endData.total_end_number1
         const groupSize = totalEndNumber1 - totalEndNumber0 + 1
         const separateThreadingRepeats = this.separateThreadingRepeatsData.separate
+        const centerX = ((canvas.width + 1) / 2)
+
+        // Deal with fonts
+        const endLabelElt = document.getElementById("end_label")
         ctx.font = window.getComputedStyle(endLabelElt).font
         // Set properties such that the position for fillText is the center of the text
         ctx.textBaseline = "middle"
@@ -881,7 +880,6 @@ class LoomClient {
         const fontMeas = ctx.measureText("59")
         const fontHeight = Math.ceil(fontMeas.fontBoundingBoxAscent + fontMeas.fontBoundingBoxDescent)
         const blockWidth = asOddIncreased(fontMeas.width + ThreadingWidthGap)
-        const centerX = ((canvas.width + 1) / 2)
 
         // Compute number of ends per end number (out how far apart to space the end numbers)
         // Display as many as one number per group, but no more than one every 4 ends
@@ -898,7 +896,8 @@ class LoomClient {
         const verticalDelta = Math.floor(remainingHeight / this.loomInfo.num_shafts)
 
         let numEndsToShow = Math.round(canvas.width / blockWidth)
-        // numEndsToShow and groupSize must both be odd or both be even
+        // numEndsToShow and groupSize must both be odd or both be even;
+        // otherwise the current group will not be centered.
         if ((groupSize % 2) != (numEndsToShow % 2)) {
             numEndsToShow -= 1
         }
@@ -908,7 +907,7 @@ class LoomClient {
         const slotIndexGroupStart = (numEndsToShow - groupSize) / 2
         const slotIndexGroupEnd = slotIndexGroupStart + groupSize - 1
 
-        // Display a box around the group
+        // Display a box around the current group of ends.
         ctx.globalAlpha = isJump ? UnthreadedAlpha : 1.0
         const rectWidth = blockWidth * groupSize
         ctx.strokeRect(
@@ -919,8 +918,8 @@ class LoomClient {
         )
         ctx.globalAlpha = 1.0
 
-        // This code relies on displaying ends in the order already threaded to not yet threaded.
-        // That simplifies the algorithm for leaving a gap between repeats.
+        // The following code relies on displaying ends in the order already-threaded to not-yet-threaded.
+        // That simplifies the algorithm for leaving a gap between repeats in the not-yet-threaded ends.
 
         // Initialize totalEndNumber to the value just before the first end to show
         // (because the value is incremented at the beginning of the loop).
@@ -987,14 +986,14 @@ class LoomClient {
             }
 
             const shaftIndex = this.currentPattern.threading[endIndex]
-            const xBarCenter = rightToLeft ? rightBarCenterX - (blockWidth * slotIndex) : leftBarCenterX + (blockWidth * slotIndex)
-            if (shaft1OnBottom) {
+            const xBarCenter = this.settings.thread_right_to_left ? rightBarCenterX - (blockWidth * slotIndex) : leftBarCenterX + (blockWidth * slotIndex)
+            if (this.settings.thread_back_to_front) {
                 yShaftNumberBaseline = canvas.height - verticalDelta * (shaftIndex + 0.5) - fontMeas.fontBoundingBoxDescent
             } else {
                 yShaftNumberBaseline = canvas.height - verticalDelta * (this.loomInfo.num_shafts - shaftIndex - 0.5) - fontMeas.fontBoundingBoxDescent
             }
 
-            /* Display end number, if wanted, above this bar */
+            // Display total end number, if wanted, above this bar.
             if (((totalEndNumber - displayEndNumberOffset) % numEndsPerEndNumber == 0)
                 && (slotIndex >= firstAllowedNumberedSlotIndex)
                 && (slotIndex <= lastAllowedNumberedSlotIndex)) {
@@ -1006,7 +1005,10 @@ class LoomClient {
                 )
             }
 
-            // Display weft (end) color as vertical colored bars (threads) above and below the shaft number.
+            // Display weft end in three parts, in this order:
+            // * A vertical colored bar with thread gradient below the shaft number,
+            // * A similar vertical bar above the shaft number.
+            // * The shaft number
             const xBarStart = xBarCenter - WeavingThreadHalfWidth
             const xBarEnd = xBarCenter + WeavingThreadHalfWidth
             const endColor = this.currentPattern.color_table[this.currentPattern.warp_colors[endIndex]]
@@ -1015,38 +1017,25 @@ class LoomClient {
             endGradient.addColorStop(0.2, endColor)
             endGradient.addColorStop(0.8, endColor)
             endGradient.addColorStop(1, "darkgray")
-
             ctx.fillStyle = endGradient
-            if (shaftIndex >= 0) {
-                ctx.fillRect(
-                    xBarCenter - WeavingThreadHalfWidth,
-                    blockHeight + ThreadingEndTopGap,
-                    WeavingThreadHalfWidth * 2,
-                    yShaftNumberBaseline - Math.round(blockHeight / 2) - blockHeight - 2 - ThreadingEndTopGap,
-                )
-                ctx.fillRect(
-                    xBarCenter - WeavingThreadHalfWidth,
-                    yShaftNumberBaseline + Math.round(blockHeight / 2) + halfTopGap,
-                    WeavingThreadHalfWidth * 2,
-                    canvas.height - (yShaftNumberBaseline + Math.round(blockHeight / 2) + 2)
-                )
-
-                // Display shaft number
-                ctx.fillStyle = "black"
-                ctx.fillText(
-                    shaftIndex + 1,
-                    xBarCenter,
-                    yShaftNumberBaseline,
-                )
-            } else {
-                // shaft 0 -- no shaft threaded
-                ctx.fillRect(
-                    xBarCenter - WeavingThreadHalfWidth,
-                    blockHeight + ThreadingEndTopGap,
-                    WeavingThreadHalfWidth * 2,
-                    canvas.height - (blockHeight + ThreadingEndTopGap),
-                )
-            }
+            ctx.fillRect(
+                xBarCenter - WeavingThreadHalfWidth,
+                blockHeight + ThreadingEndTopGap,
+                WeavingThreadHalfWidth * 2,
+                yShaftNumberBaseline - Math.round(blockHeight / 2) - blockHeight - 2 - ThreadingEndTopGap,
+            )
+            ctx.fillRect(
+                xBarCenter - WeavingThreadHalfWidth,
+                yShaftNumberBaseline + Math.round(blockHeight / 2) + halfTopGap,
+                WeavingThreadHalfWidth * 2,
+                canvas.height - (yShaftNumberBaseline + Math.round(blockHeight / 2) + 2)
+            )
+            ctx.fillStyle = "black"
+            ctx.fillText(
+                shaftIndex + 1,
+                xBarCenter,
+                yShaftNumberBaseline,
+            )
         }
     }
 
