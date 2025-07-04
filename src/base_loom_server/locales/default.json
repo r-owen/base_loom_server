@@ -1,4 +1,8 @@
 {
+  "_direction": "ltr",
+  "_extends": "",
+  "_language_code": "en",
+  
   "and": "",
   "another client took control": "Displayed if another web client takes the connection",
   "At start of threading": "Displayed if you try to advance past end < 0",
@@ -61,5 +65,5 @@
   "Warp end 1": "Setting: Warp end 1 on the right/left",
   "Weave": "Weaving direction: go forward to weave new cloth",
   "Weaving": "Tab heading for the weaving panel",
-  "?": "Unknown state; typically needs no translation"
+  "?": "Question mark representing an unknown value"
 }
