@@ -108,6 +108,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/translations/">base_loom_server.translations</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/utils/">base_loom_server.utils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/version/">base_loom_server.version</a>
@@ -1302,7 +1304,49 @@
 <span class="normal">1151</span>
 <span class="normal">1152</span>
 <span class="normal">1153</span>
-<span class="normal">1154</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">1154</span>
+<span class="normal">1155</span>
+<span class="normal">1156</span>
+<span class="normal">1157</span>
+<span class="normal">1158</span>
+<span class="normal">1159</span>
+<span class="normal">1160</span>
+<span class="normal">1161</span>
+<span class="normal">1162</span>
+<span class="normal">1163</span>
+<span class="normal">1164</span>
+<span class="normal">1165</span>
+<span class="normal">1166</span>
+<span class="normal">1167</span>
+<span class="normal">1168</span>
+<span class="normal">1169</span>
+<span class="normal">1170</span>
+<span class="normal">1171</span>
+<span class="normal">1172</span>
+<span class="normal">1173</span>
+<span class="normal">1174</span>
+<span class="normal">1175</span>
+<span class="normal">1176</span>
+<span class="normal">1177</span>
+<span class="normal">1178</span>
+<span class="normal">1179</span>
+<span class="normal">1180</span>
+<span class="normal">1181</span>
+<span class="normal">1182</span>
+<span class="normal">1183</span>
+<span class="normal">1184</span>
+<span class="normal">1185</span>
+<span class="normal">1186</span>
+<span class="normal">1187</span>
+<span class="normal">1188</span>
+<span class="normal">1189</span>
+<span class="normal">1190</span>
+<span class="normal">1191</span>
+<span class="normal">1192</span>
+<span class="normal">1193</span>
+<span class="normal">1194</span>
+<span class="normal">1195</span>
+<span class="normal">1196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;BaseLoomServer&quot;</span><span class="p">,</span>
@@ -1315,11 +1359,12 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">import</span> <span class="nn">importlib.resources</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span><span class="p">,</span> <span class="n">TracebackType</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Type</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Self</span><span class="p">,</span> <span class="n">Type</span>
 
 <span class="kn">from</span> <span class="nn">dtx_to_wif</span> <span class="kn">import</span> <span class="n">read_pattern_data</span>
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">WebSocket</span><span class="p">,</span> <span class="n">WebSocketDisconnect</span>
@@ -1333,6 +1378,7 @@
 <span class="kn">from</span> <span class="nn">.mock_streams</span> <span class="kn">import</span> <span class="n">StreamReaderType</span><span class="p">,</span> <span class="n">StreamWriterType</span>
 <span class="kn">from</span> <span class="nn">.pattern_database</span> <span class="kn">import</span> <span class="n">PatternDatabase</span>
 <span class="kn">from</span> <span class="nn">.reduced_pattern</span> <span class="kn">import</span> <span class="n">ReducedPattern</span><span class="p">,</span> <span class="n">reduced_pattern_from_pattern_data</span>
+<span class="kn">from</span> <span class="nn">.translations</span> <span class="kn">import</span> <span class="n">get_language_names</span><span class="p">,</span> <span class="n">get_translation_dict</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compute_num_within_and_repeats</span><span class="p">,</span> <span class="n">compute_total_num</span>
 
 <span class="c1"># The maximum number of patterns that can be in the history</span>
@@ -1348,6 +1394,9 @@
 
 
 <span class="n">MOCK_PORT_NAME</span> <span class="o">=</span> <span class="s2">&quot;mock&quot;</span>
+
+<span class="n">PKG_FILES</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">&quot;base_loom_server&quot;</span><span class="p">)</span>
+<span class="n">LOCALE_FILES</span> <span class="o">=</span> <span class="n">PKG_FILES</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;locales&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">CloseCode</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.CloseCode"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.CloseCode" title="Go to docs">docs</a></div>
@@ -1376,7 +1425,6 @@
 <span class="sd">        num_shafts: The number of shafts the loom has.</span>
 <span class="sd">        serial_port: The name of the serial port, e.g. &quot;/dev/tty0&quot;.</span>
 <span class="sd">            If the name is &quot;mock&quot; then use a mock loom.</span>
-<span class="sd">        translation_dict: Language translation dict.</span>
 <span class="sd">        reset_db: If True, delete the old database and create a new one.</span>
 <span class="sd">        verbose: If True, log diagnostic information.</span>
 <span class="sd">        db_path: Path to the pattern database. Specify None for the</span>
@@ -1399,7 +1447,6 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">num_shafts</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">serial_port</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">translation_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">reset_db</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">db_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1414,7 +1461,6 @@
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">serial_port</span> <span class="o">=</span> <span class="n">serial_port</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span> <span class="o">=</span> <span class="n">translation_dict</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_info</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">LoomInfo</span><span class="p">(</span>
             <span class="n">num_shafts</span><span class="o">=</span><span class="n">num_shafts</span><span class="p">,</span>
@@ -1450,6 +1496,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">Settings</span><span class="p">(</span>
             <span class="n">loom_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_name</span><span class="p">,</span>
+            <span class="n">language</span><span class="o">=</span><span class="s2">&quot;English&quot;</span><span class="p">,</span>
             <span class="n">direction_control</span><span class="o">=</span><span class="n">direction_control</span><span class="p">,</span>
             <span class="n">end1_on_right</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">thread_group_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
@@ -1457,6 +1504,9 @@
             <span class="n">thread_back_to_front</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">SETTINGS_FILE_NAME</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span> <span class="o">=</span> <span class="n">get_translation_dict</span><span class="p">(</span>
+            <span class="n">language</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load_settings</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_settings</span><span class="p">()</span>
 
@@ -1464,7 +1514,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_connecting</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_disconnecting</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client_connected</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span><span class="p">:</span> <span class="n">ShaftStateEnum</span> <span class="o">=</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">UNKNOWN</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span><span class="p">:</span> <span class="n">ShaftStateEnum</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">UNKNOWN</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_reports_motion</span> <span class="k">else</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">DONE</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shaft_word</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span><span class="p">:</span> <span class="n">BaseMockLoom</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_reader</span><span class="p">:</span> <span class="n">StreamReaderType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1477,6 +1529,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpEndNumber</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">handle_loom_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reply_bytes</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.handle_loom_reply"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.handle_loom_reply" title="Go to docs">docs</a></div>
@@ -1509,6 +1562,17 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">:</span>
             <span class="n">low_to_high</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">low_to_high</span>
         <span class="k">return</span> <span class="n">low_to_high</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subclases may override this method, preferably instead of</span>
+<span class="sd">        overriding the constructor.</span>
+
+<span class="sd">        Called at the end of the constructor.</span>
+
+<span class="sd">        By default this is a no-op so subclases need not call</span>
+<span class="sd">        `super().__post_init__()`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">loom_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.loom_connected"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.loom_connected" title="Go to docs">docs</a></div>
@@ -1844,6 +1908,14 @@
                     <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: loom doesn&#39;t support full direction control&quot;</span>
                     <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;language&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span> <span class="o">=</span> <span class="n">get_translation_dict</span><span class="p">(</span>
+                            <span class="n">language</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span>
+                        <span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load language </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">expected_type</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
                     <span class="n">loom_name</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
@@ -2068,6 +2140,15 @@
                     <span class="p">)</span>
                     <span class="k">continue</span>
 
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;language&quot;</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span> <span class="o">=</span> <span class="n">get_translation_dict</span><span class="p">(</span>
+                        <span class="n">language</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load translation dict </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">default_value</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: invalid value&quot;</span><span class="p">)</span>
                 <span class="k">continue</span>
@@ -2216,6 +2297,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_loom_connection_state</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loom_info</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_language_names</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_settings</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_mode</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_pattern_names</span><span class="p">()</span>
@@ -2360,6 +2442,10 @@
         <span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="n">client_reply</span><span class="p">)</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">report_language_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_language_names"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_language_names" title="Go to docs">docs</a></div>
+        <span class="n">client_reply</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">LanguageNames</span><span class="p">(</span><span class="n">languages</span><span class="o">=</span><span class="n">get_language_names</span><span class="p">())</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="n">client_reply</span><span class="p">)</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_direction"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_direction" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Report Direction&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
@@ -2445,7 +2531,7 @@
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseLoomServer</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 

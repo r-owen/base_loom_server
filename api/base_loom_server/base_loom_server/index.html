@@ -194,6 +194,8 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size">report_thread_group_size</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_language_names">report_language_names</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_direction">report_direction</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.reset_database">reset_database</a>
@@ -239,6 +241,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../reduced_pattern/">base_loom_server.reduced_pattern</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../testutils/">base_loom_server.testutils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../translations/">base_loom_server.translations</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../utils/">base_loom_server.utils</a>
                 </li>
@@ -319,7 +323,7 @@ WebSocket close codes</p>
 <i class="fa-regular fa-square-minus"></i>
 </span>
 </span><span class="mkapi-object-kind">class</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">num_shafts</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">serial_port</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">translation_dict</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, str]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">reset_db</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">verbose</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">db_path</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="pathlib">pathlib</span>.<span class="mkapi-tooltip" title="pathlib.Path">Path</span> | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-paren">)</span></span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">num_shafts</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">serial_port</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">reset_db</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">verbose</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">db_path</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="pathlib">pathlib</span>.<span class="mkapi-tooltip" title="pathlib.Path">Path</span> | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-paren">)</span></span>
 </p>
 <div class="mkapi-document">
 <p>Base class for a web server that controls a dobby loom.</p>
@@ -345,11 +349,6 @@ The number of shafts the loom has.</p>
 <span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
 The name of the serial port, e.g. "/dev/tty0".
 If the name is "mock" then use a mock loom.</p>
-</li>
-<li>
-<p><span class="mkapi-item-name">translation_dict</span> : 
-<span class="mkapi-item-type">dict[str, str]</span> <span class="mkapi-dash">&mdash;</span>
-Language translation dict.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name">reset_db</span> : 
@@ -620,6 +619,9 @@ Report a status message to the client.</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size" title="base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size">report_thread_group_size</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Report ThreadGroupSize</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_language_names" title="base_loom_server.base_loom_server.BaseLoomServer.report_language_names">report_language_names</a></span></p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_direction" title="base_loom_server.base_loom_server.BaseLoomServer.report_direction">report_direction</a></span>
@@ -1756,6 +1758,21 @@ Unusable entries will be ignored, with a logged warning.</p>
 <div class="mkapi-document">
 <p>Report ThreadGroupSize</p>
 </div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_language_names">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_language_names" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_language_names" title="base_loom_server.base_loom_server.BaseLoomServer.report_language_names">report_language_names</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document"></div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_direction">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">

@@ -69,6 +69,8 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Translations</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#metadata-keys">Metadata Keys</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -110,6 +112,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/translations/">base_loom_server.translations</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/utils/">base_loom_server.utils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/version/">base_loom_server.version</a>
@@ -142,16 +146,29 @@
               
                 <h1 id="translations">Translations</h1>
 <p><a href="https://pypi.org/project/base-loom-server/">base_loom_server</a> supports foreign language translations (for the web display, but not this documentation).</p>
-<p>At present only one translation available: is a rather poor French translation.
-Help from others to add and improve language support would be most welcome.</p>
-<p>Each language is supported by a separate yaml file in <code>src/locales</code>.</p>
-<p>Each translation file must have name <em>language_code</em>.js, where  <em>language_code</em> is a standard language code as reported by the Python <code>locale</code> library.
-Here is one <a href="https://stackoverflow.com/questions/3191664/list-of-all-locales-and-their-short-codes">list of codes</a>.
-On macOS and unix you can see a list of supported locales with terminal command <code>locale -a</code>.</p>
-<p>The file <code>src/locales/default.yaml</code> lists all the words and phrases for which translations are wanted. The values provide a description that may help to understand the word or phrase. These values are ignored by the software.The keys are the same in each translation file, but the values are the translated word or phrase. A good way to start is to copy <code>src/locales/default.yaml</code> to the new language file, then replace each value string with the translated string.</p>
-<p>An incomplete file is better than none; missing entries will be shown in English.</p>
-<p>It is possible to have two files for a given language: one that uses a more general language code, and the other that uses a more specific code. If you do this, the more general file is read first, then the more specific file. Thus the more specific file need only have entries that differ from the general file.</p>
-<p>In order for a translation file to be used, the locale of the server computer must be set correctly.</p>
+<p>At present only a few translations are available, and none have been properly vetted.
+Help from others to improve the existing translations and add new ones would be most welcome.
+Weaving terminology is somewhat obscure, so translation tools may miss important subtleties. </p>
+<p>Each language is supported by a separate json file in <code>src/locales</code>.
+The name of each translation file is the native name of the language, for example <code>Français.json</code>.</p>
+<p>The file <code>src/locales/default.json</code> lists all the words and phrases for which translations are wanted.
+the values are context, which are purely intended to help the translator understand the word or phrase; they are ignored by the software.
+In addition to those entries there are a few <a href="#metadata-keys">metadata keys</a>.</p>
+<p>The keys in the translation files are the same as in <code>default.json</code>, but the values are the translated word or phrase.
+One way to start is to copy <code>src/locales/default.json</code> to the new language file, then replace each context string with the translated string.</p>
+<p>To add or change translation files, fork the project on github.</p>
+<p>If you are not confident of your translations, please append " (preliminary)", suitably translated, to the name.
+For example: "Français (préliminaire).json".</p>
+<p>An incomplete file is better than none. Missing entries will be shown in English.</p>
+<h2 id="metadata-keys">Metadata Keys</h2>
+<p>There are several optional keys that provide metadata:</p>
+<ul>
+<li><strong>_direction</strong>: whether the language is read left-to-right (value <code>ltr</code>, the default) or right-to-left (value <code>rtl</code>).</li>
+<li><strong>_extends</strong>: the name of another language file of which this is a variant, without the ".json" suffix.
+  If you specify <code>_extends</code> then you need only specify the items that differ from the file named in <code>_extends</code>.
+  For example file <code>Québécois.json</code> could specify <code>"_extends"="Français"</code>.</li>
+<li><strong>_language_code</strong>: the ISO 639-1 language code for the language, e.g. <code>fr</code> for <code>Français</code>. Here is <a href="https://www.w3schools.com/tags/ref_language_codes.asp">one list</a>. This may help text-to-speech software. If omitted the value is "en".</li>
+</ul>
               
             </div>
           </div><footer>

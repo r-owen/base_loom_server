@@ -73,6 +73,8 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Version Histsory</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#026-2025-07-05">0.26 2025-07-05</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#025-2025-07-02">0.25 2025-07-02</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#024-2025-06-26">0.24 2025-06-26</a>
@@ -194,6 +196,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/translations/">base_loom_server.translations</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/utils/">base_loom_server.utils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/version/">base_loom_server.version</a>
@@ -225,6 +229,33 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="version-history">Version History</h1>
+<h2 id="026-2025-07-05">0.26 2025-07-05</h2>
+<ul>
+<li>Add a Language setting to the Settings panel.</li>
+<li>Properly support right-to-left languages.</li>
+<li>Increased the size of checkboxes.</li>
+</ul>
+<p>Changes for maintainers and authors of loom-specific packages:</p>
+<ul>
+<li>Warning: most loom-specific packages will need trivial changes, including  <code>toika_loom_server</code> and <code>seguin_loom_server</code>.</li>
+<li>BaseLoomServer and subclasses no longer have the <code>translation_dict</code> constructor argument.
+  As a result, loom-specific packages that override the constructor must be updated.
+  You can simply delete that one constructor argument, but it is better to replace the entire constructor override
+  with an override of the new <code>__post_init__</code> method, as per the next item.</li>
+<li>Added <code>__post__init__</code> methods to both <code>BaseLoomServer</code> and <code>BaseMockLoom</code>.
+  These methods take no arguments and return None.
+  They are intended to eliminate the need to override the constructor, which eliminates the duplication
+  of constructor arguments, making it less likely that future changes will be needed as <code>base_loom_server</code> evolves.
+  For example <code>toika_loom_server</code>'s <code>LoomServer</code> and <code>MockLoom</code> classes use this method to check
+  that the number of shafts is a multiple of 8 (as required by Toika's API).</li>
+<li>
+<p>Changed the language translation files as follows (see <a href="../translations/">Translations</a> for details):</p>
+</li>
+<li>
+<p>Each file name is the native name of the language, rather than the language code.</p>
+</li>
+<li>Added a few metadata entries.</li>
+</ul>
 <h2 id="025-2025-07-02">0.25 2025-07-02</h2>
 <ul>
 <li>Add a help link.</li>

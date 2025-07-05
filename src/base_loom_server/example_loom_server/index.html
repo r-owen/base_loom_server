@@ -108,6 +108,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/translations/">base_loom_server.translations</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/utils/">base_loom_server.utils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/version/">base_loom_server.version</a>
@@ -215,8 +217,7 @@
 <span class="normal">64</span>
 <span class="normal">65</span>
 <span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ExampleLoomServer&quot;</span><span class="p">]</span>
+<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ExampleLoomServer&quot;</span><span class="p">]</span>
 
 <span class="kn">from</span> <span class="nn">.base_loom_server</span> <span class="kn">import</span> <span class="n">BaseLoomServer</span>
 <span class="kn">from</span> <span class="nn">.client_replies</span> <span class="kn">import</span> <span class="n">MessageSeverityEnum</span><span class="p">,</span> <span class="n">ShaftStateEnum</span>
@@ -230,7 +231,6 @@
 <span class="sd">        num_shafts: The number of shafts the loom has.</span>
 <span class="sd">        serial_port: The name of the serial port, e.g. &quot;/dev/tty0&quot;.</span>
 <span class="sd">            If the name is &quot;mock&quot; then use a mock loom.</span>
-<span class="sd">        translation_dict: Language translation dict.</span>
 <span class="sd">        reset_db: If True, delete the old database and create a new one.</span>
 <span class="sd">        verbose: If True, log diagnostic information.</span>
 <span class="sd">        name: User-assigned loom name.</span>

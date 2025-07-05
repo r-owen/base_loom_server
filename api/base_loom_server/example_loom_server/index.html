@@ -118,6 +118,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../testutils/">base_loom_server.testutils</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../translations/">base_loom_server.translations</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../utils/">base_loom_server.utils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../version/">base_loom_server.version</a>
@@ -189,7 +191,7 @@ Example loom server.</p>
 <i class="fa-regular fa-square-minus"></i>
 </span>
 </span><span class="mkapi-object-kind">class</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.example_loom_server.ExampleLoomServer" title="base_loom_server.example_loom_server.ExampleLoomServer">ExampleLoomServer</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">num_shafts</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">serial_port</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">translation_dict</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, str]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">reset_db</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">verbose</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">db_path</span><span class="mkapi-colon">: </span><span class="mkapi-ann">pathlib.Path | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-paren">)</span></span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.example_loom_server.ExampleLoomServer" title="base_loom_server.example_loom_server.ExampleLoomServer">ExampleLoomServer</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">num_shafts</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">serial_port</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">reset_db</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">verbose</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">db_path</span><span class="mkapi-colon">: </span><span class="mkapi-ann">pathlib.Path | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-paren">)</span></span>
 </p>
 <div class="mkapi-document">
 <p><p class="mkapi-bases" markdown="1">Bases :
@@ -215,11 +217,6 @@ The number of shafts the loom has.</p>
 <span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
 The name of the serial port, e.g. "/dev/tty0".
 If the name is "mock" then use a mock loom.</p>
-</li>
-<li>
-<p><span class="mkapi-item-name">translation_dict</span> : 
-<span class="mkapi-item-type">dict[str, str]</span> <span class="mkapi-dash">&mdash;</span>
-Language translation dict.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name">reset_db</span> : 

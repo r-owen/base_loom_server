@@ -120,6 +120,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="api/base_loom_server/translations/">base_loom_server.translations</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="api/base_loom_server/utils/">base_loom_server.utils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="api/base_loom_server/version/">base_loom_server.version</a>
@@ -151,22 +153,34 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="loom-server">Loom Server</h1>
-<p>A loom server is a package based on <a href="https://pypi.org/project/base-loom-server/">base_loom_server</a> that allows you to control a dobby loom from a web browser (e.g. on a phone or tablet). Two examples are <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a>
-and <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</p>
-<p>This document explains how to use any of these loom servers (though there may be a few loom-specific differences that are described in that package's documentation).</p>
+<p>A loom server allows you to control a computer-controlled loom from a web browser on a phone, tablet or computer. Features include:</p>
+<ul>
+<li>Direct support for three types of weaving pattern files: WIF (.wif), Fiberworks (.dtx), and WeavePoint (.wpo).</li>
+<li>Support for weaving and threading.</li>
+<li>Settings to accommodate your preferences.</li>
+<li>Preliminary support for multiple languages (the translation files need work; contributions welcome).</li>
+<li>Runs on all major operating systems.</li>
+<li>The software is free and uses the generous MIT license.</li>
+</ul>
+<p>I maintain software to control <a href="https://pypi.org/project/toika-loom-server/">Toika</a>
+and <a href="https://pypi.org/project/seguin-loom-server/">Séguin</a> looms.
+The base package <a href="https://pypi.org/project/base-loom-server/">base_loom_server</a> does most of the work,
+so it is easy to <a href="coding/">support other looms</a>.</p>
+<p>This document explains how to use these loom servers.</p>
 <p>The first step is to <a href="installing/">install</a> the software. Once you have done that, read on:</p>
 <h2 id="connect-to-the-loom-server">Connect to the Loom Server</h2>
 <p>Connect to the loom server using any modern web browser (e.g. on a phone, tablet, or laptop).
 The address will be "http://<em>hostname</em>.local:8000" where <em>hostname</em> is the host name
 of the loom server computer, as determined in <a href="installing/">Installing</a>.</p>
+<p>If you are running the web browser and web server on the same computer, you can skip the hostname and connect to "http://localhost:8000".</p>
 <h2 id="select-the-mode">Select the Mode</h2>
-<p>The server has three modes, which are listed at the top of the web page: Weaving, Threading, and Settings:</p>
+<p>The server has three modes, which are listed at the top of the web page:</p>
 <ul>
 <li>
 <p><a href="weaving/">Weaving</a> is used to weave fabric; this is by far the most common mode.</p>
 </li>
 <li>
-<p><a href="threading/">Threading</a> will help you thread the loom, by lifting shafts for groups of threads.</p>
+<p><a href="threading/">Threading</a> helps you thread the loom, by lifting shafts for groups of threads.</p>
 </li>
 <li>
 <p><a href="settings/">Settings</a> allows you specify settings that apply to all weaving pattern files.</p>
@@ -174,9 +188,9 @@ of the loom server computer, as determined in <a href="installing/">Installing</
 </ul>
 <p>Click on the word to select that mode.
 The bold word shows the current mode.</p>
-<p>The links above give detailed instructions for using each mode.
+<p>The links above give detailed instructions for each mode.
 But before you dive into that, read the next section about pattern files:</p>
-<p>In addition, the "?" link on the same line opens documentation in a new browser tab.</p>
+<p>In addition, the "?" link on the same line as the mode tabs opens documentation in a new browser tab.</p>
 <h2 id="upload-and-select-pattern-files">Upload and Select Pattern Files</h2>
 <p>Before you can weave or thread, you must upload one or more pattern files to the loom server.
 The server accepts WIF (.wif), Fiberworks (.dtx), and WeavePoint (.wpo) files.</p>
@@ -196,8 +210,6 @@ So please be careful.</p>
 <p>To clear out the pattern menu (which may become cluttered over time),
 select "Clear Recents", the last item in the pattern menu.
 This clears out information for all patterns except the current pattern.</p>
-<p>You can also restart the loom server with the <strong>--reset-db</strong> command-line argument.
-This can be useful if upgrading to a new version of the loom software that has an incompatible database format.</p>
 <h2 id="multiple-connections">Multiple Connections</h2>
 <p>The server only allows one web browser to connect, and the most recent connection wins.
 This prevents a mystery connection from hogging the loom.
@@ -260,5 +272,5 @@ Then reload the web page, to force the web server to make a new connection to th
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-07-02 23:44:26.752988+00:00
+Build Date UTC : 2025-07-05 18:43:28.393430+00:00
 -->

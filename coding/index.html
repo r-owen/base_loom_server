@@ -114,6 +114,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/translations/">base_loom_server.translations</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/utils/">base_loom_server.utils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/version/">base_loom_server.version</a>
@@ -224,11 +226,19 @@
   Two examples are <code>ExampleMockLoom</code> in this package and <code>MockLoom</code>
   in <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</p>
 </li>
-<li>
-<p>Write a subclass of <code>BaseLoomServer</code> that talks to the loom.
+</ul>
+<p>For simplicity and future compatibility, try to avoid overriding the constructor.
+  Instead, perform loom-specific initialization by overriding the <code>__post_init__</code> method
+  (which is normally a no-op, so you need not call <code>super().__post_init__</code>).</p>
+<ul>
+<li>Write a subclass of <code>BaseLoomServer</code> that talks to the loom.
   Two examples are <code>ExampleLoomServer</code> in this package and <code>LoomServer</code>
-  in <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</p>
-</li>
+  in <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</li>
+</ul>
+<p>For simplicity and future compatibility, try to avoid overriding the constructor.
+  Instead, perform loom-specific initialization by overriding the <code>__post_init__</code> method
+  (which is normally a no-op, so you need not call <code>super().__post_init__</code>).</p>
+<ul>
 <li>
 <p>Write a <code>main.py</code> like the one in this package, to run your loom server.</p>
 </li>

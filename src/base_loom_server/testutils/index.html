@@ -108,6 +108,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/translations/">base_loom_server.translations</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/utils/">base_loom_server.utils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/version/">base_loom_server.version</a>
@@ -1738,7 +1740,10 @@
 <span class="normal">1587</span>
 <span class="normal">1588</span>
 <span class="normal">1589</span>
-<span class="normal">1590</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
+<span class="normal">1590</span>
+<span class="normal">1591</span>
+<span class="normal">1592</span>
+<span class="normal">1593</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
@@ -1781,7 +1786,7 @@
 <span class="n">WebSocketType</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="n">WebSocket</span> <span class="o">|</span> <span class="n">WebSocketTestSession</span>
 
 <span class="n">_PKG_NAME</span> <span class="o">=</span> <span class="s2">&quot;base_loom_server&quot;</span>
-<span class="n">TEST_DATA_FILES</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="n">_PKG_NAME</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;test_data&quot;</span><span class="p">)</span>
+<span class="n">TEST_DATA_FILES</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="n">_PKG_NAME</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;pattern_files&quot;</span>
 
 <span class="c1"># in Python 3.11 mypy complains: &quot;Traversable&quot; has no attribute &quot;glob&quot;</span>
 <span class="n">ALL_PATTERN_PATHS</span> <span class="o">=</span> <span class="p">(</span>
@@ -3168,6 +3173,7 @@
                         <span class="n">expected_types</span> <span class="o">=</span> <span class="p">{</span>
                             <span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;LanguageNames&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;LoomConnectionState&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;LoomInfo&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;Mode&quot;</span><span class="p">,</span>
@@ -3246,6 +3252,8 @@
                                         <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span>
                                             <span class="k">continue</span>
                                         <span class="k">assert</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span>
+                                <span class="k">case</span> <span class="s2">&quot;LanguageNames&quot;</span><span class="p">:</span>
+                                    <span class="k">assert</span> <span class="s2">&quot;English&quot;</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">languages</span>
                                 <span class="k">case</span> <span class="s2">&quot;LoomConnectionState&quot;</span><span class="p">:</span>
                                     <span class="k">if</span> <span class="n">reply</span><span class="o">.</span><span class="n">state</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">good_connection_states</span><span class="p">:</span>
                                         <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
