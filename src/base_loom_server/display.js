@@ -357,6 +357,18 @@ class LoomClient {
         this.ws.onmessage = this.handleServerReply.bind(this)
         this.ws.onclose = handleWebsocketClosed
 
+        let debugChangeDirectionButton = document.getElementById("debug_change_direction")
+        debugChangeDirectionButton.addEventListener("click", this.handleDebugChangeDirection.bind(this))
+
+        let debugCloseConnectionButton = document.getElementById("debug_close_connection")
+        debugCloseConnectionButton.addEventListener("click", this.handleDebugCloseConnection.bind(this))
+
+        let debugHideButton = document.getElementById("debug_hide")
+        debugHideButton.addEventListener("click", this.handleDebugHide.bind(this))
+
+        let debugNextPickButton = document.getElementById("debug_next_pick")
+        debugNextPickButton.addEventListener("click", this.handleDebugNextPick.bind(this))
+
         let groupSizeElt = document.getElementById("thread_group_size")
         groupSizeElt.addEventListener("change", this.handleThreadGroupSize.bind(this))
 
@@ -390,15 +402,6 @@ class LoomClient {
 
         let loomNameResetButton = document.getElementById("setting_loom_name_reset")
         loomNameResetButton.addEventListener("click", this.handleSettingsReset.bind(this))
-
-        let oobChangeDirectionButton = document.getElementById("oob_change_direction")
-        oobChangeDirectionButton.addEventListener("click", this.handleOOBChangeDirection.bind(this))
-
-        let oobCloseConnectionButton = document.getElementById("oob_close_connection")
-        oobCloseConnectionButton.addEventListener("click", this.handleOOBCloseConnection.bind(this))
-
-        let oobNextPickButton = document.getElementById("oob_next_pick")
-        oobNextPickButton.addEventListener("click", this.handleOOBNextPick.bind(this))
 
         let separateThreadingRepeatsCheckbox = document.getElementById("separate_threading_repeats")
         separateThreadingRepeatsCheckbox.addEventListener("change", this.handleSeparateRepeats.bind(this, true))
@@ -1581,33 +1584,42 @@ class LoomClient {
     }
 
     /*
-    Handle the OOB change direction button.
+    Handle the debug change direction button.
     
     Send "oobcommand" command "d".
     */
-    async handleOOBChangeDirection(event) {
+    async handleDebugChangeDirection(event) {
         let command = { "type": "oobcommand", "command": "d" }
         await this.sendCommand(command)
         event.preventDefault()
     }
 
     /*
-    Handle the OOB close connection button.
+    Handle the debug close connection button.
     
     Send "oobcommand" command "c".
     */
-    async handleOOBCloseConnection(event) {
+    async handleDebugCloseConnection(event) {
         let command = { "type": "oobcommand", "command": "c" }
         await this.sendCommand(command)
         event.preventDefault()
     }
 
     /*
-    Handle the OOB next pick button.
+    Handle the debug Hide button by hiding the debug controls
+    */
+    async handleDebugHide(event) {
+        let debugDivElt = document.getElementById("debug_div")
+        debugDivElt.style.display = "none"
+        this.displayCanvases()
+    }
+
+    /*
+    Handle the debug next pick button.
     
     Send "oobcommand" command "n".
     */
-    async handleOOBNextPick(event) {
+    async handleDebugNextPick(event) {
         let command = { "type": "oobcommand", "command": "n" }
         await this.sendCommand(command)
         event.preventDefault()
