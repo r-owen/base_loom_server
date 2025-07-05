@@ -7,7 +7,7 @@ import asyncio
 import logging
 import threading
 from types import TracebackType
-from typing import Type
+from typing import Self, Type
 
 from .constants import LOG_NAME
 from .mock_streams import (
@@ -250,7 +250,7 @@ class BaseMockLoom(abc.ABC):
     def __repr__(self) -> str:
         return type(self).__name__
 
-    async def __aenter__(self) -> BaseMockLoom:
+    async def __aenter__(self) -> Self:
         await self.start()
         return self
 

@@ -16,7 +16,7 @@ import json
 import logging
 import pathlib
 from types import SimpleNamespace, TracebackType
-from typing import Any, Type
+from typing import Any, Self, Type
 
 from dtx_to_wif import read_pattern_data
 from fastapi import WebSocket, WebSocketDisconnect
@@ -1183,7 +1183,7 @@ class BaseLoomServer:
     def __repr__(self) -> str:
         return type(self).__name__
 
-    async def __aenter__(self) -> BaseLoomServer:
+    async def __aenter__(self) -> Self:
         await self.start()
         return self
 
