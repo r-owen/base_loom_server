@@ -26,6 +26,7 @@
   "Error": "",
   "Front to back": "Setting to thread from the front of the loom to the back",
   "Group size": "Number of warp ends to raise shafts for when threading",
+  "Hide": "Hide the debug controls",
   "Jump to end": "Jump to warp end number...",
   "Jump to pick": "Jump to weft pick number...",
   "Jump": "Label for the button that applies the requested jump",
