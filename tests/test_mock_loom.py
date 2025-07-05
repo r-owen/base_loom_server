@@ -1,9 +1,8 @@
 import asyncio
 import contextlib
-from typing import AsyncIterator
+from collections.abc import AsyncIterator
 
 from base_loom_server.base_mock_loom import (
-    BaseMockLoom,
     StreamReaderType,
     StreamWriterType,
 )
@@ -16,7 +15,7 @@ ExampleMockLoom.motion_duration = 0.1
 @contextlib.asynccontextmanager
 async def create_loom(
     num_shafts=16,
-) -> AsyncIterator[tuple[BaseMockLoom, StreamReaderType, StreamWriterType]]:
+) -> AsyncIterator[tuple[ExampleMockLoom, StreamReaderType, StreamWriterType]]:
     """Create an ExampleMockLoom."""
     async with ExampleMockLoom(num_shafts=num_shafts, verbose=True) as loom:
         reader, writer = await loom.open_client_connection()
