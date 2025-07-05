@@ -3,8 +3,9 @@ import importlib.resources
 import json
 import logging
 import pathlib
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Type
+from typing import Type
 
 import uvicorn
 from fastapi import APIRouter, FastAPI, WebSocket
@@ -56,21 +57,12 @@ class AppRunner:
         self.app_package_name = app_package_name
         self.loom_server: BaseLoomServer | None = None
 
-        # There must be a better way to do this,
-        # but everything I have tried fails,
-        # including using an APIRouter with add_api_route
-
-        @asynccontextmanager
-        async def lifespan_wrapper(*args):
-            async with self.lifespan(app):
-                yield
-
         # The only rason we need a router is to set the lifespan
         # but once we have it we may as well use it to add endpoints as well
-        router = APIRouter(lifespan=lifespan_wrapper)
+        router = APIRouter(lifespan=self.lifespan)
 
         @router.get("/")
-        async def get_wrapper():
+        async def get_wrapper() -> HTMLResponse:
             return await self.get()
 
         if self.favicon:
