@@ -69,7 +69,7 @@
 
   For simplicity and future compatibility, try to avoid overriding the constructor.
   Instead, perform loom-specific initialization by overriding the `__post_init__` method
-  (which is normally a no-op, so you need not call `super().__post_init__`).
+  (which is normally a no-op in `BaseMockLoom`, so you need not call `super().__post_init__`).
 
 * Write a subclass of `BaseLoomServer` that talks to the loom.
   Two examples are `ExampleLoomServer` in this package and `LoomServer`
@@ -77,9 +77,9 @@
 
   For simplicity and future compatibility, try to avoid overriding the constructor.
   Instead, perform loom-specific initialization by overriding the `__post_init__` method
-  (which is normally a no-op, so you need not call `super().__post_init__`).
+  (which is a no-op in `BaseLoomServer`, so you need not call `super().__post_init__`).
 
-* Write a `main.py` like the one in this package, to run your loom server.
+* Write a `main.py` like the one in `base_loom_server`, to run your loom server.
 
 * Copy `tests/test_mock_loom.py` and modify it to suit your mock loom.
 

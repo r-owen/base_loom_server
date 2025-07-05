@@ -1,6 +1,10 @@
 # Weaving
 
-How to weave fabric.
+
+<div>
+<img src="../images/screen_shots/weaving_safari_macos.jpg" width="300" alt="Weaving: Safari on macOS">
+<img src="../images/screen_shots/weaving_safari_iphone_mini.jpg" width="150" alt="Weaving: Safari on iPhone mini">
+</div>
 
 This page assumes you have done all the [basics](index.md):
 
@@ -10,9 +14,8 @@ This page assumes you have done all the [basics](index.md):
 
 ## Pattern Display
 
-The pattern is displayed as a picture that shows woven fabric below,
-and potential future fabric, somewhat grayed out, above.
-(This is the opposite of the usual US drawdown direction.)
+The pattern is displayed as a picture that shows woven fabric in the bottom half,
+and potential future fabric, somewhat grayed out, in the top half.
 
 The unwoven fabric will include a gap between each pattern repeat if "Separate repeats?" is checked.
 See [Repeating](#repeating) for more information.

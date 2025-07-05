@@ -7,7 +7,7 @@ nav:
   - Installing: installing.md
   - Coding: coding.md
   - Translations: translations.md
-  - Version Histsory: version_history.md
+  - Version History: version_history.md
   - API Reference:
       - $api/base_loom_server.***
 theme:
@@ -15,6 +15,7 @@ theme:
   features:
     - color_mode: auto
 plugins:
+  - glightbox
   - mkapi
   - search
 validation:

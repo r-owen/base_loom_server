@@ -1,6 +1,16 @@
 # Loom Server
 
-A loom server allows you to control a computer-controlled loom from a web browser on a phone, tablet or computer. Features include:
+A loom server allows you to control a computer-controlled loom from a web browser on a phone, tablet or computer.
+
+<div>
+<img src="../images/screen_shots/weaving_safari_macos.jpg" width="100" alt="Weaving: Safari on macOS">
+<img src="../images/screen_shots/weaving_safari_iphone_mini.jpg" width="50" alt="Weaving: Safari on iPhone mini">
+<img src="../images/screen_shots/threading_safari_macos.jpg" width="100" alt="Threading: Safari on macOS">
+<img src="../images/screen_shots/threading_safari_iphone_mini.jpg" width="50" alt="Threading: Safari on iPhone mini">
+</div>
+Click an image to see a gallery of screen shots.
+
+Features include:
 
 * Direct support for three types of weaving pattern files: WIF (.wif), Fiberworks (.dtx), and WeavePoint (.wpo).
 * Support for weaving and threading.
@@ -12,7 +22,7 @@ A loom server allows you to control a computer-controlled loom from a web browse
 I maintain software to control [Toika](https://pypi.org/project/toika-loom-server/)
 and [Séguin](https://pypi.org/project/seguin-loom-server/) looms.
 The base package [base_loom_server](https://pypi.org/project/base-loom-server/) does most of the work,
-so it is easy to [support other looms](coding.md).
+so it is easy to [support other looms](coding.md#writing-a-loom-server).
 
 This document explains how to use these loom servers.
 

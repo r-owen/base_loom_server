@@ -1,21 +1,25 @@
 # Settings
 
-This panel offers a few settings that you can change which apply to all weaving patterns.
+<div>
+<img src="../images/screen_shots/settings_safari_macos.jpg" width="300" alt="Settings: Safari on macOS">
+<img src="../images/screen_shots/settings_safari_iphone_mini.jpg" width="150" alt="Settings: Safari on iPhone mini">
+</div>
+
+The Settings allows you to specify settings that apply to all weaving patterns.
 Settings are automatically saved, and should survive rebooting the loom server.
 
-These include:
+Settings include:
 
 * **Language**: which language to use.
   A language is listed as "preliminary" (in that language) if the translation is not well vetted.
   As of June, 2025 there are only two translations, both preliminary.
-  If you can help correct or add any translations, it would be much appreciated.
+  Your help to improve existing translations or provide new ones would be much appreciated.
   Read [Translations](translations.md) for more information.
 
-  Note that changing languages reloads the page, but this should be fast and harmless.
+    Note that changing languages reloads the page, but this should be fast and harmless.
 
 * **Loom name**: the name of the loom, as it appears in the display.
-  Feel free to use any name you like; it is purely for display purposes.
-  If you have more than one computer-controlled loom, I suggest you name each differently.
+  Use any name you like; it is just for display.
 
 * **Direction control**: specify how to change direction (weaving or unweaving, threading or unthreading).
   See [Weave Direction](weaving.md#weave-direction) for more information.

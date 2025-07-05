@@ -1,5 +1,10 @@
 # Threading
 
+<div>
+<img src="../images/screen_shots/threading_safari_macos.jpg" width="300" alt="Threading: Safari on macOS">
+<img src="../images/screen_shots/threading_safari_iphone_mini.jpg" width="150" alt="Threading: Safari on iPhone mini">
+</div>
+
 The threading mode helps you correctly thread warp strings through the heddles.
 Every time you press the pedal, the loom will raise the next group of shafts
 and a display will show you which threads belong on which shaft.
