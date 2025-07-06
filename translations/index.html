@@ -25,7 +25,11 @@
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
       <script>hljs.highlightAll();</script> 
-</head>
+ <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }</style> <script src="../assets/javascripts/glightbox.min.js"></script></head>
 
 <body class="wy-body-for-nav" role="document">
 
@@ -75,7 +79,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../version_history/">Version Histsory</a>
+                <li class="toctree-l1"><a class="reference internal" href="../version_history/">Version History</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -174,7 +178,7 @@ For example: "Français (préliminaire).json".</p>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../coding/" class="btn btn-neutral float-left" title="Coding"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../version_history/" class="btn btn-neutral float-right" title="Version Histsory">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../version_history/" class="btn btn-neutral float-right" title="Version History">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -216,5 +220,6 @@ For example: "Français (préliminaire).json".</p>
         });
     </script>
 
-</body>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+</script></body>
 </html>

@@ -25,7 +25,11 @@
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
       <script>hljs.highlightAll();</script> 
-</head>
+ <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }</style> <script src="../assets/javascripts/glightbox.min.js"></script></head>
 
 <body class="wy-body-for-nav" role="document">
 
@@ -85,7 +89,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../version_history/">Version Histsory</a>
+                <li class="toctree-l1"><a class="reference internal" href="../version_history/">Version History</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -155,6 +159,11 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="threading">Threading</h1>
+<div>
+<a class="glightbox" href="../images/screen_shots/threading_safari_macos.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/threading_safari_macos.jpg" width="300" alt="Threading: Safari on macOS"></a>
+<a class="glightbox" href="../images/screen_shots/threading_safari_iphone_mini.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/threading_safari_iphone_mini.jpg" width="150" alt="Threading: Safari on iPhone mini"></a>
+</div>
+
 <p>The threading mode helps you correctly thread warp strings through the heddles.
 Every time you press the pedal, the loom will raise the next group of shafts
 and a display will show you which threads belong on which shaft.</p>
@@ -293,5 +302,6 @@ and may also be different for different patterns. They are saved in the pattern 
         });
     </script>
 
-</body>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+</script></body>
 </html>

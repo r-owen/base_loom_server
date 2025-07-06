@@ -25,7 +25,11 @@
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
       <script>hljs.highlightAll();</script> 
-</head>
+ <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }</style> <script src="../assets/javascripts/glightbox.min.js"></script></head>
 
 <body class="wy-body-for-nav" role="document">
 
@@ -73,7 +77,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../version_history/">Version Histsory</a>
+                <li class="toctree-l1"><a class="reference internal" href="../version_history/">Version History</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -143,22 +147,26 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="settings">Settings</h1>
-<p>This panel offers a few settings that you can change which apply to all weaving patterns.
+<div>
+<a class="glightbox" href="../images/screen_shots/settings_safari_macos.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/settings_safari_macos.jpg" width="300" alt="Settings: Safari on macOS"></a>
+<a class="glightbox" href="../images/screen_shots/settings_safari_iphone_mini.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/settings_safari_iphone_mini.jpg" width="150" alt="Settings: Safari on iPhone mini"></a>
+</div>
+
+<p>The Settings allows you to specify settings that apply to all weaving patterns.
 Settings are automatically saved, and should survive rebooting the loom server.</p>
-<p>These include:</p>
-<ul>
-<li><strong>Language</strong>: which language to use.
-  A language is listed as "preliminary" (in that language) if the translation is not well vetted.
-  As of June, 2025 there are only two translations, both preliminary.
-  If you can help correct or add any translations, it would be much appreciated.
-  Read <a href="../translations/">Translations</a> for more information.</li>
-</ul>
-<p>Note that changing languages reloads the page, but this should be fast and harmless.</p>
+<p>Settings include:</p>
 <ul>
 <li>
+<p><strong>Language</strong>: which language to use.
+  A language is listed as "preliminary" (in that language) if the translation is not well vetted.
+  As of June, 2025 there are only two translations, both preliminary.
+  Your help to improve existing translations or provide new ones would be much appreciated.
+  Read <a href="../translations/">Translations</a> for more information.</p>
+<p>Note that changing languages reloads the page, but this should be fast and harmless.</p>
+</li>
+<li>
 <p><strong>Loom name</strong>: the name of the loom, as it appears in the display.
-  Feel free to use any name you like; it is purely for display purposes.
-  If you have more than one computer-controlled loom, I suggest you name each differently.</p>
+  Use any name you like; it is just for display.</p>
 </li>
 <li>
 <p><strong>Direction control</strong>: specify how to change direction (weaving or unweaving, threading or unthreading).
@@ -230,5 +238,6 @@ Settings are automatically saved, and should survive rebooting the loom server.<
         });
     </script>
 
-</body>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+</script></body>
 </html>

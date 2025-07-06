@@ -25,7 +25,11 @@
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
       <script>hljs.highlightAll();</script> 
-</head>
+ <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }</style> <script src="../assets/javascripts/glightbox.min.js"></script></head>
 
 <body class="wy-body-for-nav" role="document">
 
@@ -83,7 +87,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../version_history/">Version Histsory</a>
+                <li class="toctree-l1"><a class="reference internal" href="../version_history/">Version History</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -153,7 +157,11 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="weaving">Weaving</h1>
-<p>How to weave fabric.</p>
+<div>
+<a class="glightbox" href="../images/screen_shots/weaving_safari_macos.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/weaving_safari_macos.jpg" width="300" alt="Weaving: Safari on macOS"></a>
+<a class="glightbox" href="../images/screen_shots/weaving_safari_iphone_mini.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/weaving_safari_iphone_mini.jpg" width="150" alt="Weaving: Safari on iPhone mini"></a>
+</div>
+
 <p>This page assumes you have done all the <a href="../">basics</a>:</p>
 <ul>
 <li>Connected your web browser to the loom server</li>
@@ -161,9 +169,8 @@
 <li>Selected the Weaving mode.</li>
 </ul>
 <h2 id="pattern-display">Pattern Display</h2>
-<p>The pattern is displayed as a picture that shows woven fabric below,
-and potential future fabric, somewhat grayed out, above.
-(This is the opposite of the usual US drawdown direction.)</p>
+<p>The pattern is displayed as a picture that shows woven fabric in the bottom half,
+and potential future fabric, somewhat grayed out, in the top half.</p>
 <p>The unwoven fabric will include a gap between each pattern repeat if "Separate repeats?" is checked.
 See <a href="#repeating">Repeating</a> for more information.</p>
 <p>A <a href="../settings/">setting</a> allows you to specify whether warp end 1 is shown at the right or left.</p>
@@ -305,5 +312,6 @@ and may also be different for different patterns. They are saved in the pattern 
         });
     </script>
 
-</body>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+</script></body>
 </html>

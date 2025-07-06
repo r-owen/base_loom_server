@@ -25,7 +25,11 @@
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
       <script>hljs.highlightAll();</script> 
-</head>
+ <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }</style> <script src="../assets/javascripts/glightbox.min.js"></script></head>
 
 <body class="wy-body-for-nav" role="document">
 
@@ -77,7 +81,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../version_history/">Version Histsory</a>
+                <li class="toctree-l1"><a class="reference internal" href="../version_history/">Version History</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -229,7 +233,7 @@
 </ul>
 <p>For simplicity and future compatibility, try to avoid overriding the constructor.
   Instead, perform loom-specific initialization by overriding the <code>__post_init__</code> method
-  (which is normally a no-op, so you need not call <code>super().__post_init__</code>).</p>
+  (which is normally a no-op in <code>BaseMockLoom</code>, so you need not call <code>super().__post_init__</code>).</p>
 <ul>
 <li>Write a subclass of <code>BaseLoomServer</code> that talks to the loom.
   Two examples are <code>ExampleLoomServer</code> in this package and <code>LoomServer</code>
@@ -237,10 +241,10 @@
 </ul>
 <p>For simplicity and future compatibility, try to avoid overriding the constructor.
   Instead, perform loom-specific initialization by overriding the <code>__post_init__</code> method
-  (which is normally a no-op, so you need not call <code>super().__post_init__</code>).</p>
+  (which is a no-op in <code>BaseLoomServer</code>, so you need not call <code>super().__post_init__</code>).</p>
 <ul>
 <li>
-<p>Write a <code>main.py</code> like the one in this package, to run your loom server.</p>
+<p>Write a <code>main.py</code> like the one in <code>base_loom_server</code>, to run your loom server.</p>
 </li>
 <li>
 <p>Copy <code>tests/test_mock_loom.py</code> and modify it to suit your mock loom.</p>
@@ -299,5 +303,6 @@
         });
     </script>
 
-</body>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+</script></body>
 </html>

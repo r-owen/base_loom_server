@@ -25,7 +25,11 @@
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
       <script>hljs.highlightAll();</script> 
-</head>
+ <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
 
 <body class="wy-body-for-nav" role="document">
 
@@ -71,7 +75,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../../version_history/">Version Histsory</a>
+                <li class="toctree-l1"><a class="reference internal" href="../../../version_history/">Version History</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -319,7 +323,7 @@ Parse command-line arguments and run the web server.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner.lifespan" title="base_loom_server.app_runner.AppRunner.lifespan">lifespan</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">app</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="fastapi.applications.FastAPI">FastAPI</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><span class="mkapi-tooltip" title="typing.AsyncGenerator">AsyncGenerator</span>[None, <span class="mkapi-tooltip" title="fastapi.applications.FastAPI">FastAPI</span>]</span></span>
+<a href="./#base_loom_server.app_runner.AppRunner" title="base_loom_server.app_runner.AppRunner">AppRunner</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.app_runner.AppRunner.lifespan" title="base_loom_server.app_runner.AppRunner.lifespan">lifespan</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">app</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="fastapi.applications.FastAPI">FastAPI</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><span class="mkapi-tooltip" title="collections.abc.AsyncGenerator">AsyncGenerator</span>[None, <span class="mkapi-tooltip" title="fastapi.applications.FastAPI">FastAPI</span>]</span></span>
 </p>
 <div class="mkapi-document">
 <p>Lifespan context manager for fastAPI.</p>
@@ -443,5 +447,6 @@ the loom server speaks to one loom and serves at most one user.</p>
         });
     </script>
 
-</body>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+</script></body>
 </html>

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Version Histsory - Base Loom Server</title>
+    <title>Version History - Base Loom Server</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -15,7 +15,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Version Histsory";
+        var mkdocs_page_name = "Version History";
         var mkdocs_page_input_path = "version_history.md";
         var mkdocs_page_url = null;
       </script>
@@ -25,7 +25,11 @@
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
       <script>hljs.highlightAll();</script> 
-</head>
+ <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }</style> <script src="../assets/javascripts/glightbox.min.js"></script></head>
 
 <body class="wy-body-for-nav" role="document">
 
@@ -71,8 +75,10 @@
                 </li>
               </ul>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">Version Histsory</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Version History</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#0261-2025-07-06">0.26.1 2025-07-06</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#026-2025-07-05">0.26 2025-07-05</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#025-2025-07-02">0.25 2025-07-02</a>
@@ -219,7 +225,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Version Histsory</li>
+      <li class="breadcrumb-item active">Version History</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -229,6 +235,19 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="version-history">Version History</h1>
+<h2 id="0261-2025-07-06">0.26.1 2025-07-06</h2>
+<ul>
+<li>Add screen shots to the documentation.</li>
+<li>Add a "Hide" button to the debug controls that are shown when using a mock loom.
+  This makes it easier to see what the display will look like with a real loom.
+  Refresh the display to restore the debug controls.</li>
+</ul>
+<p>Changes for maintainers and authors of loom-specific packages:</p>
+<ul>
+<li>Change the type hint for <code>BaseLoomServer.__aenter__</code> and <code>BaseMockLoom.__aenter__</code> to <code>typing.Self</code>.
+  This makes it easier to write an async context manager that returns a subclass,
+  since you can now specify the actual subclass returned.</li>
+</ul>
 <h2 id="026-2025-07-05">0.26 2025-07-05</h2>
 <ul>
 <li>Add a Language setting to the Settings panel.</li>
@@ -526,5 +545,6 @@ JavaScript bitwise operations were failing for large values of shaft_word (due t
         });
     </script>
 
-</body>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+</script></body>
 </html>

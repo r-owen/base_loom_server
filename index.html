@@ -25,7 +25,11 @@
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
       <script>hljs.highlightAll();</script> 
-</head>
+ <link href="assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }</style> <script src="assets/javascripts/glightbox.min.js"></script></head>
 
 <body class="wy-body-for-nav" role="document">
 
@@ -83,7 +87,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="version_history/">Version Histsory</a>
+                <li class="toctree-l1"><a class="reference internal" href="version_history/">Version History</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -153,7 +157,15 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="loom-server">Loom Server</h1>
-<p>A loom server allows you to control a computer-controlled loom from a web browser on a phone, tablet or computer. Features include:</p>
+<p>A loom server allows you to control a computer-controlled loom from a web browser on a phone, tablet or computer.</p>
+<div>
+<a class="glightbox" href="../images/screen_shots/weaving_safari_macos.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/weaving_safari_macos.jpg" width="100" alt="Weaving: Safari on macOS"></a>
+<a class="glightbox" href="../images/screen_shots/weaving_safari_iphone_mini.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/weaving_safari_iphone_mini.jpg" width="50" alt="Weaving: Safari on iPhone mini"></a>
+<a class="glightbox" href="../images/screen_shots/threading_safari_macos.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/threading_safari_macos.jpg" width="100" alt="Threading: Safari on macOS"></a>
+<a class="glightbox" href="../images/screen_shots/threading_safari_iphone_mini.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/threading_safari_iphone_mini.jpg" width="50" alt="Threading: Safari on iPhone mini"></a>
+</div>
+<p>Click an image to see a gallery of screen shots.</p>
+<p>Features include:</p>
 <ul>
 <li>Direct support for three types of weaving pattern files: WIF (.wif), Fiberworks (.dtx), and WeavePoint (.wpo).</li>
 <li>Support for weaving and threading.</li>
@@ -165,7 +177,7 @@
 <p>I maintain software to control <a href="https://pypi.org/project/toika-loom-server/">Toika</a>
 and <a href="https://pypi.org/project/seguin-loom-server/">Séguin</a> looms.
 The base package <a href="https://pypi.org/project/base-loom-server/">base_loom_server</a> does most of the work,
-so it is easy to <a href="coding/">support other looms</a>.</p>
+so it is easy to <a href="coding/#writing-a-loom-server">support other looms</a>.</p>
 <p>This document explains how to use these loom servers.</p>
 <p>The first step is to <a href="installing/">install</a> the software. Once you have done that, read on:</p>
 <h2 id="connect-to-the-loom-server">Connect to the Loom Server</h2>
@@ -267,10 +279,11 @@ Then reload the web page, to force the web server to make a new connection to th
         });
     </script>
 
-</body>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+</script></body>
 </html>
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-07-05 18:43:28.393430+00:00
+Build Date UTC : 2025-07-06 14:18:21.904427+00:00
 -->

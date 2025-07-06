@@ -25,7 +25,11 @@
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
       <script>hljs.highlightAll();</script> 
-</head>
+ <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
 
 <body class="wy-body-for-nav" role="document">
 
@@ -71,7 +75,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../../version_history/">Version Histsory</a>
+                <li class="toctree-l1"><a class="reference internal" href="../../../version_history/">Version History</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -344,21 +348,14 @@
 <span class="normal">191</span>
 <span class="normal">192</span>
 <span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">argparse</span>
+<span class="normal">194</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">importlib.resources</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">AsyncGenerator</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">asynccontextmanager</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">AsyncGenerator</span><span class="p">,</span> <span class="n">Type</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span>
 
 <span class="kn">import</span> <span class="nn">uvicorn</span>
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">WebSocket</span>
@@ -410,21 +407,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">app_package_name</span> <span class="o">=</span> <span class="n">app_package_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="p">:</span> <span class="n">BaseLoomServer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># There must be a better way to do this,</span>
-        <span class="c1"># but everything I have tried fails,</span>
-        <span class="c1"># including using an APIRouter with add_api_route</span>
-
-        <span class="nd">@asynccontextmanager</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">lifespan_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-            <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifespan</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
-                <span class="k">yield</span>
-
         <span class="c1"># The only rason we need a router is to set the lifespan</span>
         <span class="c1"># but once we have it we may as well use it to add endpoints as well</span>
-        <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">lifespan</span><span class="o">=</span><span class="n">lifespan_wrapper</span><span class="p">)</span>
+        <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">lifespan</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lifespan</span><span class="p">)</span>
 
         <span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_wrapper</span><span class="p">():</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_wrapper</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">HTMLResponse</span><span class="p">:</span>
             <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">favicon</span><span class="p">:</span>
@@ -595,5 +583,6 @@
         });
     </script>
 
-</body>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+</script></body>
 </html>
