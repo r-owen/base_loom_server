@@ -1,5 +1,18 @@
 # Version History
 
+## 0.26.1 2025-07-06
+
+* Add screen shots to the documentation.
+* Add a "Hide" button to the debug controls that are shown when using a mock loom.
+  This makes it easier to see what the display will look like with a real loom.
+  Refresh the display to restore the debug controls.
+
+Changes for maintainers and authors of loom-specific packages:
+
+* Change the type hint for `BaseLoomServer.__aenter__` and `BaseMockLoom.__aenter__` to `typing.Self`.
+  This makes it easier to write an async context manager that returns a subclass,
+  since you can now specify the actual subclass returned.
+
 ## 0.26 2025-07-05
 
 * Add a Language setting to the Settings panel.
