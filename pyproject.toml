@@ -64,3 +64,4 @@ __version__ = "{version}"
 
 [tool.mypy]
 exclude_gitignore = "true"
+disallow_untyped_defs = "true"
