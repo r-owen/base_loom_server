@@ -68,12 +68,12 @@ class AppRunner:
         if self.favicon:
 
             @router.get("/favicon.ico", include_in_schema=False)
-            async def get_favicon():
+            async def get_favicon() -> Response:
                 return await self.get_favicon()
 
         @router.websocket("/ws")
-        async def websocket_endpoint_wrapper(websocket: WebSocket):
-            return await self.websocket_endpoint(websocket)
+        async def websocket_endpoint_wrapper(websocket: WebSocket) -> None:
+            await self.websocket_endpoint(websocket)
 
         app.include_router(router)
 

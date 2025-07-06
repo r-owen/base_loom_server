@@ -1,4 +1,5 @@
 import asyncio
+from collections.abc import Generator
 
 import pytest
 
@@ -13,7 +14,7 @@ TEST_BYTES = (
 TEST_TERMINATORS = (b"", b"\r", b"\n", b"\r\n")
 
 
-def data_iterator(terminator: bytes):
+def data_iterator(terminator: bytes) -> Generator[bytes]:
     for data in TEST_BYTES:
         yield data + terminator
 
@@ -124,7 +125,7 @@ async def test_invalid_operations() -> None:
 
 async def check_reader_writer(
     reader: mock_streams.MockStreamReader, writer: mock_streams.MockStreamWriter
-):
+) -> None:
     """Check a reader and the writer that writes to it.
 
     Note that this is not the pair returned by `open_mock_connection`,

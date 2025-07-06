@@ -103,7 +103,7 @@ class ReducedPattern:
         return len(self.picks)
 
     @property
-    def thread_group_size(self):
+    def thread_group_size(self) -> int:
         return self._thread_group_size
 
     @thread_group_size.setter
@@ -435,11 +435,11 @@ def reduced_pattern_from_pattern_data(
     ]
 
     if data.liftplan:
-        shaft_sets = list(data.liftplan.get(weft, {}) - {0} for weft in wefts_from1)  # type: ignore
+        shaft_sets = list(data.liftplan.get(weft, {}) - {0} for weft in wefts_from1)  # type: ignore[operator]
     else:
         shaft_sets = []
         for weft in wefts_from1:
-            treadle_set = data.treadling.get(weft, {}) - {0}  # type: ignore
+            treadle_set = data.treadling.get(weft, {}) - {0}  # type: ignore[operator]
             shaft_sets.append(
                 set.union(*(data.tieup[treadle] for treadle in treadle_set)) - {0}
             )

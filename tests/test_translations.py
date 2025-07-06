@@ -46,14 +46,14 @@ def test_get_default_dict() -> None:
     assert default_dict["_language_code"] == "en"
 
 
-def test_get_language_names():
+def test_get_language_names() -> None:
     language_names = get_language_names()
     assert language_names[0] == "English"
     assert "default" not in language_names
     assert "" not in language_names
 
 
-def test_extra_keys(caplog) -> None:
+def test_extra_keys(caplog: pytest.LogCaptureFixture) -> None:
     default_dict = get_default_dict()
     logger = logging.getLogger()
 

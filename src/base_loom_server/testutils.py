@@ -45,9 +45,9 @@ TEST_DATA_FILES = importlib.resources.files(_PKG_NAME) / "test_data" / "pattern_
 
 # in Python 3.11 mypy complains: "Traversable" has no attribute "glob"
 ALL_PATTERN_PATHS = (
-    list(TEST_DATA_FILES.glob("*.wif"))  # type: ignore
-    + list(TEST_DATA_FILES.glob("*.dtx"))  # type: ignore
-    + list(TEST_DATA_FILES.glob("*.wpo"))  # type: ignore
+    list(TEST_DATA_FILES.glob("*.wif"))  # type: ignore[attr-defined]
+    + list(TEST_DATA_FILES.glob("*.dtx"))  # type: ignore[attr-defined]
+    + list(TEST_DATA_FILES.glob("*.wpo"))  # type: ignore[attr-defined]
 )
 
 
@@ -66,7 +66,7 @@ class Client:
     mock_loom: BaseMockLoom
     websocket: WebSocketType
 
-    def send_dict(self, datadict: dict[str, Any]):
+    def send_dict(self, datadict: dict[str, Any]) -> None:
         """Write a dict as json"""
         self.websocket.send_json(datadict)
 
@@ -1419,7 +1419,9 @@ class BaseTestLoomServer:
 
             with TestClient(app) as test_client:
                 with test_client.websocket_connect("/ws") as websocket:
-                    loom_server: BaseLoomServer = test_client.app.state.loom_server  # type: ignore
+                    loom_server: BaseLoomServer = (
+                        test_client.app.state.loom_server  # type: ignore[attr-defined]
+                    )
                     assert loom_server.mock_loom is not None
                     assert loom_server.loom_info.num_shafts == num_shafts
 

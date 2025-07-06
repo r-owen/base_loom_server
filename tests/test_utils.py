@@ -5,7 +5,7 @@ import pytest
 from base_loom_server.utils import compute_num_within_and_repeats, compute_total_num
 
 
-def test_compute_total_num():
+def test_compute_total_num() -> None:
     for num_within, repeat_number, repeat_len in itertools.product(
         (-50, -33, -1, 0, 1, 33, 50), (-1, 0, 1), (1, 21, 33, 50)
     ):
@@ -19,7 +19,7 @@ def test_compute_total_num():
             compute_total_num(num_within, repeat_number, -1)
 
 
-def test_compute_num_within_and_repeats():
+def test_compute_num_within_and_repeats() -> None:
     for num_within, repeat_number, repeat_len in itertools.product(
         (-50, -33, -1, 0, 1, 33, 50), (-1, 0, 1), (1, 21, 33, 50)
     ):

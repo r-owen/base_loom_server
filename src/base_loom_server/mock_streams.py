@@ -28,7 +28,7 @@ class StreamData:
         self.data_available_event = asyncio.Event()
         self.queue: Deque[bytes] = collections.deque()
 
-    def _is_closed(self):
+    def _is_closed(self) -> bool:
         """Return true if this stream has been closed."""
         return self.closed_event.is_set()
 
@@ -205,7 +205,7 @@ StreamWriterType: TypeAlias = asyncio.StreamWriter | MockStreamWriter
 
 
 def open_mock_connection(
-    terminator=DEFAULT_TERMINATOR,
+    terminator: bytes = DEFAULT_TERMINATOR,
 ) -> tuple[MockStreamReader, MockStreamWriter]:
     """Create a mock stream reader, writer pair.
 

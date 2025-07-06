@@ -86,7 +86,7 @@ class BaseMockLoom(abc.ABC):
         self.reader, self.writer = open_mock_connection(terminator=self.terminator)
         self.read_loop_task = asyncio.create_task(self.read_loop())
 
-    async def close(self, cancel_read_loop=True) -> None:
+    async def close(self, cancel_read_loop: bool = True) -> None:
         self.start_task.cancel()
         if cancel_read_loop:
             self.read_loop_task.cancel()
@@ -125,7 +125,7 @@ class BaseMockLoom(abc.ABC):
         assert self.reader is not None  # make mypy happy
         return await self.reader.readuntil(self.terminator)
 
-    async def oob_command(self, cmd: str):
+    async def oob_command(self, cmd: str) -> None:
         """Run an oob_command, specified by cmd[0]"""
         if not cmd:
             return
@@ -136,14 +136,14 @@ class BaseMockLoom(abc.ABC):
             return
         await method(cmd)
 
-    async def oob_command_c(self, cmd: str):
+    async def oob_command_c(self, cmd: str) -> None:
         """Close the connection"""
         if self.verbose:
             self.log.info(f"{self}: oob close command")
 
         asyncio.create_task(self.close())
 
-    async def oob_command_d(self, cmd: str):
+    async def oob_command_d(self, cmd: str) -> None:
         """Toggle weave direction"""
         self.direction_forward = not self.direction_forward
         await self.report_direction()
@@ -153,7 +153,7 @@ class BaseMockLoom(abc.ABC):
                 f"{DIRECTION_NAMES[self.direction_forward]}"
             )
 
-    async def oob_command_n(self, cmd: str):
+    async def oob_command_n(self, cmd: str) -> None:
         """Request next pick"""
         if self.verbose:
             self.log.info(f"{self}: oob request next pick")

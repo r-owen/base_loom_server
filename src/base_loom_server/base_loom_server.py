@@ -21,7 +21,7 @@ from typing import Any, Self, Type
 from dtx_to_wif import read_pattern_data
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.websockets import WebSocketState
-from serial_asyncio import open_serial_connection  # type: ignore
+from serial_asyncio import open_serial_connection  # type: ignore[import-untyped]
 
 from . import client_replies
 from .base_mock_loom import BaseMockLoom
@@ -442,7 +442,7 @@ class BaseLoomServer:
         if do_report:
             await self.report_jump_pick()
 
-    async def clear_jumps(self, force_output=False):
+    async def clear_jumps(self, force_output: bool = False) -> None:
         """Clear all jumps and report values if changed or force_output."""
         await self.clear_jump_end(force_output=force_output)
         await self.clear_jump_pick(force_output=force_output)
@@ -1106,11 +1106,11 @@ class BaseLoomServer:
             )
         )
 
-    def reset_database(self):
+    def reset_database(self) -> None:
         self.db_path.unlink(missing_ok=True)
         self.pattern_db = PatternDatabase(self.db_path)
 
-    def save_settings(self):
+    def save_settings(self) -> None:
         """Save the settings file."""
         datadict = dataclasses.asdict(self.settings)
         del datadict["type"]

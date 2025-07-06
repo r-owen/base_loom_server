@@ -27,14 +27,15 @@ FIELD_TYPE_DICT = dict(
 FIELDS_STR = ", ".join(f"{key} {value}" for key, value in FIELD_TYPE_DICT.items())
 
 
-def make_insert_str(field_type_dict):
+def _make_insert_str() -> str:
+    """Make the value for INSERT_STR from FIELD_TYPE_DICT"""
     field_names = [field_name for field_name in FIELD_TYPE_DICT if field_name != "id"]
     field_names_str = ", ".join(field_names)
     placeholders_str = ", ".join(["?"] * len(field_names))
     return f"insert into patterns ({field_names_str}) values ({placeholders_str})"
 
 
-INSERT_STR = make_insert_str(FIELD_TYPE_DICT)
+INSERT_STR = _make_insert_str()
 
 CACHE_FIELD_NAMES = (
     "pick_number",
@@ -70,7 +71,7 @@ class PatternDatabase:
             await conn.execute(f"create table if not exists patterns ({FIELDS_STR})")
             await conn.commit()
 
-    async def check_schema(self):
+    async def check_schema(self) -> bool:
         """Return True if the patterns table schema is as expected.
 
         Extra fields in the table are ignored.

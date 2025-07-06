@@ -7,7 +7,7 @@ PKG_FILES = importlib.resources.files("base_loom_server")
 LOCALE_FILES = PKG_FILES.joinpath("locales")
 
 
-def check_translation_files():
+def check_translation_files() -> None:
     """Check for issues in the language translation files.
 
     Report to stdout.
@@ -17,9 +17,7 @@ def check_translation_files():
     )
     desired_keys = {key for key in default_dict}
 
-    for filepath in LOCALE_FILES.glob(  # pyright: ignore[reportAttributeAccessIssue]
-        "*.json"
-    ):
+    for filepath in LOCALE_FILES.glob("*.json"):  # type: ignore[attr-defined]
         if filepath.name == "default.json":
             continue
 
