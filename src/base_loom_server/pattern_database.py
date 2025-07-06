@@ -120,7 +120,7 @@ class PatternDatabase:
                 * separate_weaving_repeats
                 * separate_threading_repeats
 
-            max_patterns: Maximum number of patterns to keep; no limit if 0.
+            max_entries: Maximum number of patterns to keep; no limit if 0.
                 If >0 and there are more patterns in the database,
                 the oldest are purged.
         """

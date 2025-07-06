@@ -416,7 +416,7 @@ class BaseLoomServer:
         assert self.loom_reader is not None
         return await self.loom_reader.readuntil(self.terminator)
 
-    async def clear_jump_end(self, force_output=False):
+    async def clear_jump_end(self, force_output: bool = False) -> None:
         """Clear self.jump_end and report value if changed or force_output
 
         Args:
@@ -429,7 +429,7 @@ class BaseLoomServer:
         if do_report:
             await self.report_jump_end()
 
-    async def clear_jump_pick(self, force_output=False):
+    async def clear_jump_pick(self, force_output: bool = False) -> None:
         """Clear self.jump_pick and report value if changed or force_output
 
         Args:

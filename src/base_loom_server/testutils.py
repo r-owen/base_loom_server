@@ -322,10 +322,10 @@ def select_pattern(
         client: Client test fixture.
         pattern_name: Pattern name.
         check_defaults: If true (the default), check that all pattern fields,
-        that are updated as one weaves or threads (such as pick_value)
-        have the expected default value. This is only appropriate for patterns
+            that are updated as one weaves or threads (such as pick_value)
+            have the expected default value. This is only safe for patterns
             that are newly loaded, or have not been woven on or threaded
-            once loaded.
+            since being loaded.
 
     Returns:
         current_pattern: the actual current_pattern in the loom server
@@ -408,7 +408,14 @@ def send_command(
 ) -> list[dict[str, Any]]:
     """Issue a command and return all replies.
 
-    The final reply will be CommandDone and its success flag is checked
+    Args:
+        client: Test client.
+        cmd_dict: Command to send, as a dict.
+        should_fail: If true, upload should fail.
+
+    Returns:
+        replies: a list of replies (as dicts).
+        The final reply will be CommandDone and its success flag is checked
     """
     client.send_dict(cmd_dict)
     replies = []
@@ -431,7 +438,7 @@ def upload_pattern(
     client: Client,
     filepath: Traversable,
     expected_names: Iterable[str],
-    should_fail=False,
+    should_fail: bool = False,
 ) -> None:
     """Upload a pattern to the loom server.
 

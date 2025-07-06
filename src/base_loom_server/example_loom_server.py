@@ -6,19 +6,7 @@ from .example_mock_loom import ExampleMockLoom
 
 
 class ExampleLoomServer(BaseLoomServer):
-    """Example loom server.
-
-    Args:
-        num_shafts: The number of shafts the loom has.
-        serial_port: The name of the serial port, e.g. "/dev/tty0".
-            If the name is "mock" then use a mock loom.
-        reset_db: If True, delete the old database and create a new one.
-        verbose: If True, log diagnostic information.
-        name: User-assigned loom name.
-        db_path: Path to the pattern database. Specify None for the
-            default path. Unit tests specify a non-None value, to avoid
-            stomping on the real database.
-    """
+    """Example loom server."""
 
     default_name = "example"
     mock_loom_type = ExampleMockLoom
