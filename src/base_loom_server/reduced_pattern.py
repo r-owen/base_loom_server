@@ -435,11 +435,11 @@ def reduced_pattern_from_pattern_data(
     ]
 
     if data.liftplan:
-        shaft_sets = list(data.liftplan.get(weft, {}) - {0} for weft in wefts_from1)  # type: ignore[operator]
+        shaft_sets = list(data.liftplan.get(weft, set()) - {0} for weft in wefts_from1)
     else:
         shaft_sets = []
         for weft in wefts_from1:
-            treadle_set = data.treadling.get(weft, {}) - {0}  # type: ignore[operator]
+            treadle_set = data.treadling.get(weft, set()) - {0}
             shaft_sets.append(
                 set.union(*(data.tieup[treadle] for treadle in treadle_set)) - {0}
             )
