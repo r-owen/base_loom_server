@@ -12,7 +12,7 @@ METADATA_KEYS = {"_direction", "_extends", "_language_code"}
 
 
 def get_language_names() -> list[str]:
-    """Get a list of all language files found in LOCALE_FILES
+    """Get a list of all language files found in LOCALE_FILES.
 
     Add "English" and omit "default.json".
     """
@@ -21,7 +21,7 @@ def get_language_names() -> list[str]:
         for filepath in LOCALE_FILES.glob("*.json")  # type: ignore[attr-defined]
         if filepath.stem != "default"
     ]
-    return ["English"] + sorted(filenames)
+    return ["English", *sorted(filenames)]
 
 
 def get_default_dict() -> dict[str, str]:
@@ -34,9 +34,7 @@ def get_default_dict() -> dict[str, str]:
 
     For keys in the METADATA_KEYS, the data is copied directly.
     """
-    default_dict = json.loads(
-        LOCALE_FILES.joinpath("default.json").read_text(encoding="utf_8")
-    )
+    default_dict = json.loads(LOCALE_FILES.joinpath("default.json").read_text(encoding="utf_8"))
     translation_dict = {key: key for key in default_dict if key not in METADATA_KEYS}
     for key in METADATA_KEYS:
         translation_dict[key] = default_dict[key]
@@ -46,7 +44,7 @@ def get_default_dict() -> dict[str, str]:
 def get_translation_dict(
     language: str,
     logger: logging.Logger | None = None,
-    dir: Traversable = LOCALE_FILES,
+    dir_: Traversable = LOCALE_FILES,
 ) -> dict[str, str]:
     """Get the translation dict for the specified language.
 
@@ -54,7 +52,7 @@ def get_translation_dict(
         language: Name of one of the available language files,
             or "English" for English. Must not be "" or "default".
         logger: Logger, which is created if None.
-        dir: Directory containing the non-default translation files.
+        dir_: Directory containing the non-default translation files.
             Use the default value except in unit tests.
 
     Raises:
@@ -78,10 +76,8 @@ def get_translation_dict(
     next_language = language
     while next_language not in {"", "default", "English"}:
         if next_language in languages_read:
-            raise RecursionError(
-                f"Circular reference for {language=}, found reading {next_language=}"
-            )
-        next_file = dir.joinpath(f"{next_language}.json")
+            raise RecursionError(f"Circular reference for {language=}, found reading {next_language=}")
+        next_file = dir_.joinpath(f"{next_language}.json")
         next_dict = read_one_translation_file(
             translation_file=next_file, valid_keys=valid_keys, logger=logger
         )
@@ -120,9 +116,7 @@ def read_one_translation_file(
         raise FileNotFoundError(f"Translation file {translation_file} not found")
     logger.info(f"Loading translation file {translation_file}")
     raw_translation_dict = json.loads(translation_file.read_text(encoding="utf_8"))
-    translation_dict = {
-        key: value for key, value in raw_translation_dict.items() if key in valid_keys
-    }
+    translation_dict = {key: value for key, value in raw_translation_dict.items() if key in valid_keys}
     extra_keys = raw_translation_dict.keys() - translation_dict.keys()
     if extra_keys:
         extra_keys_str = ", ".join(sorted(extra_keys))

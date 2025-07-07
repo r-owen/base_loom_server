@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-__all__ = [
-    "BaseLoomServer",
-    "DEFAULT_DATABASE_PATH",
-    "MOCK_PORT_NAME",
-]
+__all__ = ["BaseLoomServer", "DEFAULT_DATABASE_PATH", "MOCK_PORT_NAME"]
 
 import abc
 import asyncio
@@ -16,7 +12,7 @@ import json
 import logging
 import pathlib
 from types import SimpleNamespace, TracebackType
-from typing import Any, Self, Type
+from typing import TYPE_CHECKING, Any, Self
 
 from dtx_to_wif import read_pattern_data
 from fastapi import WebSocket, WebSocketDisconnect
@@ -24,14 +20,16 @@ from fastapi.websockets import WebSocketState
 from serial_asyncio import open_serial_connection  # type: ignore[import-untyped]
 
 from . import client_replies
-from .base_mock_loom import BaseMockLoom
 from .constants import LOG_NAME
 from .enums import DirectionControlEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
-from .mock_streams import StreamReaderType, StreamWriterType
 from .pattern_database import PatternDatabase
 from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
 from .translations import get_language_names, get_translation_dict
 from .utils import compute_num_within_and_repeats, compute_total_num
+
+if TYPE_CHECKING:
+    from .base_mock_loom import BaseMockLoom
+    from .mock_streams import StreamReaderType, StreamWriterType
 
 # The maximum number of patterns that can be in the history
 MAX_PATTERNS = 25
@@ -52,7 +50,7 @@ LOCALE_FILES = PKG_FILES.joinpath("locales")
 
 
 class CloseCode(enum.IntEnum):
-    """WebSocket close codes
+    """WebSocket close codes.
 
     A small subset of
     https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4
@@ -108,9 +106,7 @@ class BaseLoomServer:
         self.terminator = self.mock_loom_type.terminator
         self.log = logging.getLogger(LOG_NAME)
         if verbose:
-            self.log.info(
-                f"{self}({serial_port=!r}, {reset_db=!r}, {verbose=!r}, {db_path=!r})"
-            )
+            self.log.info(f"{self}({serial_port=!r}, {reset_db=!r}, {verbose=!r}, {db_path=!r})")
 
         self.serial_port = serial_port
         self.verbose = verbose
@@ -119,18 +115,14 @@ class BaseLoomServer:
             serial_port=serial_port,
             is_mock=serial_port == MOCK_PORT_NAME,
         )
-        self.db_path: pathlib.Path = (
-            DEFAULT_DATABASE_PATH if db_path is None else db_path
-        )
+        self.db_path: pathlib.Path = DEFAULT_DATABASE_PATH if db_path is None else db_path
         if reset_db:
             self.log.info(f"Resetting database {self.db_path} by request")
             self.reset_database()
         try:
             self.pattern_db = PatternDatabase(self.db_path)
         except Exception as e:
-            self.log.warning(
-                f"Resetting database {self.db_path} because open failed: {e!r}"
-            )
+            self.log.warning(f"Resetting database {self.db_path} because open failed: {e!r}")
             self.reset_database()
 
         # Compute initial value for direction_control.
@@ -156,9 +148,7 @@ class BaseLoomServer:
             thread_back_to_front=True,
         )
         self.settings_path = self.db_path.parent / SETTINGS_FILE_NAME
-        self.translation_dict = get_translation_dict(
-            language=self.settings.language, logger=self.log
-        )
+        self.translation_dict = get_translation_dict(language=self.settings.language, logger=self.log)
         self.load_settings()
         self.save_settings()
 
@@ -191,10 +181,11 @@ class BaseLoomServer:
     @abc.abstractmethod
     async def write_shafts_to_loom(self, shaft_word: int) -> None:
         """Write the shaft word to the loom."""
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @property
     def enable_software_direction(self) -> bool:
+        """Is software direction control enabled?"""
         return self.settings.direction_control in {
             DirectionControlEnum.FULL,
             DirectionControlEnum.SOFTWARE,
@@ -206,9 +197,7 @@ class BaseLoomServer:
 
         Takes into account settings and self.direction_forward.
         """
-        low_to_high = (
-            self.settings.thread_back_to_front == self.settings.thread_right_to_left
-        )
+        low_to_high = self.settings.thread_back_to_front == self.settings.thread_right_to_left
         if not self.settings.end1_on_right:
             low_to_high = not low_to_high
         if not self.direction_forward:
@@ -224,7 +213,6 @@ class BaseLoomServer:
         By default this is a no-op so subclases need not call
         `super().__post_init__()`
         """
-        pass
 
     @property
     def loom_connected(self) -> bool:
@@ -237,11 +225,13 @@ class BaseLoomServer:
         )
 
     async def start(self) -> None:
+        """Run asynchronous startup tasks.
+
+        Initialize the pattern database and connect to the loom.
+        """
         await self.pattern_db.init()
         if not await self.pattern_db.check_schema():
-            self.log.warning(
-                f"Resetting database {self.db_path} because the schema is outdated"
-            )
+            self.log.warning(f"Resetting database {self.db_path} because the schema is outdated")
             self.reset_database()
         await self.clear_jumps()
         # Restore current pattern, if any
@@ -250,9 +240,7 @@ class BaseLoomServer:
             await self.select_pattern(names[-1])
         await self.connect_to_loom()
 
-    async def close(
-        self, stop_read_loom: bool = True, stop_read_client: bool = True
-    ) -> None:
+    async def close(self, *, stop_read_loom: bool = True, stop_read_client: bool = True) -> None:
         """Disconnect from client and loom and stop all tasks."""
         if self.loom_writer is not None:
             if stop_read_loom:
@@ -295,7 +283,6 @@ class BaseLoomServer:
         Usually a no-op, because a well designed loom automatically
         reports its own state when software connects to it.
         """
-        pass
 
     async def connect_to_loom(self) -> None:
         """Connect to the loom.
@@ -314,9 +301,7 @@ class BaseLoomServer:
                     num_shafts=self.loom_info.num_shafts, verbose=self.verbose
                 )
                 assert self.mock_loom is not None  # make mypy happy
-                self.loom_reader, self.loom_writer = (
-                    await self.mock_loom.open_client_connection()
-                )
+                self.loom_reader, self.loom_writer = await self.mock_loom.open_client_connection()
             else:
                 self.loom_reader, self.loom_writer = await open_serial_connection(
                     url=self.loom_info.serial_port, baudrate=self.baud_rate
@@ -325,9 +310,7 @@ class BaseLoomServer:
                 # try to purge input buffer
                 transport = getattr(self.loom_writer, "transport", None)
                 if transport is None:
-                    self.log.warning(
-                        f"{self}: Could not flush read buffer; no transport found"
-                    )
+                    self.log.warning(f"{self}: Could not flush read buffer; no transport found")
                 else:
                     serial_instance = getattr(transport, "_serial", None)
                     if serial_instance is None:
@@ -338,9 +321,7 @@ class BaseLoomServer:
                         serial_instance.reset_input_buffer()
                         self.log.info(f"{self}: Read buffer flushed")
                     else:
-                        self.log.info(
-                            f"{self}: Read buffer did not need to be flushed; it was empty"
-                        )
+                        self.log.info(f"{self}: Read buffer did not need to be flushed; it was empty")
 
             self.loom_connecting = False
             await self.report_loom_connection_state()
@@ -363,9 +344,7 @@ class BaseLoomServer:
             websocket: Connection to the client.
         """
         if self.client_connected:
-            self.log.info(
-                f"{self}: a client was already connected; closing that connection"
-            )
+            self.log.info(f"{self}: a client was already connected; closing that connection")
             await self.disconnect_client()
         await websocket.accept()
         self.websocket = websocket
@@ -373,14 +352,15 @@ class BaseLoomServer:
         if not self.loom_connected:
             try:
                 await self.connect_to_loom()
-            except Exception as e:
+            except Exception:
                 # Note: connect_to_loom already reported the
                 # (lack of) connection state, including the reason.
                 # But log it here.
-                self.log.exception(f"{self}: failed to reconnect to the loom: {e!r}")
+                self.log.exception(f"{self}: failed to reconnect to the loom")
         await self.done_task
 
-    async def disconnect_client(self, cancel_read_client_loop: bool = True) -> None:
+    async def disconnect_client(self) -> None:
+        """Disconnect the current client, if any."""
         self.read_client_task.cancel()
         websocket = self.websocket
         self.websocket = None
@@ -392,8 +372,7 @@ class BaseLoomServer:
             )
 
     async def disconnect_from_loom(self) -> None:
-        """Disconnect from the loom. A no-op if already disconnected."""
-
+        """Disconnect the loom. A no-op if already disconnected."""
         if not self.loom_connected:
             return
         self.loom_disconnecting = True
@@ -416,8 +395,8 @@ class BaseLoomServer:
         assert self.loom_reader is not None
         return await self.loom_reader.readuntil(self.terminator)
 
-    async def clear_jump_end(self, force_output: bool = False) -> None:
-        """Clear self.jump_end and report value if changed or force_output
+    async def clear_jump_end(self, *, force_output: bool = False) -> None:
+        """Clear self.jump_end and report value if changed or force_output.
 
         Args:
             force_output: If true, report `JumpEndNumber`,
@@ -429,8 +408,8 @@ class BaseLoomServer:
         if do_report:
             await self.report_jump_end()
 
-    async def clear_jump_pick(self, force_output: bool = False) -> None:
-        """Clear self.jump_pick and report value if changed or force_output
+    async def clear_jump_pick(self, *, force_output: bool = False) -> None:
+        """Clear self.jump_pick and report value if changed or force_output.
 
         Args:
             force_output: If true, report `JumpPickNumber`,
@@ -442,12 +421,19 @@ class BaseLoomServer:
         if do_report:
             await self.report_jump_pick()
 
-    async def clear_jumps(self, force_output: bool = False) -> None:
+    async def clear_jumps(self, *, force_output: bool = False) -> None:
         """Clear all jumps and report values if changed or force_output."""
         await self.clear_jump_end(force_output=force_output)
         await self.clear_jump_pick(force_output=force_output)
 
-    async def cmd_clear_pattern_names(self, command: SimpleNamespace) -> None:
+    async def cmd_clear_pattern_names(
+        self,
+        command: SimpleNamespace,  # noqa: ARG002
+    ) -> None:
+        """Handle the clear_pattern_names command.
+
+        Clear all patterns except the current pattern.
+        """
         # Clear the pattern database
         # Then add the current pattern (if any)
         await self.pattern_db.clear_database()
@@ -457,14 +443,14 @@ class BaseLoomServer:
             await self.report_pattern_names()
 
     async def cmd_direction(self, command: SimpleNamespace) -> None:
+        """Handle the direction command: set direction."""
         self.direction_forward = command.forward
         await self.report_direction()
 
     async def cmd_jump_to_end(self, command: SimpleNamespace) -> None:
+        """Handle the jump_to_end command."""
         if self.current_pattern is None:
-            raise CommandError(
-                self.t("cannot jump to an end") + ": " + self.t("no pattern")
-            )
+            raise CommandError(self.t("cannot jump to an end") + ": " + self.t("no pattern"))
         if command.total_end_number0 is None:
             self.jump_end = client_replies.JumpEndNumber()
         else:
@@ -474,9 +460,7 @@ class BaseLoomServer:
                 total_num=command.total_end_number0,
                 repeat_len=self.current_pattern.num_ends,
             )
-            end_number1 = self.current_pattern.compute_end_number1(
-                end_number0=end_number0
-            )
+            end_number1 = self.current_pattern.compute_end_number1(end_number0=end_number0)
             total_end_number1 = compute_total_num(
                 num_within=end_number1,
                 repeat_number=end_repeat_number,
@@ -493,10 +477,9 @@ class BaseLoomServer:
         await self.report_jump_end()
 
     async def cmd_jump_to_pick(self, command: SimpleNamespace) -> None:
+        """Handle the jump_to_pick command."""
         if self.current_pattern is None:
-            raise CommandError(
-                self.t("cannot jump to a pick") + ": " + self.t("no pattern")
-            )
+            raise CommandError(self.t("cannot jump to a pick") + ": " + self.t("no pattern"))
         if command.total_pick_number is None:
             self.jump_pick = client_replies.JumpPickNumber()
         else:
@@ -514,15 +497,18 @@ class BaseLoomServer:
         await self.report_jump_pick()
 
     async def cmd_mode(self, command: SimpleNamespace) -> None:
+        """Handle the mode command: set the mode."""
         self.mode = ModeEnum(command.mode)
         await self.report_mode()
 
     async def cmd_select_pattern(self, command: SimpleNamespace) -> None:
+        """Handle the select_pattern command."""
         name = command.name
         await self.select_pattern(name)
         await self.clear_jumps()
 
     async def cmd_separate_threading_repeats(self, command: SimpleNamespace) -> None:
+        """Handle the separate_threading_repeats command."""
         if self.current_pattern is None:
             return
         await self.pattern_db.update_separate_threading_repeats(
@@ -533,6 +519,7 @@ class BaseLoomServer:
         await self.report_separate_threading_repeats()
 
     async def cmd_separate_weaving_repeats(self, command: SimpleNamespace) -> None:
+        """Handle the separate_weaving_repeats command."""
         if self.current_pattern is None:
             return
         await self.pattern_db.update_separate_weaving_repeats(
@@ -543,19 +530,21 @@ class BaseLoomServer:
         await self.report_separate_weaving_repeats()
 
     async def cmd_settings(self, command: SimpleNamespace) -> None:
-        bad_keys = list()
+        """Handle the settings command: set one or more settings."""
+        bad_keys: list[str] = []
         new_settings = copy.copy(self.settings)
-        for key, value in vars(command).items():
+        # Use raw_value to avoid warnings about overwriting a loop variable.
+        for key, raw_value in vars(command).items():
+            value = raw_value
             # Check values
             if key == "type":
                 continue
-            elif key == "direction_control":
+
+            if key == "direction_control":
                 value = DirectionControlEnum(value)
                 if self.supports_full_direction_control:
                     if value is not DirectionControlEnum.FULL:
-                        raise CommandError(
-                            f"invalid {key}={value!r}: loom supports full direction control"
-                        )
+                        raise CommandError(f"invalid {key}={value!r}: loom supports full direction control")
                 elif value is DirectionControlEnum.FULL:
                     raise CommandError(
                         f"invalid {key}={value!r}: loom doesn't support full direction control"
@@ -563,11 +552,9 @@ class BaseLoomServer:
             elif key == "language":
                 if value != self.settings.language:
                     try:
-                        self.translation_dict = get_translation_dict(
-                            language=value, logger=self.log
-                        )
+                        self.translation_dict = get_translation_dict(language=value, logger=self.log)
                     except Exception as e:
-                        raise CommandError(f"Failed to load language {value!r}: {e!r}")
+                        raise CommandError(f"Failed to load language {value!r}: {e!r}") from e
             else:
                 expected_type = dict(
                     loom_name=str,
@@ -580,9 +567,7 @@ class BaseLoomServer:
                     bad_keys.append(key)
                     continue
                 if not isinstance(value, expected_type):
-                    raise CommandError(
-                        f"invalid {key}={value!r}: must be type {expected_type}"
-                    )
+                    raise CommandError(f"invalid {key}={value!r}: must be type {expected_type}")
                 if key == "thread_group_size":
                     assert isinstance(value, int)  # Make mypy happy
                     if value < 1 or value > MAX_THREAD_GROUP_SIZE:
@@ -597,6 +582,7 @@ class BaseLoomServer:
         self.save_settings()
 
     async def cmd_thread_group_size(self, command: SimpleNamespace) -> None:
+        """Handle the thread_group_size command."""
         if self.current_pattern is None:
             return
         await self.pattern_db.update_thread_group_size(
@@ -607,12 +593,18 @@ class BaseLoomServer:
         await self.report_thread_group_size()
 
     async def cmd_oobcommand(self, command: SimpleNamespace) -> None:
+        """Handle the oob_command command.
+
+        Send an out-of-band command to the mock loom.
+        Ignored with a logged warning if the loom is not the mock loom.
+        """
         if self.mock_loom is not None:
             await self.mock_loom.oob_command(command.command)
         else:
             self.log.warning(f"Ignoring oob command {command.command!r}: no mock loom")
 
     async def cmd_upload(self, command: SimpleNamespace) -> None:
+        """Handle the upload command."""
         suffix = command.name[-4:]
         if self.verbose:
             cmd_data = command.data
@@ -622,9 +614,7 @@ class BaseLoomServer:
                 f"{self}: read weaving pattern {command.name!r}: data={cmd_data!r}",
             )
         pattern_data = read_pattern_data(command.data, suffix=suffix, name=command.name)
-        pattern = reduced_pattern_from_pattern_data(
-            name=command.name, data=pattern_data
-        )
+        pattern = reduced_pattern_from_pattern_data(name=command.name, data=pattern_data)
         # Check that the pattern does not require too many shafts.
         # max_shaft_num needs +1 because pattern.threading is 0-based.
         max_shaft_num = max(pattern.threading) + 1
@@ -638,6 +628,7 @@ class BaseLoomServer:
         await self.add_pattern(pattern)
 
     def get_threading_shaft_word(self) -> int:
+        """Get the current threading shaft word."""
         if self.current_pattern is None:
             return 0
         return self.current_pattern.get_threading_shaft_word()
@@ -664,9 +655,7 @@ class BaseLoomServer:
             case ModeEnum.WEAVE:
                 # Command a new pick, if there is one.
                 if self.jump_pick.pick_number is not None:
-                    self.current_pattern.set_current_pick_number(
-                        self.jump_pick.pick_number
-                    )
+                    self.current_pattern.set_current_pick_number(self.jump_pick.pick_number)
                 else:
                     try:
                         self.increment_pick_number()
@@ -679,9 +668,7 @@ class BaseLoomServer:
                         )
                         return False
                 if self.jump_pick.pick_repeat_number is not None:
-                    self.current_pattern.pick_repeat_number = (
-                        self.jump_pick.pick_repeat_number
-                    )
+                    self.current_pattern.pick_repeat_number = self.jump_pick.pick_repeat_number
                 pick = self.current_pattern.get_current_pick()
                 await self.write_shafts_to_loom(pick.shaft_word)
                 await self.clear_jumps()
@@ -699,7 +686,6 @@ class BaseLoomServer:
                     try:
                         self.increment_end_number()
                     except IndexError:
-                        print("Next end raised IndexError")
                         await self.write_to_client(
                             client_replies.StatusMessage(
                                 message=self.t("At start of threading"),
@@ -730,17 +716,13 @@ class BaseLoomServer:
         """
         if self.current_pattern is None:
             return 0
-        return self.current_pattern.increment_pick_number(
-            direction_forward=self.direction_forward
-        )
+        return self.current_pattern.increment_pick_number(direction_forward=self.direction_forward)
 
     def increment_end_number(self) -> None:
         """Increment end_number0 in the current direction."""
         if self.current_pattern is None:
             return
-        self.current_pattern.increment_end_number(
-            thread_low_to_high=self.thread_low_to_high
-        )
+        self.current_pattern.increment_end_number(thread_low_to_high=self.thread_low_to_high)
 
     def load_settings(self) -> None:
         """Read the settings file, if it exists.
@@ -754,7 +736,7 @@ class BaseLoomServer:
             return
 
         try:
-            with open(self.settings_path, "r") as f:
+            with self.settings_path.open("r") as f:
                 settings_dict = json.load(f)
         except Exception as e:
             self.log.warning(
@@ -763,7 +745,9 @@ class BaseLoomServer:
             self.settings_path.unlink()
             return
 
-        for key, value in settings_dict.items():
+        # Use raw_value to avoid warnings about overwriting a loop variable.
+        for key, raw_value in settings_dict.items():
+            value = raw_value
             if key == "type":
                 continue
             default_value = getattr(self.settings, key, None)
@@ -775,9 +759,7 @@ class BaseLoomServer:
                 try:
                     value = DirectionControlEnum(value)
                 except Exception:
-                    self.log.warning(
-                        f"Ignoring setting {key}={value!r}: invalid enum value"
-                    )
+                    self.log.warning(f"Ignoring setting {key}={value!r}: invalid enum value")
                     continue
 
                 if self.supports_full_direction_control:
@@ -794,9 +776,7 @@ class BaseLoomServer:
 
             elif key == "language":
                 try:
-                    self.translation_dict = get_translation_dict(
-                        language=value, logger=self.log
-                    )
+                    self.translation_dict = get_translation_dict(language=value, logger=self.log)
                 except Exception as e:
                     self.log.error(f"Failed to load translation dict {value!r}: {e!r}")
                     continue
@@ -805,12 +785,11 @@ class BaseLoomServer:
                 self.log.warning(f"Ignoring setting {key}={value!r}: invalid value")
                 continue
 
-            if key == "thread_group_size":
-                if value < 1 or value > MAX_THREAD_GROUP_SIZE:
-                    self.log.warning(
-                        f"Ignoring setting {key}={value!r}: not in range [1, {MAX_THREAD_GROUP_SIZE}"
-                    )
-                    continue
+            if key == "thread_group_size" and (value < 1 or value > MAX_THREAD_GROUP_SIZE):
+                self.log.warning(
+                    f"Ignoring setting {key}={value!r}: not in range [1, {MAX_THREAD_GROUP_SIZE}"
+                )
+                continue
 
             setattr(self.settings, key, value)
 
@@ -842,19 +821,14 @@ class BaseLoomServer:
                     command = SimpleNamespace(**data)
                     if self.verbose:
                         msg_summary = str(command)
-                        if (
-                            command.type == "upload"
-                            and len(msg_summary) > MAX_LOG_PATTERN_LEN
-                        ):
+                        if command.type == "upload" and len(msg_summary) > MAX_LOG_PATTERN_LEN:
                             msg_summary = msg_summary[0:MAX_LOG_PATTERN_LEN] + "..."
                         self.log.info(f"{self}: read command {msg_summary}")
                     cmd_handler = getattr(self, f"cmd_{cmd_type}", None)
                 except Exception as e:
                     message = f"command {data} failed: {e!r}"
                     self.log.exception(f"{self}: {message}")
-                    await self.report_command_done(
-                        cmd_type=cmd_type, success=False, message=message
-                    )
+                    await self.report_command_done(cmd_type=cmd_type, success=False, message=message)
 
                 # Execute the command
                 try:
@@ -868,15 +842,11 @@ class BaseLoomServer:
                     await cmd_handler(command)
                     await self.report_command_done(cmd_type=cmd_type, success=True)
                 except CommandError as e:
-                    await self.report_command_done(
-                        cmd_type=cmd_type, success=False, message=str(e)
-                    )
+                    await self.report_command_done(cmd_type=cmd_type, success=False, message=str(e))
                 except Exception as e:
                     message = f"command {command} unexpectedly failed: {e!r}"
                     self.log.exception(f"{self}: {message}")
-                    await self.report_command_done(
-                        cmd_type=cmd_type, success=False, message=message
-                    )
+                    await self.report_command_done(cmd_type=cmd_type, success=False, message=message)
 
         except asyncio.CancelledError:
             return
@@ -884,22 +854,20 @@ class BaseLoomServer:
             self.log.info(f"{self}: client disconnected")
             return
         except Exception as e:
-            self.log.exception(f"{self}: bug: client read looop failed: {e!r}")
+            self.log.exception(f"{self}: bug: client read looop failed")
             await self.report_command_problem(
                 message="Client read loop failed; try refreshing",
                 severity=MessageSeverityEnum.ERROR,
             )
             self.client_connected = False
             if self.websocket is not None:
-                await self.close_websocket(
-                    self.websocket, code=CloseCode.ERROR, reason=repr(e)
-                )
+                await self.close_websocket(self.websocket, code=CloseCode.ERROR, reason=repr(e))
 
     async def read_loom_loop(self) -> None:
         """Read and process replies from the loom."""
         try:
             if self.loom_reader is None:
-                raise RuntimeError("No loom reader")
+                raise RuntimeError("No loom reader")  # noqa: TRY301
             await self.get_initial_loom_state()
             while True:
                 reply_bytes = await self.basic_read_loom()
@@ -921,24 +889,18 @@ class BaseLoomServer:
             )
             await self.disconnect_from_loom()
 
-    async def report_command_done(
-        self, cmd_type: str, success: bool, message: str = ""
-    ) -> None:
-        """Report completion of a command"""
-        reply = client_replies.CommandDone(
-            cmd_type=cmd_type, success=success, message=message
-        )
+    async def report_command_done(self, *, cmd_type: str, success: bool, message: str = "") -> None:
+        """Report completion of a command."""
+        reply = client_replies.CommandDone(cmd_type=cmd_type, success=success, message=message)
         await self.write_to_client(reply)
 
-    async def report_command_problem(
-        self, message: str, severity: MessageSeverityEnum
-    ) -> None:
+    async def report_command_problem(self, message: str, severity: MessageSeverityEnum) -> None:
         """Report a CommandProblem to the client."""
         reply = client_replies.CommandProblem(message=message, severity=severity)
         await self.write_to_client(reply)
 
     async def report_current_pattern(self) -> None:
-        """Report pattern to the client"""
+        """Report pattern to the client."""
         if self.current_pattern is not None:
             await self.write_to_client(self.current_pattern)
 
@@ -985,7 +947,8 @@ class BaseLoomServer:
     async def report_current_pick_number(self) -> None:
         """Report CurrentPickNumber to the client.
 
-        Also update pick information in the database."""
+        Also update pick information in the database.
+        """
         if self.current_pattern is None:
             return
         await self.pattern_db.update_pick_number(
@@ -1047,9 +1010,7 @@ class BaseLoomServer:
     async def report_shaft_state(self) -> None:
         """Report ShaftState to the client."""
         await self.write_to_client(
-            client_replies.ShaftState(
-                state=self.shaft_state, shaft_word=self.shaft_word
-            )
+            client_replies.ShaftState(state=self.shaft_state, shaft_word=self.shaft_word)
         )
 
     async def report_mode(self) -> None:
@@ -1057,49 +1018,43 @@ class BaseLoomServer:
         await self.write_to_client(client_replies.Mode(mode=self.mode))
 
     async def report_separate_threading_repeats(self) -> None:
+        """Report SeparateThreadingRepeats."""
         if self.current_pattern is None:
             return
         await self.write_to_client(
-            client_replies.SeparateThreadingRepeats(
-                separate=self.current_pattern.separate_threading_repeats
-            )
+            client_replies.SeparateThreadingRepeats(separate=self.current_pattern.separate_threading_repeats)
         )
 
     async def report_separate_weaving_repeats(self) -> None:
+        """Report SeparateWeavingRepeats."""
         if self.current_pattern is None:
             return
         await self.write_to_client(
-            client_replies.SeparateWeavingRepeats(
-                separate=self.current_pattern.separate_weaving_repeats
-            )
+            client_replies.SeparateWeavingRepeats(separate=self.current_pattern.separate_weaving_repeats)
         )
 
     async def report_settings(self) -> None:
+        """Report Settings."""
         await self.write_to_client(self.settings)
 
-    async def report_status_message(
-        self, message: str, severity: MessageSeverityEnum
-    ) -> None:
+    async def report_status_message(self, message: str, severity: MessageSeverityEnum) -> None:
         """Report a status message to the client."""
-        await self.write_to_client(
-            client_replies.StatusMessage(message=message, severity=severity)
-        )
+        await self.write_to_client(client_replies.StatusMessage(message=message, severity=severity))
 
     async def report_thread_group_size(self) -> None:
-        """Report ThreadGroupSize"""
+        """Report ThreadGroupSize."""
         if self.current_pattern is None:
             return
-        client_reply = client_replies.ThreadGroupSize(
-            group_size=self.current_pattern.thread_group_size
-        )
+        client_reply = client_replies.ThreadGroupSize(group_size=self.current_pattern.thread_group_size)
         await self.write_to_client(client_reply)
 
     async def report_language_names(self) -> None:
+        """Report LanguageNames."""
         client_reply = client_replies.LanguageNames(languages=get_language_names())
         await self.write_to_client(client_reply)
 
     async def report_direction(self) -> None:
-        """Report Direction"""
+        """Report Direction."""
         await self.write_to_client(
             client_replies.Direction(
                 forward=self.direction_forward,
@@ -1107,6 +1062,7 @@ class BaseLoomServer:
         )
 
     def reset_database(self) -> None:
+        """Reset the pattern database (write a new one)."""
         self.db_path.unlink(missing_ok=True)
         self.pattern_db = PatternDatabase(self.db_path)
 
@@ -1115,16 +1071,17 @@ class BaseLoomServer:
         datadict = dataclasses.asdict(self.settings)
         del datadict["type"]
         try:
-            with open(self.settings_path, "w") as f:
+            with self.settings_path.open("w") as f:
                 json.dump(datadict, f)
         except Exception as e:
             self.log.error(f"Could not write settings file {self.settings_path}: {e!r}")
 
     async def select_pattern(self, name: str) -> None:
+        """Select the specified pattern."""
         try:
             pattern = await self.pattern_db.get_pattern(name)
         except LookupError:
-            raise CommandError(f"select_pattern failed: no such pattern: {name}")
+            raise CommandError(f"select_pattern failed: no such pattern: {name}") from None
         self.current_pattern = pattern
         await self.report_current_pattern()
         await self.report_current_end_numbers()
@@ -1139,7 +1096,8 @@ class BaseLoomServer:
             self.log.warning(f"{phrase!r} not in translation dict")
         return self.translation_dict.get(phrase, phrase)
 
-    async def write_to_client(self, reply: Any) -> None:
+    # Use reply: Any because dataclasses are hard to type hint
+    async def write_to_client(self, reply: Any) -> None:  # noqa: ANN401
         """Send a reply to the client.
 
         Args:
@@ -1159,9 +1117,8 @@ class BaseLoomServer:
             if self.verbose:
                 self.log.info(f"{self}: reply to client: {reply_str}")
             await self.websocket.send_json(reply_dict)
-        else:
-            if self.verbose:
-                self.log.info(f"{self}: do not send reply {reply_str}; not connected")
+        elif self.verbose:
+            self.log.info(f"{self}: do not send reply {reply_str}; not connected")
 
     async def write_to_loom(self, data: bytes | bytearray | str) -> None:
         """Send data to the loom.
@@ -1174,9 +1131,7 @@ class BaseLoomServer:
             raise RuntimeError("Cannot write to the loom: no connection.")
         data_bytes = data.encode() if isinstance(data, str) else bytes(data)
         if self.verbose:
-            self.log.info(
-                f"{self}: sending command to loom: {data_bytes + self.terminator!r}"
-            )
+            self.log.info(f"{self}: sending command to loom: {data_bytes + self.terminator!r}")
         self.loom_writer.write(data_bytes + self.terminator)
         await self.loom_writer.drain()
 
@@ -1189,8 +1144,8 @@ class BaseLoomServer:
 
     async def __aexit__(
         self,
-        type: Type[BaseException] | None,
-        value: BaseException | None,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:
         await self.close()

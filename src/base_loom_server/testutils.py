@@ -52,26 +52,30 @@ ALL_PATTERN_PATHS = (
 
 
 def assert_replies_equal(reply: dict[str, Any], expected_reply: dict[str, Any]) -> None:
+    """Assert a portion of a reply matches the expected data.
+
+    Only check items that are present in `expected_reply`.
+    """
     for key, value in expected_reply.items():
         if value is not None and reply.get(key) != value:
-            raise AssertionError(
-                f"{reply=} != {expected_reply}: failed on field {key!r}"
-            )
+            raise AssertionError(f"{reply=} != {expected_reply}: failed on field {key!r}")
 
 
 @dataclasses.dataclass
 class Client:
+    """Client for testing loom servers."""
+
     test_client: TestClient
     loom_server: BaseLoomServer
     mock_loom: BaseMockLoom
     websocket: WebSocketType
 
     def send_dict(self, datadict: dict[str, Any]) -> None:
-        """Write a dict as json"""
+        """Write a dict as json."""
         self.websocket.send_json(datadict)
 
     def receive_dict(self) -> dict[str, Any]:
-        """Read json as a dict"""
+        """Read json as a dict."""
         data: Any = self.websocket.receive_json()
         assert isinstance(data, dict)
         return data
@@ -91,16 +95,14 @@ def change_direction(client: Client) -> None:
     client.mock_loom.command_threading_event.clear()
     if client.loom_server.enable_software_direction:
         direction_forward = not client.loom_server.direction_forward
-        replies = send_command(
-            client, dict(type="direction", forward=direction_forward)
-        )
+        replies = send_command(client, dict(type="direction", forward=direction_forward))
     else:
         expected_direction_reply = client.loom_server.loom_reports_direction
         direction_forward = not client.mock_loom.direction_forward
         replies = send_command(client, dict(type="oobcommand", command="d"))
 
     if expected_direction_reply:
-        assert len(replies) == 2
+        assert len(replies) == 2  # noqa: PLR2004
         assert replies[0]["type"] == "Direction"
         assert replies[0]["forward"] == direction_forward
     else:
@@ -111,6 +113,7 @@ def change_direction(client: Client) -> None:
 
 def command_next_end(
     client: Client,
+    *,
     expected_end_number0: int,
     expected_end_number1: int,
     expected_repeat_number: int,
@@ -190,10 +193,7 @@ def command_next_end(
     ]
     for expected_reply in expected_replies:
         reply = client.receive_dict()
-        if (
-            reply["type"] == "ServerMessage"
-            and reply["severity"] == MessageSeverityEnum.INFO
-        ):
+        if reply["type"] == "ServerMessage" and reply["severity"] == MessageSeverityEnum.INFO:
             # Ignore info-level status messages
             continue
         assert_replies_equal(reply, expected_reply)
@@ -201,6 +201,7 @@ def command_next_end(
 
 def command_next_pick(
     client: Client,
+    *,
     expected_pick_number: int,
     expected_repeat_number: int,
     expected_shaft_word: int,
@@ -271,19 +272,19 @@ def command_next_pick(
     ]
     for expected_reply in expected_replies:
         reply = client.receive_dict()
-        if (
-            reply["type"] == "ServerMessage"
-            and reply["severity"] == MessageSeverityEnum.INFO
-        ):
+        if reply["type"] == "ServerMessage" and reply["severity"] == MessageSeverityEnum.INFO:
             # Ignore info-level status messages
             continue
         assert_replies_equal(reply, expected_reply)
 
 
 def command_settings(
-    client: Client, should_fail: bool = False, **settings: Any
+    client: Client,
+    *,
+    should_fail: bool = False,
+    **settings: Any,  # noqa: ANN401
 ) -> None:
-    """Send a  setting command and check the replies."""
+    """Send a setting command and check the replies."""
     settings_cmd = settings.copy()
     initial_settings = copy.copy(client.loom_server.settings)
     settings_cmd["type"] = "settings"
@@ -292,15 +293,14 @@ def command_settings(
         assert len(replies) == 1
         assert client.loom_server.settings == initial_settings
     else:
-        assert len(replies) == 2
+        assert len(replies) == 2  # noqa: PLR2004
         reported_settings = replies[0]
         for key, value in settings.items():
             assert reported_settings[key] == value
         for key, value in reported_settings.items():
             assert getattr(client.loom_server.settings, key) == value
     expected_thread_low_to_high = (
-        client.loom_server.settings.thread_back_to_front
-        == client.loom_server.settings.thread_right_to_left
+        client.loom_server.settings.thread_back_to_front == client.loom_server.settings.thread_right_to_left
     )
     if not client.loom_server.direction_forward:
         expected_thread_low_to_high = not expected_thread_low_to_high
@@ -311,6 +311,7 @@ def command_settings(
 
 def select_pattern(
     client: Client,
+    *,
     pattern_name: str,
     check_defaults: bool = True,
 ) -> ReducedPattern:
@@ -404,7 +405,7 @@ def select_pattern(
 
 
 def send_command(
-    client: Client, cmd_dict: dict[str, Any], should_fail: bool = False
+    client: Client, cmd_dict: dict[str, Any], *, should_fail: bool = False
 ) -> list[dict[str, Any]]:
     """Issue a command and return all replies.
 
@@ -425,17 +426,15 @@ def send_command(
         if reply["type"] == "CommandDone":
             if should_fail == reply["success"]:
                 if should_fail:
-                    raise AssertionError(
-                        f"Command {cmd_dict} succeeded, but should have failed"
-                    )
-                else:
-                    raise AssertionError(f"Command {cmd_dict} failed")
+                    raise AssertionError(f"Command {cmd_dict} succeeded, but should have failed")
+                raise AssertionError(f"Command {cmd_dict} failed")
             break
     return replies
 
 
 def upload_pattern(
     client: Client,
+    *,
     filepath: Traversable,
     expected_names: Iterable[str],
     should_fail: bool = False,
@@ -465,7 +464,7 @@ def upload_pattern(
     if should_fail:
         assert len(replies) == 1
     else:
-        assert len(replies) == 2
+        assert len(replies) == 2  # noqa: PLR2004
         assert replies[0] == dict(type="PatternNames", names=list(expected_names))
 
 
@@ -483,6 +482,7 @@ class BaseTestLoomServer:
     extra_args = ()
 
     def test_jump_to_end(self) -> None:
+        """Test the jump_to_end command."""
         pattern_name = ALL_PATTERN_PATHS[4].name
 
         with self.create_test_client(
@@ -494,7 +494,7 @@ class BaseTestLoomServer:
             num_ends_in_pattern = len(pattern.threading)
 
             replies = send_command(client, dict(type="mode", mode=ModeEnum.THREAD))
-            assert len(replies) == 2
+            assert len(replies) == 2  # noqa: PLR2004
             assert replies[0] == dict(type="Mode", mode=ModeEnum.THREAD)
 
             # post_action sets what to do after sending the jump_to_end cmd:
@@ -512,13 +512,9 @@ class BaseTestLoomServer:
                 (0, 1, num_ends_in_pattern // 3, num_ends_in_pattern),
                 (1, 2),
             ):
-                replies = send_command(
-                    client, dict(type="thread_group_size", group_size=thread_group_size)
-                )
-                assert len(replies) == 2
-                assert replies[0] == dict(
-                    type="ThreadGroupSize", group_size=thread_group_size
-                )
+                replies = send_command(client, dict(type="thread_group_size", group_size=thread_group_size))
+                assert len(replies) == 2  # noqa: PLR2004
+                assert replies[0] == dict(type="ThreadGroupSize", group_size=thread_group_size)
                 assert pattern.thread_group_size == thread_group_size
 
                 total_end_number0 = compute_total_num(
@@ -530,7 +526,7 @@ class BaseTestLoomServer:
                     client,
                     dict(type="jump_to_end", total_end_number0=total_end_number0),
                 )
-                assert len(replies) == 2
+                assert len(replies) == 2  # noqa: PLR2004
                 jump_end_reply = SimpleNamespace(**replies[0])
                 if total_end_number0 == 0:
                     # Jump to end_number0 0, repeat_number 1.
@@ -567,10 +563,8 @@ class BaseTestLoomServer:
                     )
                 match post_action:
                     case "cancel":
-                        replies = send_command(
-                            client, dict(type="jump_to_end", total_end_number0=None)
-                        )
-                        assert len(replies) == 2
+                        replies = send_command(client, dict(type="jump_to_end", total_end_number0=None))
+                        assert len(replies) == 2  # noqa: PLR2004
                         jump_end_cancel_reply = SimpleNamespace(**replies[0])
                         assert jump_end_cancel_reply == SimpleNamespace(
                             type="JumpEndNumber",
@@ -615,6 +609,7 @@ class BaseTestLoomServer:
                     )
 
     def test_jump_to_pick(self) -> None:
+        """Test the jump_to_pick command."""
         pattern_name = ALL_PATTERN_PATHS[3].name
 
         with self.create_test_client(
@@ -643,7 +638,7 @@ class BaseTestLoomServer:
                     client,
                     dict(type="jump_to_pick", total_pick_number=total_pick_number),
                 )
-                assert len(replies) == 2
+                assert len(replies) == 2  # noqa: PLR2004
                 jump_pick_reply = SimpleNamespace(**replies[0])
                 if total_pick_number == 0:
                     # Jump to pick_number 0, repeat_number 1.
@@ -673,10 +668,8 @@ class BaseTestLoomServer:
                     )
                 match post_action:
                     case "cancel":
-                        replies = send_command(
-                            client, dict(type="jump_to_pick", total_pick_number=None)
-                        )
-                        assert len(replies) == 2
+                        replies = send_command(client, dict(type="jump_to_pick", total_pick_number=None))
+                        assert len(replies) == 2  # noqa: PLR2004
                         jump_pick_cancel_reply = SimpleNamespace(**replies[0])
                         assert jump_pick_cancel_reply == SimpleNamespace(
                             type="JumpPickNumber",
@@ -689,9 +682,7 @@ class BaseTestLoomServer:
                             client=client,
                             expected_pick_number=jump_pick_reply.pick_number,
                             expected_repeat_number=jump_pick_reply.pick_repeat_number,
-                            expected_shaft_word=pattern.get_pick(
-                                jump_pick_reply.pick_number
-                            ).shaft_word,
+                            expected_shaft_word=pattern.get_pick(jump_pick_reply.pick_number).shaft_word,
                             jump_pending=True,
                         )
                     case "nothing":
@@ -719,6 +710,7 @@ class BaseTestLoomServer:
                     )
 
     def test_next_end(self) -> None:
+        """Test advancing to the next end."""
         pattern_name = ALL_PATTERN_PATHS[1].name
 
         with self.create_test_client(
@@ -729,7 +721,7 @@ class BaseTestLoomServer:
             num_ends_in_pattern = len(pattern.threading)
 
             replies = send_command(client, dict(type="mode", mode=ModeEnum.THREAD))
-            assert len(replies) == 2
+            assert len(replies) == 2  # noqa: PLR2004
             assert replies[0] == dict(type="Mode", mode=ModeEnum.THREAD)
 
             for separate_threading_repeats, thread_group_size in itertools.product(
@@ -743,7 +735,9 @@ class BaseTestLoomServer:
                     num_ends_in_pattern + 1,
                 ),
             ):
-                print(f"{separate_threading_repeats=}, {thread_group_size=}")
+                print(  # noqa: T201
+                    f"{separate_threading_repeats=}, {thread_group_size=}"
+                )
 
                 # Restore initial state that we care about.
                 client.loom_server.settings.end1_on_right = True
@@ -765,25 +759,21 @@ class BaseTestLoomServer:
                         separate=separate_threading_repeats,
                     ),
                 )
-                assert len(replies) == 2
+                assert len(replies) == 2  # noqa: PLR2004
                 assert replies[0] == dict(
                     type="SeparateThreadingRepeats", separate=separate_threading_repeats
                 )
                 assert pattern.separate_threading_repeats == separate_threading_repeats
 
-                replies = send_command(
-                    client, dict(type="thread_group_size", group_size=thread_group_size)
-                )
-                assert len(replies) == 2
-                assert replies[0] == dict(
-                    type="ThreadGroupSize", group_size=thread_group_size
-                )
+                replies = send_command(client, dict(type="thread_group_size", group_size=thread_group_size))
+                assert len(replies) == 2  # noqa: PLR2004
+                assert replies[0] == dict(type="ThreadGroupSize", group_size=thread_group_size)
                 assert pattern.thread_group_size == thread_group_size
 
                 # Make enough low_to_high end advances to get into 3rd repeat
                 expected_end_number0 = 0
                 expected_repeat_number = 1
-                while expected_repeat_number < 3:
+                while expected_repeat_number < 3:  # noqa: PLR2004
                     (
                         expected_end_number0,
                         expected_end_number1,
@@ -832,9 +822,7 @@ class BaseTestLoomServer:
                 assert pattern.end_repeat_number == expected_repeat_number
 
                 # Toggle low_to_high by toggling end1_at_right
-                command_settings(
-                    client, end1_on_right=not client.loom_server.settings.end1_on_right
-                )
+                command_settings(client, end1_on_right=not client.loom_server.settings.end1_on_right)
                 assert client.loom_server.thread_low_to_high
 
                 command_next_end(
@@ -873,6 +861,7 @@ class BaseTestLoomServer:
                 )
 
     def test_next_pick(self) -> None:
+        """Test advancing to the next pick."""
         pattern_name = ALL_PATTERN_PATHS[2].name
 
         with self.create_test_client(
@@ -886,8 +875,8 @@ class BaseTestLoomServer:
             expected_repeat_number = 1
             assert client.loom_server.direction_forward
             while True:
-                expected_pick_number, expected_repeat_number = (
-                    pattern.compute_next_pick_numbers(direction_forward=True)
+                expected_pick_number, expected_repeat_number = pattern.compute_next_pick_numbers(
+                    direction_forward=True
                 )
                 expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
                 command_next_pick(
@@ -896,7 +885,7 @@ class BaseTestLoomServer:
                     expected_repeat_number=expected_repeat_number,
                     expected_shaft_word=expected_shaft_word,
                 )
-                if expected_repeat_number == 3:
+                if expected_repeat_number == 3:  # noqa: PLR2004
                     break
 
             change_direction(client=client)
@@ -905,8 +894,8 @@ class BaseTestLoomServer:
             # Now go backwards to the beginning
             while True:
                 try:
-                    expected_pick_number, expected_repeat_number = (
-                        pattern.compute_next_pick_numbers(direction_forward=False)
+                    expected_pick_number, expected_repeat_number = pattern.compute_next_pick_numbers(
+                        direction_forward=False
                     )
                 except IndexError:
                     break
@@ -950,15 +939,12 @@ class BaseTestLoomServer:
                 # Select a few patterns; for each one jump to some random
                 # pick and some random end_number0, including actually
                 # going to that pick or end.
-                assert len(ALL_PATTERN_PATHS) > 3
+                assert len(ALL_PATTERN_PATHS) > 3  # noqa: PLR2004
                 for path in (ALL_PATTERN_PATHS[0], ALL_PATTERN_PATHS[3]):
-
                     # If needed, go to weaving mode
                     if client.loom_server.mode != ModeEnum.WEAVE:
-                        replies = send_command(
-                            client, dict(type="mode", mode=ModeEnum.WEAVE)
-                        )
-                        assert len(replies) == 2
+                        replies = send_command(client, dict(type="mode", mode=ModeEnum.WEAVE))
+                        assert len(replies) == 2  # noqa: PLR2004
                         assert replies[0] == dict(type="Mode", mode=ModeEnum.WEAVE)
 
                     pattern = select_pattern(client=client, pattern_name=path.name)
@@ -974,9 +960,7 @@ class BaseTestLoomServer:
                     end_number1 = (
                         0
                         if end_number0 == 0
-                        else min(
-                            end_number0 + thread_group_size - 1, num_ends_in_pattern
-                        )
+                        else min(end_number0 + thread_group_size - 1, num_ends_in_pattern)
                     )
                     end_repeat_number = rnd.randrange(1, 10)
 
@@ -991,7 +975,7 @@ class BaseTestLoomServer:
                                 separate=separate_threading_repeats,
                             ),
                         )
-                        assert len(replies) == 2
+                        assert len(replies) == 2  # noqa: PLR2004
                         assert replies[0] == dict(
                             type="SeparateThreadingRepeats",
                             separate=separate_threading_repeats,
@@ -1005,7 +989,7 @@ class BaseTestLoomServer:
                                 separate=separate_weaving_repeats,
                             ),
                         )
-                        assert len(replies) == 2
+                        assert len(replies) == 2  # noqa: PLR2004
                         assert replies[0] == dict(
                             type="SeparateWeavingRepeats",
                             separate=separate_weaving_repeats,
@@ -1020,7 +1004,7 @@ class BaseTestLoomServer:
                         client,
                         dict(type="jump_to_pick", total_pick_number=total_pick_number),
                     )
-                    assert len(replies) == 2
+                    assert len(replies) == 2  # noqa: PLR2004
                     if total_pick_number == 0:
                         assert total_pick_number == 0
                         assert pick_number == 0
@@ -1048,10 +1032,8 @@ class BaseTestLoomServer:
                     # Now advance to the desired end.
                     # First set mode to threading and set thread group size,
                     # Then jump to the pick and advance.
-                    replies = send_command(
-                        client, dict(type="mode", mode=ModeEnum.THREAD)
-                    )
-                    assert len(replies) == 2
+                    replies = send_command(client, dict(type="mode", mode=ModeEnum.THREAD))
+                    assert len(replies) == 2  # noqa: PLR2004
                     assert replies[0] == dict(type="Mode", mode=ModeEnum.THREAD)
 
                     replies = send_command(
@@ -1061,7 +1043,7 @@ class BaseTestLoomServer:
                             group_size=thread_group_size,
                         ),
                     )
-                    assert len(replies) == 2
+                    assert len(replies) == 2  # noqa: PLR2004
                     assert replies[0] == dict(
                         type="ThreadGroupSize",
                         group_size=thread_group_size,
@@ -1114,18 +1096,14 @@ class BaseTestLoomServer:
                     assert pattern.end_number0 == end_number0
                     assert pattern.end_number1 == end_number1
                     assert pattern.end_repeat_number == end_repeat_number
-                    assert (
-                        pattern.separate_threading_repeats == separate_threading_repeats
-                    )
+                    assert pattern.separate_threading_repeats == separate_threading_repeats
                     assert pattern.separate_weaving_repeats == separate_weaving_repeats
 
             # This expects that first pattern 0 and then pattern 3
             # was selected from ALL_PATTERN_PATHS:
             all_pattern_names = [path.name for path in ALL_PATTERN_PATHS]
             expected_pattern_names = (
-                all_pattern_names[1:3]
-                + all_pattern_names[4:]
-                + [all_pattern_names[0], all_pattern_names[3]]
+                all_pattern_names[1:3] + all_pattern_names[4:] + [all_pattern_names[0], all_pattern_names[3]]
             )
             expected_current_pattern = pattern_list[1]
 
@@ -1152,31 +1130,27 @@ class BaseTestLoomServer:
                 pass
 
     def test_select_pattern(self) -> None:
+        """Test the select_pattern command."""
         # Read a pattern file in and convert the data to a ReducedPattern
         pattern_path = ALL_PATTERN_PATHS[1]
         pattern_data = read_pattern_file(pattern_path)
-        reduced_pattern = reduced_pattern_from_pattern_data(
-            name=pattern_path.name, data=pattern_data
-        )
+        reduced_pattern = reduced_pattern_from_pattern_data(name=pattern_path.name, data=pattern_data)
 
         with self.create_test_client(
             app=self.app,
             upload_patterns=ALL_PATTERN_PATHS[0:3],
         ) as client:
-            selected_pattern = select_pattern(
-                client=client, pattern_name=pattern_path.name
-            )
+            selected_pattern = select_pattern(client=client, pattern_name=pattern_path.name)
             assert selected_pattern == reduced_pattern
 
     def test_settings_command(self) -> None:
+        """Test the settings command."""
         with self.create_test_client(app=self.app) as client:
             initial_settings = copy.copy(client.loom_server.settings)
             if client.loom_server.supports_full_direction_control:
                 assert initial_settings.direction_control is DirectionControlEnum.FULL
             else:
-                assert (
-                    initial_settings.direction_control is not DirectionControlEnum.FULL
-                )
+                assert initial_settings.direction_control is not DirectionControlEnum.FULL
             for direction_control, should_fail in {
                 DirectionControlEnum.FULL: (
                     (DirectionControlEnum.LOOM, True),
@@ -1194,9 +1168,7 @@ class BaseTestLoomServer:
                     (DirectionControlEnum.FULL, True),
                 ),
             }[initial_settings.direction_control]:
-                command_settings(
-                    client, direction_control=direction_control, should_fail=should_fail
-                )
+                command_settings(client, direction_control=direction_control, should_fail=should_fail)
 
             for loom_name in ("", "?", "Séguin Loom"):
                 command_settings(client, loom_name=loom_name)
@@ -1216,9 +1188,7 @@ class BaseTestLoomServer:
             for thread_group_size in (1, 2, MAX_THREAD_GROUP_SIZE):
                 command_settings(client, thread_group_size=thread_group_size)
             for bad_thread_group_size in (-1, 0, MAX_THREAD_GROUP_SIZE + 1):
-                command_settings(
-                    client, thread_group_size=bad_thread_group_size, should_fail=True
-                )
+                command_settings(client, thread_group_size=bad_thread_group_size, should_fail=True)
 
             for thread_back_to_front in (
                 not initial_settings.thread_back_to_front,
@@ -1244,12 +1214,11 @@ class BaseTestLoomServer:
                     should_fail=True,
                 )
 
-    def test_settings_file(self) -> None:
+    def test_read_settings_file(self) -> None:
+        """Test reading the settings file."""
         with self.create_test_client(app=self.app) as client:
             default_settings = copy.copy(client.loom_server.settings)
-            supports_full_direction_control = (
-                client.loom_server.supports_full_direction_control
-            )
+            supports_full_direction_control = client.loom_server.supports_full_direction_control
 
         # Test settings files with no  usable data.
         # The resulting settings should match the default.
@@ -1268,15 +1237,9 @@ class BaseTestLoomServer:
                     assert client.loom_server.settings_path == settings_path
                     assert client.loom_server.settings == default_settings
                     if supports_full_direction_control:
-                        assert (
-                            client.loom_server.settings.direction_control
-                            is DirectionControlEnum.FULL
-                        )
+                        assert client.loom_server.settings.direction_control is DirectionControlEnum.FULL
                     else:
-                        assert (
-                            client.loom_server.settings.direction_control
-                            is not DirectionControlEnum.FULL
-                        )
+                        assert client.loom_server.settings.direction_control is not DirectionControlEnum.FULL
 
         # Test some valid settings files.
         if supports_full_direction_control:
@@ -1325,25 +1288,24 @@ class BaseTestLoomServer:
                             assert getattr(client.loom_server.settings, key) == value
 
     def test_upload(self) -> None:
+        """Test the upload command."""
         with self.create_test_client(
             app=self.app,
             upload_patterns=ALL_PATTERN_PATHS,
         ) as _:
             pass
 
-    def test_upload_too_many_shafts(self) -> None:
-        # Pick a file with 18 shafts
+        # Test uploading a pattern file with too many shafts
         filename = "eighteen shaft liftplan.wif"
         filepath = TEST_DATA_FILES / filename
         with self.create_test_client(
             app=self.app,
             num_shafts=16,
         ) as client:
-            upload_pattern(
-                client=client, filepath=filepath, expected_names=[""], should_fail=True
-            )
+            upload_pattern(client=client, filepath=filepath, expected_names=[""], should_fail=True)
 
     def test_weave_direction(self) -> None:
+        """Test changing the weave direction."""
         pattern_name = ALL_PATTERN_PATHS[1].name
 
         with self.create_test_client(
@@ -1357,7 +1319,7 @@ class BaseTestLoomServer:
 
             for forward in (False, True):
                 replies = send_command(client, dict(type="direction", forward=forward))
-                assert len(replies) == 2
+                assert len(replies) == 2  # noqa: PLR2004
                 assert replies[0]["type"] == "Direction"
                 assert replies[0]["forward"] == forward
 
@@ -1365,6 +1327,7 @@ class BaseTestLoomServer:
     @contextlib.contextmanager
     def create_test_client(
         cls,
+        *,
         app: FastAPI | None,
         num_shafts: int = 24,
         read_initial_state: bool = True,
@@ -1403,200 +1366,161 @@ class BaseTestLoomServer:
         expected_status_messages = list(expected_status_messages)
         if app is None:
             raise AssertionError(
-                "app is None but must be a FastAPI; "
-                "you must set the app class property in your subclass"
+                "app is None but must be a FastAPI; you must set the app class property in your subclass"
             )
         with tempfile.TemporaryDirectory() as temp_dir:
             if db_path is None:
                 db_path = pathlib.Path(temp_dir) / "loom_server_database.sqlite"
-            argv = ["testutils", str(num_shafts), "mock", "--verbose"] + list(
-                cls.extra_args
-            )
+            argv = ["testutils", str(num_shafts), "mock", "--verbose", *cls.extra_args]
             if reset_db:
                 argv.append("--reset-db")
             argv += ["--db-path", str(db_path)]
             sys.argv = argv
 
-            with TestClient(app) as test_client:
-                with test_client.websocket_connect("/ws") as websocket:
-                    loom_server: BaseLoomServer = (
-                        test_client.app.state.loom_server  # type: ignore[attr-defined]
-                    )
-                    assert loom_server.mock_loom is not None
-                    assert loom_server.loom_info.num_shafts == num_shafts
+            with (
+                TestClient(app) as test_client,
+                test_client.websocket_connect("/ws") as websocket,
+            ):
+                loom_server: BaseLoomServer = (
+                    test_client.app.state.loom_server  # type: ignore[attr-defined]
+                )
+                assert loom_server.mock_loom is not None
+                assert loom_server.loom_info.num_shafts == num_shafts
 
-                    client = Client(
-                        test_client=test_client,
-                        websocket=websocket,
-                        loom_server=loom_server,
-                        mock_loom=loom_server.mock_loom,
-                    )
+                client = Client(
+                    test_client=test_client,
+                    websocket=websocket,
+                    loom_server=loom_server,
+                    mock_loom=loom_server.mock_loom,
+                )
 
-                    if read_initial_state:
-                        seen_types: set[str] = set()
-                        expected_types = {
-                            "JumpEndNumber",
-                            "JumpPickNumber",
-                            "LanguageNames",
-                            "LoomConnectionState",
-                            "LoomInfo",
-                            "Mode",
-                            "PatternNames",
-                            "Settings",
-                            "ShaftState",
-                            "Direction",
+                if read_initial_state:
+                    seen_types: set[str] = set()
+                    expected_types = {
+                        "JumpEndNumber",
+                        "JumpPickNumber",
+                        "LanguageNames",
+                        "LoomConnectionState",
+                        "LoomInfo",
+                        "Mode",
+                        "PatternNames",
+                        "Settings",
+                        "ShaftState",
+                        "Direction",
+                    }
+                    if expected_status_messages:
+                        expected_types |= {"StatusMessage"}
+                    if expected_current_pattern:
+                        expected_types |= {
+                            "CurrentPickNumber",
+                            "CurrentEndNumber",
+                            "ReducedPattern",
+                            "SeparateWeavingRepeats",
+                            "SeparateThreadingRepeats",
+                            "ThreadGroupSize",
                         }
-                        if expected_status_messages:
-                            expected_types |= {"StatusMessage"}
-                        if expected_current_pattern:
-                            expected_types |= {
-                                "CurrentPickNumber",
-                                "CurrentEndNumber",
-                                "ReducedPattern",
-                                "SeparateWeavingRepeats",
-                                "SeparateThreadingRepeats",
-                                "ThreadGroupSize",
-                            }
-                        good_connection_states = {
-                            ConnectionStateEnum.CONNECTING,
-                            ConnectionStateEnum.CONNECTED,
-                        }
-                        while True:
-                            reply_dict = client.receive_dict()
-                            reply = SimpleNamespace(**reply_dict)
-                            num_status_messages_seen = 0
-                            match reply.type:
-                                case "CurrentEndNumber":
-                                    assert expected_current_pattern is not None
-                                    assert (
-                                        reply.end_number0
-                                        == expected_current_pattern.end_number0
-                                    )
-                                    assert (
-                                        reply.end_number1
-                                        == expected_current_pattern.end_number1
-                                    )
-                                    assert (
-                                        reply.end_repeat_number
-                                        == expected_current_pattern.end_repeat_number
-                                    )
-                                    assert reply.total_end_number0 == compute_total_num(
-                                        num_within=expected_current_pattern.end_number0,
-                                        repeat_number=expected_current_pattern.end_repeat_number,
-                                        repeat_len=expected_current_pattern.num_ends,
-                                    )
-                                    assert reply.total_end_number1 == compute_total_num(
-                                        num_within=expected_current_pattern.end_number1,
-                                        repeat_number=expected_current_pattern.end_repeat_number,
-                                        repeat_len=expected_current_pattern.num_ends,
-                                    )
-                                case "CurrentPickNumber":
-                                    assert expected_current_pattern is not None
-                                    assert (
-                                        reply.pick_number
-                                        == expected_current_pattern.pick_number
-                                    )
-                                    assert (
-                                        reply.pick_repeat_number
-                                        == expected_current_pattern.pick_repeat_number
-                                    )
-                                    assert reply.total_pick_number == compute_total_num(
-                                        num_within=expected_current_pattern.pick_number,
-                                        repeat_number=expected_current_pattern.pick_repeat_number,
-                                        repeat_len=len(expected_current_pattern.picks),
-                                    )
+                    good_connection_states = {
+                        ConnectionStateEnum.CONNECTING,
+                        ConnectionStateEnum.CONNECTED,
+                    }
+                    while True:
+                        reply_dict = client.receive_dict()
+                        reply = SimpleNamespace(**reply_dict)
+                        num_status_messages_seen = 0
+                        match reply.type:
+                            case "CurrentEndNumber":
+                                assert expected_current_pattern is not None
+                                assert reply.end_number0 == expected_current_pattern.end_number0
+                                assert reply.end_number1 == expected_current_pattern.end_number1
+                                assert reply.end_repeat_number == expected_current_pattern.end_repeat_number
+                                assert reply.total_end_number0 == compute_total_num(
+                                    num_within=expected_current_pattern.end_number0,
+                                    repeat_number=expected_current_pattern.end_repeat_number,
+                                    repeat_len=expected_current_pattern.num_ends,
+                                )
+                                assert reply.total_end_number1 == compute_total_num(
+                                    num_within=expected_current_pattern.end_number1,
+                                    repeat_number=expected_current_pattern.end_repeat_number,
+                                    repeat_len=expected_current_pattern.num_ends,
+                                )
+                            case "CurrentPickNumber":
+                                assert expected_current_pattern is not None
+                                assert reply.pick_number == expected_current_pattern.pick_number
+                                assert reply.pick_repeat_number == expected_current_pattern.pick_repeat_number
+                                assert reply.total_pick_number == compute_total_num(
+                                    num_within=expected_current_pattern.pick_number,
+                                    repeat_number=expected_current_pattern.pick_repeat_number,
+                                    repeat_len=len(expected_current_pattern.picks),
+                                )
 
-                                case "JumpEndNumber":
-                                    for field_name, value in vars(reply).items():
-                                        if field_name == "type":
-                                            continue
-                                        assert value is None
-                                case "JumpPickNumber":
-                                    for field_name, value in vars(reply).items():
-                                        if field_name == "type":
-                                            continue
-                                        assert value is None
-                                case "LanguageNames":
-                                    assert "English" in reply.languages
-                                case "LoomConnectionState":
-                                    if reply.state not in good_connection_states:
-                                        raise AssertionError(
-                                            f"Unexpected state in {reply=}; "
-                                            f"should be in {good_connection_states}"
-                                        )
-                                    elif reply.state != ConnectionStateEnum.CONNECTED:
+                            case "JumpEndNumber":
+                                for field_name, value in vars(reply).items():
+                                    if field_name == "type":
                                         continue
-                                case "LoomInfo":
-                                    assert vars(reply) == dataclasses.asdict(
-                                        loom_server.loom_info
-                                    )
-                                case "Mode":
-                                    assert reply.mode == ModeEnum.WEAVE
-                                case "PatternNames":
-                                    assert reply.names == expected_pattern_names
-                                case "ReducedPattern":
-                                    if not expected_pattern_names:
-                                        raise AssertionError(
-                                            f"Unexpected message type {reply.type} "
-                                            "because expected_current_pattern is None"
-                                        )
-
-                                    assert reply.name == expected_pattern_names[-1]
-                                case "SeparateThreadingRepeats":
-                                    assert expected_current_pattern is not None
-                                    assert (
-                                        reply.separate
-                                        == expected_current_pattern.separate_threading_repeats
-                                    )
-                                case "SeparateWeavingRepeats":
-                                    assert expected_current_pattern is not None
-                                    assert (
-                                        reply.separate
-                                        == expected_current_pattern.separate_weaving_repeats
-                                    )
-                                case "Settings":
-                                    assert vars(reply) == dataclasses.asdict(
-                                        loom_server.settings
-                                    )
-                                case "ShaftState":
-                                    assert reply.state == ShaftStateEnum.DONE
-                                    assert reply.shaft_word == 0
-                                case "StatusMessage":
-                                    num_status_messages_seen += 1
-                                    assert (
-                                        reply.message
-                                        == expected_status_messages[
-                                            num_status_messages_seen - 1
-                                        ]
-                                    )
-                                    assert reply.severity == MessageSeverityEnum.INFO
-                                case "ThreadGroupSize":
-                                    assert expected_current_pattern is not None
-                                    assert (
-                                        reply.group_size
-                                        == expected_current_pattern.thread_group_size
-                                    )
-                                case "Direction":
-                                    assert reply.forward
-                                case _:
+                                    assert value is None
+                            case "JumpPickNumber":
+                                for field_name, value in vars(reply).items():
+                                    if field_name == "type":
+                                        continue
+                                    assert value is None
+                            case "LanguageNames":
+                                assert "English" in reply.languages
+                            case "LoomConnectionState":
+                                if reply.state not in good_connection_states:
                                     raise AssertionError(
-                                        f"Unexpected message type {reply.type}"
+                                        f"Unexpected state in {reply=}; should be in {good_connection_states}"
                                     )
-                            seen_types.add(reply.type)
-                            if (
-                                seen_types == expected_types
-                                and num_status_messages_seen
-                                == len(expected_status_messages)
-                            ):
-                                break
+                                elif reply.state != ConnectionStateEnum.CONNECTED:
+                                    continue
+                            case "LoomInfo":
+                                assert vars(reply) == dataclasses.asdict(loom_server.loom_info)
+                            case "Mode":
+                                assert reply.mode == ModeEnum.WEAVE
+                            case "PatternNames":
+                                assert reply.names == expected_pattern_names
+                            case "ReducedPattern":
+                                if not expected_pattern_names:
+                                    raise AssertionError(
+                                        f"Unexpected message type {reply.type} "
+                                        "because expected_current_pattern is None"
+                                    )
 
-                    expected_names: list[str] = []
-                    for filepath in upload_patterns:
-                        expected_names.append(filepath.name)
-                        upload_pattern(
-                            client=client,
-                            filepath=filepath,
-                            expected_names=expected_names,
-                        )
+                                assert reply.name == expected_pattern_names[-1]
+                            case "SeparateThreadingRepeats":
+                                assert expected_current_pattern is not None
+                                assert reply.separate == expected_current_pattern.separate_threading_repeats
+                            case "SeparateWeavingRepeats":
+                                assert expected_current_pattern is not None
+                                assert reply.separate == expected_current_pattern.separate_weaving_repeats
+                            case "Settings":
+                                assert vars(reply) == dataclasses.asdict(loom_server.settings)
+                            case "ShaftState":
+                                assert reply.state == ShaftStateEnum.DONE
+                                assert reply.shaft_word == 0
+                            case "StatusMessage":
+                                num_status_messages_seen += 1
+                                assert reply.message == expected_status_messages[num_status_messages_seen - 1]
+                                assert reply.severity == MessageSeverityEnum.INFO
+                            case "ThreadGroupSize":
+                                assert expected_current_pattern is not None
+                                assert reply.group_size == expected_current_pattern.thread_group_size
+                            case "Direction":
+                                assert reply.forward
+                            case _:
+                                raise AssertionError(f"Unexpected message type {reply.type}")
+                        seen_types.add(reply.type)
+                        if seen_types == expected_types and num_status_messages_seen == len(
+                            expected_status_messages
+                        ):
+                            break
 
-                    yield client
+                expected_names: list[str] = []
+                for filepath in upload_patterns:
+                    expected_names.append(filepath.name)
+                    upload_pattern(
+                        client=client,
+                        filepath=filepath,
+                        expected_names=expected_names,
+                    )
+
+                yield client

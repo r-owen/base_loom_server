@@ -12,7 +12,7 @@ class ExampleLoomServer(BaseLoomServer):
     mock_loom_type = ExampleMockLoom
 
     async def write_shafts_to_loom(self, shaft_word: int) -> None:
-        """Send a shaft_word to the loom"""
+        """Send a shaft_word to the loom."""
         await self.write_to_loom(f"C{shaft_word:08x}")
 
     async def handle_loom_reply(self, reply_bytes: bytes) -> None:
@@ -30,9 +30,7 @@ class ExampleLoomServer(BaseLoomServer):
             case "m":
                 # Loom moving.
                 self.moving = reply_data == "1"
-                self.shaft_state = (
-                    ShaftStateEnum.MOVING if reply_data == "1" else ShaftStateEnum.DONE
-                )
+                self.shaft_state = ShaftStateEnum.MOVING if reply_data == "1" else ShaftStateEnum.DONE
                 await self.report_shaft_state()
             case "p":
                 # Next pick wanted.
@@ -44,12 +42,8 @@ class ExampleLoomServer(BaseLoomServer):
                 elif reply_data == "1":
                     self.direction_forward = False
                 else:
-                    message = (
-                        f"invalid loom reply {reply!r}: " "direction must be 0 or 1"
-                    )
+                    message = f"invalid loom reply {reply!r}: direction must be 0 or 1"
                     self.log.warning(f"LoomServer: {message}")
-                    await self.report_command_problem(
-                        message=message, severity=MessageSeverityEnum.WARNING
-                    )
+                    await self.report_command_problem(message=message, severity=MessageSeverityEnum.WARNING)
                     return
                 await self.report_direction()

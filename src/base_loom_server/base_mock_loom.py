@@ -6,8 +6,10 @@ import abc
 import asyncio
 import logging
 import threading
-from types import TracebackType
-from typing import Self, Type
+from typing import TYPE_CHECKING, Self
+
+if TYPE_CHECKING:
+    from types import TracebackType
 
 from .constants import LOG_NAME
 from .mock_streams import (
@@ -40,7 +42,7 @@ class BaseMockLoom(abc.ABC):
     terminator = b"\n"
     motion_duration: float = 1  # seconds
 
-    def __init__(self, num_shafts: int, verbose: bool = True) -> None:
+    def __init__(self, *, num_shafts: int, verbose: bool = True) -> None:
         if num_shafts <= 0:
             raise ValueError(f"{num_shafts=} must be positive")
         self.num_shafts = num_shafts
@@ -56,6 +58,9 @@ class BaseMockLoom(abc.ABC):
         self.move_task: asyncio.Future = asyncio.Future()
         self.read_loop_task: asyncio.Future = asyncio.Future()
         self.start_task = asyncio.create_task(self.start())
+        # When closing, store a reference to the close task
+        # to prevent premature garbage collection.
+        self.close_task: asyncio.Future | None = None
 
         # This event is set whenever a command is received.
         # It is solely intended for tests, and is used as follows:
@@ -71,7 +76,7 @@ class BaseMockLoom(abc.ABC):
         self.command_threading_event = threading.Event()
         self.__post_init__()
 
-    def __post_init__(self) -> None:
+    def __post_init__(self) -> None:  # noqa: B027
         """Subclases may override this method, preferably instead of
         overriding the constructor.
 
@@ -80,13 +85,14 @@ class BaseMockLoom(abc.ABC):
         By default this is a no-op so subclases need not call
         `super().__post_init__()`
         """
-        pass
 
     async def start(self) -> None:
+        """Connect to the loom server client and start reading commands."""
         self.reader, self.writer = open_mock_connection(terminator=self.terminator)
         self.read_loop_task = asyncio.create_task(self.read_loop())
 
-    async def close(self, cancel_read_loop: bool = True) -> None:
+    async def close(self, *, cancel_read_loop: bool = True) -> None:
+        """Shut down the mock loom."""
         self.start_task.cancel()
         if cancel_read_loop:
             self.read_loop_task.cancel()
@@ -99,22 +105,26 @@ class BaseMockLoom(abc.ABC):
     @abc.abstractmethod
     async def handle_read_bytes(self, read_bytes: bytes) -> None:
         """Handle one command from the web server."""
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @abc.abstractmethod
     async def report_direction(self) -> None:
+        """Report direction (weaving/unweaving)."""
         raise NotImplementedError
 
     @abc.abstractmethod
     async def report_motion_state(self) -> None:
+        """Report the motion state of the shafts."""
         raise NotImplementedError
 
     @abc.abstractmethod
     async def report_pick_wanted(self) -> None:
+        """Report that a pick is wanted."""
         raise NotImplementedError
 
     @abc.abstractmethod
     async def report_shafts(self) -> None:
+        """Report shaft position."""
         raise NotImplementedError
 
     async def basic_read(self) -> bytes:
@@ -126,7 +136,14 @@ class BaseMockLoom(abc.ABC):
         return await self.reader.readuntil(self.terminator)
 
     async def oob_command(self, cmd: str) -> None:
-        """Run an oob_command, specified by cmd[0]"""
+        """Handle out-of-band commands.
+
+        Find a method named "oob_command_{cmdchar}", where `cmdchar = cmd[0]`,
+        and call it with one positional argument: `cmd`.
+
+        None of the standard oob commands pay attention to the `cmd` argument,
+        but subclasses may add other oob commands, and those may accept data.
+        """
         if not cmd:
             return
         cmdchar = cmd[0]
@@ -136,50 +153,45 @@ class BaseMockLoom(abc.ABC):
             return
         await method(cmd)
 
-    async def oob_command_c(self, cmd: str) -> None:
-        """Close the connection"""
+    async def oob_command_c(self, cmd: str) -> None:  # noqa: ARG002
+        """Close the connection."""
         if self.verbose:
             self.log.info(f"{self}: oob close command")
+        # Don't await close, because the wait will be aborted
+        # when close cancels the read loop.
+        self.close_task = asyncio.create_task(self.close())
 
-        asyncio.create_task(self.close())
-
-    async def oob_command_d(self, cmd: str) -> None:
-        """Toggle weave direction"""
+    async def oob_command_d(self, cmd: str) -> None:  # noqa: ARG002
+        """Toggle weave direction."""
         self.direction_forward = not self.direction_forward
         await self.report_direction()
         if self.verbose:
-            self.log.info(
-                f"{self}: oob toggle weave direction to: "
-                f"{DIRECTION_NAMES[self.direction_forward]}"
-            )
+            self.log.info(f"{self}: oob toggle weave direction to: {DIRECTION_NAMES[self.direction_forward]}")
 
-    async def oob_command_n(self, cmd: str) -> None:
-        """Request next pick"""
+    async def oob_command_n(self, cmd: str) -> None:  # noqa: ARG002
+        """Request next pick."""
         if self.verbose:
             self.log.info(f"{self}: oob request next pick")
         self.pick_wanted = True
         await self.report_pick_wanted()
 
     async def open_client_connection(self) -> tuple[StreamReaderType, StreamWriterType]:
+        """Open a connection to the loom server client."""
         await self.start_task
         assert self.writer is not None
         assert self.reader is not None
         # The isinstance tests make mypy happy, and might catch
         # a future bug if I figure out how to use virtual serial ports.
-        if isinstance(self.writer, MockStreamWriter) and isinstance(
-            self.reader, MockStreamReader
-        ):
+        if isinstance(self.writer, MockStreamWriter) and isinstance(self.reader, MockStreamReader):
             await self.report_initial_status()
             return (
                 self.writer.create_reader(),
                 self.reader.create_writer(),
             )
-        else:
-            raise RuntimeError(
-                f"Bug: {self.reader=} and {self.writer=} must both be mock streams"
-            )
+        raise RuntimeError(f"Bug: {self.reader=} and {self.writer=} must both be mock streams")
 
     def connected(self) -> bool:
+        """Am I connected to the loom server client?"""
         return (
             self.reader is not None
             and self.writer is not None
@@ -188,6 +200,7 @@ class BaseMockLoom(abc.ABC):
         )
 
     async def move(self, shaft_word: int) -> None:
+        """Move shafts."""
         self.moving = True
         await self.report_motion_state()
         await asyncio.sleep(self.motion_duration)
@@ -220,7 +233,7 @@ class BaseMockLoom(abc.ABC):
         await self.report_pick_wanted()
 
     async def set_shaft_word(self, shaft_word: int) -> None:
-        """Set shafts to raise"""
+        """Set shafts to raise."""
         # Ignore the command unless a pick is wanted
         if not self.pick_wanted:
             return
@@ -231,14 +244,18 @@ class BaseMockLoom(abc.ABC):
             self.log.info(f"{self}: raise shafts {self.shaft_word:08x}")
         self.move_task = asyncio.create_task(self.move(shaft_word=shaft_word))
 
-    async def set_direction_forward(self, direction_forward: bool) -> None:
+    async def set_direction_forward(
+        self,
+        direction_forward: bool,  # noqa: FBT001
+    ) -> None:
+        """Set the direction_forward attribute."""
         self.direction_forward = bool(direction_forward)
         if self.verbose:
             self.log.info(f"{self}: set {direction_forward=} by software")
         await self.report_direction()
 
     async def write(self, data: bytes | bytearray | str) -> None:
-        """Issue the specified data, which should not be terminated"""
+        """Write the specified unterminated data to the client."""
         if self.verbose:
             self.log.info(f"{self}: send reply {data!r}")
         if self.connected():
@@ -256,8 +273,8 @@ class BaseMockLoom(abc.ABC):
 
     async def __aexit__(
         self,
-        type: Type[BaseException] | None,
-        value: BaseException | None,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:
         await self.close()

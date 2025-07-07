@@ -11,7 +11,7 @@ __all__ = [
 import asyncio
 import collections
 import weakref
-from typing import Deque, TypeAlias
+from typing import TypeAlias
 
 DEFAULT_TERMINATOR = b"\n"
 
@@ -26,9 +26,9 @@ class StreamData:
     def __init__(self) -> None:
         self.closed_event = asyncio.Event()
         self.data_available_event = asyncio.Event()
-        self.queue: Deque[bytes] = collections.deque()
+        self.queue: collections.deque[bytes] = collections.deque()
 
-    def _is_closed(self) -> bool:
+    def is_closed(self) -> bool:
         """Return true if this stream has been closed."""
         return self.closed_event.is_set()
 
@@ -41,9 +41,7 @@ class BaseMockStream:
         terminator: Required terminator.
     """
 
-    def __init__(
-        self, sd: StreamData | None = None, terminator: bytes = DEFAULT_TERMINATOR
-    ):
+    def __init__(self, sd: StreamData | None = None, terminator: bytes = DEFAULT_TERMINATOR) -> None:
         if sd is None:
             sd = StreamData()
         self.sd = sd
@@ -70,7 +68,7 @@ class MockStreamReader(BaseMockStream):
 
     def at_eof(self) -> bool:
         """Return true if closed and all buffered data has been read."""
-        return not self.sd.queue and self.sd._is_closed()
+        return not self.sd.queue and self.sd.is_closed()
 
     async def readexactly(self, n: int) -> bytes:
         """Read exactly n bytes (including a terminator, if any).
@@ -86,7 +84,7 @@ class MockStreamReader(BaseMockStream):
                 is not terminated with self.terminator.
         """
         while not self.sd.queue:
-            if self.sd._is_closed():
+            if self.sd.is_closed():
                 return b""
             self.sd.data_available_event.clear()
             await self.sd.data_available_event.wait()
@@ -96,14 +94,13 @@ class MockStreamReader(BaseMockStream):
         if len(data) != n:
             if len(data) < n:
                 raise asyncio.IncompleteReadError(expected=n, partial=data)
-            else:
-                raise AssertionError(f"Read len({data=})={len(data)} > {n=}")
+            raise AssertionError(f"Read len({data=})={len(data)} > {n=}")
         if self.terminator and not data.endswith(self.terminator):
             raise AssertionError(f"Data {data=} does not end with {self.terminator=!r}")
         return data
 
     async def readline(self) -> bytes:
-        """Read one line of data ending with self.terminator
+        """Read one line of data ending with self.terminator.
 
         Raises:
             AssertionError: If self.terminator is blank.
@@ -111,7 +108,7 @@ class MockStreamReader(BaseMockStream):
         if not self.terminator:
             raise AssertionError("readline not allowed: self.terminator is blank")
         while not self.sd.queue:
-            if self.sd._is_closed():
+            if self.sd.is_closed():
                 return b""
             self.sd.data_available_event.clear()
             await self.sd.data_available_event.wait()
@@ -130,14 +127,12 @@ class MockStreamReader(BaseMockStream):
         if separator == b"":
             raise AssertionError("readuntil must have a non-blank separator")
         if separator not in self.terminator:
-            raise AssertionError(
-                f"readuntil {separator=} not in required terminator {self.terminator!r}"
-            )
+            raise AssertionError(f"readuntil {separator=} not in required terminator {self.terminator!r}")
 
         return await self.readline()
 
     def create_writer(self) -> MockStreamWriter:
-        """Create a MockStreamWriter that writes to this reader"""
+        """Create a MockStreamWriter that writes to this reader."""
         return MockStreamWriter(sd=self.sd, terminator=self.terminator)
 
 
@@ -160,12 +155,12 @@ class MockStreamWriter(BaseMockStream):
     def close(self) -> None:
         """Close the writer."""
         self.sd.closed_event.set()
-        if self.sibling_sd and not self.sibling_sd._is_closed():
+        if self.sibling_sd and not self.sibling_sd.is_closed():
             self.sibling_sd.closed_event.set()
 
     def is_closing(self) -> bool:
         """Return true if the writer is closed or being closed."""
-        return self.sd._is_closed()
+        return self.sd.is_closed()
 
     async def drain(self) -> None:
         """Push the current data to the reader."""
@@ -185,9 +180,7 @@ class MockStreamWriter(BaseMockStream):
                 and `data` is not properly terminated.
         """
         if self.terminator and not data.endswith(self.terminator):
-            raise AssertionError(
-                f"Cannot write {data=}: it must end with {self.terminator=!r}"
-            )
+            raise AssertionError(f"Cannot write {data=}: it must end with {self.terminator=!r}")
         if self.is_closing():
             return
         self.sd.queue.append(data)
@@ -214,5 +207,5 @@ def open_mock_connection(
     """
     reader = MockStreamReader(terminator=terminator)
     writer = MockStreamWriter(terminator=terminator)
-    writer._set_sibling_data(reader=reader)
+    writer._set_sibling_data(reader=reader)  # noqa: SLF001
     return (reader, writer)

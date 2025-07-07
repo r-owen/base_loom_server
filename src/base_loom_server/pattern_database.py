@@ -28,11 +28,11 @@ FIELDS_STR = ", ".join(f"{key} {value}" for key, value in FIELD_TYPE_DICT.items(
 
 
 def _make_insert_str() -> str:
-    """Make the value for INSERT_STR from FIELD_TYPE_DICT"""
+    """Make the value for INSERT_STR from FIELD_TYPE_DICT."""
     field_names = [field_name for field_name in FIELD_TYPE_DICT if field_name != "id"]
     field_names_str = ", ".join(field_names)
     placeholders_str = ", ".join(["?"] * len(field_names))
-    return f"insert into patterns ({field_names_str}) values ({placeholders_str})"
+    return f"insert into patterns ({field_names_str}) values ({placeholders_str})"  # noqa: S608
 
 
 INSERT_STR = _make_insert_str()
@@ -55,7 +55,7 @@ REPEAT_FIELD_NAMES = {
 
 
 class PatternDatabase:
-    """sqlite database to hold ReducedPattern instances
+    """sqlite database to hold ReducedPattern instances.
 
     The patterns are stored as json strings, but the
     the associated cache fields are saved in separate fields
@@ -67,6 +67,7 @@ class PatternDatabase:
         self.dbpath = dbpath
 
     async def init(self) -> None:
+        """Create the database, if it does not exist."""
         async with aiosqlite.connect(self.dbpath) as conn:
             await conn.execute(f"create table if not exists patterns ({FIELDS_STR})")
             await conn.commit()
@@ -76,13 +77,14 @@ class PatternDatabase:
 
         Extra fields in the table are ignored.
         """
-        async with aiosqlite.connect(self.dbpath) as conn:
-            async with conn.execute("pragma table_info(patterns)") as cursor:
-                field_info_list = await cursor.fetchall()
+        async with (
+            aiosqlite.connect(self.dbpath) as conn,
+            conn.execute("pragma table_info(patterns)") as cursor,
+        ):
+            field_info_list = await cursor.fetchall()
 
         field_info_dict = {
-            field_info[1]: (field_info[2].lower(), bool(field_info[-1]))
-            for field_info in field_info_list
+            field_info[1]: (field_info[2].lower(), bool(field_info[-1])) for field_info in field_info_list
         }
         for field_name, expected_field_type in FIELD_TYPE_DICT.items():
             field_type_is_primary = field_info_dict.get(field_name)
@@ -125,14 +127,11 @@ class PatternDatabase:
                 If >0 and there are more patterns in the database,
                 the oldest are purged.
         """
-
         pattern_json = json.dumps(dataclasses.asdict(pattern))
         cache_values = tuple(getattr(pattern, field) for field in CACHE_FIELD_NAMES)
         current_time = time.time()
         async with aiosqlite.connect(self.dbpath) as conn:
-            await conn.execute(
-                "delete from patterns where pattern_name = ?", (pattern.name,)
-            )
+            await conn.execute("delete from patterns where pattern_name = ?", (pattern.name,))
             # If limiting the number of entries, make sure to allow
             # at least two, to save the most recent pattern,
             # since it is likely to be the current pattern.
@@ -140,7 +139,7 @@ class PatternDatabase:
                 max_entries = max(max_entries, 2)
             await conn.execute(
                 INSERT_STR,
-                (pattern.name, pattern_json) + cache_values + (current_time,),
+                (pattern.name, pattern_json, *cache_values, current_time),
             )
             await conn.commit()
 
@@ -150,9 +149,7 @@ class PatternDatabase:
             if len(names_to_delete) > 0:
                 # Purge old patterns
                 for pattern_name in names_to_delete:
-                    await conn.execute(
-                        "delete from patterns where pattern_name = ?", (pattern_name,)
-                    )
+                    await conn.execute("delete from patterns where pattern_name = ?", (pattern_name,))
                 await conn.commit()
 
     async def clear_database(self) -> None:
@@ -162,6 +159,7 @@ class PatternDatabase:
             await conn.commit()
 
     async def get_pattern(self, pattern_name: str) -> ReducedPattern:
+        """Get the named pattern."""
         async with aiosqlite.connect(self.dbpath) as conn:
             conn.row_factory = aiosqlite.Row
             async with conn.execute(
@@ -181,16 +179,17 @@ class PatternDatabase:
         return pattern
 
     async def get_pattern_names(self) -> list[str]:
-        async with aiosqlite.connect(self.dbpath) as conn:
-            async with conn.execute(
-                "select pattern_name from patterns order by timestamp_sec asc, id asc"
-            ) as cursor:
-                rows = await cursor.fetchall()
+        """Get all pattern names."""
+        async with (
+            aiosqlite.connect(self.dbpath) as conn,
+            conn.execute("select pattern_name from patterns order by timestamp_sec asc, id asc") as cursor,
+        ):
+            rows = await cursor.fetchall()
 
         return [row[0] for row in rows]
 
     async def update_pick_number(
-        self, pattern_name: str, pick_number: int, pick_repeat_number: int
+        self, *, pattern_name: str, pick_number: int, pick_repeat_number: int
     ) -> None:
         """Update weaving pick and repeat numbers for the specified pattern."""
         async with aiosqlite.connect(self.dbpath) as conn:
@@ -204,6 +203,7 @@ class PatternDatabase:
 
     async def update_end_number(
         self,
+        *,
         pattern_name: str,
         end_number0: int,
         end_number1: int,
@@ -227,43 +227,37 @@ class PatternDatabase:
 
     async def update_separate_threading_repeats(
         self,
+        *,
         pattern_name: str,
         separate_threading_repeats: bool,
     ) -> None:
         """Update separate_threading_repeats for the specified pattern."""
         async with aiosqlite.connect(self.dbpath) as conn:
             await conn.execute(
-                "update patterns "
-                "set separate_threading_repeats = ?, timestamp_sec = ?"
-                "where pattern_name = ?",
+                "update patterns set separate_threading_repeats = ?, timestamp_sec = ?where pattern_name = ?",
                 (int(separate_threading_repeats), time.time(), pattern_name),
             )
             await conn.commit()
 
     async def update_separate_weaving_repeats(
         self,
+        *,
         pattern_name: str,
         separate_weaving_repeats: bool,
     ) -> None:
         """Update separate_weaving_repeats for the specified pattern."""
         async with aiosqlite.connect(self.dbpath) as conn:
             await conn.execute(
-                "update patterns "
-                "set separate_weaving_repeats = ?, timestamp_sec = ?"
-                "where pattern_name = ?",
+                "update patterns set separate_weaving_repeats = ?, timestamp_sec = ?where pattern_name = ?",
                 (int(separate_weaving_repeats), time.time(), pattern_name),
             )
             await conn.commit()
 
-    async def update_thread_group_size(
-        self, pattern_name: str, thread_group_size: int
-    ) -> None:
+    async def update_thread_group_size(self, pattern_name: str, thread_group_size: int) -> None:
         """Update thread_group_size for the specified pattern."""
         async with aiosqlite.connect(self.dbpath) as conn:
             await conn.execute(
-                "update patterns "
-                "set thread_group_size = ?, timestamp_sec = ?"
-                "where pattern_name = ?",
+                "update patterns set thread_group_size = ?, timestamp_sec = ?where pattern_name = ?",
                 (thread_group_size, time.time(), pattern_name),
             )
             await conn.commit()
@@ -284,6 +278,7 @@ class PatternDatabase:
 
 
 async def create_pattern_database(dbpath: pathlib.Path) -> PatternDatabase:
+    """Create the pattern database."""
     db = PatternDatabase(dbpath=dbpath)
     await db.init()
     return db
