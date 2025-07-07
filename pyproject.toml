@@ -28,12 +28,14 @@ requires-python = ">=3.11"
 
 [project.optional-dependencies]
 dev = [
+  "mkapi",
+  "mkdocs-glightbox",
+  "mkdocs",
+  "mypy ~= 1.16.1",
   "pre-commit ~= 4.0",
   "pytest ~= 8.3",
   "pytest-asyncio ~= 0.25",
-  "mkdocs",
-  "mkdocs-glightbox",
-  "mkapi",
+  "ruff ~= 1.12",
   "sphinx",
   "sphinxcontrib-napoleon",
 ]
@@ -51,9 +53,6 @@ Issues = "https://github.com/r-owen/base_loom_server/issues"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 
-[tool.isort]
-profile = "black"
-
 [tool.setuptools_scm]
 write_to = "src/base_loom_server/version.py"
 write_to_template = """
@@ -65,3 +64,51 @@ __version__ = "{version}"
 [tool.mypy]
 exclude_gitignore = "true"
 disallow_untyped_defs = "true"
+
+[tool.ruff]
+line-length = 110
+indent-width = 4
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "BLE001", # Do not catch blind Exception
+  "C408",  # Objects to `dict` for literals
+  "C901",  # Too complex
+  "COM812",  # Demand trailing commas; argues with the formatter
+  "D100",  # Demand each module have a docstring
+  "D104",  # Demand a doc string in __init__.py
+  "D105",  # Demand that magic methods have docstrings
+  "D107",  # Demand __init__ have a docstring
+  "D205",  # Blank line between summary and descrption; good, but prevents multi-line docstring summaries
+  "EM101",  # String literal in exception
+  "EM102",  # F string in exception
+  "G004",  # F string in log message
+  "PLR0912", # Too many branches
+  "PLR0913", # Too many arguments
+  "PLR0915", # Too many statements
+  "PT011", # Muzzle incorrect complaints about pytest.raises is too broad
+  "RUF022",  # __all__ unsorted
+  "S101",  # Reject assert, which I use to make mypy happy
+  "S104",  # Don't bind to 0.0.0.0
+  "S311",  # Pesudo-random generators are not safe for cryptography
+  "TRY003",  # Long exception messages
+  "TRY400", # Use `logging.exception` instead of `logging.error
+]
+
+[tool.ruff.lint.per-file-ignores]
+"test_*.py" = [
+  "INP001",  # Part of a namespace package
+  "S101",  # Use of assert
+  "D103",  # Missing docstring (I don't want one per test) ??? I could add them
+  "ASYNC109",  # Timeout argument to async function
+  "PLR2004", # Magic valule
+]
