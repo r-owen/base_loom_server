@@ -57,23 +57,23 @@ class AppRunner:
         self.app_package_name = app_package_name
         self.loom_server: BaseLoomServer | None = None
 
-        # The only rason we need a router is to set the lifespan
+        # The only reason we need a router is to set the lifespan
         # but once we have it we may as well use it to add endpoints as well
         router = APIRouter(lifespan=self.lifespan)
 
-        @router.get("/")
-        async def get_wrapper() -> HTMLResponse:
-            return await self.get()
+        # Normally one would use decorators to specify endpoints
+        # but that doesn't work well with methods.
+        router.add_api_route("/", self.get, methods=["GET"])
 
         if self.favicon:
+            router.add_api_route(
+                "/favicon.ico",
+                self.get_favicon,
+                methods=["GET"],
+                include_in_schema=False,
+            )
 
-            @router.get("/favicon.ico", include_in_schema=False)
-            async def get_favicon() -> Response:
-                return await self.get_favicon()
-
-        @router.websocket("/ws")
-        async def websocket_endpoint_wrapper(websocket: WebSocket) -> None:
-            await self.websocket_endpoint(websocket)
+        router.add_websocket_route("/ws", self.websocket_endpoint)
 
         app.include_router(router)
 
