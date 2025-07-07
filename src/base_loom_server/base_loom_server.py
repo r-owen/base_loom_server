@@ -163,13 +163,13 @@ class BaseLoomServer:
         self.save_settings()
 
         self.websocket: WebSocket | None = None
-        self.loom_connecting = False
-        self.loom_disconnecting = False
-        self.client_connected = False
+        self.loom_connecting: bool = False
+        self.loom_disconnecting: bool = False
+        self.client_connected: bool = False
         self.shaft_state: ShaftStateEnum = (
             ShaftStateEnum.UNKNOWN if self.loom_reports_motion else ShaftStateEnum.DONE
         )
-        self.shaft_word = 0
+        self.shaft_word: int = 0
         self.mock_loom: BaseMockLoom | None = None
         self.loom_reader: StreamReaderType | None = None
         self.loom_writer: StreamWriterType | None = None
@@ -180,7 +180,7 @@ class BaseLoomServer:
         self.jump_pick = client_replies.JumpPickNumber()
         self.jump_end = client_replies.JumpEndNumber()
         self.mode = ModeEnum.WEAVE
-        self.direction_forward = True
+        self.direction_forward: bool = True
         self.__post_init__()
 
     @abc.abstractmethod

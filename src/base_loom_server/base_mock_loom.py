@@ -46,10 +46,10 @@ class BaseMockLoom(abc.ABC):
         self.num_shafts = num_shafts
         self.log = logging.getLogger(LOG_NAME)
         self.verbose = verbose
-        self.moving = False
-        self.pick_wanted = False
-        self.shaft_word = 0
-        self.direction_forward = True
+        self.moving: bool = False
+        self.pick_wanted: bool = False
+        self.shaft_word: int = 0
+        self.direction_forward: bool = True
         self.writer: StreamWriterType | None = None
         self.reader: StreamReaderType | None = None
         self.done_task: asyncio.Future = asyncio.Future()
