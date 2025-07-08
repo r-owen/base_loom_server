@@ -23,7 +23,6 @@ button {
     background-color: #0000;
     border-radius: 8px;
     font-size: 80%;
-    color: black;
 }
 
 button.direction_undo {
