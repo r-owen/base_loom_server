@@ -1,5 +1,11 @@
 # Version History
 
+## ?
+
+Changes for maintainers and authors of loom-specific packages:
+
+* Corrected the version of ruff in pyproject.toml.
+
 ## 0.27
 
 Changes for maintainers and authors of loom-specific packages:
