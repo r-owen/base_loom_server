@@ -19,4 +19,5 @@ app_runner = AppRunner(
 
 
 def run_example_loom() -> None:
+    """Run the example loom."""
     app_runner.run()

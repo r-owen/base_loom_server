@@ -10,10 +10,12 @@ __all__ = [
 
 import copy
 import dataclasses
-from collections.abc import Iterable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-import dtx_to_wif
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    import dtx_to_wif
 
 DEFAULT_THREAD_GROUP_SIZE = 4
 
@@ -31,7 +33,7 @@ def pop_and_check_type_field(typename: str, datadict: dict[str, Any]) -> None:
 
 @dataclasses.dataclass
 class Pick:
-    """One pick of a pattern
+    """One pick of a pattern.
 
     Args:
         color: Weft color, as an index into the color table.
@@ -94,16 +96,17 @@ class ReducedPattern:
 
     @property
     def num_ends(self) -> int:
-        """How many warp ends are in the pattern"""
+        """How many warp ends are in the pattern."""
         return len(self.threading)
 
     @property
     def num_picks(self) -> int:
-        """How many weft picks are in the pattern"""
+        """How many weft picks are in the pattern."""
         return len(self.picks)
 
     @property
-    def thread_group_size(self):
+    def thread_group_size(self) -> int:
+        """Get the thread group size."""
         return self._thread_group_size
 
     @thread_group_size.setter
@@ -146,9 +149,7 @@ class ReducedPattern:
             return 0
         return min(end_number0 + self.thread_group_size - 1, max_end_number)
 
-    def compute_next_end_numbers(
-        self, thread_low_to_high: bool
-    ) -> tuple[int, int, int]:
+    def compute_next_end_numbers(self, *, thread_low_to_high: bool) -> tuple[int, int, int]:
         """Compute the next (end_number0, end_number1, end_repeat_number)
         in the specified direction.
 
@@ -160,12 +161,8 @@ class ReducedPattern:
             IndexError: if self.end_number0 is invalid.
         """
         self.check_end_number(self.end_number0)
-        if (
-            self.end_number0 == 0
-            and self.end_repeat_number == 1
-            and not thread_low_to_high
-        ):
-            raise IndexError()
+        if self.end_number0 == 0 and self.end_repeat_number == 1 and not thread_low_to_high:
+            raise IndexError
 
         max_end_number = len(self.threading)
         new_end_number0 = 0
@@ -182,17 +179,13 @@ class ReducedPattern:
                 # At the end of one repeat; start the next.
                 new_end_number0 = 0 if self.separate_threading_repeats else 1
                 new_end_repeat_number += 1
-        else:
-            if self.end_number0 == 1 and (
-                self.separate_threading_repeats or self.end_repeat_number == 1
-            ):
+        else:  # noqa: PLR5501
+            if self.end_number0 == 1 and (self.separate_threading_repeats or self.end_repeat_number == 1):
                 # We are at the beginning of a pattern repeat and
                 # either we separate repeats or it is the very first.
                 # Go to end 0.
                 new_end_number0 = 0
-            elif self.end_number0 == 0 or (
-                self.end_number0 == 1 and not self.separate_threading_repeats
-            ):
+            elif self.end_number0 == 0 or (self.end_number0 == 1 and not self.separate_threading_repeats):
                 # Start the previous repeat.
                 new_end_number1 = max_end_number
                 new_end_number0 = max(new_end_number1 + 1 - self.thread_group_size, 1)
@@ -207,13 +200,11 @@ class ReducedPattern:
             if new_end_number0 == 0:
                 new_end_number1 = 0
             else:
-                new_end_number1 = min(
-                    new_end_number0 + self.thread_group_size - 1, max_end_number
-                )
+                new_end_number1 = min(new_end_number0 + self.thread_group_size - 1, max_end_number)
 
         return (new_end_number0, new_end_number1, new_end_repeat_number)
 
-    def compute_next_pick_numbers(self, direction_forward: bool) -> tuple[int, int]:
+    def compute_next_pick_numbers(self, *, direction_forward: bool) -> tuple[int, int]:
         """Compute (next pick_number, pick_repeat_number)
         in the specified direction.
 
@@ -221,18 +212,12 @@ class ReducedPattern:
             IndexError: If trying to increment past the start of weaving.
         """
         self.check_pick_number(self.pick_number)
-        if (
-            self.pick_number == 0
-            and self.pick_repeat_number == 1
-            and not direction_forward
-        ):
-            raise IndexError()
+        if self.pick_number == 0 and self.pick_repeat_number == 1 and not direction_forward:
+            raise IndexError
 
         # Start by assuming the common case.
         next_pick_repeat_number = self.pick_repeat_number
-        next_pick_number = (
-            self.pick_number + 1 if direction_forward else self.pick_number - 1
-        )
+        next_pick_number = self.pick_number + 1 if direction_forward else self.pick_number - 1
 
         # Handle special cases: end of pattern repeats
         if direction_forward:
@@ -240,16 +225,12 @@ class ReducedPattern:
                 # At the end; start a new repeat.
                 next_pick_number = 0 if self.separate_weaving_repeats else 1
                 next_pick_repeat_number += 1
-        else:
-            if self.pick_number == 1 and (
-                self.separate_weaving_repeats or self.pick_repeat_number == 1
-            ):
+        else:  # noqa: PLR5501
+            if self.pick_number == 1 and (self.separate_weaving_repeats or self.pick_repeat_number == 1):
                 # At the beginning of a repeat, and either we
                 # separate repeats or it is the very first. Go to pick 0.
                 next_pick_number = 0
-            elif self.pick_number == 0 or (
-                self.pick_number == 1 and not self.separate_weaving_repeats
-            ):
+            elif self.pick_number == 0 or (self.pick_number == 1 and not self.separate_weaving_repeats):
                 # Start the previous repeat.
                 next_pick_number = len(self.picks)
                 next_pick_repeat_number -= 1
@@ -277,13 +258,10 @@ class ReducedPattern:
         """Get current threading shaft word."""
         if self.end_number0 == 0:
             return 0
-        shaft_set = {
-            self.threading[i] for i in range(self.end_number0 - 1, self.end_number1)
-        }
-        shaft_word = sum(1 << shaft for shaft in shaft_set if shaft >= 0)
-        return shaft_word
+        shaft_set = {self.threading[i] for i in range(self.end_number0 - 1, self.end_number1)}
+        return sum(1 << shaft for shaft in shaft_set if shaft >= 0)
 
-    def increment_end_number(self, thread_low_to_high: bool) -> None:
+    def increment_end_number(self, *, thread_low_to_high: bool) -> None:
         """Increment self.end_number0 in the specified direction.
         Increment end_repeat_number as well, if appropriate.
 
@@ -303,7 +281,7 @@ class ReducedPattern:
             end_repeat_number=end_repeat_number,
         )
 
-    def increment_pick_number(self, direction_forward: bool) -> int:
+    def increment_pick_number(self, *, direction_forward: bool) -> int:
         """Increment pick_number in the specified direction.
 
         Increment pick_repeat_number as well, if appropriate.
@@ -374,16 +352,15 @@ class ReducedPattern:
 def _smallest_shaft(shafts: set[int]) -> int:
     """Return the smallest non-zero shaft from a set of shafts.
 
-    Return 0 if no non-zero shafts"""
+    Return 0 if no non-zero shafts.
+    """
     pruned_shafts = shafts - {0}
     if pruned_shafts:
-        return list(sorted(shafts))[0]
+        return sorted(shafts)[0]
     return 0
 
 
-def reduced_pattern_from_pattern_data(
-    name: str, data: dtx_to_wif.PatternData
-) -> ReducedPattern:
+def reduced_pattern_from_pattern_data(name: str, data: dtx_to_wif.PatternData) -> ReducedPattern:
     """Convert a dtx_to_wif.PatternData to a ReducedPattern.
 
     Args:
@@ -421,53 +398,38 @@ def reduced_pattern_from_pattern_data(
         color_strs = ["#ffffff", "#000000"]
     num_warps = max(data.threading.keys())
     warps_from1 = list(range(1, num_warps + 1))
-    num_wefts = (
-        max(data.liftplan.keys()) if data.liftplan else max(data.treadling.keys())
-    )
+    num_wefts = max(data.liftplan.keys()) if data.liftplan else max(data.treadling.keys())
     wefts_from1 = list(range(1, num_wefts + 1))
     default_warp_color = data.warp.color if data.warp.color is not None else 1
-    warp_colors = [
-        data.warp_colors.get(warp, default_warp_color) - 1 for warp in warps_from1
-    ]
+    warp_colors = [data.warp_colors.get(warp, default_warp_color) - 1 for warp in warps_from1]
     default_weft_color = data.weft.color if data.weft.color is not None else 2
-    weft_colors = [
-        data.weft_colors.get(weft, default_weft_color) - 1 for weft in wefts_from1
-    ]
+    weft_colors = [data.weft_colors.get(weft, default_weft_color) - 1 for weft in wefts_from1]
 
     if data.liftplan:
-        shaft_sets = list(data.liftplan.get(weft, {}) - {0} for weft in wefts_from1)  # type: ignore
+        shaft_sets = [data.liftplan.get(weft, set()) - {0} for weft in wefts_from1]
     else:
         shaft_sets = []
         for weft in wefts_from1:
-            treadle_set = data.treadling.get(weft, {}) - {0}  # type: ignore
-            shaft_sets.append(
-                set.union(*(data.tieup[treadle] for treadle in treadle_set)) - {0}
-            )
+            treadle_set = data.treadling.get(weft, set()) - {0}
+            shaft_sets.append(set.union(*(data.tieup[treadle] for treadle in treadle_set)) - {0})
     if len(shaft_sets) != len(weft_colors):
-        raise RuntimeError(
-            f"{len(shaft_sets)=} != {len(weft_colors)=}\n{shaft_sets=}\n{weft_colors=}"
-        )
+        raise RuntimeError(f"{len(shaft_sets)=} != {len(weft_colors)=}\n{shaft_sets=}\n{weft_colors=}")
     try:
         num_shafts = max(max(shaft_set) for shaft_set in shaft_sets if shaft_set)
     except (ValueError, TypeError):
-        raise RuntimeError("No shafts are raised")
-    threading = [
-        _smallest_shaft(data.threading.get(warp, {0})) - 1 for warp in warps_from1
-    ]
+        raise RuntimeError("No shafts are raised") from None
+    threading = [_smallest_shaft(data.threading.get(warp, {0})) - 1 for warp in warps_from1]
     all_shafts = set(range(1, num_shafts + 1))
     if data.is_rising_shed:
         shaft_words = [shaft_word_from_shaft_set(shaft_set) for shaft_set in shaft_sets]
     else:
-        shaft_words = [
-            shaft_word_from_shaft_set(all_shafts - shaft_set)
-            for shaft_set in shaft_sets
-        ]
+        shaft_words = [shaft_word_from_shaft_set(all_shafts - shaft_set) for shaft_set in shaft_sets]
     picks = [
         Pick(shaft_word=shaft_word, color=weft_color)
-        for shaft_word, weft_color in zip(shaft_words, weft_colors)
+        for shaft_word, weft_color in zip(shaft_words, weft_colors, strict=True)
     ]
 
-    result = ReducedPattern(
+    return ReducedPattern(
         color_table=color_strs,
         name=name,
         warp_colors=warp_colors,
@@ -477,7 +439,6 @@ def reduced_pattern_from_pattern_data(
         separate_weaving_repeats=len(picks) > NUM_ITEMS_FOR_REPEAT_SEPARATOR,
         separate_threading_repeats=len(threading) > NUM_ITEMS_FOR_REPEAT_SEPARATOR,
     )
-    return result
 
 
 def shaft_word_from_shaft_set(shaft_set: Iterable[int]) -> int:

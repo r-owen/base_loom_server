@@ -11,7 +11,7 @@ from .enums import (
 
 @dataclasses.dataclass
 class CommandDone:
-    """Report completion or failure of a command"""
+    """Report completion or failure of a command."""
 
     type: str = dataclasses.field(init=False, default="CommandDone")
     cmd_type: str
@@ -21,7 +21,7 @@ class CommandDone:
 
 @dataclasses.dataclass
 class CommandProblem:
-    """A problem with a command from the client"""
+    """A problem with a command from the client."""
 
     type: str = dataclasses.field(init=False, default="CommandProblem")
     message: str
@@ -30,7 +30,7 @@ class CommandProblem:
 
 @dataclasses.dataclass
 class CurrentEndNumber:
-    """The current threading end numbers and repeat number
+    """The current threading end numbers and repeat number.
 
     The range of end numbers is end_number0 through end_number1,
     inclusive. If end_number0 is 0 then end_number1 will also be 0;
@@ -47,7 +47,7 @@ class CurrentEndNumber:
 
 @dataclasses.dataclass
 class CurrentPickNumber:
-    """The current total_pick_number, pick_number and pick_repeat_number"""
+    """The current total_pick_number, pick_number and pick_repeat_number."""
 
     type: str = dataclasses.field(init=False, default="CurrentPickNumber")
     total_pick_number: int
@@ -57,7 +57,7 @@ class CurrentPickNumber:
 
 @dataclasses.dataclass
 class Direction:
-    """The weaving and threading direction"""
+    """The weaving and threading direction."""
 
     type: str = dataclasses.field(init=False, default="Direction")
     forward: bool
@@ -65,7 +65,7 @@ class Direction:
 
 @dataclasses.dataclass
 class JumpEndNumber:
-    """Pending end and repeat numbers"""
+    """Pending end and repeat numbers."""
 
     type: str = dataclasses.field(init=False, default="JumpEndNumber")
     total_end_number0: int | None = None
@@ -77,7 +77,7 @@ class JumpEndNumber:
 
 @dataclasses.dataclass
 class JumpPickNumber:
-    """Pending total_pick_number, pick_number, and pick_repeat_number
+    """Pending total_pick_number, pick_number, and pick_repeat_number.
 
     If total_pick_number is not None then pick_number and pick_repeat_number
     must also not be None.
@@ -100,7 +100,7 @@ class JumpPickNumber:
 
 @dataclasses.dataclass
 class LanguageNames:
-    """Supported languages"""
+    """Supported languages."""
 
     type: str = dataclasses.field(init=False, default="LanguageNames")
     languages: list[str]
@@ -108,7 +108,7 @@ class LanguageNames:
 
 @dataclasses.dataclass
 class LoomConnectionState:
-    """The state of the server's connection to the loom"""
+    """The state of the server's connection to the loom."""
 
     type: str = dataclasses.field(init=False, default="LoomConnectionState")
     state: ConnectionStateEnum
@@ -117,7 +117,7 @@ class LoomConnectionState:
 
 @dataclasses.dataclass
 class LoomInfo:
-    """Information about the loom"""
+    """Information about the loom."""
 
     type: str = dataclasses.field(init=False, default="LoomInfo")
     num_shafts: int
@@ -127,7 +127,7 @@ class LoomInfo:
 
 @dataclasses.dataclass
 class Mode:
-    """The mode of the server"""
+    """The mode of the server."""
 
     type: str = dataclasses.field(init=False, default="Mode")
     mode: ModeEnum
@@ -151,6 +151,8 @@ class SeparateWeavingRepeats:
 
 @dataclasses.dataclass
 class Settings:
+    """Settings for the settings file (which apply to all patterns)."""
+
     type: str = dataclasses.field(init=False, default="Settings")
     language: str
     loom_name: str
@@ -163,7 +165,7 @@ class Settings:
 
 @dataclasses.dataclass
 class ShaftState:
-    """Shaft status
+    """Shaft status.
 
     shaft_word is a bitmask:
 
@@ -180,7 +182,7 @@ class ShaftState:
 
 @dataclasses.dataclass
 class StatusMessage:
-    """Status message"""
+    """Status message."""
 
     type: str = dataclasses.field(init=False, default="StatusMessage")
     message: str
@@ -189,7 +191,7 @@ class StatusMessage:
 
 @dataclasses.dataclass
 class PatternNames:
-    """The list of loaded patterns (including the current pattern)"""
+    """The list of loaded patterns (including the current pattern)."""
 
     type: str = dataclasses.field(init=False, default="PatternNames")
     names: list[str]
@@ -197,7 +199,7 @@ class PatternNames:
 
 @dataclasses.dataclass
 class ThreadGroupSize:
-    """The threading group size"""
+    """The threading group size for the current pattern."""
 
     type: str = dataclasses.field(init=False, default="ThreadGroupSize")
     group_size: int

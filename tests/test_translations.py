@@ -16,19 +16,17 @@ from base_loom_server.translations import (
 )
 
 _PKG_NAME = "base_loom_server"
-TEST_DATA_FILES = (
-    importlib.resources.files(_PKG_NAME) / "test_data" / "translation_files"
-)
+TEST_DATA_FILES = importlib.resources.files(_PKG_NAME) / "test_data" / "translation_files"
 
 
 def test_circular_extends() -> None:
     for suffix in ("a", "b", "c"):
         with pytest.raises(RecursionError):
-            get_translation_dict(f"circular_{suffix}", dir=TEST_DATA_FILES)
+            get_translation_dict(f"circular_{suffix}", dir_=TEST_DATA_FILES)
 
 
 def test_get_default_dict() -> None:
-    assert METADATA_KEYS == {"_direction", "_extends", "_language_code"}
+    assert METADATA_KEYS == {"_direction", "_extends", "_language_code"}  # noqa: SIM300
 
     default_dict = get_default_dict()
     # All METADATA_KEYS should appear in the default dict
@@ -46,14 +44,14 @@ def test_get_default_dict() -> None:
     assert default_dict["_language_code"] == "en"
 
 
-def test_get_language_names():
+def test_get_language_names() -> None:
     language_names = get_language_names()
     assert language_names[0] == "English"
     assert "default" not in language_names
     assert "" not in language_names
 
 
-def test_extra_keys(caplog) -> None:
+def test_extra_keys(caplog: pytest.LogCaptureFixture) -> None:
     default_dict = get_default_dict()
     logger = logging.getLogger()
 
@@ -61,11 +59,11 @@ def test_extra_keys(caplog) -> None:
     assert extra_key_name not in default_dict
 
     with tempfile.TemporaryDirectory() as dirname:
-        dir = pathlib.Path(dirname)
-        filepath = dir / "extra_keys.json"
+        dir_ = pathlib.Path(dirname)
+        filepath = dir_ / "extra_keys.json"
         extra_keys_dict = default_dict.copy()
         extra_keys_dict[extra_key_name] = "some value"
-        with open(filepath, "w") as f:
+        with filepath.open("w") as f:
             json.dump(extra_keys_dict, f)
         data = read_one_translation_file(
             translation_file=filepath, valid_keys=default_dict.keys(), logger=logger
@@ -73,7 +71,7 @@ def test_extra_keys(caplog) -> None:
 
     assert data.keys() == default_dict.keys()
     assert len(caplog.record_tuples) > 0
-    for root, level, text in caplog.record_tuples:
+    for _root, level, text in caplog.record_tuples:
         if extra_key_name in text:
             assert level == logging.WARNING
             assert "invalid keys" in text
@@ -110,6 +108,6 @@ def test_valid_extends() -> None:
         "b": {"Weave": "Weave b", "Thread": "Thread b", "Pattern": "Pattern c"},
         "c": {"Weave": "Weave c", "Thread": "Thread c", "Pattern": "Pattern c"},
     }.items():
-        data = get_translation_dict(f"extends_{suffix}", dir=TEST_DATA_FILES)
+        data = get_translation_dict(f"extends_{suffix}", dir_=TEST_DATA_FILES)
         for key, value in expected_results.items():
             assert data[key] == value

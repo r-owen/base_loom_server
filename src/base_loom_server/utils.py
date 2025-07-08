@@ -39,7 +39,7 @@ def compute_num_within_and_repeats(total_num: int, repeat_len: int) -> tuple[int
 
 
 def compute_total_num(num_within: int, repeat_number: int, repeat_len: int) -> int:
-    """Compute total_num from num_within, repeat_number, and repeat_len
+    """Compute total_num from num_within, repeat_number, and repeat_len.
 
     This is basically the opposite of divmod, but handles None inputs
     and repeat_number is 1-based.

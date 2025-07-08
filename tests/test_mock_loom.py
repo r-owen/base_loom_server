@@ -14,7 +14,7 @@ ExampleMockLoom.motion_duration = 0.1
 
 @contextlib.asynccontextmanager
 async def create_loom(
-    num_shafts=16,
+    num_shafts: int = 16,
 ) -> AsyncIterator[tuple[ExampleMockLoom, StreamReaderType, StreamWriterType]]:
     """Create an ExampleMockLoom."""
     async with ExampleMockLoom(num_shafts=num_shafts, verbose=True) as loom:
@@ -32,9 +32,7 @@ async def read_reply(reader: StreamReaderType, timeout: float = 1) -> str:
         return reply_bytes[:-1].decode()
 
 
-async def write_command(
-    writer: StreamWriterType, command: str, timeout: float = 1
-) -> None:
+async def write_command(writer: StreamWriterType, command: str, timeout: float = 1) -> None:
     writer.write(command.encode() + ExampleMockLoom.terminator)
     async with asyncio.timeout(timeout):
         await writer.drain()

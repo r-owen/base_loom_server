@@ -1,4 +1,5 @@
 import asyncio
+from collections.abc import Generator
 
 import pytest
 
@@ -13,13 +14,13 @@ TEST_BYTES = (
 TEST_TERMINATORS = (b"", b"\r", b"\n", b"\r\n")
 
 
-def data_iterator(terminator: bytes):
+def data_iterator(terminator: bytes) -> Generator[bytes]:
     for data in TEST_BYTES:
         yield data + terminator
 
 
 async def test_open_mock_connection() -> None:
-    """Test the linkage in the streams from open_mock_connection"""
+    """Test the linkage in the streams from open_mock_connection."""
     reader_a, writer_b = mock_streams.open_mock_connection()
     assert reader_a.sibling_sd is None
     assert writer_b.sibling_sd is not None
@@ -89,7 +90,7 @@ async def test_mismatched_terminator() -> None:
 
 
 async def test_invalid_operations() -> None:
-    """Test read and write methods that should fail"""
+    """Test read and write methods that should fail."""
     for terminator in TEST_TERMINATORS:
         writer = mock_streams.MockStreamWriter(terminator=terminator)
         reader = writer.create_reader()
@@ -124,7 +125,7 @@ async def test_invalid_operations() -> None:
 
 async def check_reader_writer(
     reader: mock_streams.MockStreamReader, writer: mock_streams.MockStreamWriter
-):
+) -> None:
     """Check a reader and the writer that writes to it.
 
     Note that this is not the pair returned by `open_mock_connection`,
@@ -184,7 +185,7 @@ async def check_reader_writer(
 
 
 class StreamClosedWatcher:
-    """Await writer.wait_closed() and wait_done=True when seen"""
+    """Await writer.wait_closed() and wait_done=True when seen."""
 
     def __init__(self, writer: mock_streams.MockStreamWriter) -> None:
         self.writer = writer
@@ -192,5 +193,6 @@ class StreamClosedWatcher:
         self.wait_task = asyncio.create_task(self.do_wait_closed())
 
     async def do_wait_closed(self) -> None:
+        """Wait for the writer to close and set self.wait_done True."""
         await self.writer.wait_closed()
         self.wait_done = True

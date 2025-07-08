@@ -23,9 +23,7 @@ EXPECTED_DEFAULTS = dict(
 )
 
 
-def shaft_set_from_reduced(
-    reduced_pattern: ReducedPattern, pick_number: int
-) -> set[int]:
+def shaft_set_from_reduced(reduced_pattern: ReducedPattern, pick_number: int) -> set[int]:
     """Get the shaft set for a specified 1-based pick_number."""
     reduced_pick = reduced_pattern.picks[pick_number - 1]
     return set(shaft_set_from_shaft_word(reduced_pick.shaft_word))
@@ -34,9 +32,7 @@ def shaft_set_from_reduced(
 def test_basics() -> None:
     for filepath in ALL_PATTERN_PATHS:
         full_pattern = read_pattern_file(filepath)
-        reduced_pattern = reduced_pattern_from_pattern_data(
-            name=filepath.name, data=full_pattern
-        )
+        reduced_pattern = reduced_pattern_from_pattern_data(name=filepath.name, data=full_pattern)
 
         assert reduced_pattern.type == "ReducedPattern"
         assert reduced_pattern.name == filepath.name
@@ -54,23 +50,15 @@ def test_basics() -> None:
         )
 
         for i, pick in enumerate(reduced_pattern.picks):
-            assert (
-                full_pattern.weft_colors.get(i + 1, full_pattern.weft.color)
-                == pick.color + 1
-            )
+            assert full_pattern.weft_colors.get(i + 1, full_pattern.weft.color) == pick.color + 1
 
         for i, color in enumerate(reduced_pattern.warp_colors):
-            assert (
-                full_pattern.warp_colors.get(i + 1, full_pattern.warp.color)
-                == color + 1
-            )
+            assert full_pattern.warp_colors.get(i + 1, full_pattern.warp.color) == color + 1
 
         for end_number0, shaft_set in full_pattern.threading.items():
-            shaft_set -= {0}
-            if len(shaft_set) > 1:
-                shaft = max(shaft_set)
-            else:
-                shaft = shaft_set.pop()
+            pruned_shaft_set = shaft_set - {0}
+            assert pruned_shaft_set
+            shaft = max(pruned_shaft_set) if len(pruned_shaft_set) > 1 else pruned_shaft_set.pop()
             assert shaft - 1 == reduced_pattern.threading[end_number0 - 1]
 
         # Test ReducedPattern.picks
@@ -94,9 +82,7 @@ def test_basics() -> None:
 def test_color_table() -> None:
     for filepath in ALL_PATTERN_PATHS:
         full_pattern = read_pattern_file(filepath)
-        reduced_pattern = reduced_pattern_from_pattern_data(
-            name=filepath.name, data=full_pattern
-        )
+        reduced_pattern = reduced_pattern_from_pattern_data(name=filepath.name, data=full_pattern)
         assert full_pattern.color_range is not None
         min_color_from_full, max_color_from_full = full_pattern.color_range
         # Note: all test files include white and black colors,
@@ -110,20 +96,15 @@ def test_color_table() -> None:
         assert full_pattern.color_table is not None
         assert full_pattern.color_range is not None
         min_full_color = full_pattern.color_range[0]
-        full_color_scale = 255 / (
-            full_pattern.color_range[1] - full_pattern.color_range[0]
-        )
+        full_color_scale = 255 / (full_pattern.color_range[1] - full_pattern.color_range[0])
         for i, color in enumerate(reduced_pattern.color_table):
             assert color.startswith("#")
             assert len(color) == 7
             reduced_rgbstrs = [color[1 + 2 * rgbi : 3 + 2 * rgbi] for rgbi in range(3)]
-            reduced_rgbvalues = [
-                int(color_str, base=16) for color_str in reduced_rgbstrs
-            ]
+            reduced_rgbvalues = [int(color_str, base=16) for color_str in reduced_rgbstrs]
             full_rgbvalues = full_pattern.color_table[i + 1]
             expected_reduced_rgbvalues = [
-                int((full_rgbvalues[rgbi] - min_full_color) * full_color_scale)
-                for rgbi in range(3)
+                int((full_rgbvalues[rgbi] - min_full_color) * full_color_scale) for rgbi in range(3)
             ]
             assert reduced_rgbvalues == expected_reduced_rgbvalues
 
@@ -131,9 +112,7 @@ def test_color_table() -> None:
 def test_from_dict() -> None:
     for filepath in ALL_PATTERN_PATHS:
         full_pattern = read_pattern_file(filepath)
-        reduced_pattern = reduced_pattern_from_pattern_data(
-            name=filepath.name, data=full_pattern
-        )
+        reduced_pattern = reduced_pattern_from_pattern_data(name=filepath.name, data=full_pattern)
         patterndict = dataclasses.asdict(reduced_pattern)
         for i, pickdict in enumerate(patterndict["picks"]):
             assert isinstance(pickdict, dict)
@@ -178,14 +157,12 @@ def test_from_dict() -> None:
 
 
 def test_end_number() -> None:
-    GROUP_SIZE_NUMBERS = (1, 2, 5)
+    group_size_numbers = (1, 2, 5)
     # Test with and without separating threading repeats; alternate cases
     separate_repeats = False
     for filepath in ALL_PATTERN_PATHS:
         full_pattern = read_pattern_file(filepath)
-        reduced_pattern = reduced_pattern_from_pattern_data(
-            name=filepath.name, data=full_pattern
-        )
+        reduced_pattern = reduced_pattern_from_pattern_data(name=filepath.name, data=full_pattern)
         num_ends = len(reduced_pattern.threading)
 
         separate_repeats = not separate_repeats
@@ -198,7 +175,7 @@ def test_end_number() -> None:
         for end_number0 in (-1, num_ends + 1):
             with pytest.raises(IndexError):
                 reduced_pattern.check_end_number(end_number0)
-            for thread_group_size in GROUP_SIZE_NUMBERS:
+            for thread_group_size in group_size_numbers:
                 reduced_pattern.thread_group_size = thread_group_size
                 with pytest.raises(IndexError):
                     reduced_pattern.set_current_end_number(end_number0)
@@ -210,12 +187,10 @@ def test_end_number() -> None:
             for end_number1 in (-1, 0, end_number0 - 1, num_ends + 1):
                 if end_number0 == 0 and end_number1 == 0:
                     continue
-                for thread_group_size in GROUP_SIZE_NUMBERS:
+                for thread_group_size in group_size_numbers:
                     reduced_pattern.thread_group_size = thread_group_size
                     with pytest.raises(IndexError):
-                        reduced_pattern.set_current_end_number(
-                            end_number0, end_number1=end_number1
-                        )
+                        reduced_pattern.set_current_end_number(end_number0, end_number1=end_number1)
             assert reduced_pattern.end_number0 == 0
             assert reduced_pattern.end_repeat_number == 1
 
@@ -227,7 +202,7 @@ def test_end_number() -> None:
             assert reduced_pattern.thread_group_size == initial_thread_group_size
 
         # Test set_current_end_number and get_threading_shaft_word
-        for thread_group_size in GROUP_SIZE_NUMBERS:
+        for thread_group_size in group_size_numbers:
             reduced_pattern.thread_group_size = thread_group_size
             # Test get_threading_group
             for end_number0 in (0, 1, num_ends - 1, num_ends):
@@ -258,10 +233,13 @@ def test_end_number() -> None:
                     assert shaft_word == expected_shaft_word
 
         # Test compute_end_number and increment_end_number
-        for thread_group_size in GROUP_SIZE_NUMBERS:
+        for thread_group_size in group_size_numbers:
             reduced_pattern.thread_group_size = thread_group_size
 
-            for expected_end_number0 in (0, 1, num_ends - 1, num_ends):
+            # Use nominal_expected_end_number0 to avoid warnings
+            # about overwriting a loop variable.
+            for nominal_expected_end_number0 in (0, 1, num_ends - 1, num_ends):
+                expected_end_number0 = nominal_expected_end_number0
                 expected_repeat_number = 1
                 reduced_pattern.set_current_end_number(
                     end_number0=expected_end_number0,
@@ -287,19 +265,13 @@ def test_end_number() -> None:
                         expected_end_number0 = 1
                         expected_end_number1 = min(num_ends, thread_group_size)
                     else:
-                        expected_end_number0 = min(
-                            num_ends, expected_end_number0 + thread_group_size
-                        )
-                        expected_end_number1 = min(
-                            num_ends, expected_end_number0 + thread_group_size - 1
-                        )
+                        expected_end_number0 = min(num_ends, expected_end_number0 + thread_group_size)
+                        expected_end_number1 = min(num_ends, expected_end_number0 + thread_group_size - 1)
                     assert (
                         expected_end_number0,
                         expected_end_number1,
                         expected_repeat_number,
-                    ) == reduced_pattern.compute_next_end_numbers(
-                        thread_low_to_high=True
-                    )
+                    ) == reduced_pattern.compute_next_end_numbers(thread_low_to_high=True)
                     reduced_pattern.increment_end_number(thread_low_to_high=True)
                     assert reduced_pattern.end_number0 == expected_end_number0
                     assert reduced_pattern.end_number1 == expected_end_number1
@@ -310,11 +282,7 @@ def test_end_number() -> None:
                     if expected_end_number0 == 0 and expected_repeat_number == 1:
                         break
 
-                    if (
-                        expected_end_number0 == 1
-                        and expected_repeat_number == 1
-                        and not separate_repeats
-                    ):
+                    if expected_end_number0 == 1 and expected_repeat_number == 1 and not separate_repeats:
                         # Special case; go to end_number0 = 0,
                         # even though not separating repeats.
                         expected_end_number0 = 0
@@ -326,22 +294,16 @@ def test_end_number() -> None:
                         expected_end_number0 == 1 and not separate_repeats
                     ):
                         expected_end_number0 = max(1, num_ends + 1 - thread_group_size)
-                        expected_end_number1 = min(
-                            num_ends, expected_end_number0 + thread_group_size - 1
-                        )
+                        expected_end_number1 = min(num_ends, expected_end_number0 + thread_group_size - 1)
                         expected_repeat_number -= 1
                     else:
                         expected_end_number1 = expected_end_number0 - 1
-                        expected_end_number0 = max(
-                            1, expected_end_number0 - thread_group_size
-                        )
+                        expected_end_number0 = max(1, expected_end_number0 - thread_group_size)
                     assert (
                         expected_end_number0,
                         expected_end_number1,
                         expected_repeat_number,
-                    ) == reduced_pattern.compute_next_end_numbers(
-                        thread_low_to_high=False
-                    )
+                    ) == reduced_pattern.compute_next_end_numbers(thread_low_to_high=False)
                     reduced_pattern.increment_end_number(thread_low_to_high=False)
                     assert reduced_pattern.end_number0 == expected_end_number0
                     assert reduced_pattern.end_number1 == expected_end_number1
@@ -362,9 +324,7 @@ def test_pick_number() -> None:
     separate_repeats = False
     for filepath in ALL_PATTERN_PATHS:
         full_pattern = read_pattern_file(filepath)
-        reduced_pattern = reduced_pattern_from_pattern_data(
-            name=filepath.name, data=full_pattern
-        )
+        reduced_pattern = reduced_pattern_from_pattern_data(name=filepath.name, data=full_pattern)
         separate_repeats = not separate_repeats
         reduced_pattern.separate_weaving_repeats = separate_repeats
 
@@ -405,9 +365,7 @@ def test_pick_number() -> None:
                 expected_repeat_number,
             ) == reduced_pattern.compute_next_pick_numbers(direction_forward=True)
 
-            returned_pick_number = reduced_pattern.increment_pick_number(
-                direction_forward=True
-            )
+            returned_pick_number = reduced_pattern.increment_pick_number(direction_forward=True)
             assert returned_pick_number == expected_pick_number
             assert reduced_pattern.pick_number == expected_pick_number
             assert reduced_pattern.pick_repeat_number == expected_repeat_number
@@ -417,11 +375,7 @@ def test_pick_number() -> None:
             if expected_pick_number == 0 and expected_repeat_number == 1:
                 break
 
-            if (
-                expected_pick_number == 1
-                and expected_repeat_number == 1
-                and not separate_repeats
-            ):
+            if expected_pick_number == 1 and expected_repeat_number == 1 and not separate_repeats:
                 # Special case: add separator at beginning,
                 # even though we don't separate
                 expected_pick_number = 0
@@ -437,9 +391,7 @@ def test_pick_number() -> None:
                 expected_repeat_number,
             ) == reduced_pattern.compute_next_pick_numbers(direction_forward=False)
 
-            returned_pick_number = reduced_pattern.increment_pick_number(
-                direction_forward=False
-            )
+            returned_pick_number = reduced_pattern.increment_pick_number(direction_forward=False)
             assert returned_pick_number == expected_pick_number
             assert reduced_pattern.pick_number == expected_pick_number
             assert reduced_pattern.pick_repeat_number == expected_repeat_number

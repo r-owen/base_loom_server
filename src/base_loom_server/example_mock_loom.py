@@ -19,9 +19,7 @@ class ExampleMockLoom(BaseMockLoom):
         if self.verbose:
             self.log.info(f"{self}: process client command {cmd!r}")
         if len(cmd) < 1:
-            self.log.warning(
-                f"{self}: invalid command {cmd!r}: must be at least 1 character"
-            )
+            self.log.warning(f"{self}: invalid command {cmd!r}: must be at least 1 character")
             return
         cmd_char = cmd[0]
         cmd_data = cmd[1:]
@@ -31,9 +29,7 @@ class ExampleMockLoom(BaseMockLoom):
                 try:
                     shaft_word = int(cmd_data, base=16)
                 except Exception:
-                    self.log.warning(
-                        f"{self}: invalid command {cmd!r}: data after =C not a hex value"
-                    )
+                    self.log.warning(f"{self}: invalid command {cmd!r}: data after =C not a hex value")
                     return
                 await self.set_shaft_word(shaft_word)
             case "U":
@@ -42,9 +38,7 @@ class ExampleMockLoom(BaseMockLoom):
                 # in which case the loom changes it and reports it
                 # to the client).
                 if cmd_data not in {"0", "1"}:
-                    self.log.warning(
-                        f"{self}: invalid command {cmd!r}: arg must be 0 or 1"
-                    )
+                    self.log.warning(f"{self}: invalid command {cmd!r}: arg must be 0 or 1")
                     return
                 await self.set_direction_forward(direction_forward=cmd_data == "0")
             case _:

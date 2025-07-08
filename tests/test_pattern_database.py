@@ -41,9 +41,7 @@ async def test_add_and_get_pattern() -> None:
 
         # All attributes should match the original
         for field_name in vars(returned_pattern1):
-            assert getattr(pattern1, field_name) == getattr(
-                returned_pattern1, field_name
-            )
+            assert getattr(pattern1, field_name) == getattr(returned_pattern1, field_name)
 
         # Adding another pattern puts it to the end of the name list
         pattern2 = read_reduced_pattern(patternpath2)
@@ -104,16 +102,12 @@ async def test_check_schema() -> None:
             del bad_field_type_dict[field_name]
         else:
             bad_field_type_dict[field_name] = wrong_type
-        fields_str = ", ".join(
-            f"{key} {value}" for key, value in bad_field_type_dict.items()
-        )
+        fields_str = ", ".join(f"{key} {value}" for key, value in bad_field_type_dict.items())
         with tempfile.NamedTemporaryFile() as f:
             dbpath = pathlib.Path(f.name)
             db = PatternDatabase(dbpath=dbpath)
             async with aiosqlite.connect(db.dbpath) as conn:
-                await conn.execute(
-                    f"create table if not exists patterns ({fields_str})"
-                )
+                await conn.execute(f"create table if not exists patterns ({fields_str})")
                 await conn.commit()
             assert not await db.check_schema()
 
@@ -129,9 +123,7 @@ async def test_clear_database() -> None:
             await db.add_pattern(pattern)
             pattern_names = await db.get_pattern_names()
 
-        expected_pattern_names = [
-            patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]
-        ]
+        expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 
         await db.clear_database()
@@ -152,9 +144,7 @@ async def test_create_database() -> None:
             await db.add_pattern(pattern)
             pattern_names = await db.get_pattern_names()
 
-        expected_pattern_names = [
-            patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]
-        ]
+        expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 
         # Test that a re-created database has the saved information
@@ -177,9 +167,7 @@ async def test_update_end_number() -> None:
             await db.add_pattern(pattern)
             pattern_names = await db.get_pattern_names()
 
-        expected_pattern_names = [
-            patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]
-        ]
+        expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 
         for pattern_name, end_number0, end_number1, end_repeat_number in (
@@ -214,9 +202,7 @@ async def test_update_pick_number() -> None:
             await db.add_pattern(pattern)
             pattern_names = await db.get_pattern_names()
 
-        expected_pattern_names = [
-            patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]
-        ]
+        expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 
         for pattern_name, pick_number, pick_repeat_number in (
@@ -249,9 +235,7 @@ async def test_update_separate_threading_repeats() -> None:
             await db.add_pattern(pattern)
             pattern_names = await db.get_pattern_names()
 
-        expected_pattern_names = [
-            patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]
-        ]
+        expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 
         for pattern_name, separate_threading_repeats in (
@@ -288,9 +272,7 @@ async def test_update_thread_group_size() -> None:
             await db.add_pattern(pattern)
             pattern_names = await db.get_pattern_names()
 
-        expected_pattern_names = [
-            patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]
-        ]
+        expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 
         for pattern_name, thread_group_size in (

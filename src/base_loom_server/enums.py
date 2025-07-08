@@ -29,7 +29,7 @@ class DirectionControlEnum(enum.IntEnum):
 
 
 class MessageSeverityEnum(enum.IntEnum):
-    """Severity for text messages"""
+    """Severity for text messages."""
 
     INFO = 1
     WARNING = 2
@@ -37,13 +37,15 @@ class MessageSeverityEnum(enum.IntEnum):
 
 
 class ModeEnum(enum.IntEnum):
+    """The current server mode."""
+
     WEAVE = 1
     THREAD = 2
     SETTINGS = 3
 
 
 class ShaftStateEnum(enum.IntEnum):
-    """Shaft state"""
+    """The current shaft motion state."""
 
     UNKNOWN = 0
     DONE = 1

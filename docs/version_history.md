@@ -1,5 +1,18 @@
 # Version History
 
+## 0.27
+
+Changes for maintainers and authors of loom-specific packages:
+
+* Refactor testutils: Client is a normal class, instead of a dataclass,
+  and the free functions that took a Client as the first argument are now methods that class.
+  Unit tests that use internal details of testutils may need some changes,
+  but not if the code simply uses BaseTestLoomServer to test the loom server.
+* Some functions now require named arguments for most or all arguments.
+  This especially applies to methods with boolean arguments and/or many arguments.
+* Improve mypy configuration to make it pickier and to allow it to be run with `mypy .`.
+* Switch to ruff for checking and formatting.
+
 ## 0.26.1 2025-07-06
 
 * Add screen shots to the documentation.

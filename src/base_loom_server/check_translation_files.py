@@ -1,3 +1,4 @@
+# ruff: noqa: T201
 import importlib.resources
 import json
 from importlib.resources.abc import Traversable
@@ -7,19 +8,15 @@ PKG_FILES = importlib.resources.files("base_loom_server")
 LOCALE_FILES = PKG_FILES.joinpath("locales")
 
 
-def check_translation_files():
+def check_translation_files() -> None:
     """Check for issues in the language translation files.
 
     Report to stdout.
     """
-    default_dict = json.loads(
-        LOCALE_FILES.joinpath("default.json").read_text(encoding="utf_8")
-    )
-    desired_keys = {key for key in default_dict}
+    default_dict = json.loads(LOCALE_FILES.joinpath("default.json").read_text(encoding="utf_8"))
+    desired_keys = set(default_dict.keys())
 
-    for filepath in LOCALE_FILES.glob(  # pyright: ignore[reportAttributeAccessIssue]
-        "*.json"
-    ):
+    for filepath in LOCALE_FILES.glob("*.json"):  # type: ignore[attr-defined]
         if filepath.name == "default.json":
             continue
 
@@ -42,15 +39,11 @@ def check_translation_files():
             if not next_language:
                 break
             if next_language in languages_seen:
-                print(
-                    f"Circular dependency found in {next_language}; giving up on {prev_path.name}"
-                )
+                print(f"Circular dependency found in {next_language}; giving up on {prev_path.name}")
                 break
             next_path = LOCALE_FILES.joinpath(f"{next_language}.json")
             if not next_path.is_file():
-                print(
-                    f"Dependency {next_path} not found in {prev_path.name}; giving up"
-                )
+                print(f"Dependency {next_path} not found in {prev_path.name}; giving up")
                 break
             lang_dict = json.loads(next_path.read_text(encoding="utf_8"))
             dict_list.append(lang_dict)
@@ -78,20 +71,17 @@ KeysToIgnore = {"?", "_direction", "_extends", "_language_code"}
 
 
 def report_problems(
+    *,
     filepath: Traversable,
     desired_keys: set[str],
     lang_dict: dict[str, Any],
     report_missing_keys: bool,
 ) -> None:
     """Check for issues in one file and print the results to stdout."""
-    missing_keys = (
-        desired_keys - lang_dict.keys() - KeysToIgnore if report_missing_keys else set()
-    )
+    missing_keys = desired_keys - lang_dict.keys() - KeysToIgnore if report_missing_keys else set()
     extra_keys = lang_dict.keys() - desired_keys
     blank_keys = {key: value for key, value in lang_dict.items() if value == ""}
-    non_str_entries = {
-        key: value for key, value in lang_dict.items() if not isinstance(value, str)
-    }
+    non_str_entries = {key: value for key, value in lang_dict.items() if not isinstance(value, str)}
     if missing_keys or extra_keys or blank_keys or non_str_entries:
         print(f"{filepath.name} has one or more problems:")
         if missing_keys:

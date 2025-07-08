@@ -5,7 +5,7 @@ import logging
 import pathlib
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Type
+from typing import ClassVar
 
 import uvicorn
 from fastapi import APIRouter, FastAPI, WebSocket
@@ -40,16 +40,15 @@ class AppRunner:
             as an argument to `uvicorn.run`.
     """
 
-    DirectionControlMap = {item.name.lower(): item for item in DirectionControlEnum}
+    DirectionControlMap: ClassVar = {item.name.lower(): item for item in DirectionControlEnum}
 
     def __init__(
         self,
         app: FastAPI,
-        server_class: Type[BaseLoomServer],
+        server_class: type[BaseLoomServer],
         favicon: bytes,
         app_package_name: str,
     ) -> None:
-        """Construct endpoints for FastAPI"""
         self.log = logging.getLogger(LOG_NAME)
 
         self.server_class = server_class
@@ -57,23 +56,25 @@ class AppRunner:
         self.app_package_name = app_package_name
         self.loom_server: BaseLoomServer | None = None
 
-        # The only rason we need a router is to set the lifespan
+        # Assign enpoints to the app.
+
+        # The only reason we need a router is to set the lifespan
         # but once we have it we may as well use it to add endpoints as well
         router = APIRouter(lifespan=self.lifespan)
 
-        @router.get("/")
-        async def get_wrapper() -> HTMLResponse:
-            return await self.get()
+        # Normally one would use decorators to specify endpoints
+        # but that doesn't work well with methods.
+        router.add_api_route("/", self.get, methods=["GET"])
 
         if self.favicon:
+            router.add_api_route(
+                "/favicon.ico",
+                self.get_favicon,
+                methods=["GET"],
+                include_in_schema=False,
+            )
 
-            @router.get("/favicon.ico", include_in_schema=False)
-            async def get_favicon():
-                return await self.get_favicon()
-
-        @router.websocket("/ws")
-        async def websocket_endpoint_wrapper(websocket: WebSocket):
-            return await self.websocket_endpoint(websocket)
+        router.add_websocket_route("/ws", self.websocket_endpoint)
 
         app.include_router(router)
 
@@ -83,9 +84,7 @@ class AppRunner:
         Subclasses may override this to add more options.
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument(
-            "num_shafts", type=int, help="The number of shafts the loom has."
-        )
+        parser.add_argument("num_shafts", type=int, help="The number of shafts the loom has.")
         parser.add_argument(
             "serial_port",
             help="Serial port connected to the loom, "
@@ -171,7 +170,7 @@ class AppRunner:
         return HTMLResponse(display_html)
 
     async def get_favicon(self) -> Response:
-        """Endpoint to get the favicon"""
+        """Endpoint to get the favicon."""
         return Response(content=self.favicon, media_type="image/x-icon")
 
     async def websocket_endpoint(self, websocket: WebSocket) -> None:

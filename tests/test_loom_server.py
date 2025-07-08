@@ -7,4 +7,6 @@ ExampleMockLoom.motion_duration = 0.1
 
 
 class TestLoomServer(BaseTestLoomServer):
+    """Run the standard loom server unit tests."""
+
     app = app

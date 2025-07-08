@@ -45,12 +45,6 @@
   [seguin_loom_server](https://pypi.org/project/seguin-loom-server/)
   and [toika_loom_server](https://pypi.org/project/toika-loom-server/).
 
-* To run mypy run:
-
-        MYPYPATH=src mypy .
-
-    This avoids complaints about module name ambiguity.
-
 * In mock mode the web page shows a few extra controls for debugging.
 
 * Warning: the web server's automatic reload feature, which reloads Python code whenever you save changes,
