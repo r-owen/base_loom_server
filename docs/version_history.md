@@ -1,10 +1,17 @@
 # Version History
 
+## 0.28 2025-07-10
+
+* Support dark mode.
+  Use the browser's dark/light setting (there is no manual override at this time).
+* Make button text black on iOS.
+* Fix a few minor bugs found by pyright.
+* Fix a few minor issues found by running mypy in strict mode.
+
 ## 0.27.1 2025-07-08
 
-* Make text black on iOS.
-* Fix images on main documentation page. (It turns out that the served documentation needs something slightly different than when running locally).
-* Corrected the version of ruff in pyproject.toml.
+* Fix images on the main documentation page.
+* Fix the version of ruff in pyproject.toml.
 
 ## 0.27 2025-07-07
 
