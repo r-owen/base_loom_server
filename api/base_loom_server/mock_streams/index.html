@@ -139,6 +139,10 @@
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.mock_streams.open_mock_connection">open_mock_connection</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.mock_streams.StreamData">StreamData</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.mock_streams.StreamData.is_closed">is_closed</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.mock_streams.BaseMockStream">BaseMockStream</a>
     </li>
@@ -316,7 +320,7 @@ Read exactly n bytes (including a terminator, if any).</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.readline" title="base_loom_server.mock_streams.MockStreamReader.readline">readline</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Read one line of data ending with self.terminator</p>
+Read one line of data ending with self.terminator.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.readuntil" title="base_loom_server.mock_streams.MockStreamReader.readuntil">readuntil</a></span>
@@ -326,7 +330,7 @@ Read until the specified value.</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.create_writer" title="base_loom_server.mock_streams.MockStreamReader.create_writer">create_writer</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Create a MockStreamWriter that writes to this reader</p>
+Create a MockStreamWriter that writes to this reader.</p>
 </li>
 </ul>
 </div>
@@ -411,7 +415,7 @@ is not terminated with self.terminator.</p>
 <a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.readline" title="base_loom_server.mock_streams.MockStreamReader.readline">readline</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">bytes</span></span>
 </p>
 <div class="mkapi-document">
-<p>Read one line of data ending with self.terminator</p>
+<p>Read one line of data ending with self.terminator.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -484,7 +488,7 @@ If <code>separator</code> not in self.terminator.</p>
 <a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.MockStreamReader.create_writer" title="base_loom_server.mock_streams.MockStreamReader.create_writer">create_writer</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a></span></span>
 </p>
 <div class="mkapi-document">
-<p>Create a MockStreamWriter that writes to this reader</p>
+<p>Create a MockStreamWriter that writes to this reader.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.MockStreamWriter">
 <span class="mkapi-object-link">
@@ -703,7 +707,7 @@ and <code>data</code> is not properly terminated.</p>
 <i class="fa-regular fa-square-minus"></i>
 </span>
 </span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.open_mock_connection" title="base_loom_server.mock_streams.open_mock_connection">open_mock_connection</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">terminator</span><span class="mkapi-equal">=</span><span class="mkapi-default"><span class="mkapi-tooltip" title="base_loom_server.mock_streams.DEFAULT_TERMINATOR">DEFAULT_TERMINATOR</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">tuple[<a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a>, <a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a>]</span></span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.open_mock_connection" title="base_loom_server.mock_streams.open_mock_connection">open_mock_connection</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">terminator</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bytes</span><span class="mkapi-equal"> = </span><span class="mkapi-default"><span class="mkapi-tooltip" title="base_loom_server.mock_streams.DEFAULT_TERMINATOR">DEFAULT_TERMINATOR</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">tuple[<a href="./#base_loom_server.mock_streams.MockStreamReader" title="base_loom_server.mock_streams.MockStreamReader">MockStreamReader</a>, <a href="./#base_loom_server.mock_streams.MockStreamWriter" title="base_loom_server.mock_streams.MockStreamWriter">MockStreamWriter</a>]</span></span>
 </p>
 <div class="mkapi-document">
 <p>Create a mock stream reader, writer pair.</p>
@@ -725,6 +729,40 @@ call reader.create_writer, and similarly for the returned writer.</p>
 <p>Data contained in a mock stream.</p>
 <p>Contains a queue of data and asyncio events to track data available
 and stream closing.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle methods">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Methods</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.mock_streams.StreamData.is_closed" title="base_loom_server.mock_streams.StreamData.is_closed">is_closed</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Return true if this stream has been closed.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.StreamData.is_closed">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/mock_streams/#base_loom_server.mock_streams.StreamData.is_closed" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.mock_streams.StreamData" title="base_loom_server.mock_streams.StreamData">StreamData</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.mock_streams.StreamData.is_closed" title="base_loom_server.mock_streams.StreamData.is_closed">is_closed</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">bool</span></span>
+</p>
+<div class="mkapi-document">
+<p>Return true if this stream has been closed.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.mock_streams.BaseMockStream">
 <span class="mkapi-object-link">

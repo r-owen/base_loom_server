@@ -365,14 +365,7 @@
 <span class="normal">208</span>
 <span class="normal">209</span>
 <span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;MockStreamReader&quot;</span><span class="p">,</span>
@@ -385,7 +378,7 @@
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Deque</span><span class="p">,</span> <span class="n">TypeAlias</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeAlias</span>
 
 <span class="n">DEFAULT_TERMINATOR</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 
@@ -400,9 +393,9 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">closed_event</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_available_event</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">:</span> <span class="n">Deque</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_is_closed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">is_closed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.mock_streams.StreamData.is_closed"><a href="../../../api/base_loom_server/mock_streams/#base_loom_server.mock_streams.StreamData.is_closed" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return true if this stream has been closed.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">()</span>
 
@@ -415,9 +408,7 @@
 <span class="sd">        terminator: Required terminator.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">sd</span><span class="p">:</span> <span class="n">StreamData</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">terminator</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="n">DEFAULT_TERMINATOR</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sd</span><span class="p">:</span> <span class="n">StreamData</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">terminator</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="n">DEFAULT_TERMINATOR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sd</span> <span class="o">=</span> <span class="n">StreamData</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sd</span> <span class="o">=</span> <span class="n">sd</span>
@@ -444,7 +435,7 @@
 
     <span class="k">def</span> <span class="nf">at_eof</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.mock_streams.MockStreamReader.at_eof"><a href="../../../api/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamReader.at_eof" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return true if closed and all buffered data has been read.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">queue</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">_is_closed</span><span class="p">()</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">queue</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">is_closed</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">readexactly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.mock_streams.MockStreamReader.readexactly"><a href="../../../api/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamReader.readexactly" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read exactly n bytes (including a terminator, if any).</span>
@@ -460,7 +451,7 @@
 <span class="sd">                is not terminated with self.terminator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">queue</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">_is_closed</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">is_closed</span><span class="p">():</span>
                 <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">data_available_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">data_available_event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
@@ -470,14 +461,13 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">IncompleteReadError</span><span class="p">(</span><span class="n">expected</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read len(</span><span class="si">{</span><span class="n">data</span><span class="si">=}</span><span class="s2">)=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">n</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read len(</span><span class="si">{</span><span class="n">data</span><span class="si">=}</span><span class="s2">)=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">n</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminator</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data </span><span class="si">{</span><span class="n">data</span><span class="si">=}</span><span class="s2"> does not end with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.mock_streams.MockStreamReader.readline"><a href="../../../api/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamReader.readline" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read one line of data ending with self.terminator</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read one line of data ending with self.terminator.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            AssertionError: If self.terminator is blank.</span>
@@ -485,7 +475,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;readline not allowed: self.terminator is blank&quot;</span><span class="p">)</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">queue</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">_is_closed</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">is_closed</span><span class="p">():</span>
                 <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">data_available_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">data_available_event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
@@ -504,14 +494,12 @@
         <span class="k">if</span> <span class="n">separator</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;readuntil must have a non-blank separator&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">separator</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;readuntil </span><span class="si">{</span><span class="n">separator</span><span class="si">=}</span><span class="s2"> not in required terminator </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="si">!r}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;readuntil </span><span class="si">{</span><span class="n">separator</span><span class="si">=}</span><span class="s2"> not in required terminator </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">create_writer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MockStreamWriter</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.mock_streams.MockStreamReader.create_writer"><a href="../../../api/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamReader.create_writer" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a MockStreamWriter that writes to this reader&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a MockStreamWriter that writes to this reader.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">MockStreamWriter</span><span class="p">(</span><span class="n">sd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="p">,</span> <span class="n">terminator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="p">)</span>
 
 
@@ -534,12 +522,12 @@
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.mock_streams.MockStreamWriter.close"><a href="../../../api/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamWriter.close" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the writer.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">closed_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sibling_sd</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sibling_sd</span><span class="o">.</span><span class="n">_is_closed</span><span class="p">():</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sibling_sd</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sibling_sd</span><span class="o">.</span><span class="n">is_closed</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sibling_sd</span><span class="o">.</span><span class="n">closed_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">is_closing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.mock_streams.MockStreamWriter.is_closing"><a href="../../../api/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamWriter.is_closing" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return true if the writer is closed or being closed.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">_is_closed</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">is_closed</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">drain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.mock_streams.MockStreamWriter.drain"><a href="../../../api/base_loom_server/mock_streams/#base_loom_server.mock_streams.MockStreamWriter.drain" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Push the current data to the reader.&quot;&quot;&quot;</span>
@@ -559,9 +547,7 @@
 <span class="sd">                and `data` is not properly terminated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminator</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Cannot write </span><span class="si">{</span><span class="n">data</span><span class="si">=}</span><span class="s2">: it must end with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="si">=!r}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot write </span><span class="si">{</span><span class="n">data</span><span class="si">=}</span><span class="s2">: it must end with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_closing</span><span class="p">():</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -579,7 +565,7 @@
 
 
 <span class="k">def</span> <span class="nf">open_mock_connection</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.mock_streams.open_mock_connection"><a href="../../../api/base_loom_server/mock_streams/#base_loom_server.mock_streams.open_mock_connection" title="Go to docs">docs</a></div>
-    <span class="n">terminator</span><span class="o">=</span><span class="n">DEFAULT_TERMINATOR</span><span class="p">,</span>
+    <span class="n">terminator</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="n">DEFAULT_TERMINATOR</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">MockStreamReader</span><span class="p">,</span> <span class="n">MockStreamWriter</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a mock stream reader, writer pair.</span>
 
@@ -588,7 +574,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">reader</span> <span class="o">=</span> <span class="n">MockStreamReader</span><span class="p">(</span><span class="n">terminator</span><span class="o">=</span><span class="n">terminator</span><span class="p">)</span>
     <span class="n">writer</span> <span class="o">=</span> <span class="n">MockStreamWriter</span><span class="p">(</span><span class="n">terminator</span><span class="o">=</span><span class="n">terminator</span><span class="p">)</span>
-    <span class="n">writer</span><span class="o">.</span><span class="n">_set_sibling_data</span><span class="p">(</span><span class="n">reader</span><span class="o">=</span><span class="n">reader</span><span class="p">)</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">_set_sibling_data</span><span class="p">(</span><span class="n">reader</span><span class="o">=</span><span class="n">reader</span><span class="p">)</span>  <span class="c1"># noqa: SLF001</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">reader</span><span class="p">,</span> <span class="n">writer</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 

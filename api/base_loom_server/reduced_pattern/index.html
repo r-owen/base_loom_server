@@ -223,7 +223,7 @@
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.Pick" title="base_loom_server.reduced_pattern.Pick">Pick</a></span>
  <span class="mkapi-dash">&mdash;</span>
-One pick of a pattern</p>
+One pick of a pattern.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a></span>
@@ -275,7 +275,7 @@ Convert a shaft word to a shaft set.</p>
 <span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.Pick" title="base_loom_server.reduced_pattern.Pick">Pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">color</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">shaft_word</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span></span>
 </p>
 <div class="mkapi-document">
-<p>One pick of a pattern</p>
+<p>One pick of a pattern.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle parameters">
@@ -365,12 +365,17 @@ with a simple display.</p>
 <li>
 <p><span class="mkapi-item-name">num_ends</span> : 
 <span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
-How many warp ends are in the pattern</p>
+How many warp ends are in the pattern.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name">num_picks</span> : 
 <span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
-How many weft picks are in the pattern</p>
+How many weft picks are in the pattern.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">thread_group_size</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
+Get the thread group size.</p>
 </li>
 </ul>
 </div>
@@ -487,7 +492,7 @@ Set pick_number.</p>
 <a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.num_ends" title="base_loom_server.reduced_pattern.ReducedPattern.num_ends">num_ends</a></span><span class="mkapi-signature"><span class="mkapi-colon">: </span><span class="mkapi-return">int</span></span>
 </p>
 <div class="mkapi-document">
-<p>How many warp ends are in the pattern</p>
+<p>How many warp ends are in the pattern.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.num_picks">
 <span class="mkapi-object-link">
@@ -504,7 +509,7 @@ Set pick_number.</p>
 <a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.num_picks" title="base_loom_server.reduced_pattern.ReducedPattern.num_picks">num_picks</a></span><span class="mkapi-signature"><span class="mkapi-colon">: </span><span class="mkapi-return">int</span></span>
 </p>
 <div class="mkapi-document">
-<p>How many weft picks are in the pattern</p>
+<p>How many weft picks are in the pattern.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.thread_group_size">
 <span class="mkapi-object-link">
@@ -518,9 +523,11 @@ Set pick_number.</p>
 </span>
 </span><span class="mkapi-object-kind">property</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.thread_group_size" title="base_loom_server.reduced_pattern.ReducedPattern.thread_group_size">thread_group_size</a></span>
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.thread_group_size" title="base_loom_server.reduced_pattern.ReducedPattern.thread_group_size">thread_group_size</a></span><span class="mkapi-signature"><span class="mkapi-colon">: </span><span class="mkapi-return">int</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Get the thread group size.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.reduced_pattern.ReducedPattern.check_end_number">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -619,7 +626,7 @@ See get_pick_number for more information.</p>
 </span>
 </span><span class="mkapi-object-kind">method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers" title="base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers">compute_next_end_numbers</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">thread_low_to_high</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">tuple[int, int, int]</span></span>
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers" title="base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers">compute_next_end_numbers</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">thread_low_to_high</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">tuple[int, int, int]</span></span>
 </p>
 <div class="mkapi-document">
 <p>Compute the next (end_number0, end_number1, end_repeat_number)
@@ -661,7 +668,7 @@ if self.end_number0 is invalid.</p>
 </span>
 </span><span class="mkapi-object-kind">method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers" title="base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers">compute_next_pick_numbers</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">direction_forward</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">tuple[int, int]</span></span>
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers" title="base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers">compute_next_pick_numbers</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">direction_forward</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">tuple[int, int]</span></span>
 </p>
 <div class="mkapi-document">
 <p>Compute (next pick_number, pick_repeat_number)
@@ -766,7 +773,7 @@ If <span class="mkapi-tooltip" title="base_loom_server.reduced_pattern.ReducedPa
 </span>
 </span><span class="mkapi-object-kind">method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.increment_end_number" title="base_loom_server.reduced_pattern.ReducedPattern.increment_end_number">increment_end_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">thread_low_to_high</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.increment_end_number" title="base_loom_server.reduced_pattern.ReducedPattern.increment_end_number">increment_end_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">thread_low_to_high</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Increment self.end_number0 in the specified direction.
@@ -808,7 +815,7 @@ if self.end_number0 is invalid.</p>
 </span>
 </span><span class="mkapi-object-kind">method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number" title="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number">increment_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">direction_forward</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+<a href="./#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number" title="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number">increment_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">direction_forward</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
 </p>
 <div class="mkapi-document">
 <p>Increment pick_number in the specified direction.</p>

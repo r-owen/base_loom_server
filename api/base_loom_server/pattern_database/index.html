@@ -138,8 +138,6 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.pattern_database.create_pattern_database">create_pattern_database</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.pattern_database.make_insert_str">make_insert_str</a>
-    </li>
     </ul>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../reduced_pattern/">base_loom_server.reduced_pattern</a>
@@ -205,7 +203,7 @@
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a></span>
  <span class="mkapi-dash">&mdash;</span>
-sqlite database to hold ReducedPattern instances</p>
+sqlite database to hold ReducedPattern instances.</p>
 </li>
 </ul>
 </div>
@@ -220,10 +218,9 @@ sqlite database to hold ReducedPattern instances</p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.create_pattern_database" title="base_loom_server.pattern_database.create_pattern_database">create_pattern_database</a></span></p>
-</li>
-<li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.make_insert_str" title="base_loom_server.pattern_database.make_insert_str">make_insert_str</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.create_pattern_database" title="base_loom_server.pattern_database.create_pattern_database">create_pattern_database</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Create the pattern database.</p>
 </li>
 </ul>
 </div>
@@ -240,7 +237,7 @@ sqlite database to hold ReducedPattern instances</p>
 <span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">dbpath</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="pathlib">pathlib</span>.<span class="mkapi-tooltip" title="pathlib.Path">Path</span></span><span class="mkapi-paren">)</span></span>
 </p>
 <div class="mkapi-document">
-<p>sqlite database to hold ReducedPattern instances</p>
+<p>sqlite database to hold ReducedPattern instances.</p>
 <p>The patterns are stored as json strings, but the
 the associated cache fields are saved in separate fields
 so they can be updated as they change (the values in the json
@@ -256,7 +253,9 @@ strings are ignored during pattern retrieval).</p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.init" title="base_loom_server.pattern_database.PatternDatabase.init">init</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.init" title="base_loom_server.pattern_database.PatternDatabase.init">init</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Create the database, if it does not exist.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.check_schema" title="base_loom_server.pattern_database.PatternDatabase.check_schema">check_schema</a></span>
@@ -274,10 +273,14 @@ Add a new pattern to the database.</p>
 Remove all patterns from the database.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.get_pattern" title="base_loom_server.pattern_database.PatternDatabase.get_pattern">get_pattern</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.get_pattern" title="base_loom_server.pattern_database.PatternDatabase.get_pattern">get_pattern</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Get the named pattern.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.get_pattern_names" title="base_loom_server.pattern_database.PatternDatabase.get_pattern_names">get_pattern_names</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.get_pattern_names" title="base_loom_server.pattern_database.PatternDatabase.get_pattern_names">get_pattern_names</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Get all pattern names.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_pick_number" title="base_loom_server.pattern_database.PatternDatabase.update_pick_number">update_pick_number</a></span>
@@ -326,7 +329,9 @@ Set the timestamp for the specified pattern.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.init" title="base_loom_server.pattern_database.PatternDatabase.init">init</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Create the database, if it does not exist.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.pattern_database.PatternDatabase.check_schema">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -339,7 +344,7 @@ Set the timestamp for the specified pattern.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.check_schema" title="base_loom_server.pattern_database.PatternDatabase.check_schema">check_schema</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span></span>
+<a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.check_schema" title="base_loom_server.pattern_database.PatternDatabase.check_schema">check_schema</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">bool</span></span>
 </p>
 <div class="mkapi-document">
 <p>Return True if the patterns table schema is as expected.</p>
@@ -392,8 +397,8 @@ are set to values from the pattern:</p>
 </ul>
 </li>
 <li>
-<p><span class="mkapi-item-name">max_patterns</span>
- <span class="mkapi-dash">&mdash;</span>
+<p><span class="mkapi-item-name">max_entries</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
 Maximum number of patterns to keep; no limit if 0.
 If &gt;0 and there are more patterns in the database,
 the oldest are purged.</p>
@@ -433,6 +438,7 @@ the oldest are purged.</p>
 <a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.get_pattern" title="base_loom_server.pattern_database.PatternDatabase.get_pattern">get_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="../reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a></span></span>
 </p>
 <div class="mkapi-document">
+<p>Get the named pattern.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -463,7 +469,9 @@ the oldest are purged.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.get_pattern_names" title="base_loom_server.pattern_database.PatternDatabase.get_pattern_names">get_pattern_names</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">list[str]</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Get all pattern names.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.pattern_database.PatternDatabase.update_pick_number">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -476,7 +484,7 @@ the oldest are purged.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_pick_number" title="base_loom_server.pattern_database.PatternDatabase.update_pick_number">update_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+<a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_pick_number" title="base_loom_server.pattern_database.PatternDatabase.update_pick_number">update_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pick_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Update weaving pick and repeat numbers for the specified pattern.</p>
@@ -493,7 +501,7 @@ the oldest are purged.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_end_number" title="base_loom_server.pattern_database.PatternDatabase.update_end_number">update_end_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">end_number0</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">end_number1</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">end_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+<a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_end_number" title="base_loom_server.pattern_database.PatternDatabase.update_end_number">update_end_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">end_number0</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">end_number1</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">end_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Update threading end &amp; repeat numbers for the specified pattern.</p>
@@ -510,7 +518,7 @@ the oldest are purged.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_separate_threading_repeats" title="base_loom_server.pattern_database.PatternDatabase.update_separate_threading_repeats">update_separate_threading_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">separate_threading_repeats</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+<a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_separate_threading_repeats" title="base_loom_server.pattern_database.PatternDatabase.update_separate_threading_repeats">update_separate_threading_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">separate_threading_repeats</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Update separate_threading_repeats for the specified pattern.</p>
@@ -527,7 +535,7 @@ the oldest are purged.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_separate_weaving_repeats" title="base_loom_server.pattern_database.PatternDatabase.update_separate_weaving_repeats">update_separate_weaving_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">separate_weaving_repeats</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+<a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_separate_weaving_repeats" title="base_loom_server.pattern_database.PatternDatabase.update_separate_weaving_repeats">update_separate_weaving_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">separate_weaving_repeats</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Update separate_weaving_repeats for the specified pattern.</p>
@@ -599,19 +607,9 @@ Timestamp in unix seconds, e.g. from time.time().</p>
 </span><span class="mkapi-object-kind">async</span>
 <span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.create_pattern_database" title="base_loom_server.pattern_database.create_pattern_database">create_pattern_database</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">dbpath</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="pathlib">pathlib</span>.<span class="mkapi-tooltip" title="pathlib.Path">Path</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a></span></span>
 </p>
-<div class="mkapi-document"></div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.pattern_database.make_insert_str">
-<span class="mkapi-object-link">
-
-
-<a href="../../../src/base_loom_server/pattern_database/#base_loom_server.pattern_database.make_insert_str" title="Go to source">source</a>
-<span class="mkapi-document-toggle" title="Toggle all docs">
-<i class="fa-regular fa-square-minus"></i>
-</span>
-</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.make_insert_str" title="base_loom_server.pattern_database.make_insert_str">make_insert_str</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">field_type_dict</span><span class="mkapi-paren">)</span></span>
-</p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Create the pattern database.</p>
+</div>
               
             </div>
           </div><footer>

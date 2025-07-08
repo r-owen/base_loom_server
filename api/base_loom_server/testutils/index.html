@@ -120,21 +120,21 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.Client.receive_dict">receive_dict</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.Client.change_direction">change_direction</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.Client.command_next_end">command_next_end</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.Client.command_next_pick">command_next_pick</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.Client.command_settings">command_settings</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.Client.select_pattern">select_pattern</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.Client.send_command">send_command</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.Client.upload_pattern">upload_pattern</a>
+    </li>
         </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.change_direction">change_direction</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.command_next_end">command_next_end</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.command_next_pick">command_next_pick</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.command_settings">command_settings</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.select_pattern">select_pattern</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.send_command">send_command</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.upload_pattern">upload_pattern</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a>
         <ul>
@@ -152,11 +152,9 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer.test_settings_command">test_settings_command</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer.test_settings_file">test_settings_file</a>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer.test_read_settings_file">test_read_settings_file</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer.test_upload">test_upload</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer.test_upload_too_many_shafts">test_upload_too_many_shafts</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.testutils.BaseTestLoomServer.test_weave_direction">test_weave_direction</a>
     </li>
@@ -223,7 +221,9 @@
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Client for testing loom servers.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a></span>
@@ -243,43 +243,9 @@ Base class for server tests.</p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.assert_replies_equal" title="base_loom_server.testutils.assert_replies_equal">assert_replies_equal</a></span></p>
-</li>
-<li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.change_direction" title="base_loom_server.testutils.change_direction">change_direction</a></span>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.assert_replies_equal" title="base_loom_server.testutils.assert_replies_equal">assert_replies_equal</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Command the loom to weave or thread in the opposite direction,
-and read and check the reply, if one is expected.</p>
-</li>
-<li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.command_next_end" title="base_loom_server.testutils.command_next_end">command_next_end</a></span>
- <span class="mkapi-dash">&mdash;</span>
-Command the next threading end group and test the replies.</p>
-</li>
-<li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.command_next_pick" title="base_loom_server.testutils.command_next_pick">command_next_pick</a></span>
- <span class="mkapi-dash">&mdash;</span>
-Command the next pick and test the replies.</p>
-</li>
-<li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.command_settings" title="base_loom_server.testutils.command_settings">command_settings</a></span>
- <span class="mkapi-dash">&mdash;</span>
-Send a  setting command and check the replies.</p>
-</li>
-<li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.select_pattern" title="base_loom_server.testutils.select_pattern">select_pattern</a></span>
- <span class="mkapi-dash">&mdash;</span>
-Tell the loom server to select a pattern.</p>
-</li>
-<li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.send_command" title="base_loom_server.testutils.send_command">send_command</a></span>
- <span class="mkapi-dash">&mdash;</span>
-Issue a command and return all replies.</p>
-</li>
-<li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.upload_pattern" title="base_loom_server.testutils.upload_pattern">upload_pattern</a></span>
- <span class="mkapi-dash">&mdash;</span>
-Upload a pattern to the loom server.</p>
+Assert a portion of a reply matches the expected data.</p>
 </li>
 </ul>
 </div>
@@ -296,6 +262,8 @@ Upload a pattern to the loom server.</p>
 <span class="mkapi-object-name"><a href="./#base_loom_server.testutils.assert_replies_equal" title="base_loom_server.testutils.assert_replies_equal">assert_replies_equal</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">reply</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_reply</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
+<p>Assert a portion of a reply matches the expected data.</p>
+<p>Only check items that are present in <code>expected_reply</code>.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -320,10 +288,11 @@ Upload a pattern to the loom server.</p>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
-</span><span class="mkapi-object-kind">dataclass</span>
+</span><span class="mkapi-object-kind">class</span>
 <span class="mkapi-object-name"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">test_client</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="starlette.testclient.TestClient">TestClient</span></span><span class="mkapi-comma">, </span><span class="mkapi-arg">loom_server</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="../base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a></span><span class="mkapi-comma">, </span><span class="mkapi-arg">mock_loom</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="../base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom" title="base_loom_server.base_mock_loom.BaseMockLoom">BaseMockLoom</a></span><span class="mkapi-comma">, </span><span class="mkapi-arg">websocket</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="base_loom_server.testutils.WebSocketType">WebSocketType</span></span><span class="mkapi-paren">)</span></span>
 </p>
 <div class="mkapi-document">
+<p>Client for testing loom servers.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle methods">
@@ -337,12 +306,48 @@ Upload a pattern to the loom server.</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.Client.send_dict" title="base_loom_server.testutils.Client.send_dict">send_dict</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Write a dict as json</p>
+Write a dict as json.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.Client.receive_dict" title="base_loom_server.testutils.Client.receive_dict">receive_dict</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Read json as a dict</p>
+Read json as a dict.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.Client.change_direction" title="base_loom_server.testutils.Client.change_direction">change_direction</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Command the loom to weave or thread in the opposite direction,
+and read and check the reply, if one is expected.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.Client.command_next_end" title="base_loom_server.testutils.Client.command_next_end">command_next_end</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Command the next threading end group and test the replies.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.Client.command_next_pick" title="base_loom_server.testutils.Client.command_next_pick">command_next_pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Command the next pick and test the replies.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.Client.command_settings" title="base_loom_server.testutils.Client.command_settings">command_settings</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Send a setting command and check the replies.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.Client.select_pattern" title="base_loom_server.testutils.Client.select_pattern">select_pattern</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Tell the loom server to select a pattern.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.Client.send_command" title="base_loom_server.testutils.Client.send_command">send_command</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Issue a command and return all replies.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.Client.upload_pattern" title="base_loom_server.testutils.Client.upload_pattern">upload_pattern</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Upload a pattern to the loom server.</p>
 </li>
 </ul>
 </div>
@@ -359,10 +364,10 @@ Read json as a dict</p>
 </span>
 </span><span class="mkapi-object-kind">method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.Client.send_dict" title="base_loom_server.testutils.Client.send_dict">send_dict</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">datadict</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span><span class="mkapi-paren">)</span></span>
+<a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.Client.send_dict" title="base_loom_server.testutils.Client.send_dict">send_dict</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">datadict</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Write a dict as json</p>
+<p>Write a dict as json.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.Client.receive_dict">
 <span class="mkapi-object-link">
@@ -379,18 +384,21 @@ Read json as a dict</p>
 <a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.Client.receive_dict" title="base_loom_server.testutils.Client.receive_dict">receive_dict</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span></span>
 </p>
 <div class="mkapi-document">
-<p>Read json as a dict</p>
+<p>Read json as a dict.</p>
 </div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.change_direction">
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.Client.change_direction">
 <span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
 
-
-<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.change_direction" title="Go to source">source</a>
+<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.Client.change_direction" title="Go to source">source</a>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
-</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.testutils.change_direction" title="base_loom_server.testutils.change_direction">change_direction</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">client</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.Client.change_direction" title="base_loom_server.testutils.Client.change_direction">change_direction</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Command the loom to weave or thread in the opposite direction,
@@ -408,23 +416,26 @@ else an oob command.</p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name">client</span> : 
-<span class="mkapi-item-type"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span> <span class="mkapi-dash">&mdash;</span>
+<p><span class="mkapi-item-name">client</span>
+ <span class="mkapi-dash">&mdash;</span>
 Client fixture.</p>
 </li>
 </ul>
 </div>
 </div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.command_next_end">
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.Client.command_next_end">
 <span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
 
-
-<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.command_next_end" title="Go to source">source</a>
+<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.Client.command_next_end" title="Go to source">source</a>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
-</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.testutils.command_next_end" title="base_loom_server.testutils.command_next_end">command_next_end</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">client</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_end_number0</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_end_number1</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">jump_pending</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.Client.command_next_end" title="base_loom_server.testutils.Client.command_next_end">command_next_end</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_end_number0</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_end_number1</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">jump_pending</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Command the next threading end group and test the replies.</p>
@@ -439,11 +450,6 @@ Client fixture.</p>
 </p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
-<li>
-<p><span class="mkapi-item-name">client</span> : 
-<span class="mkapi-item-type"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span> <span class="mkapi-dash">&mdash;</span>
-Client fixture.</p>
-</li>
 <li>
 <p><span class="mkapi-item-name">expected_end_number0</span> : 
 <span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
@@ -467,16 +473,19 @@ Is a jump pending?</p>
 </ul>
 </div>
 </div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.command_next_pick">
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.Client.command_next_pick">
 <span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
 
-
-<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.command_next_pick" title="Go to source">source</a>
+<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.Client.command_next_pick" title="Go to source">source</a>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
-</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.testutils.command_next_pick" title="base_loom_server.testutils.command_next_pick">command_next_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">client</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_shaft_word</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">jump_pending</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.Client.command_next_pick" title="base_loom_server.testutils.Client.command_next_pick">command_next_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_repeat_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_shaft_word</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">jump_pending</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Command the next pick and test the replies.</p>
@@ -492,8 +501,8 @@ Is a jump pending?</p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name">client</span> : 
-<span class="mkapi-item-type"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span> <span class="mkapi-dash">&mdash;</span>
+<p><span class="mkapi-item-name">client</span>
+ <span class="mkapi-dash">&mdash;</span>
 Client fixture.</p>
 </li>
 <li>
@@ -519,30 +528,36 @@ Is a jump pending?</p>
 </ul>
 </div>
 </div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.command_settings">
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.Client.command_settings">
 <span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
 
-
-<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.command_settings" title="Go to source">source</a>
+<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.Client.command_settings" title="Go to source">source</a>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
-</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.testutils.command_settings" title="base_loom_server.testutils.command_settings">command_settings</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">client</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span><span class="mkapi-comma">, </span><span class="mkapi-arg">should_fail</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-comma">, </span><span class="mkapi-star">**</span><span class="mkapi-arg">settings</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="typing.Any">Any</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.Client.command_settings" title="base_loom_server.testutils.Client.command_settings">command_settings</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">should_fail</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-comma">, </span><span class="mkapi-star">**</span><span class="mkapi-arg">settings</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="typing.Any">Any</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Send a  setting command and check the replies.</p>
+<p>Send a setting command and check the replies.</p>
 </div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.select_pattern">
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.Client.select_pattern">
 <span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
 
-
-<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.select_pattern" title="Go to source">source</a>
+<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.Client.select_pattern" title="Go to source">source</a>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
-</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.testutils.select_pattern" title="base_loom_server.testutils.select_pattern">select_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">client</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">check_defaults</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="../reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a></span></span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.Client.select_pattern" title="base_loom_server.testutils.Client.select_pattern">select_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">check_defaults</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="../reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a></span></span>
 </p>
 <div class="mkapi-document">
 <p>Tell the loom server to select a pattern.</p>
@@ -558,8 +573,8 @@ Is a jump pending?</p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name">client</span> : 
-<span class="mkapi-item-type"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span> <span class="mkapi-dash">&mdash;</span>
+<p><span class="mkapi-item-name">client</span>
+ <span class="mkapi-dash">&mdash;</span>
 Client test fixture.</p>
 </li>
 <li>
@@ -570,16 +585,11 @@ Pattern name.</p>
 <li>
 <p><span class="mkapi-item-name">check_defaults</span> : 
 <span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
-If true (the default), check that all pattern fields,</p>
-</li>
-<li>
-<p><span class="mkapi-item-name">that are updated as one weaves or threads (such as pick_value)</span></p>
-</li>
-<li>
-<p><span class="mkapi-item-name">have the expected default value. This is only appropriate for patterns</span>
- <span class="mkapi-dash">&mdash;</span>
+If true (the default), check that all pattern fields,
+that are updated as one weaves or threads (such as pick_value)
+have the expected default value. This is only safe for patterns
 that are newly loaded, or have not been woven on or threaded
-once loaded.</p>
+since being loaded.</p>
 </li>
 </ul>
 </div>
@@ -617,20 +627,66 @@ the actual current_pattern in the loom server
 </ul>
 </div>
 </div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.send_command">
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.Client.send_command">
 <span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
 
-
-<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.send_command" title="Go to source">source</a>
+<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.Client.send_command" title="Go to source">source</a>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
-</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.testutils.send_command" title="base_loom_server.testutils.send_command">send_command</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">client</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span><span class="mkapi-comma">, </span><span class="mkapi-arg">cmd_dict</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">should_fail</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">list[dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]]</span></span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.Client.send_command" title="base_loom_server.testutils.Client.send_command">send_command</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">cmd_dict</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">should_fail</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">list[dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]]</span></span>
 </p>
 <div class="mkapi-document">
 <p>Issue a command and return all replies.</p>
-<p>The final reply will be CommandDone and its success flag is checked</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">client</span>
+ <span class="mkapi-dash">&mdash;</span>
+Test self.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">cmd_dict</span> : 
+<span class="mkapi-item-type">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span> <span class="mkapi-dash">&mdash;</span>
+Command to send, as a dict.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">should_fail</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
+If true, upload should fail.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle returns">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Returns</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type"><span class="mkapi-tooltip" title="base_loom_server.testutils.Client.send_command.replies">replies</span></span> <span class="mkapi-dash">&mdash;</span>
+a list of replies (as dicts).
+The final reply will be CommandDone and its success flag is checked</p>
+</li>
+</ul>
+</div>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -647,16 +703,19 @@ the actual current_pattern in the loom server
 </ul>
 </div>
 </div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.upload_pattern">
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.Client.upload_pattern">
 <span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
 
-
-<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.upload_pattern" title="Go to source">source</a>
+<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.Client.upload_pattern" title="Go to source">source</a>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
-</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.testutils.upload_pattern" title="base_loom_server.testutils.upload_pattern">upload_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">client</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span><span class="mkapi-comma">, </span><span class="mkapi-arg">filepath</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="importlib.resources.abc.Traversable">Traversable</span></span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_names</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[str]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">should_fail</span><span class="mkapi-equal">=</span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.Client.upload_pattern" title="base_loom_server.testutils.Client.upload_pattern">upload_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">filepath</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="importlib.resources.abc.Traversable">Traversable</span></span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_names</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[str]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">should_fail</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Upload a pattern to the loom server.</p>
@@ -672,9 +731,9 @@ the actual current_pattern in the loom server
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name">client</span> : 
-<span class="mkapi-item-type"><a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a></span> <span class="mkapi-dash">&mdash;</span>
-Test client.</p>
+<p><span class="mkapi-item-name">client</span>
+ <span class="mkapi-dash">&mdash;</span>
+Test self.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name">filepath</span> : 
@@ -687,8 +746,8 @@ Path to pattern file.</p>
 Expected pattern names.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name">should_fail</span>
- <span class="mkapi-dash">&mdash;</span>
+<p><span class="mkapi-item-name">should_fail</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
 If true, upload should fail (and <code>expected_names</code>
 is ignored).</p>
 </li>
@@ -734,16 +793,24 @@ is ignored).</p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_end" title="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_end">test_jump_to_end</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_end" title="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_end">test_jump_to_end</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Test the jump_to_end command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick" title="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick">test_jump_to_pick</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick" title="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick">test_jump_to_pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Test the jump_to_pick command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_next_end" title="base_loom_server.testutils.BaseTestLoomServer.test_next_end">test_next_end</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_next_end" title="base_loom_server.testutils.BaseTestLoomServer.test_next_end">test_next_end</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Test advancing to the next end.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_next_pick" title="base_loom_server.testutils.BaseTestLoomServer.test_next_pick">test_next_pick</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_next_pick" title="base_loom_server.testutils.BaseTestLoomServer.test_next_pick">test_next_pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Test advancing to the next pick.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence" title="base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence">test_pattern_persistence</a></span>
@@ -751,22 +818,29 @@ is ignored).</p>
 Test pattern persistence, including current location.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_select_pattern" title="base_loom_server.testutils.BaseTestLoomServer.test_select_pattern">test_select_pattern</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_select_pattern" title="base_loom_server.testutils.BaseTestLoomServer.test_select_pattern">test_select_pattern</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Test the select_pattern command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_settings_command" title="base_loom_server.testutils.BaseTestLoomServer.test_settings_command">test_settings_command</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_settings_command" title="base_loom_server.testutils.BaseTestLoomServer.test_settings_command">test_settings_command</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Test the settings command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_settings_file" title="base_loom_server.testutils.BaseTestLoomServer.test_settings_file">test_settings_file</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_read_settings_file" title="base_loom_server.testutils.BaseTestLoomServer.test_read_settings_file">test_read_settings_file</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Test reading the settings file.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_upload" title="base_loom_server.testutils.BaseTestLoomServer.test_upload">test_upload</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_upload" title="base_loom_server.testutils.BaseTestLoomServer.test_upload">test_upload</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Test the upload command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_upload_too_many_shafts" title="base_loom_server.testutils.BaseTestLoomServer.test_upload_too_many_shafts">test_upload_too_many_shafts</a></span></p>
-</li>
-<li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_weave_direction" title="base_loom_server.testutils.BaseTestLoomServer.test_weave_direction">test_weave_direction</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_weave_direction" title="base_loom_server.testutils.BaseTestLoomServer.test_weave_direction">test_weave_direction</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Test changing the weave direction.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.create_test_client" title="base_loom_server.testutils.BaseTestLoomServer.create_test_client">create_test_client</a></span>
@@ -791,6 +865,7 @@ Create a test client fixture.</p>
 <a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_end" title="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_end">test_jump_to_end</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
+<p>Test the jump_to_end command.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -822,6 +897,7 @@ Create a test client fixture.</p>
 <a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick" title="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick">test_jump_to_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
+<p>Test the jump_to_pick command.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -852,7 +928,9 @@ Create a test client fixture.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_next_end" title="base_loom_server.testutils.BaseTestLoomServer.test_next_end">test_next_end</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Test advancing to the next end.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_next_pick">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -867,7 +945,9 @@ Create a test client fixture.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_next_pick" title="base_loom_server.testutils.BaseTestLoomServer.test_next_pick">test_next_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Test advancing to the next pick.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_pattern_persistence">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -900,7 +980,9 @@ Create a test client fixture.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_select_pattern" title="base_loom_server.testutils.BaseTestLoomServer.test_select_pattern">test_select_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Test the select_pattern command.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_settings_command">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -915,22 +997,26 @@ Create a test client fixture.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_settings_command" title="base_loom_server.testutils.BaseTestLoomServer.test_settings_command">test_settings_command</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_settings_file">
+<div class="mkapi-document">
+<p>Test the settings command.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_read_settings_file">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
 <i class="fa-solid fa-square-plus"></i>
 </span>
 
-<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_settings_file" title="Go to source">source</a>
+<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_read_settings_file" title="Go to source">source</a>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
 </span><span class="mkapi-object-kind">method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_settings_file" title="base_loom_server.testutils.BaseTestLoomServer.test_settings_file">test_settings_file</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+<a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_read_settings_file" title="base_loom_server.testutils.BaseTestLoomServer.test_read_settings_file">test_read_settings_file</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Test reading the settings file.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_upload">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -945,22 +1031,9 @@ Create a test client fixture.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_upload" title="base_loom_server.testutils.BaseTestLoomServer.test_upload">test_upload</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_upload_too_many_shafts">
-<span class="mkapi-object-link">
-<span class="mkapi-parent-toggle" title="Toggle class names">
-<i class="fa-solid fa-square-plus"></i>
-</span>
-
-<a href="../../../src/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_upload_too_many_shafts" title="Go to source">source</a>
-<span class="mkapi-document-toggle" title="Toggle all docs">
-<i class="fa-regular fa-square-minus"></i>
-</span>
-</span><span class="mkapi-object-kind">method</span>
-<span class="mkapi-object-parent">
-<a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_upload_too_many_shafts" title="base_loom_server.testutils.BaseTestLoomServer.test_upload_too_many_shafts">test_upload_too_many_shafts</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
-</p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Test the upload command.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.testutils.BaseTestLoomServer.test_weave_direction">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -976,6 +1049,7 @@ Create a test client fixture.</p>
 <a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.test_weave_direction" title="base_loom_server.testutils.BaseTestLoomServer.test_weave_direction">test_weave_direction</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
+<p>Test changing the weave direction.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -1004,7 +1078,7 @@ Create a test client fixture.</p>
 </span>
 </span><span class="mkapi-object-kind">classmethod</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.create_test_client" title="base_loom_server.testutils.BaseTestLoomServer.create_test_client">create_test_client</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">app</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="fastapi.applications.FastAPI">FastAPI</span> | None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">num_shafts</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-equal"> = </span><span class="mkapi-default">24</span><span class="mkapi-comma">, </span><span class="mkapi-arg">read_initial_state</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-comma">, </span><span class="mkapi-arg">upload_patterns</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[<span class="mkapi-tooltip" title="pathlib">pathlib</span>.<span class="mkapi-tooltip" title="pathlib.Path">Path</span>]</span><span class="mkapi-equal"> = </span><span class="mkapi-default">()</span><span class="mkapi-comma">, </span><span class="mkapi-arg">reset_db</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-comma">, </span><span class="mkapi-arg">db_path</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="pathlib">pathlib</span>.<span class="mkapi-tooltip" title="pathlib.Path">Path</span> | str | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_status_messages</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[str]</span><span class="mkapi-equal"> = </span><span class="mkapi-default">()</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_pattern_names</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[str]</span><span class="mkapi-equal"> = </span><span class="mkapi-default">()</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_current_pattern</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="../reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a> | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><span class="mkapi-tooltip" title="collections.abc.Generator">Generator</span>[<a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a>]</span></span>
+<a href="./#base_loom_server.testutils.BaseTestLoomServer" title="base_loom_server.testutils.BaseTestLoomServer">BaseTestLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.testutils.BaseTestLoomServer.create_test_client" title="base_loom_server.testutils.BaseTestLoomServer.create_test_client">create_test_client</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">app</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="fastapi.applications.FastAPI">FastAPI</span> | None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">num_shafts</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-equal"> = </span><span class="mkapi-default">24</span><span class="mkapi-comma">, </span><span class="mkapi-arg">read_initial_state</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-comma">, </span><span class="mkapi-arg">upload_patterns</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[<span class="mkapi-tooltip" title="pathlib">pathlib</span>.<span class="mkapi-tooltip" title="pathlib.Path">Path</span>]</span><span class="mkapi-equal"> = </span><span class="mkapi-default">()</span><span class="mkapi-comma">, </span><span class="mkapi-arg">reset_db</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-comma">, </span><span class="mkapi-arg">db_path</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="pathlib">pathlib</span>.<span class="mkapi-tooltip" title="pathlib.Path">Path</span> | str | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_status_messages</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[str]</span><span class="mkapi-equal"> = </span><span class="mkapi-default">()</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_pattern_names</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[str]</span><span class="mkapi-equal"> = </span><span class="mkapi-default">()</span><span class="mkapi-comma">, </span><span class="mkapi-arg">expected_current_pattern</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="../reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern" title="base_loom_server.reduced_pattern.ReducedPattern">ReducedPattern</a> | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><span class="mkapi-tooltip" title="collections.abc.Generator">Generator</span>[<a href="./#base_loom_server.testutils.Client" title="base_loom_server.testutils.Client">Client</a>]</span></span>
 </p>
 <div class="mkapi-document">
 <p>Create a test client fixture.</p>

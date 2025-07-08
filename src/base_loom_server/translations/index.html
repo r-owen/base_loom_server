@@ -278,13 +278,7 @@
 <span class="normal">121</span>
 <span class="normal">122</span>
 <span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">importlib.resources</span>
+<span class="normal">124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">importlib.resources</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">KeysView</span>
@@ -298,7 +292,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_language_names</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span><div class="mkapi-source-link" id="base_loom_server.translations.get_language_names"><a href="../../../api/base_loom_server/translations/#base_loom_server.translations.get_language_names" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of all language files found in LOCALE_FILES</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of all language files found in LOCALE_FILES.</span>
 
 <span class="sd">    Add &quot;English&quot; and omit &quot;default.json&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -307,7 +301,7 @@
         <span class="k">for</span> <span class="n">filepath</span> <span class="ow">in</span> <span class="n">LOCALE_FILES</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.json&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
         <span class="k">if</span> <span class="n">filepath</span><span class="o">.</span><span class="n">stem</span> <span class="o">!=</span> <span class="s2">&quot;default&quot;</span>
     <span class="p">]</span>
-    <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;English&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;English&quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">filenames</span><span class="p">)]</span>
 
 
 <span class="k">def</span> <span class="nf">get_default_dict</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span><div class="mkapi-source-link" id="base_loom_server.translations.get_default_dict"><a href="../../../api/base_loom_server/translations/#base_loom_server.translations.get_default_dict" title="Go to docs">docs</a></div>
@@ -320,9 +314,7 @@
 
 <span class="sd">    For keys in the METADATA_KEYS, the data is copied directly.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">default_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
-        <span class="n">LOCALE_FILES</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;default.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf_8&quot;</span><span class="p">)</span>
-    <span class="p">)</span>
+    <span class="n">default_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">LOCALE_FILES</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;default.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf_8&quot;</span><span class="p">))</span>
     <span class="n">translation_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">default_dict</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">METADATA_KEYS</span><span class="p">}</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">METADATA_KEYS</span><span class="p">:</span>
         <span class="n">translation_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -332,7 +324,7 @@
 <span class="k">def</span> <span class="nf">get_translation_dict</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.translations.get_translation_dict"><a href="../../../api/base_loom_server/translations/#base_loom_server.translations.get_translation_dict" title="Go to docs">docs</a></div>
     <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="nb">dir</span><span class="p">:</span> <span class="n">Traversable</span> <span class="o">=</span> <span class="n">LOCALE_FILES</span><span class="p">,</span>
+    <span class="n">dir_</span><span class="p">:</span> <span class="n">Traversable</span> <span class="o">=</span> <span class="n">LOCALE_FILES</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the translation dict for the specified language.</span>
 
@@ -340,7 +332,7 @@
 <span class="sd">        language: Name of one of the available language files,</span>
 <span class="sd">            or &quot;English&quot; for English. Must not be &quot;&quot; or &quot;default&quot;.</span>
 <span class="sd">        logger: Logger, which is created if None.</span>
-<span class="sd">        dir: Directory containing the non-default translation files.</span>
+<span class="sd">        dir_: Directory containing the non-default translation files.</span>
 <span class="sd">            Use the default value except in unit tests.</span>
 
 <span class="sd">    Raises:</span>
@@ -364,10 +356,8 @@
     <span class="n">next_language</span> <span class="o">=</span> <span class="n">language</span>
     <span class="k">while</span> <span class="n">next_language</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;English&quot;</span><span class="p">}:</span>
         <span class="k">if</span> <span class="n">next_language</span> <span class="ow">in</span> <span class="n">languages_read</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RecursionError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Circular reference for </span><span class="si">{</span><span class="n">language</span><span class="si">=}</span><span class="s2">, found reading </span><span class="si">{</span><span class="n">next_language</span><span class="si">=}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-        <span class="n">next_file</span> <span class="o">=</span> <span class="nb">dir</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">next_language</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RecursionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Circular reference for </span><span class="si">{</span><span class="n">language</span><span class="si">=}</span><span class="s2">, found reading </span><span class="si">{</span><span class="n">next_language</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">next_file</span> <span class="o">=</span> <span class="n">dir_</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">next_language</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
         <span class="n">next_dict</span> <span class="o">=</span> <span class="n">read_one_translation_file</span><span class="p">(</span>
             <span class="n">translation_file</span><span class="o">=</span><span class="n">next_file</span><span class="p">,</span> <span class="n">valid_keys</span><span class="o">=</span><span class="n">valid_keys</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span>
         <span class="p">)</span>
@@ -406,9 +396,7 @@
         <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Translation file </span><span class="si">{</span><span class="n">translation_file</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading translation file </span><span class="si">{</span><span class="n">translation_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">raw_translation_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">translation_file</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf_8&quot;</span><span class="p">))</span>
-    <span class="n">translation_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">raw_translation_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">valid_keys</span>
-    <span class="p">}</span>
+    <span class="n">translation_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">raw_translation_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">valid_keys</span><span class="p">}</span>
     <span class="n">extra_keys</span> <span class="o">=</span> <span class="n">raw_translation_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">-</span> <span class="n">translation_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">extra_keys</span><span class="p">:</span>
         <span class="n">extra_keys_str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">extra_keys</span><span class="p">))</span>

@@ -1305,58 +1305,9 @@
 <span class="normal">1148</span>
 <span class="normal">1149</span>
 <span class="normal">1150</span>
-<span class="normal">1151</span>
-<span class="normal">1152</span>
-<span class="normal">1153</span>
-<span class="normal">1154</span>
-<span class="normal">1155</span>
-<span class="normal">1156</span>
-<span class="normal">1157</span>
-<span class="normal">1158</span>
-<span class="normal">1159</span>
-<span class="normal">1160</span>
-<span class="normal">1161</span>
-<span class="normal">1162</span>
-<span class="normal">1163</span>
-<span class="normal">1164</span>
-<span class="normal">1165</span>
-<span class="normal">1166</span>
-<span class="normal">1167</span>
-<span class="normal">1168</span>
-<span class="normal">1169</span>
-<span class="normal">1170</span>
-<span class="normal">1171</span>
-<span class="normal">1172</span>
-<span class="normal">1173</span>
-<span class="normal">1174</span>
-<span class="normal">1175</span>
-<span class="normal">1176</span>
-<span class="normal">1177</span>
-<span class="normal">1178</span>
-<span class="normal">1179</span>
-<span class="normal">1180</span>
-<span class="normal">1181</span>
-<span class="normal">1182</span>
-<span class="normal">1183</span>
-<span class="normal">1184</span>
-<span class="normal">1185</span>
-<span class="normal">1186</span>
-<span class="normal">1187</span>
-<span class="normal">1188</span>
-<span class="normal">1189</span>
-<span class="normal">1190</span>
-<span class="normal">1191</span>
-<span class="normal">1192</span>
-<span class="normal">1193</span>
-<span class="normal">1194</span>
-<span class="normal">1195</span>
-<span class="normal">1196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">1151</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;BaseLoomServer&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DEFAULT_DATABASE_PATH&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;MOCK_PORT_NAME&quot;</span><span class="p">,</span>
-<span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;BaseLoomServer&quot;</span><span class="p">,</span> <span class="s2">&quot;DEFAULT_DATABASE_PATH&quot;</span><span class="p">,</span> <span class="s2">&quot;MOCK_PORT_NAME&quot;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
@@ -1368,22 +1319,24 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span><span class="p">,</span> <span class="n">TracebackType</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Self</span><span class="p">,</span> <span class="n">Type</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Self</span>
 
 <span class="kn">from</span> <span class="nn">dtx_to_wif</span> <span class="kn">import</span> <span class="n">read_pattern_data</span>
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">WebSocket</span><span class="p">,</span> <span class="n">WebSocketDisconnect</span>
 <span class="kn">from</span> <span class="nn">fastapi.websockets</span> <span class="kn">import</span> <span class="n">WebSocketState</span>
-<span class="kn">from</span> <span class="nn">serial_asyncio</span> <span class="kn">import</span> <span class="n">open_serial_connection</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">serial_asyncio</span> <span class="kn">import</span> <span class="n">open_serial_connection</span>  <span class="c1"># type: ignore[import-untyped]</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">client_replies</span>
-<span class="kn">from</span> <span class="nn">.base_mock_loom</span> <span class="kn">import</span> <span class="n">BaseMockLoom</span>
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">LOG_NAME</span>
 <span class="kn">from</span> <span class="nn">.enums</span> <span class="kn">import</span> <span class="n">DirectionControlEnum</span><span class="p">,</span> <span class="n">MessageSeverityEnum</span><span class="p">,</span> <span class="n">ModeEnum</span><span class="p">,</span> <span class="n">ShaftStateEnum</span>
-<span class="kn">from</span> <span class="nn">.mock_streams</span> <span class="kn">import</span> <span class="n">StreamReaderType</span><span class="p">,</span> <span class="n">StreamWriterType</span>
 <span class="kn">from</span> <span class="nn">.pattern_database</span> <span class="kn">import</span> <span class="n">PatternDatabase</span>
 <span class="kn">from</span> <span class="nn">.reduced_pattern</span> <span class="kn">import</span> <span class="n">ReducedPattern</span><span class="p">,</span> <span class="n">reduced_pattern_from_pattern_data</span>
 <span class="kn">from</span> <span class="nn">.translations</span> <span class="kn">import</span> <span class="n">get_language_names</span><span class="p">,</span> <span class="n">get_translation_dict</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compute_num_within_and_repeats</span><span class="p">,</span> <span class="n">compute_total_num</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.base_mock_loom</span> <span class="kn">import</span> <span class="n">BaseMockLoom</span>
+    <span class="kn">from</span> <span class="nn">.mock_streams</span> <span class="kn">import</span> <span class="n">StreamReaderType</span><span class="p">,</span> <span class="n">StreamWriterType</span>
 
 <span class="c1"># The maximum number of patterns that can be in the history</span>
 <span class="n">MAX_PATTERNS</span> <span class="o">=</span> <span class="mi">25</span>
@@ -1404,7 +1357,7 @@
 
 
 <span class="k">class</span> <span class="nc">CloseCode</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.CloseCode"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.CloseCode" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;WebSocket close codes</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;WebSocket close codes.</span>
 
 <span class="sd">    A small subset of</span>
 <span class="sd">    https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4</span>
@@ -1460,9 +1413,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">terminator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom_type</span><span class="o">.</span><span class="n">terminator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">LOG_NAME</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">serial_port</span><span class="si">=!r}</span><span class="s2">, </span><span class="si">{</span><span class="n">reset_db</span><span class="si">=!r}</span><span class="s2">, </span><span class="si">{</span><span class="n">verbose</span><span class="si">=!r}</span><span class="s2">, </span><span class="si">{</span><span class="n">db_path</span><span class="si">=!r}</span><span class="s2">)&quot;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">serial_port</span><span class="si">=!r}</span><span class="s2">, </span><span class="si">{</span><span class="n">reset_db</span><span class="si">=!r}</span><span class="s2">, </span><span class="si">{</span><span class="n">verbose</span><span class="si">=!r}</span><span class="s2">, </span><span class="si">{</span><span class="n">db_path</span><span class="si">=!r}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">serial_port</span> <span class="o">=</span> <span class="n">serial_port</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
@@ -1471,18 +1422,14 @@
             <span class="n">serial_port</span><span class="o">=</span><span class="n">serial_port</span><span class="p">,</span>
             <span class="n">is_mock</span><span class="o">=</span><span class="n">serial_port</span> <span class="o">==</span> <span class="n">MOCK_PORT_NAME</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">DEFAULT_DATABASE_PATH</span> <span class="k">if</span> <span class="n">db_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">db_path</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_DATABASE_PATH</span> <span class="k">if</span> <span class="n">db_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">db_path</span>
         <span class="k">if</span> <span class="n">reset_db</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resetting database </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="si">}</span><span class="s2"> by request&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset_database</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span> <span class="o">=</span> <span class="n">PatternDatabase</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Resetting database </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="si">}</span><span class="s2"> because open failed: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resetting database </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="si">}</span><span class="s2"> because open failed: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset_database</span><span class="p">()</span>
 
         <span class="c1"># Compute initial value for direction_control.</span>
@@ -1508,20 +1455,18 @@
             <span class="n">thread_back_to_front</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">SETTINGS_FILE_NAME</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span> <span class="o">=</span> <span class="n">get_translation_dict</span><span class="p">(</span>
-            <span class="n">language</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span> <span class="o">=</span> <span class="n">get_translation_dict</span><span class="p">(</span><span class="n">language</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load_settings</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_settings</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loom_connecting</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loom_disconnecting</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">client_connected</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loom_connecting</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loom_disconnecting</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_connected</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span><span class="p">:</span> <span class="n">ShaftStateEnum</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">UNKNOWN</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_reports_motion</span> <span class="k">else</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">DONE</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">shaft_word</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shaft_word</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span><span class="p">:</span> <span class="n">BaseMockLoom</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_reader</span><span class="p">:</span> <span class="n">StreamReaderType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_writer</span><span class="p">:</span> <span class="n">StreamWriterType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1532,7 +1477,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpPickNumber</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpEndNumber</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -1543,10 +1488,11 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">write_shafts_to_loom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shaft_word</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.write_shafts_to_loom"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.write_shafts_to_loom" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the shaft word to the loom.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">enable_software_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.enable_software_direction"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.enable_software_direction" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Is software direction control enabled?&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">direction_control</span> <span class="ow">in</span> <span class="p">{</span>
             <span class="n">DirectionControlEnum</span><span class="o">.</span><span class="n">FULL</span><span class="p">,</span>
             <span class="n">DirectionControlEnum</span><span class="o">.</span><span class="n">SOFTWARE</span><span class="p">,</span>
@@ -1558,9 +1504,7 @@
 
 <span class="sd">        Takes into account settings and self.direction_forward.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">low_to_high</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_back_to_front</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_right_to_left</span>
-        <span class="p">)</span>
+        <span class="n">low_to_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_back_to_front</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_right_to_left</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">end1_on_right</span><span class="p">:</span>
             <span class="n">low_to_high</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">low_to_high</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">:</span>
@@ -1576,7 +1520,6 @@
 <span class="sd">        By default this is a no-op so subclases need not call</span>
 <span class="sd">        `super().__post_init__()`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">loom_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.loom_connected"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.loom_connected" title="Go to docs">docs</a></div>
@@ -1589,11 +1532,13 @@
         <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.start"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.start" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run asynchronous startup tasks.</span>
+
+<span class="sd">        Initialize the pattern database and connect to the loom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">check_schema</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Resetting database </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="si">}</span><span class="s2"> because the schema is outdated&quot;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resetting database </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="si">}</span><span class="s2"> because the schema is outdated&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset_database</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
         <span class="c1"># Restore current pattern, if any</span>
@@ -1601,10 +1546,8 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_pattern</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect_to_loom</span><span class="p">()</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.close"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.close" title="Go to docs">docs</a></div>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">stop_read_loom</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">stop_read_client</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.close"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.close" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">stop_read_loom</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">stop_read_client</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect from client and loom and stop all tasks.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_writer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">stop_read_loom</span><span class="p">:</span>
@@ -1647,7 +1590,6 @@
 <span class="sd">        Usually a no-op, because a well designed loom automatically</span>
 <span class="sd">        reports its own state when software connects to it.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">connect_to_loom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect to the loom.</span>
@@ -1666,9 +1608,7 @@
                     <span class="n">num_shafts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loom_info</span><span class="o">.</span><span class="n">num_shafts</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span>
                 <span class="p">)</span>
                 <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="c1"># make mypy happy</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">loom_reader</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_writer</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span><span class="o">.</span><span class="n">open_client_connection</span><span class="p">()</span>
-                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">loom_reader</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_writer</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span><span class="o">.</span><span class="n">open_client_connection</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">loom_reader</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_writer</span> <span class="o">=</span> <span class="k">await</span> <span class="n">open_serial_connection</span><span class="p">(</span>
                     <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loom_info</span><span class="o">.</span><span class="n">serial_port</span><span class="p">,</span> <span class="n">baudrate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baud_rate</span>
@@ -1677,9 +1617,7 @@
                 <span class="c1"># try to purge input buffer</span>
                 <span class="n">transport</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loom_writer</span><span class="p">,</span> <span class="s2">&quot;transport&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">transport</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: Could not flush read buffer; no transport found&quot;</span>
-                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: Could not flush read buffer; no transport found&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">serial_instance</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s2">&quot;_serial&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">serial_instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1690,9 +1628,7 @@
                         <span class="n">serial_instance</span><span class="o">.</span><span class="n">reset_input_buffer</span><span class="p">()</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: Read buffer flushed&quot;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: Read buffer did not need to be flushed; it was empty&quot;</span>
-                        <span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: Read buffer did not need to be flushed; it was empty&quot;</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">loom_connecting</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_loom_connection_state</span><span class="p">()</span>
@@ -1715,9 +1651,7 @@
 <span class="sd">            websocket: Connection to the client.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_connected</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: a client was already connected; closing that connection&quot;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: a client was already connected; closing that connection&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">disconnect_client</span><span class="p">()</span>
         <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span> <span class="o">=</span> <span class="n">websocket</span>
@@ -1725,14 +1659,15 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_connected</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect_to_loom</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="c1"># Note: connect_to_loom already reported the</span>
                 <span class="c1"># (lack of) connection state, including the reason.</span>
                 <span class="c1"># But log it here.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: failed to reconnect to the loom: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: failed to reconnect to the loom&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">done_task</span>
-<div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.disconnect_client"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.disconnect_client" title="Go to docs">docs</a></div>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">disconnect_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel_read_client_loop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">disconnect_client</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.disconnect_client"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.disconnect_client" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the current client, if any.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">read_client_task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
         <span class="n">websocket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1744,8 +1679,7 @@
             <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">disconnect_from_loom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect from the loom. A no-op if already disconnected.&quot;&quot;&quot;</span>
-
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the loom. A no-op if already disconnected.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_connected</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_disconnecting</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1767,9 +1701,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_reader</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_reader</span><span class="o">.</span><span class="n">readuntil</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="p">)</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">clear_jump_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear self.jump_end and report value if changed or force_output</span>
+<div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">clear_jump_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear self.jump_end and report value if changed or force_output.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            force_output: If true, report `JumpEndNumber`,</span>
@@ -1780,9 +1714,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span> <span class="o">=</span> <span class="n">null_jump_end</span>
         <span class="k">if</span> <span class="n">do_report</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_jump_end</span><span class="p">()</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">clear_jump_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear self.jump_pick and report value if changed or force_output</span>
+<div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">clear_jump_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear self.jump_pick and report value if changed or force_output.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            force_output: If true, report `JumpPickNumber`,</span>
@@ -1794,12 +1728,19 @@
         <span class="k">if</span> <span class="n">do_report</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_jump_pick</span><span class="p">()</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">clear_jumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jumps"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">clear_jumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jumps"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all jumps and report values if changed or force_output.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jump_end</span><span class="p">(</span><span class="n">force_output</span><span class="o">=</span><span class="n">force_output</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jump_pick</span><span class="p">(</span><span class="n">force_output</span><span class="o">=</span><span class="n">force_output</span><span class="p">)</span>
-<div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names" title="Go to docs">docs</a></div>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_clear_pattern_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_clear_pattern_names</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names" title="Go to docs">docs</a></div>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">,</span>  <span class="c1"># noqa: ARG002</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the clear_pattern_names command.</span>
+
+<span class="sd">        Clear all patterns except the current pattern.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Clear the pattern database</span>
         <span class="c1"># Then add the current pattern (if any)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">clear_database</span><span class="p">()</span>
@@ -1809,14 +1750,14 @@
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_pattern_names</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_direction"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_direction" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the direction command: set direction.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">forward</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_direction</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_jump_to_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the jump_to_end command.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;cannot jump to an end&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;no pattern&quot;</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;cannot jump to an end&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;no pattern&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpEndNumber</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1826,9 +1767,7 @@
                 <span class="n">total_num</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span><span class="p">,</span>
                 <span class="n">repeat_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">num_ends</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">end_number1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">compute_end_number1</span><span class="p">(</span>
-                <span class="n">end_number0</span><span class="o">=</span><span class="n">end_number0</span>
-            <span class="p">)</span>
+            <span class="n">end_number1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">compute_end_number1</span><span class="p">(</span><span class="n">end_number0</span><span class="o">=</span><span class="n">end_number0</span><span class="p">)</span>
             <span class="n">total_end_number1</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
                 <span class="n">num_within</span><span class="o">=</span><span class="n">end_number1</span><span class="p">,</span>
                 <span class="n">repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
@@ -1845,10 +1784,9 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_jump_end</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_jump_to_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the jump_to_pick command.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;cannot jump to a pick&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;no pattern&quot;</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;cannot jump to a pick&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;no pattern&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpPickNumber</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1866,15 +1804,18 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_jump_pick</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_mode"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the mode command: set the mode.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">ModeEnum</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_mode</span><span class="p">()</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_select_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the select_pattern command.&quot;&quot;&quot;</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">name</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_pattern</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_separate_threading_repeats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the separate_threading_repeats command.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">update_separate_threading_repeats</span><span class="p">(</span>
@@ -1885,6 +1826,7 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_separate_threading_repeats</span><span class="p">()</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_separate_weaving_repeats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the separate_weaving_repeats command.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">update_separate_weaving_repeats</span><span class="p">(</span>
@@ -1895,19 +1837,21 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_separate_weaving_repeats</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_settings"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_settings" title="Go to docs">docs</a></div>
-        <span class="n">bad_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the settings command: set one or more settings.&quot;&quot;&quot;</span>
+        <span class="n">bad_keys</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">new_settings</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">command</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Use raw_value to avoid warnings about overwriting a loop variable.</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">raw_value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">command</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">raw_value</span>
             <span class="c1"># Check values</span>
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;direction_control&quot;</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;direction_control&quot;</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">DirectionControlEnum</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">supports_full_direction_control</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">DirectionControlEnum</span><span class="o">.</span><span class="n">FULL</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: loom supports full direction control&quot;</span>
-                        <span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: loom supports full direction control&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">DirectionControlEnum</span><span class="o">.</span><span class="n">FULL</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: loom doesn&#39;t support full direction control&quot;</span>
@@ -1915,11 +1859,9 @@
             <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;language&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span> <span class="o">=</span> <span class="n">get_translation_dict</span><span class="p">(</span>
-                            <span class="n">language</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span>
-                        <span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span> <span class="o">=</span> <span class="n">get_translation_dict</span><span class="p">(</span><span class="n">language</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load language </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load language </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">expected_type</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
                     <span class="n">loom_name</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
@@ -1932,9 +1874,7 @@
                     <span class="n">bad_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: must be type </span><span class="si">{</span><span class="n">expected_type</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: must be type </span><span class="si">{</span><span class="n">expected_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;thread_group_size&quot;</span><span class="p">:</span>
                     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>  <span class="c1"># Make mypy happy</span>
                     <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">MAX_THREAD_GROUP_SIZE</span><span class="p">:</span>
@@ -1949,6 +1889,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">save_settings</span><span class="p">()</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_thread_group_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the thread_group_size command.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">update_thread_group_size</span><span class="p">(</span>
@@ -1959,12 +1900,18 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_thread_group_size</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_oobcommand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the oob_command command.</span>
+
+<span class="sd">        Send an out-of-band command to the mock loom.</span>
+<span class="sd">        Ignored with a logged warning if the loom is not the mock loom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span><span class="o">.</span><span class="n">oob_command</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">command</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring oob command </span><span class="si">{</span><span class="n">command</span><span class="o">.</span><span class="n">command</span><span class="si">!r}</span><span class="s2">: no mock loom&quot;</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_upload"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_upload" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the upload command.&quot;&quot;&quot;</span>
         <span class="n">suffix</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="n">cmd_data</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">data</span>
@@ -1974,9 +1921,7 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: read weaving pattern </span><span class="si">{</span><span class="n">command</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">: data=</span><span class="si">{</span><span class="n">cmd_data</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="n">pattern_data</span> <span class="o">=</span> <span class="n">read_pattern_data</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="n">reduced_pattern_from_pattern_data</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">pattern_data</span>
-        <span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">reduced_pattern_from_pattern_data</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">pattern_data</span><span class="p">)</span>
         <span class="c1"># Check that the pattern does not require too many shafts.</span>
         <span class="c1"># max_shaft_num needs +1 because pattern.threading is 0-based.</span>
         <span class="n">max_shaft_num</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
@@ -1990,6 +1935,7 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_pattern</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_threading_shaft_word</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current threading shaft word.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">get_threading_shaft_word</span><span class="p">()</span>
@@ -2016,9 +1962,7 @@
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span><span class="p">:</span>
                 <span class="c1"># Command a new pick, if there is one.</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">set_current_pick_number</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_number</span>
-                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">set_current_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_number</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">increment_pick_number</span><span class="p">()</span>
@@ -2031,9 +1975,7 @@
                         <span class="p">)</span>
                         <span class="k">return</span> <span class="kc">False</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_repeat_number</span>
-                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_repeat_number</span>
                 <span class="n">pick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">get_current_pick</span><span class="p">()</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="n">pick</span><span class="o">.</span><span class="n">shaft_word</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
@@ -2051,7 +1993,6 @@
                     <span class="k">try</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">increment_end_number</span><span class="p">()</span>
                     <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Next end raised IndexError&quot;</span><span class="p">)</span>
                         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
                             <span class="n">client_replies</span><span class="o">.</span><span class="n">StatusMessage</span><span class="p">(</span>
                                 <span class="n">message</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;At start of threading&quot;</span><span class="p">),</span>
@@ -2082,17 +2023,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">increment_pick_number</span><span class="p">(</span>
-            <span class="n">direction_forward</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">increment_pick_number</span><span class="p">(</span><span class="n">direction_forward</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">increment_end_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.increment_end_number"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment end_number0 in the current direction.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">increment_end_number</span><span class="p">(</span>
-            <span class="n">thread_low_to_high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_low_to_high</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">increment_end_number</span><span class="p">(</span><span class="n">thread_low_to_high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_low_to_high</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">load_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.load_settings"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.load_settings" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the settings file, if it exists.</span>
@@ -2106,7 +2043,7 @@
             <span class="k">return</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">settings_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
@@ -2115,7 +2052,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
             <span class="k">return</span>
 
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">settings_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Use raw_value to avoid warnings about overwriting a loop variable.</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">raw_value</span> <span class="ow">in</span> <span class="n">settings_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">raw_value</span>
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">default_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -2127,9 +2066,7 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="n">DirectionControlEnum</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: invalid enum value&quot;</span>
-                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: invalid enum value&quot;</span><span class="p">)</span>
                     <span class="k">continue</span>
 
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">supports_full_direction_control</span><span class="p">:</span>
@@ -2146,9 +2083,7 @@
 
             <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;language&quot;</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span> <span class="o">=</span> <span class="n">get_translation_dict</span><span class="p">(</span>
-                        <span class="n">language</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span>
-                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span> <span class="o">=</span> <span class="n">get_translation_dict</span><span class="p">(</span><span class="n">language</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load translation dict </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="k">continue</span>
@@ -2157,12 +2092,11 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: invalid value&quot;</span><span class="p">)</span>
                 <span class="k">continue</span>
 
-            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;thread_group_size&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">MAX_THREAD_GROUP_SIZE</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: not in range [1, </span><span class="si">{</span><span class="n">MAX_THREAD_GROUP_SIZE</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="p">)</span>
-                    <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;thread_group_size&quot;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">MAX_THREAD_GROUP_SIZE</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Ignoring setting </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">: not in range [1, </span><span class="si">{</span><span class="n">MAX_THREAD_GROUP_SIZE</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
 
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
@@ -2194,19 +2128,14 @@
                     <span class="n">command</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                         <span class="n">msg_summary</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="p">(</span>
-                            <span class="n">command</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;upload&quot;</span>
-                            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg_summary</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">MAX_LOG_PATTERN_LEN</span>
-                        <span class="p">):</span>
+                        <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;upload&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg_summary</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">MAX_LOG_PATTERN_LEN</span><span class="p">:</span>
                             <span class="n">msg_summary</span> <span class="o">=</span> <span class="n">msg_summary</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">MAX_LOG_PATTERN_LEN</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: read command </span><span class="si">{</span><span class="n">msg_summary</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">cmd_handler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;cmd_</span><span class="si">{</span><span class="n">cmd_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;command </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_done</span><span class="p">(</span>
-                        <span class="n">cmd_type</span><span class="o">=</span><span class="n">cmd_type</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span>
-                    <span class="p">)</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_done</span><span class="p">(</span><span class="n">cmd_type</span><span class="o">=</span><span class="n">cmd_type</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
                 <span class="c1"># Execute the command</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -2220,15 +2149,11 @@
                     <span class="k">await</span> <span class="n">cmd_handler</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
                     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_done</span><span class="p">(</span><span class="n">cmd_type</span><span class="o">=</span><span class="n">cmd_type</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">except</span> <span class="n">CommandError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_done</span><span class="p">(</span>
-                        <span class="n">cmd_type</span><span class="o">=</span><span class="n">cmd_type</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                    <span class="p">)</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_done</span><span class="p">(</span><span class="n">cmd_type</span><span class="o">=</span><span class="n">cmd_type</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;command </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2"> unexpectedly failed: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_done</span><span class="p">(</span>
-                        <span class="n">cmd_type</span><span class="o">=</span><span class="n">cmd_type</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span>
-                    <span class="p">)</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_done</span><span class="p">(</span><span class="n">cmd_type</span><span class="o">=</span><span class="n">cmd_type</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
             <span class="k">return</span>
@@ -2236,22 +2161,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: client disconnected&quot;</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: bug: client read looop failed: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: bug: client read looop failed&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_problem</span><span class="p">(</span>
                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Client read loop failed; try refreshing&quot;</span><span class="p">,</span>
                 <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">client_connected</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_websocket</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">CloseCode</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                <span class="p">)</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_websocket</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">CloseCode</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">read_loom_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.read_loom_loop"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.read_loom_loop" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read and process replies from the loom.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_reader</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No loom reader&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No loom reader&quot;</span><span class="p">)</span>  <span class="c1"># noqa: TRY301</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_loom_state</span><span class="p">()</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">reply_bytes</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">basic_read_loom</span><span class="p">()</span>
@@ -2272,25 +2195,19 @@
                 <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">disconnect_from_loom</span><span class="p">()</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">report_command_done</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_command_done"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_command_done" title="Go to docs">docs</a></div>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">cmd_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">success</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report completion of a command&quot;&quot;&quot;</span>
-        <span class="n">reply</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">CommandDone</span><span class="p">(</span>
-            <span class="n">cmd_type</span><span class="o">=</span><span class="n">cmd_type</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="n">success</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span>
-        <span class="p">)</span>
+<div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_command_done"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_command_done" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">report_command_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">cmd_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">success</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report completion of a command.&quot;&quot;&quot;</span>
+        <span class="n">reply</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">CommandDone</span><span class="p">(</span><span class="n">cmd_type</span><span class="o">=</span><span class="n">cmd_type</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="n">success</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">report_command_problem</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_command_problem"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_command_problem" title="Go to docs">docs</a></div>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">severity</span><span class="p">:</span> <span class="n">MessageSeverityEnum</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_command_problem"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_command_problem" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">report_command_problem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">severity</span><span class="p">:</span> <span class="n">MessageSeverityEnum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Report a CommandProblem to the client.&quot;&quot;&quot;</span>
         <span class="n">reply</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">CommandProblem</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_current_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report pattern to the client&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report pattern to the client.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="p">)</span>
 
@@ -2337,7 +2254,8 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_current_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_current_pick_number"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_current_pick_number" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Report CurrentPickNumber to the client.</span>
 
-<span class="sd">        Also update pick information in the database.&quot;&quot;&quot;</span>
+<span class="sd">        Also update pick information in the database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">update_pick_number</span><span class="p">(</span>
@@ -2399,9 +2317,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_shaft_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Report ShaftState to the client.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
-            <span class="n">client_replies</span><span class="o">.</span><span class="n">ShaftState</span><span class="p">(</span>
-                <span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span><span class="p">,</span> <span class="n">shaft_word</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shaft_word</span>
-            <span class="p">)</span>
+            <span class="n">client_replies</span><span class="o">.</span><span class="n">ShaftState</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span><span class="p">,</span> <span class="n">shaft_word</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shaft_word</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_mode"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_mode" title="Go to docs">docs</a></div>
@@ -2409,74 +2325,70 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="n">client_replies</span><span class="o">.</span><span class="n">Mode</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">))</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_separate_threading_repeats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report SeparateThreadingRepeats.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
-            <span class="n">client_replies</span><span class="o">.</span><span class="n">SeparateThreadingRepeats</span><span class="p">(</span>
-                <span class="n">separate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">separate_threading_repeats</span>
-            <span class="p">)</span>
+            <span class="n">client_replies</span><span class="o">.</span><span class="n">SeparateThreadingRepeats</span><span class="p">(</span><span class="n">separate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">separate_threading_repeats</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_separate_weaving_repeats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report SeparateWeavingRepeats.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
-            <span class="n">client_replies</span><span class="o">.</span><span class="n">SeparateWeavingRepeats</span><span class="p">(</span>
-                <span class="n">separate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">separate_weaving_repeats</span>
-            <span class="p">)</span>
+            <span class="n">client_replies</span><span class="o">.</span><span class="n">SeparateWeavingRepeats</span><span class="p">(</span><span class="n">separate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">separate_weaving_repeats</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_settings"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_settings" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report Settings.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">report_status_message</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_status_message"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_status_message" title="Go to docs">docs</a></div>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">severity</span><span class="p">:</span> <span class="n">MessageSeverityEnum</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_status_message"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_status_message" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">report_status_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">severity</span><span class="p">:</span> <span class="n">MessageSeverityEnum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Report a status message to the client.&quot;&quot;&quot;</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
-            <span class="n">client_replies</span><span class="o">.</span><span class="n">StatusMessage</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="n">client_replies</span><span class="o">.</span><span class="n">StatusMessage</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">))</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_thread_group_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report ThreadGroupSize&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report ThreadGroupSize.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="n">client_reply</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">ThreadGroupSize</span><span class="p">(</span>
-            <span class="n">group_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">thread_group_size</span>
-        <span class="p">)</span>
+        <span class="n">client_reply</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">ThreadGroupSize</span><span class="p">(</span><span class="n">group_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="n">client_reply</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_language_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_language_names"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_language_names" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report LanguageNames.&quot;&quot;&quot;</span>
         <span class="n">client_reply</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">LanguageNames</span><span class="p">(</span><span class="n">languages</span><span class="o">=</span><span class="n">get_language_names</span><span class="p">())</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="n">client_reply</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_direction"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_direction" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report Direction&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report Direction.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
             <span class="n">client_replies</span><span class="o">.</span><span class="n">Direction</span><span class="p">(</span>
                 <span class="n">forward</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">reset_database</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.reset_database"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.reset_database" title="Go to docs">docs</a></div>
+    <span class="k">def</span> <span class="nf">reset_database</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.reset_database"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.reset_database" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the pattern database (write a new one).&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span> <span class="o">=</span> <span class="n">PatternDatabase</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">save_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.save_settings"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.save_settings" title="Go to docs">docs</a></div>
+    <span class="k">def</span> <span class="nf">save_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.save_settings"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.save_settings" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the settings file.&quot;&quot;&quot;</span>
         <span class="n">datadict</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">datadict</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">datadict</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not write settings file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">settings_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">select_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.select_pattern"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.select_pattern" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select the specified pattern.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">pattern</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">get_pattern</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;select_pattern failed: no such pattern: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;select_pattern failed: no such pattern: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="o">=</span> <span class="n">pattern</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_pattern</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_end_numbers</span><span class="p">()</span>
@@ -2491,7 +2403,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">phrase</span><span class="si">!r}</span><span class="s2"> not in translation dict&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">translation_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">phrase</span><span class="p">,</span> <span class="n">phrase</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">write_to_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reply</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.write_to_client"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.write_to_client" title="Go to docs">docs</a></div>
+    <span class="c1"># Use reply: Any because dataclasses are hard to type hint</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">write_to_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reply</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: ANN401</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.write_to_client"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.write_to_client" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a reply to the client.</span>
 
 <span class="sd">        Args:</span>
@@ -2511,9 +2424,8 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: reply to client: </span><span class="si">{</span><span class="n">reply_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="o">.</span><span class="n">send_json</span><span class="p">(</span><span class="n">reply_dict</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: do not send reply </span><span class="si">{</span><span class="n">reply_str</span><span class="si">}</span><span class="s2">; not connected&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: do not send reply </span><span class="si">{</span><span class="n">reply_str</span><span class="si">}</span><span class="s2">; not connected&quot;</span><span class="p">)</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.write_to_loom"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.write_to_loom" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">write_to_loom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Send data to the loom.</span>
@@ -2526,9 +2438,7 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot write to the loom: no connection.&quot;</span><span class="p">)</span>
         <span class="n">data_bytes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: sending command to loom: </span><span class="si">{</span><span class="n">data_bytes</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="si">!r}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: sending command to loom: </span><span class="si">{</span><span class="n">data_bytes</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data_bytes</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_writer</span><span class="o">.</span><span class="n">drain</span><span class="p">()</span>
 
@@ -2541,8 +2451,8 @@
 
     <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">:</span> <span class="ne">BaseException</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">exc_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">exc_value</span><span class="p">:</span> <span class="ne">BaseException</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">traceback</span><span class="p">:</span> <span class="n">TracebackType</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>

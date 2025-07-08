@@ -203,25 +203,7 @@
 <span class="normal">46</span>
 <span class="normal">47</span>
 <span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ExampleLoomServer&quot;</span><span class="p">]</span>
+<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ExampleLoomServer&quot;</span><span class="p">]</span>
 
 <span class="kn">from</span> <span class="nn">.base_loom_server</span> <span class="kn">import</span> <span class="n">BaseLoomServer</span>
 <span class="kn">from</span> <span class="nn">.client_replies</span> <span class="kn">import</span> <span class="n">MessageSeverityEnum</span><span class="p">,</span> <span class="n">ShaftStateEnum</span>
@@ -229,25 +211,13 @@
 
 
 <span class="k">class</span> <span class="nc">ExampleLoomServer</span><span class="p">(</span><span class="n">BaseLoomServer</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.example_loom_server.ExampleLoomServer"><a href="../../../api/base_loom_server/example_loom_server/#base_loom_server.example_loom_server.ExampleLoomServer" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Example loom server.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        num_shafts: The number of shafts the loom has.</span>
-<span class="sd">        serial_port: The name of the serial port, e.g. &quot;/dev/tty0&quot;.</span>
-<span class="sd">            If the name is &quot;mock&quot; then use a mock loom.</span>
-<span class="sd">        reset_db: If True, delete the old database and create a new one.</span>
-<span class="sd">        verbose: If True, log diagnostic information.</span>
-<span class="sd">        name: User-assigned loom name.</span>
-<span class="sd">        db_path: Path to the pattern database. Specify None for the</span>
-<span class="sd">            default path. Unit tests specify a non-None value, to avoid</span>
-<span class="sd">            stomping on the real database.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Example loom server.&quot;&quot;&quot;</span>
 
     <span class="n">default_name</span> <span class="o">=</span> <span class="s2">&quot;example&quot;</span>
     <span class="n">mock_loom_type</span> <span class="o">=</span> <span class="n">ExampleMockLoom</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">write_shafts_to_loom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shaft_word</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.example_loom_server.ExampleLoomServer.write_shafts_to_loom"><a href="../../../api/base_loom_server/example_loom_server/#base_loom_server.example_loom_server.ExampleLoomServer.write_shafts_to_loom" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a shaft_word to the loom&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a shaft_word to the loom.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_loom</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;C</span><span class="si">{</span><span class="n">shaft_word</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">handle_loom_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reply_bytes</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.example_loom_server.ExampleLoomServer.handle_loom_reply"><a href="../../../api/base_loom_server/example_loom_server/#base_loom_server.example_loom_server.ExampleLoomServer.handle_loom_reply" title="Go to docs">docs</a></div>
@@ -265,9 +235,7 @@
             <span class="k">case</span> <span class="s2">&quot;m&quot;</span><span class="p">:</span>
                 <span class="c1"># Loom moving.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">moving</span> <span class="o">=</span> <span class="n">reply_data</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">MOVING</span> <span class="k">if</span> <span class="n">reply_data</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span> <span class="k">else</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">DONE</span>
-                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span> <span class="o">=</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">MOVING</span> <span class="k">if</span> <span class="n">reply_data</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span> <span class="k">else</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">DONE</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_shaft_state</span><span class="p">()</span>
             <span class="k">case</span> <span class="s2">&quot;p&quot;</span><span class="p">:</span>
                 <span class="c1"># Next pick wanted.</span>
@@ -279,13 +247,9 @@
                 <span class="k">elif</span> <span class="n">reply_data</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;invalid loom reply </span><span class="si">{</span><span class="n">reply</span><span class="si">!r}</span><span class="s2">: &quot;</span> <span class="s2">&quot;direction must be 0 or 1&quot;</span>
-                    <span class="p">)</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;invalid loom reply </span><span class="si">{</span><span class="n">reply</span><span class="si">!r}</span><span class="s2">: direction must be 0 or 1&quot;</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LoomServer: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_problem</span><span class="p">(</span>
-                        <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">WARNING</span>
-                    <span class="p">)</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_problem</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
                     <span class="k">return</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_direction</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>

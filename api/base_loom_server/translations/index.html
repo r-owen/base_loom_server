@@ -181,7 +181,7 @@
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.translations.get_language_names" title="base_loom_server.translations.get_language_names">get_language_names</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Get a list of all language files found in LOCALE_FILES</p>
+Get a list of all language files found in LOCALE_FILES.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.translations.get_default_dict" title="base_loom_server.translations.get_default_dict">get_default_dict</a></span>
@@ -213,7 +213,7 @@ Read and parse one language translation file.</p>
 <span class="mkapi-object-name"><a href="./#base_loom_server.translations.get_language_names" title="base_loom_server.translations.get_language_names">get_language_names</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">list[str]</span></span>
 </p>
 <div class="mkapi-document">
-<p>Get a list of all language files found in LOCALE_FILES</p>
+<p>Get a list of all language files found in LOCALE_FILES.</p>
 <p>Add "English" and omit "default.json".</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.translations.get_default_dict">
@@ -244,7 +244,7 @@ For those items the returned data is <code>word or phrase</code>: <code>word or 
 <i class="fa-regular fa-square-minus"></i>
 </span>
 </span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.translations.get_translation_dict" title="base_loom_server.translations.get_translation_dict">get_translation_dict</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">language</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">logger</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="logging">logging</span>.<span class="mkapi-tooltip" title="logging.Logger">Logger</span> | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">dir</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="importlib.resources.abc.Traversable">Traversable</span></span><span class="mkapi-equal"> = </span><span class="mkapi-default"><span class="mkapi-tooltip" title="base_loom_server.translations.LOCALE_FILES">LOCALE_FILES</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">dict[str, str]</span></span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.translations.get_translation_dict" title="base_loom_server.translations.get_translation_dict">get_translation_dict</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">language</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">logger</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="logging">logging</span>.<span class="mkapi-tooltip" title="logging.Logger">Logger</span> | None</span><span class="mkapi-equal"> = </span><span class="mkapi-default">None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">dir_</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="importlib.resources.abc.Traversable">Traversable</span></span><span class="mkapi-equal"> = </span><span class="mkapi-default"><span class="mkapi-tooltip" title="base_loom_server.translations.LOCALE_FILES">LOCALE_FILES</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">dict[str, str]</span></span>
 </p>
 <div class="mkapi-document">
 <p>Get the translation dict for the specified language.</p>
@@ -270,7 +270,7 @@ or "English" for English. Must not be "" or "default".</p>
 Logger, which is created if None.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name">dir</span> : 
+<p><span class="mkapi-item-name">dir_</span> : 
 <span class="mkapi-item-type"><span class="mkapi-tooltip" title="importlib.resources.abc.Traversable">Traversable</span></span> <span class="mkapi-dash">&mdash;</span>
 Directory containing the non-default translation files.
 Use the default value except in unit tests.</p>

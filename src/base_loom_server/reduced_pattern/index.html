@@ -615,46 +615,7 @@
 <span class="normal">458</span>
 <span class="normal">459</span>
 <span class="normal">460</span>
-<span class="normal">461</span>
-<span class="normal">462</span>
-<span class="normal">463</span>
-<span class="normal">464</span>
-<span class="normal">465</span>
-<span class="normal">466</span>
-<span class="normal">467</span>
-<span class="normal">468</span>
-<span class="normal">469</span>
-<span class="normal">470</span>
-<span class="normal">471</span>
-<span class="normal">472</span>
-<span class="normal">473</span>
-<span class="normal">474</span>
-<span class="normal">475</span>
-<span class="normal">476</span>
-<span class="normal">477</span>
-<span class="normal">478</span>
-<span class="normal">479</span>
-<span class="normal">480</span>
-<span class="normal">481</span>
-<span class="normal">482</span>
-<span class="normal">483</span>
-<span class="normal">484</span>
-<span class="normal">485</span>
-<span class="normal">486</span>
-<span class="normal">487</span>
-<span class="normal">488</span>
-<span class="normal">489</span>
-<span class="normal">490</span>
-<span class="normal">491</span>
-<span class="normal">492</span>
-<span class="normal">493</span>
-<span class="normal">494</span>
-<span class="normal">495</span>
-<span class="normal">496</span>
-<span class="normal">497</span>
-<span class="normal">498</span>
-<span class="normal">499</span>
-<span class="normal">500</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">461</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;DEFAULT_THREAD_GROUP_SIZE&quot;</span><span class="p">,</span>
@@ -666,10 +627,12 @@
 
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">dtx_to_wif</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
+
+    <span class="kn">import</span> <span class="nn">dtx_to_wif</span>
 
 <span class="n">DEFAULT_THREAD_GROUP_SIZE</span> <span class="o">=</span> <span class="mi">4</span>
 
@@ -687,7 +650,7 @@
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Pick</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.Pick"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.Pick" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;One pick of a pattern</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;One pick of a pattern.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        color: Weft color, as an index into the color table.</span>
@@ -750,16 +713,17 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_ends</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.num_ends"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.num_ends" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;How many warp ends are in the pattern&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;How many warp ends are in the pattern.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_picks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.num_picks"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.num_picks" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;How many weft picks are in the pattern&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;How many weft picks are in the pattern.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picks</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">thread_group_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.thread_group_size"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.thread_group_size" title="Go to docs">docs</a></div>
+    <span class="k">def</span> <span class="nf">thread_group_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.thread_group_size"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.thread_group_size" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the thread group size.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread_group_size</span>
 
     <span class="nd">@thread_group_size</span><span class="o">.</span><span class="n">setter</span>
@@ -801,10 +765,8 @@
         <span class="k">if</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">end_number0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_end_number</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">compute_next_end_numbers</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers" title="Go to docs">docs</a></div>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">thread_low_to_high</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_next_end_numbers" title="Go to docs">docs</a></div>
+    <span class="k">def</span> <span class="nf">compute_next_end_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">thread_low_to_high</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the next (end_number0, end_number1, end_repeat_number)</span>
 <span class="sd">        in the specified direction.</span>
 
@@ -816,12 +778,8 @@
 <span class="sd">            IndexError: if self.end_number0 is invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_end_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span>
-            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
-            <span class="ow">and</span> <span class="ow">not</span> <span class="n">thread_low_to_high</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">thread_low_to_high</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span>
 
         <span class="n">max_end_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
         <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
@@ -838,17 +796,13 @@
                 <span class="c1"># At the end of one repeat; start the next.</span>
                 <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="k">else</span> <span class="mi">1</span>
                 <span class="n">new_end_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
-            <span class="p">):</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># noqa: PLR5501</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="c1"># We are at the beginning of a pattern repeat and</span>
                 <span class="c1"># either we separate repeats or it is the very first.</span>
                 <span class="c1"># Go to end 0.</span>
                 <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span>
-            <span class="p">):</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span><span class="p">):</span>
                 <span class="c1"># Start the previous repeat.</span>
                 <span class="n">new_end_number1</span> <span class="o">=</span> <span class="n">max_end_number</span>
                 <span class="n">new_end_number0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">new_end_number1</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -863,13 +817,11 @@
             <span class="k">if</span> <span class="n">new_end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">new_end_number1</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
-                    <span class="n">new_end_number0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_end_number</span>
-                <span class="p">)</span>
+                <span class="n">new_end_number1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">new_end_number0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_group_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_end_number</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">new_end_number0</span><span class="p">,</span> <span class="n">new_end_number1</span><span class="p">,</span> <span class="n">new_end_repeat_number</span><span class="p">)</span>
 <div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.compute_next_pick_numbers" title="Go to docs">docs</a></div>
-    <span class="k">def</span> <span class="nf">compute_next_pick_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">compute_next_pick_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute (next pick_number, pick_repeat_number)</span>
 <span class="sd">        in the specified direction.</span>
 
@@ -877,18 +829,12 @@
 <span class="sd">            IndexError: If trying to increment past the start of weaving.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span>
-            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
-            <span class="ow">and</span> <span class="ow">not</span> <span class="n">direction_forward</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">direction_forward</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span>
 
         <span class="c1"># Start by assuming the common case.</span>
         <span class="n">next_pick_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span>
-        <span class="n">next_pick_number</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">direction_forward</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="p">)</span>
+        <span class="n">next_pick_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">direction_forward</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">-</span> <span class="mi">1</span>
 
         <span class="c1"># Handle special cases: end of pattern repeats</span>
         <span class="k">if</span> <span class="n">direction_forward</span><span class="p">:</span>
@@ -896,16 +842,12 @@
                 <span class="c1"># At the end; start a new repeat.</span>
                 <span class="n">next_pick_number</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span> <span class="k">else</span> <span class="mi">1</span>
                 <span class="n">next_pick_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
-            <span class="p">):</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># noqa: PLR5501</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="c1"># At the beginning of a repeat, and either we</span>
                 <span class="c1"># separate repeats or it is the very first. Go to pick 0.</span>
                 <span class="n">next_pick_number</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span>
-            <span class="p">):</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span><span class="p">):</span>
                 <span class="c1"># Start the previous repeat.</span>
                 <span class="n">next_pick_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picks</span><span class="p">)</span>
                 <span class="n">next_pick_repeat_number</span> <span class="o">-=</span> <span class="mi">1</span>
@@ -933,13 +875,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get current threading shaft word.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
-        <span class="n">shaft_set</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span><span class="p">)</span>
-        <span class="p">}</span>
-        <span class="n">shaft_word</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">shaft</span> <span class="k">for</span> <span class="n">shaft</span> <span class="ow">in</span> <span class="n">shaft_set</span> <span class="k">if</span> <span class="n">shaft</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">shaft_word</span>
+        <span class="n">shaft_set</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">shaft</span> <span class="k">for</span> <span class="n">shaft</span> <span class="ow">in</span> <span class="n">shaft_set</span> <span class="k">if</span> <span class="n">shaft</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">increment_end_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thread_low_to_high</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.increment_end_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.increment_end_number" title="Go to docs">docs</a></div>
+    <span class="k">def</span> <span class="nf">increment_end_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">thread_low_to_high</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.increment_end_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.increment_end_number" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment self.end_number0 in the specified direction.</span>
 <span class="sd">        Increment end_repeat_number as well, if appropriate.</span>
 
@@ -959,7 +898,7 @@
             <span class="n">end_repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">increment_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number" title="Go to docs">docs</a></div>
+    <span class="k">def</span> <span class="nf">increment_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment pick_number in the specified direction.</span>
 
 <span class="sd">        Increment pick_repeat_number as well, if appropriate.</span>
@@ -1030,16 +969,15 @@
 <span class="k">def</span> <span class="nf">_smallest_shaft</span><span class="p">(</span><span class="n">shafts</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the smallest non-zero shaft from a set of shafts.</span>
 
-<span class="sd">    Return 0 if no non-zero shafts&quot;&quot;&quot;</span>
+<span class="sd">    Return 0 if no non-zero shafts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pruned_shafts</span> <span class="o">=</span> <span class="n">shafts</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>
     <span class="k">if</span> <span class="n">pruned_shafts</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">shafts</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">shafts</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="mi">0</span>
 
-
-<span class="k">def</span> <span class="nf">reduced_pattern_from_pattern_data</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.reduced_pattern_from_pattern_data"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.reduced_pattern_from_pattern_data" title="Go to docs">docs</a></div>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">dtx_to_wif</span><span class="o">.</span><span class="n">PatternData</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReducedPattern</span><span class="p">:</span>
+<div class="mkapi-source-link" id="base_loom_server.reduced_pattern.reduced_pattern_from_pattern_data"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.reduced_pattern_from_pattern_data" title="Go to docs">docs</a></div>
+<span class="k">def</span> <span class="nf">reduced_pattern_from_pattern_data</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">dtx_to_wif</span><span class="o">.</span><span class="n">PatternData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReducedPattern</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a dtx_to_wif.PatternData to a ReducedPattern.</span>
 
 <span class="sd">    Args:</span>
@@ -1077,53 +1015,38 @@
         <span class="n">color_strs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#ffffff&quot;</span><span class="p">,</span> <span class="s2">&quot;#000000&quot;</span><span class="p">]</span>
     <span class="n">num_warps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">threading</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="n">warps_from1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_warps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="n">num_wefts</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">liftplan</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">liftplan</span> <span class="k">else</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">treadling</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="p">)</span>
+    <span class="n">num_wefts</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">liftplan</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">liftplan</span> <span class="k">else</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">treadling</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="n">wefts_from1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_wefts</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">default_warp_color</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">warp</span><span class="o">.</span><span class="n">color</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">warp</span><span class="o">.</span><span class="n">color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
-    <span class="n">warp_colors</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">warp_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">warp</span><span class="p">,</span> <span class="n">default_warp_color</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">warp</span> <span class="ow">in</span> <span class="n">warps_from1</span>
-    <span class="p">]</span>
+    <span class="n">warp_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">warp_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">warp</span><span class="p">,</span> <span class="n">default_warp_color</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">warp</span> <span class="ow">in</span> <span class="n">warps_from1</span><span class="p">]</span>
     <span class="n">default_weft_color</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">weft</span><span class="o">.</span><span class="n">color</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">weft</span><span class="o">.</span><span class="n">color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">2</span>
-    <span class="n">weft_colors</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">weft_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weft</span><span class="p">,</span> <span class="n">default_weft_color</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">weft</span> <span class="ow">in</span> <span class="n">wefts_from1</span>
-    <span class="p">]</span>
+    <span class="n">weft_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">weft_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weft</span><span class="p">,</span> <span class="n">default_weft_color</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">weft</span> <span class="ow">in</span> <span class="n">wefts_from1</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">liftplan</span><span class="p">:</span>
-        <span class="n">shaft_sets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">liftplan</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weft</span><span class="p">,</span> <span class="p">{})</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span> <span class="k">for</span> <span class="n">weft</span> <span class="ow">in</span> <span class="n">wefts_from1</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">shaft_sets</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">liftplan</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weft</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span> <span class="k">for</span> <span class="n">weft</span> <span class="ow">in</span> <span class="n">wefts_from1</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">shaft_sets</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">weft</span> <span class="ow">in</span> <span class="n">wefts_from1</span><span class="p">:</span>
-            <span class="n">treadle_set</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">treadling</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weft</span><span class="p">,</span> <span class="p">{})</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>  <span class="c1"># type: ignore</span>
-            <span class="n">shaft_sets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="nb">set</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">tieup</span><span class="p">[</span><span class="n">treadle</span><span class="p">]</span> <span class="k">for</span> <span class="n">treadle</span> <span class="ow">in</span> <span class="n">treadle_set</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>
-            <span class="p">)</span>
+            <span class="n">treadle_set</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">treadling</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weft</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>
+            <span class="n">shaft_sets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">tieup</span><span class="p">[</span><span class="n">treadle</span><span class="p">]</span> <span class="k">for</span> <span class="n">treadle</span> <span class="ow">in</span> <span class="n">treadle_set</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">})</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shaft_sets</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">weft_colors</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shaft_sets</span><span class="p">)</span><span class="si">=}</span><span class="s2"> != </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">weft_colors</span><span class="p">)</span><span class="si">=}</span><span class="se">\n</span><span class="si">{</span><span class="n">shaft_sets</span><span class="si">=}</span><span class="se">\n</span><span class="si">{</span><span class="n">weft_colors</span><span class="si">=}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shaft_sets</span><span class="p">)</span><span class="si">=}</span><span class="s2"> != </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">weft_colors</span><span class="p">)</span><span class="si">=}</span><span class="se">\n</span><span class="si">{</span><span class="n">shaft_sets</span><span class="si">=}</span><span class="se">\n</span><span class="si">{</span><span class="n">weft_colors</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">num_shafts</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">shaft_set</span><span class="p">)</span> <span class="k">for</span> <span class="n">shaft_set</span> <span class="ow">in</span> <span class="n">shaft_sets</span> <span class="k">if</span> <span class="n">shaft_set</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No shafts are raised&quot;</span><span class="p">)</span>
-    <span class="n">threading</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">_smallest_shaft</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">threading</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">warp</span><span class="p">,</span> <span class="p">{</span><span class="mi">0</span><span class="p">}))</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">warp</span> <span class="ow">in</span> <span class="n">warps_from1</span>
-    <span class="p">]</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No shafts are raised&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+    <span class="n">threading</span> <span class="o">=</span> <span class="p">[</span><span class="n">_smallest_shaft</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">threading</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">warp</span><span class="p">,</span> <span class="p">{</span><span class="mi">0</span><span class="p">}))</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">warp</span> <span class="ow">in</span> <span class="n">warps_from1</span><span class="p">]</span>
     <span class="n">all_shafts</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_shafts</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">is_rising_shed</span><span class="p">:</span>
         <span class="n">shaft_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">shaft_word_from_shaft_set</span><span class="p">(</span><span class="n">shaft_set</span><span class="p">)</span> <span class="k">for</span> <span class="n">shaft_set</span> <span class="ow">in</span> <span class="n">shaft_sets</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">shaft_words</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">shaft_word_from_shaft_set</span><span class="p">(</span><span class="n">all_shafts</span> <span class="o">-</span> <span class="n">shaft_set</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">shaft_set</span> <span class="ow">in</span> <span class="n">shaft_sets</span>
-        <span class="p">]</span>
+        <span class="n">shaft_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">shaft_word_from_shaft_set</span><span class="p">(</span><span class="n">all_shafts</span> <span class="o">-</span> <span class="n">shaft_set</span><span class="p">)</span> <span class="k">for</span> <span class="n">shaft_set</span> <span class="ow">in</span> <span class="n">shaft_sets</span><span class="p">]</span>
     <span class="n">picks</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">Pick</span><span class="p">(</span><span class="n">shaft_word</span><span class="o">=</span><span class="n">shaft_word</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">weft_color</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">shaft_word</span><span class="p">,</span> <span class="n">weft_color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">shaft_words</span><span class="p">,</span> <span class="n">weft_colors</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">shaft_word</span><span class="p">,</span> <span class="n">weft_color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">shaft_words</span><span class="p">,</span> <span class="n">weft_colors</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="p">]</span>
 
-    <span class="n">result</span> <span class="o">=</span> <span class="n">ReducedPattern</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ReducedPattern</span><span class="p">(</span>
         <span class="n">color_table</span><span class="o">=</span><span class="n">color_strs</span><span class="p">,</span>
         <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
         <span class="n">warp_colors</span><span class="o">=</span><span class="n">warp_colors</span><span class="p">,</span>
@@ -1133,7 +1056,6 @@
         <span class="n">separate_weaving_repeats</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">picks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">NUM_ITEMS_FOR_REPEAT_SEPARATOR</span><span class="p">,</span>
         <span class="n">separate_threading_repeats</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">threading</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">NUM_ITEMS_FOR_REPEAT_SEPARATOR</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span>
 
 
 <span class="k">def</span> <span class="nf">shaft_word_from_shaft_set</span><span class="p">(</span><span class="n">shaft_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.shaft_word_from_shaft_set"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.shaft_word_from_shaft_set" title="Go to docs">docs</a></div>

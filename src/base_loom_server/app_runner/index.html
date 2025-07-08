@@ -347,15 +347,14 @@
 <span class="normal">190</span>
 <span class="normal">191</span>
 <span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">argparse</span>
+<span class="normal">193</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">importlib.resources</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">AsyncGenerator</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">asynccontextmanager</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span>
 
 <span class="kn">import</span> <span class="nn">uvicorn</span>
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">WebSocket</span>
@@ -390,16 +389,15 @@
 <span class="sd">            as an argument to `uvicorn.run`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">DirectionControlMap</span> <span class="o">=</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">DirectionControlEnum</span><span class="p">}</span>
+    <span class="n">DirectionControlMap</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">DirectionControlEnum</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">app</span><span class="p">:</span> <span class="n">FastAPI</span><span class="p">,</span>
-        <span class="n">server_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseLoomServer</span><span class="p">],</span>
+        <span class="n">server_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseLoomServer</span><span class="p">],</span>
         <span class="n">favicon</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
         <span class="n">app_package_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct endpoints for FastAPI&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">LOG_NAME</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">server_class</span> <span class="o">=</span> <span class="n">server_class</span>
@@ -407,23 +405,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">app_package_name</span> <span class="o">=</span> <span class="n">app_package_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="p">:</span> <span class="n">BaseLoomServer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># The only rason we need a router is to set the lifespan</span>
+        <span class="c1"># Assign enpoints to the app.</span>
+
+        <span class="c1"># The only reason we need a router is to set the lifespan</span>
         <span class="c1"># but once we have it we may as well use it to add endpoints as well</span>
         <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">lifespan</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lifespan</span><span class="p">)</span>
 
-        <span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_wrapper</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">HTMLResponse</span><span class="p">:</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="c1"># Normally one would use decorators to specify endpoints</span>
+        <span class="c1"># but that doesn&#39;t work well with methods.</span>
+        <span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">favicon</span><span class="p">:</span>
+            <span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
+                <span class="s2">&quot;/favicon.ico&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_favicon</span><span class="p">,</span>
+                <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">],</span>
+                <span class="n">include_in_schema</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
 
-            <span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/favicon.ico&quot;</span><span class="p">,</span> <span class="n">include_in_schema</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="k">async</span> <span class="k">def</span> <span class="nf">get_favicon</span><span class="p">():</span>
-                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_favicon</span><span class="p">()</span>
-
-        <span class="nd">@router</span><span class="o">.</span><span class="n">websocket</span><span class="p">(</span><span class="s2">&quot;/ws&quot;</span><span class="p">)</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">websocket_endpoint_wrapper</span><span class="p">(</span><span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket_endpoint</span><span class="p">(</span><span class="n">websocket</span><span class="p">)</span>
+        <span class="n">router</span><span class="o">.</span><span class="n">add_websocket_route</span><span class="p">(</span><span class="s2">&quot;/ws&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket_endpoint</span><span class="p">)</span>
 
         <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">router</span><span class="p">)</span>
 
@@ -433,9 +433,7 @@
 <span class="sd">        Subclasses may override this to add more options.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-            <span class="s2">&quot;num_shafts&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The number of shafts the loom has.&quot;</span>
-        <span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;num_shafts&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The number of shafts the loom has.&quot;</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s2">&quot;serial_port&quot;</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Serial port connected to the loom, &quot;</span>
@@ -521,7 +519,7 @@
         <span class="k">return</span> <span class="n">HTMLResponse</span><span class="p">(</span><span class="n">display_html</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">get_favicon</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.app_runner.AppRunner.get_favicon"><a href="../../../api/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.get_favicon" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Endpoint to get the favicon&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Endpoint to get the favicon.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">favicon</span><span class="p">,</span> <span class="n">media_type</span><span class="o">=</span><span class="s2">&quot;image/x-icon&quot;</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">websocket_endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.app_runner.AppRunner.websocket_endpoint"><a href="../../../api/base_loom_server/app_runner/#base_loom_server.app_runner.AppRunner.websocket_endpoint" title="Go to docs">docs</a></div>

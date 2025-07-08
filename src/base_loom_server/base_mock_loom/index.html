@@ -417,7 +417,24 @@
 <span class="normal">260</span>
 <span class="normal">261</span>
 <span class="normal">262</span>
-<span class="normal">263</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;BaseMockLoom&quot;</span><span class="p">]</span>
 
@@ -425,8 +442,10 @@
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">TracebackType</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Self</span><span class="p">,</span> <span class="n">Type</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Self</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">TracebackType</span>
 
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">LOG_NAME</span>
 <span class="kn">from</span> <span class="nn">.mock_streams</span> <span class="kn">import</span> <span class="p">(</span>
@@ -459,22 +478,25 @@
     <span class="n">terminator</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="n">motion_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># seconds</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_shafts</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">num_shafts</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">num_shafts</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">num_shafts</span><span class="si">=}</span><span class="s2"> must be positive&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_shafts</span> <span class="o">=</span> <span class="n">num_shafts</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">LOG_NAME</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">moving</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pick_wanted</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">shaft_word</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moving</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pick_wanted</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shaft_word</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="p">:</span> <span class="n">StreamWriterType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="p">:</span> <span class="n">StreamReaderType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">done_task</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_task</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">read_loop_task</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">())</span>
+        <span class="c1"># When closing, store a reference to the close task</span>
+        <span class="c1"># to prevent premature garbage collection.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_task</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># This event is set whenever a command is received.</span>
         <span class="c1"># It is solely intended for tests, and is used as follows:</span>
@@ -490,7 +512,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">command_threading_event</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: B027</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subclases may override this method, preferably instead of</span>
 <span class="sd">        overriding the constructor.</span>
 
@@ -499,13 +521,14 @@
 <span class="sd">        By default this is a no-op so subclases need not call</span>
 <span class="sd">        `super().__post_init__()`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.start"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.start" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect to the loom server client and start reading commands.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="n">open_mock_connection</span><span class="p">(</span><span class="n">terminator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">read_loop_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_loop</span><span class="p">())</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel_read_loop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.close"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.close" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">cancel_read_loop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.close"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.close" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shut down the mock loom.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">cancel_read_loop</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">read_loop_task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
@@ -518,22 +541,26 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">handle_read_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read_bytes</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.handle_read_bytes"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.handle_read_bytes" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle one command from the web server.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.report_direction"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.report_direction" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report direction (weaving/unweaving).&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_motion_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.report_motion_state"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.report_motion_state" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report the motion state of the shafts.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_pick_wanted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.report_pick_wanted"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.report_pick_wanted" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report that a pick is wanted.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_shafts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.report_shafts"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.report_shafts" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report shaft position.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">basic_read</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.basic_read"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.basic_read" title="Go to docs">docs</a></div>
@@ -544,8 +571,15 @@
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="c1"># make mypy happy</span>
         <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">readuntil</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">oob_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.oob_command"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.oob_command" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run an oob_command, specified by cmd[0]&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">oob_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.oob_command"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.oob_command" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle out-of-band commands.</span>
+
+<span class="sd">        Find a method named &quot;oob_command_{cmdchar}&quot;, where `cmdchar = cmd[0]`,</span>
+<span class="sd">        and call it with one positional argument: `cmd`.</span>
+
+<span class="sd">        None of the standard oob commands pay attention to the `cmd` argument,</span>
+<span class="sd">        but subclasses may add other oob commands, and those may accept data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cmd</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">cmdchar</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -555,50 +589,45 @@
             <span class="k">return</span>
         <span class="k">await</span> <span class="n">method</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">oob_command_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.oob_command_c"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.oob_command_c" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the connection&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">oob_command_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: ARG002</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.oob_command_c"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.oob_command_c" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the connection.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: oob close command&quot;</span><span class="p">)</span>
+        <span class="c1"># Don&#39;t await close, because the wait will be aborted</span>
+        <span class="c1"># when close cancels the read loop.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
 
-        <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">oob_command_d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.oob_command_d"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.oob_command_d" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Toggle weave direction&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">oob_command_d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: ARG002</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.oob_command_d"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.oob_command_d" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Toggle weave direction.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_direction</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: oob toggle weave direction to: &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DIRECTION_NAMES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: oob toggle weave direction to: </span><span class="si">{</span><span class="n">DIRECTION_NAMES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">oob_command_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.oob_command_n"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.oob_command_n" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Request next pick&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">oob_command_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: ARG002</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.oob_command_n"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.oob_command_n" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Request next pick.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: oob request next pick&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pick_wanted</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_pick_wanted</span><span class="p">()</span>
 <div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.open_client_connection"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.open_client_connection" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">open_client_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">StreamReaderType</span><span class="p">,</span> <span class="n">StreamWriterType</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open a connection to the loom server client.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_task</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="c1"># The isinstance tests make mypy happy, and might catch</span>
         <span class="c1"># a future bug if I figure out how to use virtual serial ports.</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="p">,</span> <span class="n">MockStreamWriter</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="p">,</span> <span class="n">MockStreamReader</span>
-        <span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="p">,</span> <span class="n">MockStreamWriter</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="p">,</span> <span class="n">MockStreamReader</span><span class="p">):</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_initial_status</span><span class="p">()</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">create_reader</span><span class="p">(),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">create_writer</span><span class="p">(),</span>
             <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Bug: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="si">=}</span><span class="s2"> and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="si">=}</span><span class="s2"> must both be mock streams&quot;</span>
-            <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bug: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="si">=}</span><span class="s2"> and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="si">=}</span><span class="s2"> must both be mock streams&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.connected"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.connected" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Am I connected to the loom server client?&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reader</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -607,6 +636,7 @@
         <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shaft_word</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.move"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.move" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move shafts.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">moving</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_motion_state</span><span class="p">()</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">motion_duration</span><span class="p">)</span>
@@ -639,7 +669,7 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_pick_wanted</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">set_shaft_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shaft_word</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.set_shaft_word"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.set_shaft_word" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set shafts to raise&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set shafts to raise.&quot;&quot;&quot;</span>
         <span class="c1"># Ignore the command unless a pick is wanted</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_wanted</span><span class="p">:</span>
             <span class="k">return</span>
@@ -649,15 +679,19 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: raise shafts </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shaft_word</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">shaft_word</span><span class="o">=</span><span class="n">shaft_word</span><span class="p">))</span>
-<div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.set_direction_forward"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.set_direction_forward" title="Go to docs">docs</a></div>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">set_direction_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">set_direction_forward</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.set_direction_forward"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.set_direction_forward" title="Go to docs">docs</a></div>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>  <span class="c1"># noqa: FBT001</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the direction_forward attribute.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">direction_forward</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: set </span><span class="si">{</span><span class="n">direction_forward</span><span class="si">=}</span><span class="s2"> by software&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_direction</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_mock_loom.BaseMockLoom.write"><a href="../../../api/base_loom_server/base_mock_loom/#base_loom_server.base_mock_loom.BaseMockLoom.write" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Issue the specified data, which should not be terminated&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the specified unterminated data to the client.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: send reply </span><span class="si">{</span><span class="n">data</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="p">():</span>
@@ -675,8 +709,8 @@
 
     <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">:</span> <span class="ne">BaseException</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">exc_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">exc_value</span><span class="p">:</span> <span class="ne">BaseException</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">traceback</span><span class="p">:</span> <span class="n">TracebackType</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>

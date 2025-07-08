@@ -310,7 +310,7 @@ Base class for a web server that controls a dobby loom.</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.CloseCode" title="base_loom_server.base_loom_server.CloseCode">CloseCode</a></span>
  <span class="mkapi-dash">&mdash;</span>
-WebSocket close codes</p>
+WebSocket close codes.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.CommandError" title="base_loom_server.base_loom_server.CommandError">CommandError</a></span></p>
@@ -384,6 +384,11 @@ stomping on the real database.</p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
+<p><span class="mkapi-item-name">enable_software_direction</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
+Is software direction control enabled?</p>
+</li>
+<li>
 <p><span class="mkapi-item-name">thread_low_to_high</span> : 
 <span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
 Return True if threading (or unthreading) is currently low to high.</p>
@@ -416,7 +421,9 @@ Process one reply from the loom.</p>
 Write the shaft word to the loom.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.start" title="base_loom_server.base_loom_server.BaseLoomServer.start">start</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.start" title="base_loom_server.base_loom_server.BaseLoomServer.start">start</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Run asynchronous startup tasks.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.close" title="base_loom_server.base_loom_server.BaseLoomServer.close">close</a></span>
@@ -449,12 +456,14 @@ Connect to the loom.</p>
 Run a client connection, closing any existing connection.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.disconnect_client" title="base_loom_server.base_loom_server.BaseLoomServer.disconnect_client">disconnect_client</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.disconnect_client" title="base_loom_server.base_loom_server.BaseLoomServer.disconnect_client">disconnect_client</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Disconnect the current client, if any.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom" title="base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom">disconnect_from_loom</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Disconnect from the loom. A no-op if already disconnected.</p>
+Disconnect the loom. A no-op if already disconnected.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.basic_read_loom" title="base_loom_server.base_loom_server.BaseLoomServer.basic_read_loom">basic_read_loom</a></span>
@@ -464,12 +473,12 @@ Read one reply from the loom.</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end">clear_jump_end</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Clear self.jump_end and report value if changed or force_output</p>
+Clear self.jump_end and report value if changed or force_output.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick">clear_jump_pick</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Clear self.jump_pick and report value if changed or force_output</p>
+Clear self.jump_pick and report value if changed or force_output.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jumps">clear_jumps</a></span>
@@ -477,43 +486,69 @@ Clear self.jump_pick and report value if changed or force_output</p>
 Clear all jumps and report values if changed or force_output.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names">cmd_clear_pattern_names</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names">cmd_clear_pattern_names</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the clear_pattern_names command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_direction" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_direction">cmd_direction</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_direction" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_direction">cmd_direction</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the direction command: set direction.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end">cmd_jump_to_end</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end">cmd_jump_to_end</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the jump_to_end command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick">cmd_jump_to_pick</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick">cmd_jump_to_pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the jump_to_pick command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_mode">cmd_mode</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_mode">cmd_mode</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the mode command: set the mode.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern">cmd_select_pattern</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern">cmd_select_pattern</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the select_pattern command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats">cmd_separate_threading_repeats</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats">cmd_separate_threading_repeats</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the separate_threading_repeats command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats">cmd_separate_weaving_repeats</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats">cmd_separate_weaving_repeats</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the separate_weaving_repeats command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_settings" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_settings">cmd_settings</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_settings" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_settings">cmd_settings</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the settings command: set one or more settings.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size">cmd_thread_group_size</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size">cmd_thread_group_size</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the thread_group_size command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand">cmd_oobcommand</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand">cmd_oobcommand</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the oob_command command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_upload" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_upload">cmd_upload</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_upload" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_upload">cmd_upload</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the upload command.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word" title="base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word">get_threading_shaft_word</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word" title="base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word">get_threading_shaft_word</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Get the current threading shaft word.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request" title="base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request">handle_next_pick_request</a></span>
@@ -548,7 +583,7 @@ Read and process replies from the loom.</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_command_done" title="base_loom_server.base_loom_server.BaseLoomServer.report_command_done">report_command_done</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Report completion of a command</p>
+Report completion of a command.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_command_problem" title="base_loom_server.base_loom_server.BaseLoomServer.report_command_problem">report_command_problem</a></span>
@@ -558,7 +593,7 @@ Report a CommandProblem to the client.</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern">report_current_pattern</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Report pattern to the client</p>
+Report pattern to the client.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_initial_server_state" title="base_loom_server.base_loom_server.BaseLoomServer.report_initial_server_state">report_initial_server_state</a></span>
@@ -606,13 +641,19 @@ Report ShaftState to the client.</p>
 Report the current mode to the client.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats">report_separate_threading_repeats</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats">report_separate_threading_repeats</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report SeparateThreadingRepeats.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats">report_separate_weaving_repeats</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats">report_separate_weaving_repeats</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report SeparateWeavingRepeats.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_settings" title="base_loom_server.base_loom_server.BaseLoomServer.report_settings">report_settings</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_settings" title="base_loom_server.base_loom_server.BaseLoomServer.report_settings">report_settings</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report Settings.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_status_message" title="base_loom_server.base_loom_server.BaseLoomServer.report_status_message">report_status_message</a></span>
@@ -622,18 +663,22 @@ Report a status message to the client.</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size" title="base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size">report_thread_group_size</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Report ThreadGroupSize</p>
+Report ThreadGroupSize.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_language_names" title="base_loom_server.base_loom_server.BaseLoomServer.report_language_names">report_language_names</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_language_names" title="base_loom_server.base_loom_server.BaseLoomServer.report_language_names">report_language_names</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report LanguageNames.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_direction" title="base_loom_server.base_loom_server.BaseLoomServer.report_direction">report_direction</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Report Direction</p>
+Report Direction.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.reset_database" title="base_loom_server.base_loom_server.BaseLoomServer.reset_database">reset_database</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.reset_database" title="base_loom_server.base_loom_server.BaseLoomServer.reset_database">reset_database</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Reset the pattern database (write a new one).</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.save_settings" title="base_loom_server.base_loom_server.BaseLoomServer.save_settings">save_settings</a></span>
@@ -641,7 +686,9 @@ Report Direction</p>
 Save the settings file.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.select_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.select_pattern">select_pattern</a></span></p>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.select_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.select_pattern">select_pattern</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Select the specified pattern.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.t" title="base_loom_server.base_loom_server.BaseLoomServer.t">t</a></span>
@@ -739,7 +786,9 @@ Send data to the loom.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.enable_software_direction" title="base_loom_server.base_loom_server.BaseLoomServer.enable_software_direction">enable_software_direction</a></span><span class="mkapi-signature"><span class="mkapi-colon">: </span><span class="mkapi-return">bool</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Is software direction control enabled?</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.thread_low_to_high">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -789,7 +838,10 @@ Send data to the loom.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.start" title="base_loom_server.base_loom_server.BaseLoomServer.start">start</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Run asynchronous startup tasks.</p>
+<p>Initialize the pattern database and connect to the loom.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.close">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -802,7 +854,7 @@ Send data to the loom.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.close" title="base_loom_server.base_loom_server.BaseLoomServer.close">close</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">stop_read_loom</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-comma">, </span><span class="mkapi-arg">stop_read_client</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.close" title="base_loom_server.base_loom_server.BaseLoomServer.close">close</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">stop_read_loom</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-comma">, </span><span class="mkapi-arg">stop_read_client</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Disconnect from client and loom and stop all tasks.</p>
@@ -930,9 +982,11 @@ Connection to the client.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.disconnect_client" title="base_loom_server.base_loom_server.BaseLoomServer.disconnect_client">disconnect_client</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">cancel_read_client_loop</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.disconnect_client" title="base_loom_server.base_loom_server.BaseLoomServer.disconnect_client">disconnect_client</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Disconnect the current client, if any.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -948,7 +1002,7 @@ Connection to the client.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom" title="base_loom_server.base_loom_server.BaseLoomServer.disconnect_from_loom">disconnect_from_loom</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Disconnect from the loom. A no-op if already disconnected.</p>
+<p>Disconnect the loom. A no-op if already disconnected.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.basic_read_loom">
 <span class="mkapi-object-link">
@@ -980,10 +1034,10 @@ Connection to the client.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end">clear_jump_end</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">force_output</span><span class="mkapi-equal">=</span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span></span>
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_end">clear_jump_end</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">force_output</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Clear self.jump_end and report value if changed or force_output</p>
+<p>Clear self.jump_end and report value if changed or force_output.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle parameters">
@@ -995,8 +1049,8 @@ Connection to the client.</p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name">force_output</span>
- <span class="mkapi-dash">&mdash;</span>
+<p><span class="mkapi-item-name">force_output</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
 If true, report <code>JumpEndNumber</code>,
 even if it has not changed.</p>
 </li>
@@ -1015,10 +1069,10 @@ even if it has not changed.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick">clear_jump_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">force_output</span><span class="mkapi-equal">=</span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span></span>
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick">clear_jump_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">force_output</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Clear self.jump_pick and report value if changed or force_output</p>
+<p>Clear self.jump_pick and report value if changed or force_output.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle parameters">
@@ -1030,8 +1084,8 @@ even if it has not changed.</p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name">force_output</span>
- <span class="mkapi-dash">&mdash;</span>
+<p><span class="mkapi-item-name">force_output</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
 If true, report <code>JumpPickNumber</code>,
 even if it has not changed.</p>
 </li>
@@ -1050,7 +1104,7 @@ even if it has not changed.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jumps">clear_jumps</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">force_output</span><span class="mkapi-equal">=</span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span></span>
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jumps">clear_jumps</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">force_output</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Clear all jumps and report values if changed or force_output.</p>
@@ -1069,7 +1123,10 @@ even if it has not changed.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names">cmd_clear_pattern_names</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Handle the clear_pattern_names command.</p>
+<p>Clear all patterns except the current pattern.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_direction">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1084,7 +1141,9 @@ even if it has not changed.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_direction" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_direction">cmd_direction</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Handle the direction command: set direction.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1100,6 +1159,7 @@ even if it has not changed.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end">cmd_jump_to_end</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
+<p>Handle the jump_to_end command.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -1131,6 +1191,7 @@ even if it has not changed.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick">cmd_jump_to_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
+<p>Handle the jump_to_pick command.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -1161,7 +1222,9 @@ even if it has not changed.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_mode">cmd_mode</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Handle the mode command: set the mode.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1176,7 +1239,9 @@ even if it has not changed.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern">cmd_select_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Handle the select_pattern command.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1191,7 +1256,9 @@ even if it has not changed.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats">cmd_separate_threading_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Handle the separate_threading_repeats command.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1206,7 +1273,9 @@ even if it has not changed.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats">cmd_separate_weaving_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Handle the separate_weaving_repeats command.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_settings">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1222,6 +1291,7 @@ even if it has not changed.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_settings" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_settings">cmd_settings</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
+<p>Handle the settings command: set one or more settings.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -1252,7 +1322,9 @@ even if it has not changed.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size">cmd_thread_group_size</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Handle the thread_group_size command.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1267,7 +1339,11 @@ even if it has not changed.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand">cmd_oobcommand</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Handle the oob_command command.</p>
+<p>Send an out-of-band command to the mock loom.
+Ignored with a logged warning if the loom is not the mock loom.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_upload">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1283,6 +1359,7 @@ even if it has not changed.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_upload" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_upload">cmd_upload</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
+<p>Handle the upload command.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -1313,7 +1390,9 @@ even if it has not changed.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word" title="base_loom_server.base_loom_server.BaseLoomServer.get_threading_shaft_word">get_threading_shaft_word</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Get the current threading shaft word.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1488,10 +1567,10 @@ Unusable entries will be ignored, with a logged warning.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_command_done" title="base_loom_server.base_loom_server.BaseLoomServer.report_command_done">report_command_done</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">cmd_type</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">success</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">message</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-equal"> = </span><span class="mkapi-default">''</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_command_done" title="base_loom_server.base_loom_server.BaseLoomServer.report_command_done">report_command_done</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">cmd_type</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">success</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">message</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-equal"> = </span><span class="mkapi-default">''</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Report completion of a command</p>
+<p>Report completion of a command.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_command_problem">
 <span class="mkapi-object-link">
@@ -1525,7 +1604,7 @@ Unusable entries will be ignored, with a logged warning.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.report_current_pattern">report_current_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Report pattern to the client</p>
+<p>Report pattern to the client.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_initial_server_state">
 <span class="mkapi-object-link">
@@ -1697,7 +1776,9 @@ Unusable entries will be ignored, with a logged warning.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.report_separate_threading_repeats">report_separate_threading_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Report SeparateThreadingRepeats.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1712,7 +1793,9 @@ Unusable entries will be ignored, with a logged warning.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats" title="base_loom_server.base_loom_server.BaseLoomServer.report_separate_weaving_repeats">report_separate_weaving_repeats</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Report SeparateWeavingRepeats.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_settings">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1727,7 +1810,9 @@ Unusable entries will be ignored, with a logged warning.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_settings" title="base_loom_server.base_loom_server.BaseLoomServer.report_settings">report_settings</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Report Settings.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_status_message">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1760,7 +1845,7 @@ Unusable entries will be ignored, with a logged warning.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size" title="base_loom_server.base_loom_server.BaseLoomServer.report_thread_group_size">report_thread_group_size</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Report ThreadGroupSize</p>
+<p>Report ThreadGroupSize.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_language_names">
 <span class="mkapi-object-link">
@@ -1776,7 +1861,9 @@ Unusable entries will be ignored, with a logged warning.</p>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_language_names" title="base_loom_server.base_loom_server.BaseLoomServer.report_language_names">report_language_names</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Report LanguageNames.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_direction">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1792,7 +1879,7 @@ Unusable entries will be ignored, with a logged warning.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_direction" title="base_loom_server.base_loom_server.BaseLoomServer.report_direction">report_direction</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Report Direction</p>
+<p>Report Direction.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.reset_database">
 <span class="mkapi-object-link">
@@ -1806,9 +1893,11 @@ Unusable entries will be ignored, with a logged warning.</p>
 </span>
 </span><span class="mkapi-object-kind">method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.reset_database" title="base_loom_server.base_loom_server.BaseLoomServer.reset_database">reset_database</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span></span>
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.reset_database" title="base_loom_server.base_loom_server.BaseLoomServer.reset_database">reset_database</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
-<div class="mkapi-document"></div>
+<div class="mkapi-document">
+<p>Reset the pattern database (write a new one).</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.save_settings">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1821,7 +1910,7 @@ Unusable entries will be ignored, with a logged warning.</p>
 </span>
 </span><span class="mkapi-object-kind">method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.save_settings" title="base_loom_server.base_loom_server.BaseLoomServer.save_settings">save_settings</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span></span>
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.save_settings" title="base_loom_server.base_loom_server.BaseLoomServer.save_settings">save_settings</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Save the settings file.</p>
@@ -1841,6 +1930,7 @@ Unusable entries will be ignored, with a logged warning.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.select_pattern" title="base_loom_server.base_loom_server.BaseLoomServer.select_pattern">select_pattern</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
+<p>Select the specified pattern.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -1973,7 +2063,7 @@ The data to send, without a terminator.
 <div class="mkapi-document">
 <p><p class="mkapi-bases" markdown="1">Bases :
 <span class="mkapi-base"><span class="mkapi-tooltip" title="enum">enum</span>.<span class="mkapi-tooltip" title="enum.IntEnum">IntEnum</span></span></p></p>
-<p>WebSocket close codes</p>
+<p>WebSocket close codes.</p>
 <p>A small subset of
 https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4</p>
 <p class="mkapi-section">
