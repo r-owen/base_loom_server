@@ -5,7 +5,7 @@
 Changes for maintainers and authors of loom-specific packages:
 
 * Refactor testutils: Client is a normal class, instead of a dataclass,
-  and the free functions that took a Client as the first argument are now methods that class.
+  and the free functions that took a Client as the first argument are now methods of that class.
   Unit tests that use internal details of testutils may need some changes,
   but not if the code simply uses BaseTestLoomServer to test the loom server.
 * Some functions now require named arguments for most or all arguments.
