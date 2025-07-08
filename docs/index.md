@@ -15,7 +15,7 @@ Features include:
 * Direct support for three types of weaving pattern files: WIF (.wif), Fiberworks (.dtx), and WeavePoint (.wpo).
 * Support for weaving and threading.
 * Settings to accommodate your preferences.
-* Preliminary support for multiple languages (the translation files need work; contributions welcome).
+* Preliminary support for multiple languages (the translation files need work; [contributions welcome](translations.md)).
 * Runs on all major operating systems.
 * The software is free and uses the generous MIT license.
 

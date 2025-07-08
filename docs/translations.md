@@ -1,6 +1,6 @@
 # Translations
 
-[base_loom_server](https://pypi.org/project/base-loom-server/) supports foreign language translations (for the web display, but not this documentation).
+[base_loom_server](https://pypi.org/project/base-loom-server/) supports foreign languages.
 
 At present only a few translations are available, and none have been properly vetted.
 Help from others to improve the existing translations and add new ones would be most welcome.
