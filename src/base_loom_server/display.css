@@ -5,6 +5,7 @@ body {
     height: calc(100vh - 30px);
     font-size: calc(12px + 0.5vh + 0.5vw);
     font-family: "georgia";
+    background-color: white;
 }
 
 /* Reduce height on iPhone, due to tab-related stuff along the bottom */
@@ -22,6 +23,7 @@ button {
     background-color: #0000;
     border-radius: 8px;
     font-size: 80%;
+    color: black;
 }
 
 button.direction_undo {
@@ -117,6 +119,7 @@ input[type=checkbox] {
 
 select {
     font-size: 90%;
+    color: black;
 }
 
 #debug_div {
@@ -127,8 +130,10 @@ select {
     margin-inline-start: 1em;
 }
 
-#help_link_div {
+#help_link {
     margin-inline-start: 10px;
+    text-decoration: none;
+    color: #00F;
 }
 
 #mode {
