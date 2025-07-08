@@ -1,11 +1,35 @@
+:root, [data-theme="light"] {
+    --page-bg-color: #white;
+    --page-fg-color: black;
+    --text-color: black;
+    --text-color-disabled: #999;
+    --text-color-unused-tab: #666;
+    --button-border-color: white;
+    --button-hover-color: gray;
+    --input-modified-bg-color: pink;
+    --tab-inactive-color: lightgray;
+}
+[data-theme="dark"] {
+    --page-bg-color: #000000cc;
+    --page-fg-color: #cccccc;
+    --text-color: white;
+    --text-color-disabled: #888;
+    --text-color-unused-tab: #ddd;
+    --button-border-color: black;
+    --button-hover-color: darkgray;
+    --input-modified-bg-color:#b229ab;
+    --tab-inactive-color: gray;
+}
+
 body {
+    background-color: var(--page-bg-color);
+    color: var(--page-fg-color);
     display: flex;
     flex-direction: column;
-    width: calc(100% - 20px);
-    height: calc(100vh - 30px);
     font-size: calc(12px + 0.5vh + 0.5vw);
     font-family: "georgia";
-    background-color: white;
+    width: calc(100% - 20px);
+    height: calc(100vh - 30px);
 }
 
 /* Reduce height on iPhone, due to tab-related stuff along the bottom */
@@ -20,43 +44,57 @@ body {
 }
 
 button {
-    background-color: #0000;
+    background-color: transparent;
+    border-color: var(--button-border-color);
     border-radius: 8px;
+    color: var(--text-color);
     font-size: 80%;
 }
 
-button.direction_undo {
-    color: red;
-    border-style: inset;
+button.direction_do:disabled {
+    border-width: 0;
+    color: var(--text-color);
 }
 
-button.direction_do:disabled {
-    color: black;
+button.direction_undo {
+    border-style: inset;
+    color: red;
+}
+
+button.direction_undo:disabled {
+    border-width: 0;
+    color: red;
+}
+
+button:disabled {
+    color: var(--text-color-disabled);
 }
 
 button:hover:enabled {
-    background-color: #ddd
+    background-color: var(--button-hover-color);
 }
 
 /* Style the tab bar mode buttons */
 button.tab_button {
-    font-size: 100%;
-    font-family: "georgia";
-    border-style: inset;
-    background-color: #eee;
+    background-color: var(--tab-inactive-color);
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
+    border-style: inset;
+    color: var(--text-color-unused-tab);
+    font-family: "georgia";
+    font-size: 100%;
 }
 
 button.tab_active {
-    font-weight: bold;
-    background-color: #0000;
-    border-style: outset;
+    background-color: transparent;
     border-bottom: 0px;
+    border-style: outset;
+    color: var(--text-color);
+    font-weight: bold;
 }
 
 button.tab_active:hover {
-    background-color: #0000;
+    background-color: transparent;
 }
 
 button.toggle_button {
@@ -87,27 +125,33 @@ div.canvas-grid {
 }
 
 div.flex-column {
+    align-items: start;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    justify-content: start;
-    align-items: start;
     gap: 5px;
+    justify-content: start;
     margin-bottom: 5px;
 }
 
 div.flex-row {
+    align-items: center;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: start;
-    align-items: center;
     gap: 5px;
+    justify-content: start;
     margin-bottom: 5px;
 }
 
 input[type=text] {
+    background-color: var(--page-bg-color);
+    color: var(--text-color);
     font-size: 80%;
+}
+
+input[type=text][modified=true] {
+    background-color: var(--input-modified-bg-color);
 }
 
 /* Make the Separate repeats?" checkboxes larger. This is especially important on macOS Safari */
@@ -117,8 +161,9 @@ input[type=checkbox] {
 }
 
 select {
+    background-color: var(--page-bg-color);
+    color: var(--text-color);
     font-size: 90%;
-    color: black;
 }
 
 #debug_div {
@@ -129,10 +174,8 @@ select {
     margin-inline-start: 1em;
 }
 
-#help_link {
+#help_link_div {
     margin-inline-start: 10px;
-    text-decoration: none;
-    color: #00F;
 }
 
 #mode {
@@ -145,11 +188,11 @@ select {
 }
 
 #pick_color {
-    flex: 1;
-    height: 12px;
     background-color: rgba(0, 0, 0, 0);
     border-style: solid;
     border-width: 1px;
+    flex: 1;
+    height: 12px;
     margin-right: 10px;
 }
 
@@ -163,14 +206,4 @@ select {
 
 #total_pick_number {
     margin-right: 5px;
-}
-
-#upload_patterns {
-    background-color: #0000;
-    border-radius: 8px;
-    font-size: 80%;
-}
-
-#upload_patterns:hover:enabled {
-    background-color: #ddd
 }

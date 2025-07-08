@@ -81,7 +81,7 @@ const ModeEnum = {
 }
 
 const SeverityColors = {
-    1: "#ffffff",
+    1: null,
     2: "yellow",
     3: "red",
 }
@@ -240,6 +240,7 @@ function truncateStr(value, maxLength = 100) {
     }
 }
 
+
 /*
 A class similar to Python asyncio.Future, but with an optional timeout
 
@@ -357,6 +358,9 @@ class LoomClient {
         this.ws.onmessage = this.handleServerReply.bind(this)
         this.ws.onclose = handleWebsocketClosed
 
+        const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)')
+        isDarkMode.addEventListener("change", this.handleDarkLightTheme.bind(this))
+
         let debugChangeDirectionButton = document.getElementById("debug_change_direction")
         debugChangeDirectionButton.addEventListener("click", this.handleDebugChangeDirection.bind(this))
 
@@ -466,6 +470,8 @@ class LoomClient {
         weaveDirectionElt.addEventListener("click", this.handleToggleDirection.bind(this))
         let patternMenu = document.getElementById("pattern_menu")
         patternMenu.addEventListener("change", this.handlePatternMenu.bind(this))
+
+        this.handleDarkLightTheme()
 
         screen.orientation.addEventListener("change", this.displayCanvases.bind(this))
         window.addEventListener("resize", (this.displayCanvases.bind(this)))
@@ -784,6 +790,9 @@ class LoomClient {
         canvas.width = this.loomInfo.num_shafts * blockAndSepWidth + 4 // 4 avoids cutoff at the right
         canvas.height = Math.max(ShaftRaisedHeight, fontHeight) + fontHeight
 
+        const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)')
+        ctx.fillStyle = isDarkMode.matches ? "#ffffff" : "#000000"
+
         // Set the font again, now that the canvas size has been set 
         ctx.font = font
         // Set properties such that the position for fillText is the center of the text
@@ -840,7 +849,7 @@ class LoomClient {
     */
     displayStatusMessage() {
         let text = ConnectionStateTranslationDict[this.loomConnectionState.state]
-        let textColor = "black"
+        let textColor = null
         if (this.isConnected() && (this.statusMessage != null)) {
             text = this.statusMessage.message
             textColor = SeverityColors[this.statusMessage.severity]
@@ -884,6 +893,8 @@ class LoomClient {
             // Now that it's the right size, leave it blank
             return
         }
+        const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)')
+        const fontColor = isDarkMode.matches ? "#ffffff" : "#000000"
 
         // Are we adding threads from lowToHigh?
         // Used to determine which threads are already threaded, and thus to make them darker.
@@ -1029,7 +1040,7 @@ class LoomClient {
             if (((totalEndNumber - displayEndNumberOffset) % numEndsPerEndNumber == 0)
                 && (slotIndex >= firstAllowedNumberedSlotIndex)
                 && (slotIndex <= lastAllowedNumberedSlotIndex)) {
-                ctx.fillStyle = "black"
+                ctx.fillStyle = fontColor
                 ctx.fillText(
                     totalEndNumber,
                     xBarCenter,
@@ -1062,7 +1073,7 @@ class LoomClient {
                 WeavingThreadHalfWidth * 2,
                 canvas.height - (yShaftNumberBaseline + Math.round(blockHeight / 2) + 2)
             )
-            ctx.fillStyle = "black"
+            ctx.fillStyle = fontColor
             ctx.fillText(
                 shaftIndex + 1,
                 xBarCenter,
@@ -1276,6 +1287,18 @@ class LoomClient {
     }
 
     /*
+    Handle dark/light theme
+    */
+    handleDarkLightTheme() {
+        const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)')
+        const themeValue = isDarkMode.matches ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', themeValue)
+        // The shaft state canvas needs to contrast with the background
+        // and the color is not set by css, so...
+        this.displayCanvases()
+    }
+
+    /*
     Process a reply from the loom server (data read from the web socket)
     */
     handleServerReply(event) {
@@ -1458,15 +1481,10 @@ class LoomClient {
         let jumpToEndSubmitElt = document.getElementById("jump_to_end_submit")
         let jumpToEndResetElt = document.getElementById("jump_to_end_reset")
         let jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
-        let disableJump = true
         jumpTotalEndNumber0Elt.value = jumpTotalEndNumber0Elt.value.replace(/\D/g, "")
-        if (asIntOrNull(jumpTotalEndNumber0Elt.value) != this.jumpEndData.total_end_number0) {
-            jumpTotalEndNumber0Elt.style.backgroundColor = "pink"
-            disableJump = false
-        } else {
-            jumpTotalEndNumber0Elt.style.backgroundColor = "white"
-        }
-        let disableReset = disableJump && (jumpTotalEndNumber0Elt.value == "")
+        let disableJump = (asIntOrNull(jumpTotalEndNumber0Elt.value) == this.jumpEndData.total_end_number0)
+        jumpTotalEndNumber0Elt.setAttribute('modified', !disableJump)
+        const disableReset = disableJump && (jumpTotalEndNumber0Elt.value == "")
         jumpToEndSubmitElt.disabled = disableJump
         jumpToEndResetElt.disabled = disableReset
         if (event != null) {
@@ -1508,15 +1526,10 @@ class LoomClient {
         let jumpToPickResetElt = document.getElementById("jump_to_pick_reset")
         let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
 
-        let disableJump = true
         jumpTotalPickNumberElt.value = jumpTotalPickNumberElt.value.replace(/\D/g, "")
-        if (asIntOrNull(jumpTotalPickNumberElt.value) != this.jumpPickNumber.total_pick_number) {
-            jumpTotalPickNumberElt.style.backgroundColor = "pink"
-            disableJump = false
-        } else {
-            jumpTotalPickNumberElt.style.backgroundColor = "white"
-        }
-        let disableReset = disableJump && (jumpTotalPickNumberElt.value == "")
+        const disableJump = asIntOrNull(jumpTotalPickNumberElt.value) == this.jumpPickNumber.total_pick_number
+        jumpTotalPickNumberElt.setAttribute('modified', !disableJump)
+        const disableReset = disableJump && (jumpTotalPickNumberElt.value == "")
         jumpToPickSubmitElt.disabled = disableJump
         jumpToPickResetElt.disabled = disableReset
         if (event != null) {
