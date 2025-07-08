@@ -1,12 +1,12 @@
 # Version History
 
-## ?
+## 0.27.1 2025-07-08
 
-Changes for maintainers and authors of loom-specific packages:
-
+* Make text black on iOS.
+* Fix images on main documentation page. (It turns out that the served documentation needs something slightly different than when running locally).
 * Corrected the version of ruff in pyproject.toml.
 
-## 0.27
+## 0.27 2025-07-07
 
 Changes for maintainers and authors of loom-specific packages:
 
