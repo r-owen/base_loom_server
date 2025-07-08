@@ -3,10 +3,10 @@
 A loom server allows you to control a computer-controlled loom from a web browser on a phone, tablet or computer.
 
 <div>
-<img src="../images/screen_shots/weaving_safari_macos.jpg" width="100" alt="Weaving: Safari on macOS">
-<img src="../images/screen_shots/weaving_safari_iphone_mini.jpg" width="50" alt="Weaving: Safari on iPhone mini">
-<img src="../images/screen_shots/threading_safari_macos.jpg" width="100" alt="Threading: Safari on macOS">
-<img src="../images/screen_shots/threading_safari_iphone_mini.jpg" width="50" alt="Threading: Safari on iPhone mini">
+<img src="images/screen_shots/weaving_safari_macos.jpg" width="100" alt="Weaving: Safari on macOS">
+<img src="images/screen_shots/weaving_safari_iphone_mini.jpg" width="50" alt="Weaving: Safari on iPhone mini">
+<img src="images/screen_shots/threading_safari_macos.jpg" width="100" alt="Threading: Safari on macOS">
+<img src="images/screen_shots/threading_safari_iphone_mini.jpg" width="50" alt="Threading: Safari on iPhone mini">
 </div>
 Click an image to see a gallery of screen shots.
 
