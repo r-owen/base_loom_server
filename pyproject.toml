@@ -31,11 +31,9 @@ dev = [
   "mkapi",
   "mkdocs-glightbox",
   "mkdocs",
-  "mypy ~= 1.16.1",
   "pre-commit ~= 4.0",
   "pytest ~= 8.3",
   "pytest-asyncio ~= 0.25",
-  "ruff ~= 0.12",
   "sphinx",
   "sphinxcontrib-napoleon",
 ]
@@ -64,6 +62,9 @@ __version__ = "{version}"
 [tool.mypy]
 exclude_gitignore = "true"
 disallow_untyped_defs = "true"
+# Temporarily enable strict mode for extra checking. But strict mode is not compatible with pre-commit,
+# due to missing dependencies, so do not leave it enabled.
+# strict = "true"
 
 [tool.ruff]
 line-length = 110
