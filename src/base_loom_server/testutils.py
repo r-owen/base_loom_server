@@ -44,10 +44,10 @@ _PKG_NAME = "base_loom_server"
 TEST_DATA_FILES = importlib.resources.files(_PKG_NAME) / "test_data" / "pattern_files"
 
 # in Python 3.11 mypy complains: "Traversable" has no attribute "glob"
-ALL_PATTERN_PATHS = (
-    list(TEST_DATA_FILES.glob("*.wif"))  # type: ignore[attr-defined]
-    + list(TEST_DATA_FILES.glob("*.dtx"))  # type: ignore[attr-defined]
-    + list(TEST_DATA_FILES.glob("*.wpo"))  # type: ignore[attr-defined]
+ALL_PATTERN_PATHS: tuple[pathlib.Path, ...] = (
+    *TEST_DATA_FILES.glob("*.wif"),  # type: ignore[attr-defined]
+    *TEST_DATA_FILES.glob("*.dtx"),  # type: ignore[attr-defined]
+    *TEST_DATA_FILES.glob("*.wpo"),  # type: ignore[attr-defined]
 )
 
 
@@ -416,7 +416,7 @@ class Client:
             The final reply will be CommandDone and its success flag is checked
         """
         self.send_dict(cmd_dict)
-        replies = []
+        replies: list[dict[str, Any]] = []
         while True:
             reply = self.receive_dict()
             replies.append(reply)

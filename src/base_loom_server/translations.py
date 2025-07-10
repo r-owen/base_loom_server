@@ -95,7 +95,7 @@ def get_translation_dict(
 
 def read_one_translation_file(
     translation_file: Traversable,
-    valid_keys: set[str] | KeysView,
+    valid_keys: set[str] | KeysView[str],
     logger: logging.Logger,
 ) -> dict[str, str]:
     """Read and parse one language translation file.

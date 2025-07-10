@@ -20,8 +20,8 @@ def check_translation_files() -> None:
         if filepath.name == "default.json":
             continue
 
-        languages_seen = set()
-        dict_list = []
+        languages_seen: set[str] = set()
+        dict_list: list[dict[str, str]] = []
 
         lang_dict = json.loads(filepath.read_text(encoding="utf_8"))
         report_problems(
@@ -56,7 +56,7 @@ def check_translation_files() -> None:
 
         # Ignore default_dict when producing full_dict
         # so we can detect missing keys
-        full_dict_without_default = {}
+        full_dict_without_default: dict[str, str] = {}
         for subdict in reversed(dict_list):
             full_dict_without_default.update(subdict)
         report_problems(
@@ -78,9 +78,9 @@ def report_problems(
     report_missing_keys: bool,
 ) -> None:
     """Check for issues in one file and print the results to stdout."""
-    missing_keys = desired_keys - lang_dict.keys() - KeysToIgnore if report_missing_keys else set()
+    missing_keys: set[str] = desired_keys - lang_dict.keys() - KeysToIgnore if report_missing_keys else set()
     extra_keys = lang_dict.keys() - desired_keys
-    blank_keys = {key: value for key, value in lang_dict.items() if value == ""}
+    blank_keys = {key for key, value in lang_dict.items() if value == ""}
     non_str_entries = {key: value for key, value in lang_dict.items() if not isinstance(value, str)}
     if missing_keys or extra_keys or blank_keys or non_str_entries:
         print(f"{filepath.name} has one or more problems:")

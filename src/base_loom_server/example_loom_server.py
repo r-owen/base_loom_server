@@ -1,7 +1,7 @@
 __all__ = ["ExampleLoomServer"]
 
 from .base_loom_server import BaseLoomServer
-from .client_replies import MessageSeverityEnum, ShaftStateEnum
+from .enums import MessageSeverityEnum, ShaftStateEnum
 from .example_mock_loom import ExampleMockLoom
 
 
@@ -47,3 +47,5 @@ class ExampleLoomServer(BaseLoomServer):
                     await self.report_command_problem(message=message, severity=MessageSeverityEnum.WARNING)
                     return
                 await self.report_direction()
+            case _:
+                self.log.warning(f"ignoring unrecognized reply from loom: {reply!r}")

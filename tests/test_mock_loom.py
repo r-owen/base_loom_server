@@ -2,11 +2,8 @@ import asyncio
 import contextlib
 from collections.abc import AsyncIterator
 
-from base_loom_server.base_mock_loom import (
-    StreamReaderType,
-    StreamWriterType,
-)
 from base_loom_server.example_mock_loom import ExampleMockLoom
+from base_loom_server.mock_streams import StreamReaderType, StreamWriterType
 
 # speed up tests
 ExampleMockLoom.motion_duration = 0.1

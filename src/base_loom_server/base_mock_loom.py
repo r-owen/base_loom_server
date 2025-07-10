@@ -54,13 +54,13 @@ class BaseMockLoom(abc.ABC):
         self.direction_forward: bool = True
         self.writer: StreamWriterType | None = None
         self.reader: StreamReaderType | None = None
-        self.done_task: asyncio.Future = asyncio.Future()
-        self.move_task: asyncio.Future = asyncio.Future()
-        self.read_loop_task: asyncio.Future = asyncio.Future()
+        self.done_task: asyncio.Future[None] = asyncio.Future()
+        self.move_task: asyncio.Future[None] = asyncio.Future()
+        self.read_loop_task: asyncio.Future[None] = asyncio.Future()
         self.start_task = asyncio.create_task(self.start())
         # When closing, store a reference to the close task
         # to prevent premature garbage collection.
-        self.close_task: asyncio.Future | None = None
+        self.close_task: asyncio.Future[None] | None = None
 
         # This event is set whenever a command is received.
         # It is solely intended for tests, and is used as follows:

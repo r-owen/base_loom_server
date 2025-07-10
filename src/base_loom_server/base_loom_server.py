@@ -21,7 +21,7 @@ from serial_asyncio import open_serial_connection  # type: ignore[import-untyped
 
 from . import client_replies
 from .constants import LOG_NAME
-from .enums import DirectionControlEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
+from .enums import ConnectionStateEnum, DirectionControlEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
 from .pattern_database import PatternDatabase
 from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
 from .translations import get_language_names, get_translation_dict
@@ -163,9 +163,9 @@ class BaseLoomServer:
         self.mock_loom: BaseMockLoom | None = None
         self.loom_reader: StreamReaderType | None = None
         self.loom_writer: StreamWriterType | None = None
-        self.read_client_task: asyncio.Future = asyncio.Future()
-        self.read_loom_task: asyncio.Future = asyncio.Future()
-        self.done_task: asyncio.Future = asyncio.Future()
+        self.read_client_task: asyncio.Future[None] = asyncio.Future()
+        self.read_loom_task: asyncio.Future[None] = asyncio.Future()
+        self.done_task: asyncio.Future[None] = asyncio.Future()
         self.current_pattern: ReducedPattern | None = None
         self.jump_pick = client_replies.JumpPickNumber()
         self.jump_end = client_replies.JumpEndNumber()
@@ -930,13 +930,13 @@ class BaseLoomServer:
     async def report_loom_connection_state(self, reason: str = "") -> None:
         """Report LoomConnectionState to the client."""
         if self.loom_connecting:
-            state = client_replies.ConnectionStateEnum.CONNECTING
+            state = ConnectionStateEnum.CONNECTING
         elif self.loom_disconnecting:
-            state = client_replies.ConnectionStateEnum.DISCONNECTING
+            state = ConnectionStateEnum.DISCONNECTING
         elif self.loom_connected:
-            state = client_replies.ConnectionStateEnum.CONNECTED
+            state = ConnectionStateEnum.CONNECTED
         else:
-            state = client_replies.ConnectionStateEnum.DISCONNECTED
+            state = ConnectionStateEnum.DISCONNECTED
         reply = client_replies.LoomConnectionState(state=state, reason=reason)
         await self.write_to_client(reply)
 
