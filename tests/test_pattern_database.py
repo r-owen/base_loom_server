@@ -121,8 +121,8 @@ async def test_clear_database() -> None:
         for patternpath in ALL_PATTERN_PATHS[0:num_to_add]:
             pattern = read_reduced_pattern(patternpath)
             await db.add_pattern(pattern)
-            pattern_names = await db.get_pattern_names()
 
+        pattern_names = await db.get_pattern_names()
         expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 
@@ -142,8 +142,8 @@ async def test_create_database() -> None:
         for patternpath in ALL_PATTERN_PATHS[0:num_to_add]:
             pattern = read_reduced_pattern(patternpath)
             await db.add_pattern(pattern)
-            pattern_names = await db.get_pattern_names()
 
+        pattern_names = await db.get_pattern_names()
         expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 
@@ -165,8 +165,8 @@ async def test_update_end_number() -> None:
         for patternpath in ALL_PATTERN_PATHS[0:num_to_add]:
             pattern = read_reduced_pattern(patternpath)
             await db.add_pattern(pattern)
-            pattern_names = await db.get_pattern_names()
 
+        pattern_names = await db.get_pattern_names()
         expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 
@@ -200,8 +200,8 @@ async def test_update_pick_number() -> None:
         for patternpath in ALL_PATTERN_PATHS[0:num_to_add]:
             pattern = read_reduced_pattern(patternpath)
             await db.add_pattern(pattern)
-            pattern_names = await db.get_pattern_names()
 
+        pattern_names = await db.get_pattern_names()
         expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 
@@ -233,8 +233,8 @@ async def test_update_separate_threading_repeats() -> None:
         for patternpath in ALL_PATTERN_PATHS[0:num_to_add]:
             pattern = read_reduced_pattern(patternpath)
             await db.add_pattern(pattern)
-            pattern_names = await db.get_pattern_names()
 
+        pattern_names = await db.get_pattern_names()
         expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 
@@ -270,8 +270,8 @@ async def test_update_thread_group_size() -> None:
         for patternpath in ALL_PATTERN_PATHS[0:num_to_add]:
             pattern = read_reduced_pattern(patternpath)
             await db.add_pattern(pattern)
-            pattern_names = await db.get_pattern_names()
 
+        pattern_names = await db.get_pattern_names()
         expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
         assert pattern_names == expected_pattern_names
 

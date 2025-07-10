@@ -808,10 +808,11 @@ class BaseLoomServer:
                     data = await self.websocket.receive_json()
                 except json.JSONDecodeError:
                     self.log.info(f"{self}: ignoring invalid command: not json-encoded")
+                    continue
 
                 # Parse the command
+                cmd_type = data.get("type")
                 try:
-                    cmd_type = data.get("type")
                     if cmd_type is None:
                         await self.report_command_problem(
                             message=f"Invalid command; no 'type' field: {data!r}",
@@ -829,6 +830,7 @@ class BaseLoomServer:
                     message = f"command {data} failed: {e!r}"
                     self.log.exception(f"{self}: {message}")
                     await self.report_command_done(cmd_type=cmd_type, success=False, message=message)
+                    continue
 
                 # Execute the command
                 try:
