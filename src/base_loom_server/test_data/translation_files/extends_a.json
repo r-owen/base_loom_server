@@ -1,4 +1,4 @@
 {
-  "_extends": "extends_b",
-   "Weave": "Weave a"
+  "_extends": {"message": "extends_b", "description": ""},
+   "Weave": {"message": "Weave a", "description": ""}
 }

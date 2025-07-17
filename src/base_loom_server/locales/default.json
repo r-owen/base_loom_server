@@ -1,70 +1,270 @@
 {
-  "_direction": "ltr",
-  "_extends": "",
-  "_language_code": "en",
-  
-  "and": "",
-  "another client took control": "Displayed if another web client takes the connection",
-  "At start of threading": "Displayed if you try to advance past end < 0",
-  "At start of weaving": "Displayed if you try to advance past pick < 0",
-  "Back to front":  "Setting to thread from the back of the loom to the front",
-  "cannot jump to a pick": "'pick' is a weft thread'",
-  "cannot jump to an end": "'end' is a warp thread",
-  "Change Direction": "Button text (only in mock mode)",
-  "Clear Recents": "Pattern menu item to clear recent entries",
-  "Close Connection":  "Button text (only in mock mode)",
-  "Command mock loom":  "Heading for the debug controls that are only shown in mock mode",
-  "connected": "Shown when the loom server is fully connected to the loom",
-  "connecting": "Shown when the loom server is in the process of connecting to the loom",
-  "Debug (mock loom)": "Heading for debug controls when using the mock loom",
-  "Default threading group size": "Label text",
-  "Direction control": "Label text for a setting that allows the user to specify how weave/unweave direction is controlled",
-  "Direction": "Label for weave/unweave and thread/unthread",
-  "disconnected": "Shown when the loom server is fully disconnected from the loom",
-  "disconnecting": "Shown when the loom server in the process of disconnecting from the loom",
-  "Ends": "Label for the display of current warp end number",
-  "Error": "",
-  "Front to back": "Setting to thread from the front of the loom to the back",
-  "Group size": "Number of warp ends to raise shafts for when threading",
-  "Hide": "Hide the debug controls",
-  "Jump to end": "Jump to warp end number...",
-  "Jump to pick": "Jump to weft pick number...",
-  "Jump": "Label for the button that applies the requested jump",
-  "Language": "Label for a language setting",
-  "Left to right": "Setting: thread from left to right",
-  "Loom name": "Name of the loom to display in the web interface",
-  "Loom": "Direction control: Loom (typically a button on the dobby head)",
-  "lost connection to server": "Error message if the connection from the user to the loom server drops",
-  "Moving": "Loom shafts are moving",
-  "Next Pick": "Button label for debug control that tells the mock loom to request the next pick (or thread group)",
-  "Number must be": "Example: user-specified numeric value must be <= 0",
-  "no pattern": "Displayed if no weaving pattern has been selected",
-  "of": "As in '5 of 10'",
-  "On the left": "Setting: Warp end 1 on the left",
-  "On the right": "Setting: Warp end 1 on the right",
-  "Pattern": "Label for weaving pattern menu",
-  "Pick": "Label for current weft pick number",
-  "Read message": "Label for debug display of the most recent message read from the loom",
-  "ready": "The loom server is ready",
-  "repeat": "Label for repeat number",
-  "Reset": "Label to clear the Jump input",
-  "Right to left": "Setting: thread from right to left",
-  "Save": "Button that submits a new loom name",
-  "Sent command": "Label for debug display of the most recent command sent to the loom server",
-  "Shafts": "Label for display of which shafts are raised",
-  "Separate repeats?": "Should there be a separator row, with all shafts down, after each pattern repeat?",
-  "Settings": "Tab heading for the Settings panel",
-  "Software": "Direction control: Software (the web interface)",
-  "Status": "Label for status display",
-  "Thread": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front",
-  "Threading": "Tab heading for the Threading panel",
-  "timed out": "Part of an error message if a command times out",
-  "Too many files": "Displayed if a user tries to upload too many files at once",
-  "Unthread": "Threading direction: go backwards to undo a mistake",
-  "Unweave": "Weaving direction: go backwards to undo a mistake",
-  "Upload": "Button label to upload weaving pattern files",
-  "Warp end 1": "Setting: Warp end 1 on the right/left",
-  "Weave": "Weaving direction: go forward to weave new cloth",
-  "Weaving": "Tab heading for the weaving panel",
-  "?": "Question mark representing an unknown value"
+  "_direction": {
+    "message": "ltr",
+    "description": "ltr (the default) if the language is left-to-right, rtl if right-to-left"
+  },
+  "_extends": {
+    "message": "",
+    "description": "Name of a language file that this one extends; missing items are pulled from the named file. Useful for variants, e.g. Qu\u00e9b\u00e9cois could extend Franc\u0327ais."
+  },
+  "_language_code": {
+    "message": "en",
+    "description": "Language code used by HTML, e.g. 'en'"
+  },
+  "and": {
+    "message": "and",
+    "description": ""
+  },
+  "another client took control": {
+    "message": "another client took control",
+    "description": "Displayed if another web client takes the connection"
+  },
+  "At start of threading": {
+    "message": "At start of threading",
+    "description": "Displayed if you try to advance past end < 0"
+  },
+  "At start of weaving": {
+    "message": "At start of weaving",
+    "description": "Displayed if you try to advance past pick < 0"
+  },
+  "Back to front": {
+    "message": "Back to front",
+    "description": "Setting to thread from the back of the loom to the front"
+  },
+  "cannot jump to a pick": {
+    "message": "cannot jump to a pick",
+    "description": "'pick' is a weft thread'"
+  },
+  "cannot jump to an end": {
+    "message": "cannot jump to an end",
+    "description": "'end' is a warp thread"
+  },
+  "Change Direction": {
+    "message": "Change Direction",
+    "description": "Button text (only in mock mode)"
+  },
+  "Clear Recents": {
+    "message": "Clear Recents",
+    "description": "Pattern menu item to clear recent entries"
+  },
+  "Close Connection": {
+    "message": "Close Connection",
+    "description": "Button text (only in mock mode)"
+  },
+  "Command mock loom": {
+    "message": "Command mock loom",
+    "description": "Heading for the debug controls that are only shown in mock mode"
+  },
+  "connected": {
+    "message": "connected",
+    "description": "Shown when the loom server is fully connected to the loom"
+  },
+  "connecting": {
+    "message": "connecting",
+    "description": "Shown when the loom server is in the process of connecting to the loom"
+  },
+  "Debug (mock loom)": {
+    "message": "Debug (mock loom)",
+    "description": "Heading for debug controls when using the mock loom"
+  },
+  "Default threading group size": {
+    "message": "Default threading group size",
+    "description": "Label text"
+  },
+  "Direction control": {
+    "message": "Direction control",
+    "description": "Label text for a setting that allows the user to specify how weave/unweave direction is controlled"
+  },
+  "Direction": {
+    "message": "Direction",
+    "description": "Label for weave/unweave and thread/unthread"
+  },
+  "disconnected": {
+    "message": "disconnected",
+    "description": "Shown when the loom server is fully disconnected from the loom"
+  },
+  "disconnecting": {
+    "message": "disconnecting",
+    "description": "Shown when the loom server in the process of disconnecting from the loom"
+  },
+  "Ends": {
+    "message": "Ends",
+    "description": "Label for the display of current warp end number"
+  },
+  "Error": {
+    "message": "Error",
+    "description": ""
+  },
+  "Front to back": {
+    "message": "Front to back",
+    "description": "Setting to thread from the front of the loom to the back"
+  },
+  "Group size": {
+    "message": "Group size",
+    "description": "Number of warp ends to raise shafts for when threading"
+  },
+  "Hide": {
+    "message": "Hide",
+    "description": "Hide the debug controls"
+  },
+  "Jump to end": {
+    "message": "Jump to end",
+    "description": "Jump to warp end number..."
+  },
+  "Jump to pick": {
+    "message": "Jump to pick",
+    "description": "Jump to weft pick number..."
+  },
+  "Jump": {
+    "message": "Jump",
+    "description": "Label for the button that applies the requested jump"
+  },
+  "Language": {
+    "message": "Language",
+    "description": "Label for a language setting"
+  },
+  "Left to right": {
+    "message": "Left to right",
+    "description": "Setting: thread from left to right"
+  },
+  "Loom name": {
+    "message": "Loom name",
+    "description": "Name of the loom to display in the web interface"
+  },
+  "Loom": {
+    "message": "Loom",
+    "description": "Direction control: Loom (typically a button on the dobby head)"
+  },
+  "lost connection to server": {
+    "message": "lost connection to server",
+    "description": "Error message if the connection from the user to the loom server drops"
+  },
+  "Moving": {
+    "message": "Moving",
+    "description": "Loom shafts are moving"
+  },
+  "Next Pick": {
+    "message": "Next Pick",
+    "description": "Button label for debug control that tells the mock loom to request the next pick (or thread group)"
+  },
+  "Number must be": {
+    "message": "Number must be",
+    "description": "Example: user-specified numeric value must be <= 0"
+  },
+  "no pattern": {
+    "message": "no pattern",
+    "description": "Displayed if no weaving pattern has been selected"
+  },
+  "of": {
+    "message": "of",
+    "description": "As in '5 of 10'"
+  },
+  "On the left": {
+    "message": "On the left",
+    "description": "Setting: Warp end 1 on the left"
+  },
+  "On the right": {
+    "message": "On the right",
+    "description": "Setting: Warp end 1 on the right"
+  },
+  "Pattern": {
+    "message": "Pattern",
+    "description": "Label for weaving pattern menu"
+  },
+  "Pick": {
+    "message": "Pick",
+    "description": "Label for current weft pick number"
+  },
+  "Read message": {
+    "message": "Read message",
+    "description": "Label for debug display of the most recent message read from the loom"
+  },
+  "ready": {
+    "message": "ready",
+    "description": "The loom server is ready"
+  },
+  "repeat": {
+    "message": "repeat",
+    "description": "Label for repeat number"
+  },
+  "Reset": {
+    "message": "Reset",
+    "description": "Label to clear the Jump input"
+  },
+  "Right to left": {
+    "message": "Right to left",
+    "description": "Setting: thread from right to left"
+  },
+  "Save": {
+    "message": "Save",
+    "description": "Button that submits a new loom name"
+  },
+  "Sent command": {
+    "message": "Sent command",
+    "description": "Label for debug display of the most recent command sent to the loom server"
+  },
+  "Shafts": {
+    "message": "Shafts",
+    "description": "Label for display of which shafts are raised"
+  },
+  "Separate repeats?": {
+    "message": "Separate repeats?",
+    "description": "Should there be a separator row, with all shafts down, after each pattern repeat?"
+  },
+  "Settings": {
+    "message": "Settings",
+    "description": "Tab heading for the Settings panel"
+  },
+  "Software": {
+    "message": "Software",
+    "description": "Direction control: Software (the web interface)"
+  },
+  "Status": {
+    "message": "Status",
+    "description": "Label for status display"
+  },
+  "Thread": {
+    "message": "Thread",
+    "description": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front"
+  },
+  "Threading": {
+    "message": "Threading",
+    "description": "Tab heading for the Threading panel"
+  },
+  "timed out": {
+    "message": "timed out",
+    "description": "Part of an error message if a command times out"
+  },
+  "Too many files": {
+    "message": "Too many files",
+    "description": "Displayed if a user tries to upload too many files at once"
+  },
+  "Unthread": {
+    "message": "Unthread",
+    "description": "Threading direction: go backwards to undo a mistake"
+  },
+  "Unweave": {
+    "message": "Unweave",
+    "description": "Weaving direction: go backwards to undo a mistake"
+  },
+  "Upload": {
+    "message": "Upload",
+    "description": "Button label to upload weaving pattern files"
+  },
+  "Warp end 1": {
+    "message": "Warp end 1",
+    "description": "Setting: Warp end 1 on the right/left"
+  },
+  "Weave": {
+    "message": "Weave",
+    "description": "Weaving direction: go forward to weave new cloth"
+  },
+  "Weaving": {
+    "message": "Weaving",
+    "description": "Tab heading for the weaving panel"
+  },
+  "?": {
+    "message": "?",
+    "description": "Question mark representing an unknown value"
+  }
 }

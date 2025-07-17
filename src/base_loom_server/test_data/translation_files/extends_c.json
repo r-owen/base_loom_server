@@ -1,5 +1,5 @@
 {
-  "Pattern": "Pattern c",
-  "Thread": "Thread c",
-  "Weave": "Weave c"
+  "Pattern": {"message": "Pattern c", "description": ""},
+  "Thread": {"message": "Thread c", "description": ""},
+  "Weave": {"message": "Weave c", "description": ""}
 }

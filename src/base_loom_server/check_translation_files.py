@@ -17,9 +17,6 @@ def check_translation_files() -> None:
     desired_keys = set(default_dict.keys())
 
     for filepath in LOCALE_FILES.glob("*.json"):  # type: ignore[attr-defined]
-        if filepath.name == "default.json":
-            continue
-
         languages_seen: set[str] = set()
         dict_list: list[dict[str, str]] = []
 
@@ -35,7 +32,12 @@ def check_translation_files() -> None:
 
         prev_path = filepath
         while True:
-            next_language = lang_dict.get("_extends")
+            next_language_entry = lang_dict.get("_extends")
+            if next_language_entry is None:
+                break
+            # Note: if "_extends" is present, it must have 2 keys: message and description
+            # But if it does not, that is complained about elsewhere.
+            next_language = next_language_entry.get("message")
             if not next_language:
                 break
             if next_language in languages_seen:
@@ -78,19 +80,19 @@ def report_problems(
     report_missing_keys: bool,
 ) -> None:
     """Check for issues in one file and print the results to stdout."""
+    bad_keys = {key for key, value in lang_dict.items() if value.keys() != {"message", "description"}}
     missing_keys: set[str] = desired_keys - lang_dict.keys() - KeysToIgnore if report_missing_keys else set()
     extra_keys = lang_dict.keys() - desired_keys
     blank_keys = {key for key, value in lang_dict.items() if value == ""}
-    non_str_entries = {key: value for key, value in lang_dict.items() if not isinstance(value, str)}
-    if missing_keys or extra_keys or blank_keys or non_str_entries:
+    if bad_keys or missing_keys or extra_keys or blank_keys:
         print(f"{filepath.name} has one or more problems:")
+        if bad_keys:
+            print(f"    bad keys: {bad_keys}")
         if missing_keys:
             print(f"    missing keys: {missing_keys}")
         if extra_keys:
             print(f"    extra keys: {extra_keys}")
         if blank_keys:
             print(f"    blank entries: {blank_keys}")
-        if non_str_entries:
-            print(f"    non-str entries: {non_str_entries}")
     elif report_missing_keys:
         print(f"{filepath.name} is complete")

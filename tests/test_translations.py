@@ -1,8 +1,6 @@
 import importlib.resources
 import json
 import logging
-import pathlib
-import tempfile
 
 import pytest
 
@@ -52,27 +50,19 @@ def test_get_language_names() -> None:
 
 
 def test_extra_keys(caplog: pytest.LogCaptureFixture) -> None:
+    """Test that loading a file with extra keys produces a logged warning."""
     default_dict = get_default_dict()
+    filepath = TEST_DATA_FILES.joinpath("extra_keys.json")
+    raw_extra_data = json.loads(filepath.read_text(encoding="utf_8"))
+    extra_key = "-- extra key for test_extra_keys --"
+    assert extra_key in raw_extra_data
+    assert extra_key not in default_dict
+
     logger = logging.getLogger()
-
-    extra_key_name = "-- extra key for test_extra_keys --"
-    assert extra_key_name not in default_dict
-
-    with tempfile.TemporaryDirectory() as dirname:
-        dir_ = pathlib.Path(dirname)
-        filepath = dir_ / "extra_keys.json"
-        extra_keys_dict = default_dict.copy()
-        extra_keys_dict[extra_key_name] = "some value"
-        with filepath.open("w") as f:
-            json.dump(extra_keys_dict, f)
-        data = read_one_translation_file(
-            translation_file=filepath, valid_keys=default_dict.keys(), logger=logger
-        )
-
-    assert data.keys() == default_dict.keys()
+    read_one_translation_file(translation_file=filepath, valid_keys=default_dict.keys(), logger=logger)
     assert len(caplog.record_tuples) > 0
     for _root, level, text in caplog.record_tuples:
-        if extra_key_name in text:
+        if extra_key in text:
             assert level == logging.WARNING
             assert "invalid keys" in text
             break
@@ -80,7 +70,20 @@ def test_extra_keys(caplog: pytest.LogCaptureFixture) -> None:
         pytest.fail("Expected warning not found")
 
 
+def test_format() -> None:
+    """Test the format of every translation file."""
+    for filepath in LOCALE_FILES.glob("*.json"):  # type: ignore[attr-defined]
+        raw_dict = json.loads(filepath.read_text(encoding="utf_8"))
+        for key, value in raw_dict.items():
+            assert isinstance(key, str)
+            assert isinstance(value, dict)
+            assert value.keys() == {"message", "description"}
+            assert isinstance(value["message"], str)
+            assert isinstance(value["description"], str)
+
+
 def test_missing_file() -> None:
+    """Test trying to load a translation file that does not exist."""
     logger = logging.getLogger()
     language_names = get_language_names()
     missing_name = "unlikely name for a language file"
@@ -100,6 +103,7 @@ def test_missing_file() -> None:
 
 
 def test_valid_extends() -> None:
+    """Test files with valid non-empty values of _extends."""
     # a, b, and c all specify "Weave {suffix}"
     # b and c specify "Thread {suffix}"
     # only c specifies "Pattern {suffix}"
