@@ -12,16 +12,15 @@ METADATA_KEYS = {"_direction", "_extends", "_language_code"}
 
 
 def get_language_names() -> list[str]:
-    """Get a list of all language files found in LOCALE_FILES.
+    """Get a sorted list of all language files found in LOCALE_FILES.
 
-    Add "English" and omit "default.json".
+    Omit "default.json".
     """
-    filenames = [
+    return sorted(
         filepath.stem
         for filepath in LOCALE_FILES.glob("*.json")  # type: ignore[attr-defined]
         if filepath.stem != "default"
-    ]
-    return ["English", *sorted(filenames)]
+    )
 
 
 def get_default_dict() -> dict[str, str]:
@@ -63,7 +62,7 @@ def get_translation_dict(
     languages_read: set[str] = set()
     dict_list: list[dict[str, str]] = []
     next_language = language
-    while next_language not in {"", "default", "English"}:
+    while next_language not in {"", "default"}:
         if next_language in languages_read:
             raise RecursionError(f"Circular reference for {language=}, found reading {next_language=}")
         next_file = dir_.joinpath(f"{next_language}.json")

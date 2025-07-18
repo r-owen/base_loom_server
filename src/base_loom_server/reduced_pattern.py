@@ -50,7 +50,7 @@ class Pick:
 
         The "type" field is optional, but checked if present.
         """
-        pop_and_check_type_field("Pick", datadict)
+        pop_and_check_type_field("Weft thread", datadict)
         return cls(**datadict)
 
 

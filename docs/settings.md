@@ -25,7 +25,7 @@ Settings include:
   See [Weave Direction](weaving.md#weave-direction) for more information.
   This setting is not shown for Séguin looms and others that support changing direction from both software and a button on the loom.
 
-* **Warp end 1**: specify whether to display warp end 1 on the right or left
+* **Warp thread 1**: specify whether to display Warp thread 1 on the right or left
   in the [Weaving](weaving.md) and [Threading](threading.md) pattern displays.
   However, this is as seen *from the front of the loom*.
   If you specify threading front-to-back, the threading pattern is displayed as seen from the back of the loom,
@@ -33,7 +33,7 @@ Settings include:
 
 * **Threading**: specify whether you prefer to thread right-to-left or left-to-right, and front-to-back or back-to-front.
   Specifying front-to-back simply changes the Threading pattern display to appear as if you are sitting behind the castle:
-  shaft 1 is displayed at the top and warp end 1 is displayed on the opposite side of that specified in "Warp end 1`".
+  shaft 1 is displayed at the top and Warp thread 1 is displayed on the opposite side of that specified in "Warp thread 1`".
 
 * **Default threading group size**: specify the threading group size for newly uploaded patterns.
   This setting has no effect on any pattern files that are already loaded;

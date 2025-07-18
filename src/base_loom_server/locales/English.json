@@ -1,0 +1,34 @@
+{
+  "Warp threads": {
+    "message": "Ends",
+    "description": "Label for current warp thread numbers (in Threading mode)"
+  },
+  "Jump to warp thread": {
+    "message": "Jump to end",
+    "description": "Jump to warp thread number..."
+  },
+  "Jump to weft thread": {
+    "message": "Jump to pick",
+    "description": "Jump to weft thread number..."
+  },
+  "Weft thread": {
+    "message": "Pick",
+    "description": "Label for the current weft thread number (in Weaving mode)"
+  },
+  "Unthread": {
+    "message": "Unthread",
+    "description": "Threading direction: go backwards to undo a mistake"
+  },
+  "Unweave": {
+    "message": "Unweave",
+    "description": "Weaving direction: go backwards to undo a mistake"
+  },
+  "Warp thread 1": {
+    "message": "Warp end 1",
+    "description": "Setting: display warp thread 1 on the right or left"
+  },
+  "?": {
+    "message": "?",
+    "description": "Question mark representing an unknown value"
+  }
+}

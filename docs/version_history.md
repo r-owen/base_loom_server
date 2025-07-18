@@ -88,7 +88,7 @@ Changes for maintainers and authors of loom-specific packages:
 
 ## 0.23.1 2025-06-25
 
-* Fix display of setting "warp end 1"; it was not updated based on the reported value.
+* Fix display of setting "Warp thread 1"; it was not updated based on the reported value.
 
 ## 0.23 2025-06-23
 
@@ -135,13 +135,13 @@ Changes for maintainers and authors of loom-specific packages:
 * Bug fixes in Threading:
 
   * End numbers were not shown when displaying end 0.
-  * When a jump is pending, the "Jump to end" input box now shows the total end number
+  * When a jump is pending, the "Jump to warp thread" input box now shows the total end number
     (the same value you typed in), rather than the end number within the current pattern repeat.
 * Change the threading display to show total end numbers along the top,
   rather than end numbers within the current pattern repeat.
 * Further improve the display of the tab bar at the top of the window.
 * Improve the display of popup menus, such as the Pattern menu.
-* Improve the display of text input areas, such as "Jump to pick".
+* Improve the display of text input areas, such as "Jump to weft thread".
 * For most controls with labels, you can now click on the label to activate the control.
   This is especially helpful for the "Separate repeats?" checkboxes.
 * Specify the language in the HTML. This will be English,

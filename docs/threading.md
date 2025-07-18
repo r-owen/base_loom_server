@@ -54,7 +54,7 @@ Jumping is a two-step process: first you request the jump, then you advance to i
 (Two steps are necessary because most looms will not accept an unsolicited command to raise shafts.)
 In detail:
 
-* Enter the desired warp end number in the box to the right of "Jump to end".
+* Enter the desired warp end number in the box to the right of "Jump to warp thread".
   The box will turn pink and the Jump button will be enabled.
 
 * Press the "return" keyboard key or click the "Jump" button on the web page to send the requested jump to the server.
@@ -93,7 +93,7 @@ However, like [Weaving](weaving.md), the transition depends on the "Separate rep
   The next advance will start the next repeat of threading or unthreading.
 
 The default value of "Separate repeats?" is checked (on) if the pattern has more than 20 warp threads, unchecked (off) otherwise.
-The idea is that frequent separator "picks" are annoying for short threading sequences, but having a separator "pick" is useful for long sequences.
+The idea is that frequent separator "picks" are annoying for short threading sequences, but having a separator "Weft thread" is useful for long sequences.
 
 Note that the value of the Weaving and Threading "Separate repeats?" checkboxes are independent of each other,
 and may also be different for different patterns. They are saved in the pattern database.

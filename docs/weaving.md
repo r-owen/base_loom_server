@@ -62,7 +62,7 @@ Jumping is a two-step process: first you request the jump, then you advance to i
 (Two steps are necessary because most looms will not accept an unsolicited command to raise shafts.)
 In detail:
 
-* Enter the desired pick in the box on the "Jump to pick" line.
+* Enter the desired pick in the box on the "Jump to weft thread" line.
   The box will turn pink and the Jump button will be enabled.
 
 * Press the "return" keyboard key or click the "Jump" button on the web page to send the requested jump to the server.

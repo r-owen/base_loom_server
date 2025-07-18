@@ -13,23 +13,19 @@
   },
   "At start of threading": {
     "message": "Au d\u00e9but de l'enfilage",
-    "description": "Displayed if you try to advance past end < 0"
+    "description": "Displayed if you try to undo threading past the beginning"
   },
   "At start of weaving": {
     "message": "Au d\u00e9but du tissage",
-    "description": "Displayed if you try to advance past pick < 0"
+    "description": "Displayed if you try to undo weaving past the beginning"
   },
   "Back to front": {
     "message": "Retour \u00e0 l'avant",
     "description": "Setting to thread from the back of the loom to the front"
   },
-  "cannot jump to a pick": {
-    "message": "Impossible d\u2019acc\u00e9der \u00e0 une s\u00e9lection",
-    "description": "'pick' is a weft thread'"
-  },
-  "cannot jump to an end": {
+  "cannot jump": {
     "message": "Impossible de sauter jusqu'\u00e0 la fin",
-    "description": "'end' is a warp thread"
+    "description": "Part of an error messsage: cannot perform the requested jump"
   },
   "Change Direction": {
     "message": "Virer",
@@ -79,9 +75,9 @@
     "message": "d\u00e9connexion",
     "description": "Shown when the loom server in the process of disconnecting from the loom"
   },
-  "Ends": {
+  "Warp threads": {
     "message": "Extr\u00e9mit\u00e9s",
-    "description": "Label for the display of current warp end number"
+    "description": "Label for current warp thread numbers (in Threading mode)"
   },
   "Error": {
     "message": "Erreur",
@@ -99,13 +95,13 @@
     "message": "Masquer",
     "description": "Hide the debug controls"
   },
-  "Jump to end": {
+  "Jump to warp thread": {
     "message": "Sauter \u00e0 la trame",
-    "description": "Jump to warp end number..."
+    "description": "Jump to warp thread number..."
   },
-  "Jump to pick": {
+  "Jump to weft thread": {
     "message": "Sauter \u00e0 la s\u00e9lection",
-    "description": "Jump to weft pick number..."
+    "description": "Jump to weft thread number..."
   },
   "Jump": {
     "message": "Sauter",
@@ -135,7 +131,7 @@
     "message": "\u00c9mouvant",
     "description": "Loom shafts are moving"
   },
-  "Next Pick": {
+  "Next": {
     "message": "Choix Suivant",
     "description": "Button label for debug control that tells the mock loom to request the next pick (or thread group)"
   },
@@ -153,19 +149,19 @@
   },
   "On the left": {
     "message": "\u00e0 Gauche",
-    "description": "Setting: Warp end 1 on the left"
+    "description": "Setting: display warp thread 1 on the left"
   },
   "On the right": {
     "message": "\u00e0 Droite",
-    "description": "Setting: Warp end 1 on the right"
+    "description": "Setting: display warp thread 1 on the right"
   },
   "Pattern": {
     "message": "Mod\u00e8le",
     "description": "Label for weaving pattern menu"
   },
-  "Pick": {
+  "Weft thread": {
     "message": "S\u00e9lection",
-    "description": "Label for current weft pick number"
+    "description": "Label for the current weft thread number (in Weaving mode)"
   },
   "Read message": {
     "message": "Lire le message",
@@ -243,9 +239,9 @@
     "message": "T\u00e9l\u00e9charger",
     "description": "Button label to upload weaving pattern files"
   },
-  "Warp end 1": {
+  "Warp thread 1": {
     "message": "Extr\u00e9mit\u00e9 de cha\u00eene 1",
-    "description": "Setting: Warp end 1 on the right/left"
+    "description": "Setting: display warp thread 1 on the right or left"
   },
   "Weave": {
     "message": "Tisser",

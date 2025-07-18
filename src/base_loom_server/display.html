@@ -41,7 +41,7 @@
             </select>
         </div>
         <div class="flex-row">
-            <label for="setting_end1_on_right">{Warp end 1}</label>
+            <label for="setting_end1_on_right">{Warp thread 1}</label>
             <select name="setting_end1_on_right" id="setting_end1_on_right">
                 <option value="1">{On the right}</option>
                 <option value="0">{On the left}</option>
@@ -130,7 +130,7 @@
     </div>
 
     <div class="flex-row threading-flex" id="end_number_div" style="display: none;">
-        <label id="end_label">{Ends}</label>
+        <label id="end_label">{Warp threads}</label>
         <label id="total_end_number0"></label>
         <label> - </label>
         <label id="total_end_number1"></label>
@@ -144,7 +144,7 @@
     </div>
 
     <div class="flex-row weaving-flex" id="pick_number_div">
-        <label>{Pick}</label>
+        <label>{Weft thread}</label>
         <label id="total_pick_number"></label>
         <label id="pick_number"></label>
         <label>{of}</label>
@@ -156,7 +156,7 @@
 
     <form class="threading-flex" id="jump_to_end_form" style="display: none;">
         <div class="flex-row">
-            <label for="jump_total_end_number0">{Jump to end}</label>
+            <label for="jump_total_end_number0">{Jump to warp thread}</label>
             <input type="text" size="5" id="jump_total_end_number0">
             <button type="submit" id="jump_to_end_submit">{Jump}</button>
             <button type="button" id="jump_to_end_reset">{Reset}</button>
@@ -165,7 +165,7 @@
 
     <form class="weaving-flex" id="jump_to_pick_form">
         <div class="flex-row">
-            <label for="jump_total_pick_number">{Jump to pick}</label>
+            <label for="jump_total_pick_number">{Jump to weft thread}</label>
             <input type="text" size="5" id="jump_total_pick_number">
             <button type="submit" id="jump_to_pick_submit">{Jump}</button>
             <button type="button" id="jump_to_pick_reset">{Reset}</button>
@@ -204,7 +204,7 @@
         
         <div class="flex-row">
             <label>{Command mock loom}</label>
-            <button id="debug_next_pick">{Next Pick}</button>
+            <button id="debug_next_pick">{Next}</button>
             <button id="debug_change_direction">{Change Direction}</button>
             <button id="debug_close_connection">{Close Connection}</button>
         </div>

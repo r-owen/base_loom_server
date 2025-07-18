@@ -129,7 +129,7 @@ def test_from_dict() -> None:
         assert pattern_righttype == reduced_pattern
 
         pickdict_righttype = copy.deepcopy(patterndict["picks"][0])
-        pickdict_righttype["type"] = "Pick"
+        pickdict_righttype["type"] = "Weft thread"
         pick_righttype = Pick.from_dict(pickdict_righttype)
         assert pick_righttype == reduced_pattern.picks[0]
 

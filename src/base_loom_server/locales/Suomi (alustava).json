@@ -13,23 +13,19 @@
   },
   "At start of threading": {
     "message": "Langoituksen alussa",
-    "description": "Displayed if you try to advance past end < 0"
+    "description": "Displayed if you try to undo threading past the beginning"
   },
   "At start of weaving": {
     "message": "Kutomisen alussa",
-    "description": "Displayed if you try to advance past pick < 0"
+    "description": "Displayed if you try to undo weaving past the beginning"
   },
   "Back to front": {
     "message": "Takaisin etuun",
     "description": "Setting to thread from the back of the loom to the front"
   },
-  "cannot jump to a pick": {
-    "message": "ei voi hyp\u00e4t\u00e4 heittoon",
-    "description": "'pick' is a weft thread'"
-  },
-  "cannot jump to an end": {
-    "message": "ei voi hyp\u00e4t\u00e4 loppuun",
-    "description": "'end' is a warp thread"
+  "cannot jump": {
+    "message": "ei voi hyp\u00e4t\u00e4",
+    "description": "Part of an error messsage: cannot perform the requested jump"
   },
   "Change Direction": {
     "message": "Vaihda Suuntaa",
@@ -79,9 +75,9 @@
     "message": "liittym\u00e4 katkee",
     "description": "Shown when the loom server in the process of disconnecting from the loom"
   },
-  "Ends": {
+  "Warp threads": {
     "message": "P\u00e4\u00e4t",
-    "description": "Label for the display of current warp end number"
+    "description": "Label for current warp thread numbers (in Threading mode)"
   },
   "Error": {
     "message": "Virhe",
@@ -99,13 +95,13 @@
     "message": "Piilota",
     "description": "Hide the debug controls"
   },
-  "Jump to end": {
+  "Jump to warp thread": {
     "message": "Hypp\u00e4\u00e4 loppuun",
-    "description": "Jump to warp end number..."
+    "description": "Jump to warp thread number..."
   },
-  "Jump to pick": {
+  "Jump to weft thread": {
     "message": "Hypp\u00e4\u00e4 heittoon",
-    "description": "Jump to weft pick number..."
+    "description": "Jump to weft thread number..."
   },
   "Jump": {
     "message": "Hypp\u00e4\u00e4 ",
@@ -135,7 +131,7 @@
     "message": "Liikkuu",
     "description": "Loom shafts are moving"
   },
-  "Next Pick": {
+  "Next": {
     "message": "Seuraava Sukkulanheitto",
     "description": "Button label for debug control that tells the mock loom to request the next pick (or thread group)"
   },
@@ -153,19 +149,19 @@
   },
   "On the left": {
     "message": "Vasemmalla",
-    "description": "Setting: Warp end 1 on the left"
+    "description": "Setting: display warp thread 1 on the left"
   },
   "On the right": {
     "message": "Oikealla",
-    "description": "Setting: Warp end 1 on the right"
+    "description": "Setting: display warp thread 1 on the right"
   },
   "Pattern": {
     "message": "Mallikerta",
     "description": "Label for weaving pattern menu"
   },
-  "Pick": {
+  "Weft thread": {
     "message": "Sukkulanheitto",
-    "description": "Label for current weft pick number"
+    "description": "Label for the current weft thread number (in Weaving mode)"
   },
   "Read message": {
     "message": "Luettu viesti",
@@ -243,9 +239,9 @@
     "message": "Lataa",
     "description": "Button label to upload weaving pattern files"
   },
-  "Warp end 1": {
+  "Warp thread 1": {
     "message": "Loimipp\u00e4\u00e4 1",
-    "description": "Setting: Warp end 1 on the right/left"
+    "description": "Setting: display warp thread 1 on the right or left"
   },
   "Weave": {
     "message": "Kutoa",

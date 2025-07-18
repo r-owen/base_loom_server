@@ -523,7 +523,7 @@ class BaseTestLoomServer:
                 assert len(replies) == 2  # noqa: PLR2004
                 jump_end_reply = SimpleNamespace(**replies[0])
                 if total_end_number0 == 0:
-                    # Jump to end_number0 0, repeat_number 1.
+                    # Jump to warp thread_number0 0, repeat_number 1.
                     assert jump_end_reply == SimpleNamespace(
                         type="JumpEndNumber",
                         total_end_number0=0,
@@ -533,7 +533,7 @@ class BaseTestLoomServer:
                         end_repeat_number=1,
                     )
                 elif end_number0 == 0:
-                    # Jump to end_number0 0, repeat_number not 1.
+                    # Jump to warp thread_number0 0, repeat_number not 1.
                     # Report the last end of the previous repeat,
                     # rather than the magic "0" end_number0
                     assert jump_end_reply == SimpleNamespace(

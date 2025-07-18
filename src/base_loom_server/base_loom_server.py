@@ -450,7 +450,7 @@ class BaseLoomServer:
     async def cmd_jump_to_end(self, command: SimpleNamespace) -> None:
         """Handle the jump_to_end command."""
         if self.current_pattern is None:
-            raise CommandError(self.t("cannot jump to an end") + ": " + self.t("no pattern"))
+            raise CommandError(self.t("cannot jump") + ": " + self.t("no pattern"))
         if command.total_end_number0 is None:
             self.jump_end = client_replies.JumpEndNumber()
         else:
@@ -479,7 +479,7 @@ class BaseLoomServer:
     async def cmd_jump_to_pick(self, command: SimpleNamespace) -> None:
         """Handle the jump_to_pick command."""
         if self.current_pattern is None:
-            raise CommandError(self.t("cannot jump to a pick") + ": " + self.t("no pattern"))
+            raise CommandError(self.t("cannot jump") + ": " + self.t("no pattern"))
         if command.total_pick_number is None:
             self.jump_pick = client_replies.JumpPickNumber()
         else:
