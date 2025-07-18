@@ -451,7 +451,7 @@ class Client:
             raw_data = filepath.read_bytes()
             data = base64.b64encode(raw_data).decode("ascii")
         else:
-            data = filepath.read_text()
+            data = filepath.read_text(encoding="utf_8")
         replies = self.send_command(
             dict(type="upload", name=filepath.name, data=data),
             should_fail=should_fail,
@@ -1193,7 +1193,7 @@ class BaseTestLoomServer:
                 db_path = pathlib.Path(temp_dir) / "loom_server_database.sqlite"
                 settings_path = pathlib.Path(temp_dir) / SETTINGS_FILE_NAME
 
-                with settings_path.open("w") as f:
+                with settings_path.open("w", encoding="utf_8") as f:
                     f.write(unusable_settings_json)
 
                 with self.create_test_client(
@@ -1240,7 +1240,7 @@ class BaseTestLoomServer:
                 db_path = pathlib.Path(temp_dir) / "loom_server_database.sqlite"
                 settings_path = pathlib.Path(temp_dir) / SETTINGS_FILE_NAME
 
-                with settings_path.open("w") as f:
+                with settings_path.open("w", encoding="utf_8") as f:
                     json.dump(good_settings_dict, f)
 
                 with self.create_test_client(

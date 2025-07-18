@@ -736,7 +736,7 @@ class BaseLoomServer:
             return
 
         try:
-            with self.settings_path.open("r") as f:
+            with self.settings_path.open("r", encoding="utf_8") as f:
                 settings_dict = json.load(f)
         except Exception as e:
             self.log.warning(
@@ -1073,7 +1073,7 @@ class BaseLoomServer:
         datadict = dataclasses.asdict(self.settings)
         del datadict["type"]
         try:
-            with self.settings_path.open("w") as f:
+            with self.settings_path.open("w", encoding="utf_8") as f:
                 json.dump(datadict, f)
         except Exception as e:
             self.log.error(f"Could not write settings file {self.settings_path}: {e!r}")
