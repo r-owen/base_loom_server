@@ -26,6 +26,7 @@ def check_translation_files() -> None:
             desired_keys=desired_keys,
             lang_dict=lang_dict,
             report_missing_keys=False,
+            report_correct=False,
         )
         dict_list.append(lang_dict)
         languages_seen.add(filepath.stem)
@@ -54,10 +55,17 @@ def check_translation_files() -> None:
                 desired_keys=desired_keys,
                 lang_dict=lang_dict,
                 report_missing_keys=False,
+                report_correct=False,
             )
+
+        if filepath.stem == "default":
+            # Do not report the state of default.json
+            # because it defines the correct keys.
+            continue
 
         # Ignore default_dict when producing full_dict
         # so we can detect missing keys
+        report_missing_keys = not filepath.stem.startswith("English")
         full_dict_without_default: dict[str, str] = {}
         for subdict in reversed(dict_list):
             full_dict_without_default.update(subdict)
@@ -65,7 +73,8 @@ def check_translation_files() -> None:
             filepath=filepath,
             desired_keys=desired_keys,
             lang_dict=full_dict_without_default,
-            report_missing_keys=True,
+            report_missing_keys=report_missing_keys,
+            report_correct=True,
         )
 
 
@@ -78,13 +87,14 @@ def report_problems(
     desired_keys: set[str],
     lang_dict: dict[str, Any],
     report_missing_keys: bool,
+    report_correct: bool,
 ) -> None:
     """Check for issues in one file and print the results to stdout."""
-    bad_keys = {key for key, value in lang_dict.items() if value.keys() != {"message", "description"}}
-    missing_keys: set[str] = desired_keys - lang_dict.keys() - KeysToIgnore if report_missing_keys else set()
+    bad_keys = {key for key, value in lang_dict.items() if value.keys() != {"text", "crowdinContext"}}
+    missing_keys: set[str] = desired_keys - lang_dict.keys() - KeysToIgnore
     extra_keys = lang_dict.keys() - desired_keys
     blank_keys = {key for key, value in lang_dict.items() if value == ""}
-    if bad_keys or missing_keys or extra_keys or blank_keys:
+    if bad_keys or (missing_keys and report_missing_keys) or extra_keys or blank_keys:
         print(f"{filepath.name} has one or more problems:")
         if bad_keys:
             print(f"    bad keys: {bad_keys}")
@@ -94,5 +104,8 @@ def report_problems(
             print(f"    extra keys: {extra_keys}")
         if blank_keys:
             print(f"    blank entries: {blank_keys}")
-    elif report_missing_keys:
-        print(f"{filepath.name} is complete")
+    elif report_correct:
+        if missing_keys:
+            print(f"{filepath.name} is correct but not complete")
+        else:
+            print(f"{filepath.name} is complete")
