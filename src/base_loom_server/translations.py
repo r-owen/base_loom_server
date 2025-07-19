@@ -1,3 +1,4 @@
+import html
 import importlib.resources
 import json
 import logging
@@ -31,7 +32,9 @@ def get_default_dict() -> dict[str, str]:
 
 def get_translation_dict(
     language: str,
+    *,
     logger: logging.Logger | None = None,
+    html_escape: bool = True,
     dir_: Traversable = LOCALE_FILES,
 ) -> dict[str, str]:
     """Get the translation dict for the specified language.
@@ -42,6 +45,7 @@ def get_translation_dict(
         logger: Logger, which is created if None.
         dir_: Directory containing the non-default translation files.
             Use the default value except in unit tests.
+        html_escape: Run the values through html.escape?
 
     Raises:
         FileNotFoundError: If a file is not found.
@@ -78,6 +82,8 @@ def get_translation_dict(
     # in the chain), and so on up the (usually short) chain of dependencies.
     for next_dict in reversed(dict_list):
         translation_dict.update(next_dict)
+    if html_escape:
+        translation_dict = {key: html.escape(value, quote=True) for key, value in translation_dict.items()}
     return translation_dict
 
 
