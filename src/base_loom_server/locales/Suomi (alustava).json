@@ -1,254 +1,254 @@
 {
   "_language_code": {
-    "message": "fi",
-    "description": "Language code used by HTML, e.g. 'en'"
+    "text": "fi",
+    "crowdinContext": "Language code used by HTML, e.g. 'en'"
   },
   "and": {
-    "message": "ja",
-    "description": ""
+    "text": "ja",
+    "crowdinContext": ""
   },
   "another client took control": {
-    "message": "toinen asiakas otti hallinnan",
-    "description": "Displayed if another web client takes the connection"
+    "text": "toinen asiakas otti hallinnan",
+    "crowdinContext": "Displayed if another web client takes the connection"
   },
   "At start of threading": {
-    "message": "Langoituksen alussa",
-    "description": "Displayed if you try to undo threading past the beginning"
+    "text": "Langoituksen alussa",
+    "crowdinContext": "Displayed if you try to undo threading past the beginning"
   },
   "At start of weaving": {
-    "message": "Kutomisen alussa",
-    "description": "Displayed if you try to undo weaving past the beginning"
+    "text": "Kutomisen alussa",
+    "crowdinContext": "Displayed if you try to undo weaving past the beginning"
   },
   "Back to front": {
-    "message": "Takaisin etuun",
-    "description": "Setting to thread from the back of the loom to the front"
+    "text": "Takaisin etuun",
+    "crowdinContext": "Setting to thread from the back of the loom to the front"
   },
   "cannot jump": {
-    "message": "ei voi hyp\u00e4t\u00e4",
-    "description": "Part of an error messsage: cannot perform the requested jump"
+    "text": "ei voi hyp\u00e4t\u00e4",
+    "crowdinContext": "Part of an error messsage: cannot perform the requested jump"
   },
   "Change Direction": {
-    "message": "Vaihda Suuntaa",
-    "description": "Button text (only in mock mode)"
+    "text": "Vaihda Suuntaa",
+    "crowdinContext": "Button text (only in mock mode)"
   },
   "Clear Recents": {
-    "message": "Tyhjenn\u00e4 viimeaikaiset",
-    "description": "Pattern menu item to clear recent entries"
+    "text": "Tyhjenn\u00e4 viimeaikaiset",
+    "crowdinContext": "Pattern menu item to clear recent entries"
   },
   "Close Connection": {
-    "message": "Sulje yhteys",
-    "description": "Button text (only in mock mode)"
+    "text": "Sulje yhteys",
+    "crowdinContext": "Button text (only in mock mode)"
   },
   "Command mock loom": {
-    "message": "Komenna tekopuut",
-    "description": "Heading for the debug controls that are only shown in mock mode"
+    "text": "Komenna tekopuut",
+    "crowdinContext": "Heading for the debug controls that are only shown in mock mode"
   },
   "connected": {
-    "message": "liittynyt",
-    "description": "Shown when the loom server is fully connected to the loom"
+    "text": "liittynyt",
+    "crowdinContext": "Shown when the loom server is fully connected to the loom"
   },
   "connecting": {
-    "message": "liittym\u00e4ss\u00e4",
-    "description": "Shown when the loom server is in the process of connecting to the loom"
+    "text": "liittym\u00e4ss\u00e4",
+    "crowdinContext": "Shown when the loom server is in the process of connecting to the loom"
   },
   "Debug (mock loom)": {
-    "message": "Virheenj\u00e4ljitys (mallikangaspuu)",
-    "description": "Heading for debug controls when using the mock loom"
+    "text": "Virheenj\u00e4ljitys (mallikangaspuu)",
+    "crowdinContext": "Heading for debug controls when using the mock loom"
   },
   "Default threading group size": {
-    "message": "S\u00e4ikeisryhm\u00e4n oletuskoko",
-    "description": "Label text"
+    "text": "S\u00e4ikeisryhm\u00e4n oletuskoko",
+    "crowdinContext": "Label text"
   },
   "Direction control": {
-    "message": "Suunnan ohjaus",
-    "description": "Label text for a setting that allows the user to specify how weave/unweave direction is controlled"
+    "text": "Suunnan ohjaus",
+    "crowdinContext": "Label text for a setting that allows the user to specify how weave/unweave direction is controlled"
   },
   "Direction": {
-    "message": "Suunta",
-    "description": "Label for weave/unweave and thread/unthread"
+    "text": "Suunta",
+    "crowdinContext": "Label for weave/unweave and thread/unthread"
   },
   "disconnected": {
-    "message": "liittym\u00e4 katki",
-    "description": "Shown when the loom server is fully disconnected from the loom"
+    "text": "liittym\u00e4 katki",
+    "crowdinContext": "Shown when the loom server is fully disconnected from the loom"
   },
   "disconnecting": {
-    "message": "liittym\u00e4 katkee",
-    "description": "Shown when the loom server in the process of disconnecting from the loom"
+    "text": "liittym\u00e4 katkee",
+    "crowdinContext": "Shown when the loom server in the process of disconnecting from the loom"
   },
   "Warp threads": {
-    "message": "P\u00e4\u00e4t",
-    "description": "Label for current warp thread numbers (in Threading mode)"
+    "text": "P\u00e4\u00e4t",
+    "crowdinContext": "Label for current warp thread numbers (in Threading mode)"
   },
   "Error": {
-    "message": "Virhe",
-    "description": ""
+    "text": "Virhe",
+    "crowdinContext": ""
   },
   "Front to back": {
-    "message": "Edest\u00e4 taakse",
-    "description": "Setting to thread from the front of the loom to the back"
+    "text": "Edest\u00e4 taakse",
+    "crowdinContext": "Setting to thread from the front of the loom to the back"
   },
   "Group size": {
-    "message": "Ryhm\u00e4 koko",
-    "description": "Number of warp ends to raise shafts for when threading"
+    "text": "Ryhm\u00e4 koko",
+    "crowdinContext": "Number of warp ends to raise shafts for when threading"
   },
   "Hide": {
-    "message": "Piilota",
-    "description": "Hide the debug controls"
+    "text": "Piilota",
+    "crowdinContext": "Hide the debug controls"
   },
   "Jump to warp thread": {
-    "message": "Hypp\u00e4\u00e4 loppuun",
-    "description": "Jump to warp thread number..."
+    "text": "Hypp\u00e4\u00e4 loppuun",
+    "crowdinContext": "Jump to warp thread number..."
   },
   "Jump to weft thread": {
-    "message": "Hypp\u00e4\u00e4 heittoon",
-    "description": "Jump to weft thread number..."
+    "text": "Hypp\u00e4\u00e4 heittoon",
+    "crowdinContext": "Jump to weft thread number..."
   },
   "Jump": {
-    "message": "Hypp\u00e4\u00e4 ",
-    "description": "Label for the button that applies the requested jump"
+    "text": "Hypp\u00e4\u00e4 ",
+    "crowdinContext": "Label for the button that applies the requested jump"
   },
   "Language": {
-    "message": "Kieli",
-    "description": "Label for a language setting"
+    "text": "Kieli",
+    "crowdinContext": "Label for a language setting"
   },
   "Left to right": {
-    "message": "Vasemmalta oikealle",
-    "description": "Setting: thread from left to right"
+    "text": "Vasemmalta oikealle",
+    "crowdinContext": "Setting: thread from left to right"
   },
   "Loom name": {
-    "message": "Kangaspuiden nimi",
-    "description": "Name of the loom to display in the web interface"
+    "text": "Kangaspuiden nimi",
+    "crowdinContext": "Name of the loom to display in the web interface"
   },
   "Loom": {
-    "message": "Kangaspuut",
-    "description": "Direction control: Loom (typically a button on the dobby head)"
+    "text": "Kangaspuut",
+    "crowdinContext": "Direction control: Loom (typically a button on the dobby head)"
   },
   "lost connection to server": {
-    "message": "yhteys palvelimeen katkes",
-    "description": "Error message if the connection from the user to the loom server drops"
+    "text": "yhteys palvelimeen katkes",
+    "crowdinContext": "Error message if the connection from the user to the loom server drops"
   },
   "Moving": {
-    "message": "Liikkuu",
-    "description": "Loom shafts are moving"
+    "text": "Liikkuu",
+    "crowdinContext": "Loom shafts are moving"
   },
   "Next": {
-    "message": "Seuraava Sukkulanheitto",
-    "description": "Button label for debug control that tells the mock loom to request the next pick (or thread group)"
+    "text": "Seuraava Sukkulanheitto",
+    "crowdinContext": "Button label for debug control that tells the mock loom to request the next pick (or thread group)"
   },
   "Number must be": {
-    "message": "Luvun on oltava",
-    "description": "Example: user-specified numeric value must be <= 0"
+    "text": "Luvun on oltava",
+    "crowdinContext": "Example: user-specified numeric value must be <= 0"
   },
   "no pattern": {
-    "message": "ei mallia",
-    "description": "Displayed if no weaving pattern has been selected"
+    "text": "ei mallia",
+    "crowdinContext": "Displayed if no weaving pattern has been selected"
   },
   "of": {
-    "message": "/",
-    "description": "As in '5 of 10'"
+    "text": "/",
+    "crowdinContext": "As in '5 of 10'"
   },
   "On the left": {
-    "message": "Vasemmalla",
-    "description": "Setting: display warp thread 1 on the left"
+    "text": "Vasemmalla",
+    "crowdinContext": "Setting: display warp thread 1 on the left"
   },
   "On the right": {
-    "message": "Oikealla",
-    "description": "Setting: display warp thread 1 on the right"
+    "text": "Oikealla",
+    "crowdinContext": "Setting: display warp thread 1 on the right"
   },
   "Pattern": {
-    "message": "Mallikerta",
-    "description": "Label for weaving pattern menu"
+    "text": "Mallikerta",
+    "crowdinContext": "Label for weaving pattern menu"
   },
   "Weft thread": {
-    "message": "Sukkulanheitto",
-    "description": "Label for the current weft thread number (in Weaving mode)"
+    "text": "Sukkulanheitto",
+    "crowdinContext": "Label for the current weft thread number (in Weaving mode)"
   },
   "Read message": {
-    "message": "Luettu viesti",
-    "description": "Label for debug display of the most recent message read from the loom"
+    "text": "Luettu viesti",
+    "crowdinContext": "Label for debug display of the most recent message read from the loom"
   },
   "ready": {
-    "message": "valmis",
-    "description": "The loom server is ready"
+    "text": "valmis",
+    "crowdinContext": "The loom server is ready"
   },
   "repeat": {
-    "message": "toista",
-    "description": "Label for repeat number"
+    "text": "toista",
+    "crowdinContext": "Label for repeat number"
   },
   "Reset": {
-    "message": "Resetoi",
-    "description": "Label to clear the Jump input"
+    "text": "Resetoi",
+    "crowdinContext": "Label to clear the Jump input"
   },
   "Right to left": {
-    "message": "Oikealta vasemmalle",
-    "description": "Setting: thread from right to left"
+    "text": "Oikealta vasemmalle",
+    "crowdinContext": "Setting: thread from right to left"
   },
   "Save": {
-    "message": "S\u00e4\u00e4st\u00e4\u00e4",
-    "description": "Button that submits a new loom name"
+    "text": "S\u00e4\u00e4st\u00e4\u00e4",
+    "crowdinContext": "Button that submits a new loom name"
   },
   "Sent command": {
-    "message": "L\u00e4hetetty k\u00e4sky",
-    "description": "Label for debug display of the most recent command sent to the loom server"
+    "text": "L\u00e4hetetty k\u00e4sky",
+    "crowdinContext": "Label for debug display of the most recent command sent to the loom server"
   },
   "Separate repeats?": {
-    "message": "Erilliset toistot?",
-    "description": "Should there be a separator row, with all shafts down, after each pattern repeat?"
+    "text": "Erilliset toistot?",
+    "crowdinContext": "Should there be a separator row, with all shafts down, after each pattern repeat?"
   },
   "Settings": {
-    "message": "Asetukset",
-    "description": "Tab heading for the Settings panel"
+    "text": "Asetukset",
+    "crowdinContext": "Tab heading for the Settings panel"
   },
   "Shafts": {
-    "message": "Akselit",
-    "description": "Label for display of which shafts are raised"
+    "text": "Akselit",
+    "crowdinContext": "Label for display of which shafts are raised"
   },
   "Software": {
-    "message": "Ohjelmisto",
-    "description": "Direction control: Software (the web interface)"
+    "text": "Ohjelmisto",
+    "crowdinContext": "Direction control: Software (the web interface)"
   },
   "Status": {
-    "message": "Tila",
-    "description": "Label for status display"
+    "text": "Tila",
+    "crowdinContext": "Label for status display"
   },
   "Thread": {
-    "message": "Lanka",
-    "description": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front"
+    "text": "Lanka",
+    "crowdinContext": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front"
   },
   "Threading": {
-    "message": "Niisint\u00e4",
-    "description": "Tab heading for the Threading panel"
+    "text": "Niisint\u00e4",
+    "crowdinContext": "Tab heading for the Threading panel"
   },
   "timed out": {
-    "message": "aikakatkaistu",
-    "description": "Part of an error message if a command times out"
+    "text": "aikakatkaistu",
+    "crowdinContext": "Part of an error message if a command times out"
   },
   "Too many files": {
-    "message": "Liian monta tiedostoa",
-    "description": "Displayed if a user tries to upload too many files at once"
+    "text": "Liian monta tiedostoa",
+    "crowdinContext": "Displayed if a user tries to upload too many files at once"
   },
   "Unthread": {
-    "message": "Poista lanka",
-    "description": "Threading direction: go backwards to undo a mistake"
+    "text": "Poista lanka",
+    "crowdinContext": "Threading direction: go backwards to undo a mistake"
   },
   "Unweave": {
-    "message": "Kudoksen purkaminen",
-    "description": "Weaving direction: go backwards to undo a mistake"
+    "text": "Kudoksen purkaminen",
+    "crowdinContext": "Weaving direction: go backwards to undo a mistake"
   },
   "Upload": {
-    "message": "Lataa",
-    "description": "Button label to upload weaving pattern files"
+    "text": "Lataa",
+    "crowdinContext": "Button label to upload weaving pattern files"
   },
   "Warp thread 1": {
-    "message": "Loimipp\u00e4\u00e4 1",
-    "description": "Setting: display warp thread 1 on the right or left"
+    "text": "Loimipp\u00e4\u00e4 1",
+    "crowdinContext": "Setting: display warp thread 1 on the right or left"
   },
   "Weave": {
-    "message": "Kutoa",
-    "description": "Weaving direction: go forward to weave new cloth"
+    "text": "Kutoa",
+    "crowdinContext": "Weaving direction: go forward to weave new cloth"
   },
   "Weaving": {
-    "message": "Kutominen",
-    "description": "Tab heading for the weaving panel"
+    "text": "Kutominen",
+    "crowdinContext": "Tab heading for the weaving panel"
   }
 }

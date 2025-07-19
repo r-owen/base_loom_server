@@ -77,9 +77,9 @@ def test_format() -> None:
         for key, value in raw_dict.items():
             assert isinstance(key, str)
             assert isinstance(value, dict)
-            assert value.keys() == {"message", "description"}
-            assert isinstance(value["message"], str)
-            assert isinstance(value["description"], str)
+            assert value.keys() == {"text", "crowdinContext"}
+            assert isinstance(value["text"], str)
+            assert isinstance(value["crowdinContext"], str)
 
 
 def test_missing_file() -> None:

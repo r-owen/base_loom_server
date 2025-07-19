@@ -1,3 +1,3 @@
 {
-  "-- extra key for test_extra_keys --": {"message": "Arbitrary text", "description": "More text"}
+  "-- extra key for test_extra_keys --": {"text": "Arbitrary text", "crowdinContext": "More text"}
 }

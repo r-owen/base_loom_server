@@ -38,7 +38,7 @@ def check_translation_files() -> None:
                 break
             # Note: if "_extends" is present, it must have 2 keys: message and description
             # But if it does not, that is complained about elsewhere.
-            next_language = next_language_entry.get("message")
+            next_language = next_language_entry.get("text")
             if not next_language:
                 break
             if next_language in languages_seen:

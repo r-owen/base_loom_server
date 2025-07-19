@@ -90,14 +90,14 @@ def get_translation_dict(
 def _basic_read_one_translation_file(translation_file: Traversable) -> dict[str, str]:
     """Read one translation file and return as a dict of phrase: translation.
 
-    The file format is a dict of str: dict where dict includes the "message" key.
+    The file format is a dict of str: dict where dict includes the "text" key.
     Other than acting on that assumption, it performs no checking.
 
     Args:
         translation_file: Path to translation file.
     """
     raw_dict = json.loads(translation_file.read_text(encoding="utf_8"))
-    return {key: value["message"] for key, value in raw_dict.items()}
+    return {key: value["text"] for key, value in raw_dict.items()}
 
 
 def read_one_translation_file(

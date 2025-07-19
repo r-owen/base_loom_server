@@ -1,266 +1,266 @@
 {
   "_direction": {
-    "message": "ltr",
-    "description": "ltr (the default) if the language is left-to-right, rtl if right-to-left"
+    "text": "ltr",
+    "crowdinContext": "ltr (the default) if the language is left-to-right, rtl if right-to-left"
   },
   "_extends": {
-    "message": "",
-    "description": "Name of a language file that this one extends; missing items are pulled from the named file. Useful for variants, e.g. Qu\u00e9b\u00e9cois could extend Franc\u0327ais."
+    "text": "",
+    "crowdinContext": "Name of a language file that this one extends; missing items are pulled from the named file. Useful for variants, e.g. Qu\u00e9b\u00e9cois could extend Franc\u0327ais."
   },
   "_language_code": {
-    "message": "en",
-    "description": "Language code used by HTML, e.g. 'en'"
+    "text": "en",
+    "crowdinContext": "Language code used by HTML, e.g. 'en'"
   },
   "and": {
-    "message": "and",
-    "description": ""
+    "text": "and",
+    "crowdinContext": ""
   },
   "another client took control": {
-    "message": "another client took control",
-    "description": "Displayed if another web client takes the connection"
+    "text": "another client took control",
+    "crowdinContext": "Displayed if another web client takes the connection"
   },
   "At start of threading": {
-    "message": "At start of threading",
-    "description": "Displayed if you try to undo threading past the beginning"
+    "text": "At start of threading",
+    "crowdinContext": "Displayed if you try to undo threading past the beginning"
   },
   "At start of weaving": {
-    "message": "At start of weaving",
-    "description": "Displayed if you try to undo weaving past the beginning"
+    "text": "At start of weaving",
+    "crowdinContext": "Displayed if you try to undo weaving past the beginning"
   },
   "Back to front": {
-    "message": "Back to front",
-    "description": "Setting to thread from the back of the loom to the front"
+    "text": "Back to front",
+    "crowdinContext": "Setting to thread from the back of the loom to the front"
   },
   "cannot jump": {
-    "message": "cannot jump",
-    "description": "Part of an error messsage: cannot perform the requested jump"
+    "text": "cannot jump",
+    "crowdinContext": "Part of an error messsage: cannot perform the requested jump"
   },
   "Change Direction": {
-    "message": "Change Direction",
-    "description": "Button text (only in mock mode)"
+    "text": "Change Direction",
+    "crowdinContext": "Button text (only in mock mode)"
   },
   "Clear Recents": {
-    "message": "Clear Recents",
-    "description": "Pattern menu item to clear recent entries"
+    "text": "Clear Recents",
+    "crowdinContext": "Pattern menu item to clear recent entries"
   },
   "Close Connection": {
-    "message": "Close Connection",
-    "description": "Button text (only in mock mode)"
+    "text": "Close Connection",
+    "crowdinContext": "Button text (only in mock mode)"
   },
   "Command mock loom": {
-    "message": "Command mock loom",
-    "description": "Heading for the debug controls that are only shown in mock mode"
+    "text": "Command mock loom",
+    "crowdinContext": "Heading for the debug controls that are only shown in mock mode"
   },
   "connected": {
-    "message": "connected",
-    "description": "Shown when the loom server is fully connected to the loom"
+    "text": "connected",
+    "crowdinContext": "Shown when the loom server is fully connected to the loom"
   },
   "connecting": {
-    "message": "connecting",
-    "description": "Shown when the loom server is in the process of connecting to the loom"
+    "text": "connecting",
+    "crowdinContext": "Shown when the loom server is in the process of connecting to the loom"
   },
   "Debug (mock loom)": {
-    "message": "Debug (mock loom)",
-    "description": "Heading for debug controls when using the mock loom"
+    "text": "Debug (mock loom)",
+    "crowdinContext": "Heading for debug controls when using the mock loom"
   },
   "Default threading group size": {
-    "message": "Default threading group size",
-    "description": "Label text"
+    "text": "Default threading group size",
+    "crowdinContext": "Label text"
   },
   "Direction control": {
-    "message": "Direction control",
-    "description": "Label text for a setting that allows the user to specify how weave/unweave direction is controlled"
+    "text": "Direction control",
+    "crowdinContext": "Label text for a setting that allows the user to specify how weave/unweave direction is controlled"
   },
   "Direction": {
-    "message": "Direction",
-    "description": "Label for weave/unweave and thread/unthread"
+    "text": "Direction",
+    "crowdinContext": "Label for weave/unweave and thread/unthread"
   },
   "disconnected": {
-    "message": "disconnected",
-    "description": "Shown when the loom server is fully disconnected from the loom"
+    "text": "disconnected",
+    "crowdinContext": "Shown when the loom server is fully disconnected from the loom"
   },
   "disconnecting": {
-    "message": "disconnecting",
-    "description": "Shown when the loom server in the process of disconnecting from the loom"
+    "text": "disconnecting",
+    "crowdinContext": "Shown when the loom server in the process of disconnecting from the loom"
   },
   "Error": {
-    "message": "Error",
-    "description": ""
+    "text": "Error",
+    "crowdinContext": ""
   },
   "Front to back": {
-    "message": "Front to back",
-    "description": "Setting to thread from the front of the loom to the back"
+    "text": "Front to back",
+    "crowdinContext": "Setting to thread from the front of the loom to the back"
   },
   "Group size": {
-    "message": "Group size",
-    "description": "Number of warp ends to raise shafts for when threading"
+    "text": "Group size",
+    "crowdinContext": "Number of warp ends to raise shafts for when threading"
   },
   "Hide": {
-    "message": "Hide",
-    "description": "Hide the debug controls"
+    "text": "Hide",
+    "crowdinContext": "Hide the debug controls"
   },
   "Jump to warp thread": {
-    "message": "Jump to warp thread",
-    "description": "Jump to warp thread number..."
+    "text": "Jump to warp thread",
+    "crowdinContext": "Jump to warp thread number..."
   },
   "Jump to weft thread": {
-    "message": "Jump to weft thread",
-    "description": "Jump to weft thread number..."
+    "text": "Jump to weft thread",
+    "crowdinContext": "Jump to weft thread number..."
   },
   "Jump": {
-    "message": "Jump",
-    "description": "Label for the button that applies the requested jump"
+    "text": "Jump",
+    "crowdinContext": "Label for the button that applies the requested jump"
   },
   "Language": {
-    "message": "Language",
-    "description": "Label for a language setting"
+    "text": "Language",
+    "crowdinContext": "Label for a language setting"
   },
   "Left to right": {
-    "message": "Left to right",
-    "description": "Setting: thread from left to right"
+    "text": "Left to right",
+    "crowdinContext": "Setting: thread from left to right"
   },
   "Loom name": {
-    "message": "Loom name",
-    "description": "Name of the loom to display in the web interface"
+    "text": "Loom name",
+    "crowdinContext": "Name of the loom to display in the web interface"
   },
   "Loom": {
-    "message": "Loom",
-    "description": "Direction control: Loom (typically a button on the dobby head)"
+    "text": "Loom",
+    "crowdinContext": "Direction control: Loom (typically a button on the dobby head)"
   },
   "lost connection to server": {
-    "message": "lost connection to server",
-    "description": "Error message if the connection from the user to the loom server drops"
+    "text": "lost connection to server",
+    "crowdinContext": "Error message if the connection from the user to the loom server drops"
   },
   "Moving": {
-    "message": "Moving",
-    "description": "Loom shafts are moving"
+    "text": "Moving",
+    "crowdinContext": "Loom shafts are moving"
   },
   "Next": {
-    "message": "Next",
-    "description": "Button label for debug control that tells the mock loom to request the next shed"
+    "text": "Next",
+    "crowdinContext": "Button label for debug control that tells the mock loom to request the next shed"
   },
   "Number must be": {
-    "message": "Number must be",
-    "description": "Example: user-specified numeric value must be <= 0"
+    "text": "Number must be",
+    "crowdinContext": "Example: user-specified numeric value must be <= 0"
   },
   "no pattern": {
-    "message": "no pattern",
-    "description": "Displayed if no weaving pattern has been selected"
+    "text": "no pattern",
+    "crowdinContext": "Displayed if no weaving pattern has been selected"
   },
   "of": {
-    "message": "of",
-    "description": "As in '5 of 10'"
+    "text": "of",
+    "crowdinContext": "As in '5 of 10'"
   },
   "On the left": {
-    "message": "On the left",
-    "description": "Setting: display warp thread 1 on the left"
+    "text": "On the left",
+    "crowdinContext": "Setting: display warp thread 1 on the left"
   },
   "On the right": {
-    "message": "On the right",
-    "description": "Setting: display warp thread 1 on the right"
+    "text": "On the right",
+    "crowdinContext": "Setting: display warp thread 1 on the right"
   },
   "Pattern": {
-    "message": "Pattern",
-    "description": "Label for weaving pattern menu"
+    "text": "Pattern",
+    "crowdinContext": "Label for weaving pattern menu"
   },
   "Read message": {
-    "message": "Read message",
-    "description": "Label for debug display of the most recent message read from the loom"
+    "text": "Read message",
+    "crowdinContext": "Label for debug display of the most recent message read from the loom"
   },
   "ready": {
-    "message": "ready",
-    "description": "The loom server is ready"
+    "text": "ready",
+    "crowdinContext": "The loom server is ready"
   },
   "repeat": {
-    "message": "repeat",
-    "description": "Label for repeat number"
+    "text": "repeat",
+    "crowdinContext": "Label for repeat number"
   },
   "Reset": {
-    "message": "Reset",
-    "description": "Label to clear the Jump input"
+    "text": "Reset",
+    "crowdinContext": "Label to clear the Jump input"
   },
   "Right to left": {
-    "message": "Right to left",
-    "description": "Setting: thread from right to left"
+    "text": "Right to left",
+    "crowdinContext": "Setting: thread from right to left"
   },
   "Save": {
-    "message": "Save",
-    "description": "Button that submits a new loom name"
+    "text": "Save",
+    "crowdinContext": "Button that submits a new loom name"
   },
   "Sent command": {
-    "message": "Sent command",
-    "description": "Label for debug display of the most recent command sent to the loom server"
+    "text": "Sent command",
+    "crowdinContext": "Label for debug display of the most recent command sent to the loom server"
   },
   "Shafts": {
-    "message": "Shafts",
-    "description": "Label for display of which shafts are raised"
+    "text": "Shafts",
+    "crowdinContext": "Label for display of which shafts are raised"
   },
   "Separate repeats?": {
-    "message": "Separate repeats?",
-    "description": "Should there be a separator row, with all shafts down, after each pattern repeat?"
+    "text": "Separate repeats?",
+    "crowdinContext": "Should there be a separator row, with all shafts down, after each pattern repeat?"
   },
   "Settings": {
-    "message": "Settings",
-    "description": "Tab heading for the Settings panel"
+    "text": "Settings",
+    "crowdinContext": "Tab heading for the Settings panel"
   },
   "Software": {
-    "message": "Software",
-    "description": "Direction control: Software (the web interface)"
+    "text": "Software",
+    "crowdinContext": "Direction control: Software (the web interface)"
   },
   "Status": {
-    "message": "Status",
-    "description": "Label for status display"
+    "text": "Status",
+    "crowdinContext": "Label for status display"
   },
   "Thread": {
-    "message": "Thread",
-    "description": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front"
+    "text": "Thread",
+    "crowdinContext": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front"
   },
   "Threading": {
-    "message": "Threading",
-    "description": "Tab heading for the Threading panel"
+    "text": "Threading",
+    "crowdinContext": "Tab heading for the Threading panel"
   },
   "timed out": {
-    "message": "timed out",
-    "description": "Part of an error message if a command times out"
+    "text": "timed out",
+    "crowdinContext": "Part of an error message if a command times out"
   },
   "Too many files": {
-    "message": "Too many files",
-    "description": "Displayed if a user tries to upload too many files at once"
+    "text": "Too many files",
+    "crowdinContext": "Displayed if a user tries to upload too many files at once"
   },
   "Unthread": {
-    "message": "Unthread",
-    "description": "Threading direction: go backwards to undo a mistake"
+    "text": "Unthread",
+    "crowdinContext": "Threading direction: go backwards to undo a mistake"
   },
   "Unweave": {
-    "message": "Unweave",
-    "description": "Weaving direction: go backwards to undo a mistake"
+    "text": "Unweave",
+    "crowdinContext": "Weaving direction: go backwards to undo a mistake"
   },
   "Upload": {
-    "message": "Upload",
-    "description": "Button label to upload weaving pattern files"
+    "text": "Upload",
+    "crowdinContext": "Button label to upload weaving pattern files"
   },
   "Warp thread 1": {
-    "message": "Warp thread 1",
-    "description": "Setting: display warp thread 1 on the right or left"
+    "text": "Warp thread 1",
+    "crowdinContext": "Setting: display warp thread 1 on the right or left"
   },
   "Warp threads": {
-    "message": "Warp threads",
-    "description": "Label for current warp thread numbers (in Threading mode)"
+    "text": "Warp threads",
+    "crowdinContext": "Label for current warp thread numbers (in Threading mode)"
   },
   "Weave": {
-    "message": "Weave",
-    "description": "Weaving direction: go forward to weave new cloth"
+    "text": "Weave",
+    "crowdinContext": "Weaving direction: go forward to weave new cloth"
   },
   "Weaving": {
-    "message": "Weaving",
-    "description": "Tab heading for the weaving panel"
+    "text": "Weaving",
+    "crowdinContext": "Tab heading for the weaving panel"
   },
   "Weft thread": {
-    "message": "Weft thread",
-    "description": "Label for the current weft thread number (in Weaving mode)"
+    "text": "Weft thread",
+    "crowdinContext": "Label for the current weft thread number (in Weaving mode)"
   },
   "?": {
-    "message": "?",
-    "description": "Question mark representing an unknown value"
+    "text": "?",
+    "crowdinContext": "Question mark representing an unknown value"
   }
 }

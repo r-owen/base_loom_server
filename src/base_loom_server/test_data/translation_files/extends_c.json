@@ -1,5 +1,5 @@
 {
-  "Pattern": {"message": "Pattern c", "description": ""},
-  "Thread": {"message": "Thread c", "description": ""},
-  "Weave": {"message": "Weave c", "description": ""}
+  "Pattern": {"text": "Pattern c", "crowdinContext": ""},
+  "Thread": {"text": "Thread c", "crowdinContext": ""},
+  "Weave": {"text": "Weave c", "crowdinContext": ""}
 }

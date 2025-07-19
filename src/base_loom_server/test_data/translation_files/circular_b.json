@@ -1,3 +1,3 @@
 {
-  "_extends": {"message": "circular_c", "context": ""}
+  "_extends": {"text": "circular_c", "context": ""}
 }

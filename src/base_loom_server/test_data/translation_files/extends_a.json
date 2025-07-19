@@ -1,4 +1,4 @@
 {
-  "_extends": {"message": "extends_b", "description": ""},
-   "Weave": {"message": "Weave a", "description": ""}
+  "_extends": {"text": "extends_b", "crowdinContext": ""},
+   "Weave": {"text": "Weave a", "crowdinContext": ""}
 }
