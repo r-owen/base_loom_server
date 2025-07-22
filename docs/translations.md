@@ -15,11 +15,11 @@ You can edit strings directly in the list view or in the translate panel to the 
 The translate panel also shows context: a string that give more information about the word or phrase to be translated.
 To open the translate panel click on the translate icon along the right:
 
-<img src="images/screen_shots/translate_icon.jpg" alt="translate icon">
+<img src="../images/screen_shots/translate_icon.jpg" alt="translate icon">
 
 Here is an example showing the translate panel for one French phrase. I added a purple box around the context, and the translation is shown (and can be edited) in bold at the bottom of the screen shot.
 
-<img src="images/screen_shots/translate_panel.jpg" width=500 alt="translate panel">
+<img src="../images/screen_shots/translate_panel.jpg" width=500 alt="translate panel">
 
 Another way to update a translation is to fork the [base_loom_server project on github](https://github.com/r-owen/base_loom_server/) and edit or add a translation file directly.
 Here is a link to the [French translation](https://github.com/r-owen/base_loom_server/blob/main/src/base_loom_server/locales/Français.json).
