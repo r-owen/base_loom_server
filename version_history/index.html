@@ -77,6 +77,10 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Version History</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#029-2025-07-22">0.29 2025-07-22</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#028-2025-07-10">0.28 2025-07-10</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#0271-2025-07-08">0.27.1 2025-07-08</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#027-2025-07-07">0.27 2025-07-07</a>
@@ -204,6 +208,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/reduced_pattern/">base_loom_server.reduced_pattern</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/rename_crowdin_files/">base_loom_server.rename_crowdin_files</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/translations/">base_loom_server.translations</a>
@@ -239,11 +245,35 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="version-history">Version History</h1>
+<h2 id="029-2025-07-22">0.29 2025-07-22</h2>
+<ul>
+<li>Add (preliminary) translations for more languages.</li>
+<li>
+<p>Use crowdin for translations. As a result:</p>
+</li>
+<li>
+<p>Change the format of translation files (to "Chrome JSON").</p>
+</li>
+<li>Update the translation instructions.</li>
+<li>
+<p>Remove support for one translation file extending another.</p>
+</li>
+<li>
+<p>html-encode translated strings for improved safety.</p>
+</li>
+</ul>
+<h2 id="028-2025-07-10">0.28 2025-07-10</h2>
+<ul>
+<li>Support dark mode.
+  Use the browser's dark/light setting (there is no manual override at this time).</li>
+<li>Make button text black on iOS.</li>
+<li>Fix a few minor bugs found by pyright.</li>
+<li>Fix a few minor issues found by running mypy in strict mode.</li>
+</ul>
 <h2 id="0271-2025-07-08">0.27.1 2025-07-08</h2>
 <ul>
-<li>Make text black on iOS.</li>
-<li>Fix images on main documentation page. (It turns out that the served documentation needs something slightly different than when running locally).</li>
-<li>Corrected the version of ruff in pyproject.toml.</li>
+<li>Fix images on the main documentation page.</li>
+<li>Fix the version of ruff in pyproject.toml.</li>
 </ul>
 <h2 id="027-2025-07-07">0.27 2025-07-07</h2>
 <p>Changes for maintainers and authors of loom-specific packages:</p>
@@ -328,7 +358,7 @@
 </ul>
 <h2 id="0231-2025-06-25">0.23.1 2025-06-25</h2>
 <ul>
-<li>Fix display of setting "warp end 1"; it was not updated based on the reported value.</li>
+<li>Fix display of setting "Warp thread 1"; it was not updated based on the reported value.</li>
 </ul>
 <h2 id="023-2025-06-23">0.23 2025-06-23</h2>
 <ul>
@@ -390,13 +420,13 @@
 <li>
 <p>End numbers were not shown when displaying end 0.</p>
 </li>
-<li>When a jump is pending, the "Jump to end" input box now shows the total end number
+<li>When a jump is pending, the "Jump to warp thread" input box now shows the total end number
     (the same value you typed in), rather than the end number within the current pattern repeat.</li>
 <li>Change the threading display to show total end numbers along the top,
   rather than end numbers within the current pattern repeat.</li>
 <li>Further improve the display of the tab bar at the top of the window.</li>
 <li>Improve the display of popup menus, such as the Pattern menu.</li>
-<li>Improve the display of text input areas, such as "Jump to pick".</li>
+<li>Improve the display of text input areas, such as "Jump to weft thread".</li>
 <li>For most controls with labels, you can now click on the label to activate the control.
   This is especially helpful for the "Separate repeats?" checkboxes.</li>
 <li>Specify the language in the HTML. This will be English,

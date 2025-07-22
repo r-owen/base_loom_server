@@ -114,6 +114,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/reduced_pattern/">base_loom_server.reduced_pattern</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/rename_crowdin_files/">base_loom_server.rename_crowdin_files</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/translations/">base_loom_server.translations</a>
@@ -149,29 +151,26 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="translations">Translations</h1>
-<p><a href="https://pypi.org/project/base-loom-server/">base_loom_server</a> supports foreign language translations (for the web display, but not this documentation).</p>
-<p>At present only a few translations are available, and none have been properly vetted.
-Help from others to improve the existing translations and add new ones would be most welcome.
-Weaving terminology is somewhat obscure, so translation tools may miss important subtleties. </p>
-<p>Each language is supported by a separate json file in <code>src/locales</code>.
-The name of each translation file is the native name of the language, for example <code>Français.json</code>.</p>
-<p>The file <code>src/locales/default.json</code> lists all the words and phrases for which translations are wanted.
-the values are context, which are purely intended to help the translator understand the word or phrase; they are ignored by the software.
-In addition to those entries there are a few <a href="#metadata-keys">metadata keys</a>.</p>
-<p>The keys in the translation files are the same as in <code>default.json</code>, but the values are the translated word or phrase.
-One way to start is to copy <code>src/locales/default.json</code> to the new language file, then replace each context string with the translated string.</p>
-<p>To add or change translation files, fork the project on github.</p>
-<p>If you are not confident of your translations, please append " (preliminary)", suitably translated, to the name.
-For example: "Français (préliminaire).json".</p>
-<p>An incomplete file is better than none. Missing entries will be shown in English.</p>
+<p><a href="https://pypi.org/project/base-loom-server/">base_loom_server</a> supports foreign languages.</p>
+<p>At the moment all translations are preliminary.
+Help improving them and adding new languages would be most welcome.</p>
+<p>Translations are done on <a href="https://crowdin.com/editor/base-loom-server">crowdin</a>.
+Accounts are free and the project is public.</p>
+<p>Here is a good place to start <a href="https://crowdin.com/editor/base-loom-server/5/en-fr?view=side-by-side&amp;filter=basic&amp;value=3">French</a>. Click on French along the top left to pick another language.
+If you find it asking for which file to translate, select "default.json".</p>
+<p>You can edit strings directly in the list view or in the translate panel to the right.
+The translate panel also shows context: a string that give more information about the word or phrase to be translated.
+To open the translate panel click on the translate icon along the right:</p>
+<p><a class="glightbox" href="images/screen_shots/translate_icon.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="images/screen_shots/translate_icon.jpg" alt="translate icon"></a></p>
+<p>Here is an example showing the translate panel for one French phrase. I added a purple box around the context, and the translation is shown (and can be edited) in bold at the bottom of the screen shot.</p>
+<p><a class="glightbox" href="images/screen_shots/translate_panel.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="images/screen_shots/translate_panel.jpg" width=500 alt="translate panel"></a></p>
+<p>Another way to update a translation is to fork the <a href="https://github.com/r-owen/base_loom_server/">base_loom_server project on github</a> and edit or add a translation file directly.
+Here is a link to the <a href="https://github.com/r-owen/base_loom_server/blob/main/src/base_loom_server/locales/Français.json">French translation</a>.</p>
 <h2 id="metadata-keys">Metadata Keys</h2>
-<p>There are several optional keys that provide metadata:</p>
+<p>There are two special keys that provide metadata:</p>
 <ul>
-<li><strong>_direction</strong>: whether the language is read left-to-right (value <code>ltr</code>, the default) or right-to-left (value <code>rtl</code>).</li>
-<li><strong>_extends</strong>: the name of another language file of which this is a variant, without the ".json" suffix.
-  If you specify <code>_extends</code> then you need only specify the items that differ from the file named in <code>_extends</code>.
-  For example file <code>Québécois.json</code> could specify <code>"_extends"="Français"</code>.</li>
-<li><strong>_language_code</strong>: the ISO 639-1 language code for the language, e.g. <code>fr</code> for <code>Français</code>. Here is <a href="https://www.w3schools.com/tags/ref_language_codes.asp">one list</a>. This may help text-to-speech software. If omitted the value is "en".</li>
+<li><strong>_direction</strong>: whether the language is read left-to-right (value <code>ltr</code>, the default) or right-to-left (value <code>rtl</code>). If blank "ltr" is used.</li>
+<li><strong>_language_code</strong>: the ISO 639-1 language code for the language, e.g. <code>fr</code> for <code>Français</code>. Here is <a href="https://www.w3schools.com/tags/ref_language_codes.asp">one list</a>. The language code is not very important, but it may help text-to-speech software. If blank "en" is used.</li>
 </ul>
               
             </div>

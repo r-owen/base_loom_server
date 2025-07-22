@@ -110,6 +110,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/reduced_pattern/">base_loom_server.reduced_pattern</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/rename_crowdin_files/">base_loom_server.rename_crowdin_files</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/translations/">base_loom_server.translations</a>
@@ -203,10 +205,12 @@
 <span class="normal">46</span>
 <span class="normal">47</span>
 <span class="normal">48</span>
-<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ExampleLoomServer&quot;</span><span class="p">]</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ExampleLoomServer&quot;</span><span class="p">]</span>
 
 <span class="kn">from</span> <span class="nn">.base_loom_server</span> <span class="kn">import</span> <span class="n">BaseLoomServer</span>
-<span class="kn">from</span> <span class="nn">.client_replies</span> <span class="kn">import</span> <span class="n">MessageSeverityEnum</span><span class="p">,</span> <span class="n">ShaftStateEnum</span>
+<span class="kn">from</span> <span class="nn">.enums</span> <span class="kn">import</span> <span class="n">MessageSeverityEnum</span><span class="p">,</span> <span class="n">ShaftStateEnum</span>
 <span class="kn">from</span> <span class="nn">.example_mock_loom</span> <span class="kn">import</span> <span class="n">ExampleMockLoom</span>
 
 
@@ -252,6 +256,8 @@
                     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_problem</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
                     <span class="k">return</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_direction</span><span class="p">()</span>
+            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ignoring unrecognized reply from loom: </span><span class="si">{</span><span class="n">reply</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 
               

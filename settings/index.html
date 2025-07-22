@@ -112,6 +112,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/reduced_pattern/">base_loom_server.reduced_pattern</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/rename_crowdin_files/">base_loom_server.rename_crowdin_files</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/translations/">base_loom_server.translations</a>
@@ -156,14 +158,14 @@
 Settings are automatically saved, and should survive rebooting the loom server.</p>
 <p>Settings include:</p>
 <ul>
-<li>
-<p><strong>Language</strong>: which language to use.
-  A language is listed as "preliminary" (in that language) if the translation is not well vetted.
-  As of June, 2025 there are only two translations, both preliminary.
-  Your help to improve existing translations or provide new ones would be much appreciated.
+<li><strong>Language</strong>: which language to use.
+  Note that this is always the first setting, and the settings panel is always the 3rd tab.
+  So if the page is a language you don't recognize, click on the first pop-up menu in the settings panel to choose a different language.</li>
+</ul>
+<p>Your help to improve existing translations or add new languages would be much appreciated.
   Read <a href="../translations/">Translations</a> for more information.</p>
-<p>Note that changing languages reloads the page, but this should be fast and harmless.</p>
-</li>
+<p>Note that changing the languages reloads the page. This should be fast and harmless.</p>
+<ul>
 <li>
 <p><strong>Loom name</strong>: the name of the loom, as it appears in the display.
   Use any name you like; it is just for display.</p>
@@ -174,7 +176,7 @@ Settings are automatically saved, and should survive rebooting the loom server.<
   This setting is not shown for Séguin looms and others that support changing direction from both software and a button on the loom.</p>
 </li>
 <li>
-<p><strong>Warp end 1</strong>: specify whether to display warp end 1 on the right or left
+<p><strong>Warp thread 1</strong>: specify whether to display Warp thread 1 on the right or left
   in the <a href="../weaving/">Weaving</a> and <a href="../threading/">Threading</a> pattern displays.
   However, this is as seen <em>from the front of the loom</em>.
   If you specify threading front-to-back, the threading pattern is displayed as seen from the back of the loom,
@@ -183,7 +185,7 @@ Settings are automatically saved, and should survive rebooting the loom server.<
 <li>
 <p><strong>Threading</strong>: specify whether you prefer to thread right-to-left or left-to-right, and front-to-back or back-to-front.
   Specifying front-to-back simply changes the Threading pattern display to appear as if you are sitting behind the castle:
-  shaft 1 is displayed at the top and warp end 1 is displayed on the opposite side of that specified in "Warp end 1`".</p>
+  shaft 1 is displayed at the top and Warp thread 1 is displayed on the opposite side of that specified in "Warp thread 1`".</p>
 </li>
 <li>
 <p><strong>Default threading group size</strong>: specify the threading group size for newly uploaded patterns.

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../../img/favicon.ico" />
-    <title>base_loom_server.check_translation_files - Base Loom Server</title>
+    <title>base_loom_server.rename_crowdin_files - Base Loom Server</title>
     <link rel="stylesheet" href="../../../css/theme.css" />
     <link rel="stylesheet" href="../../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -15,8 +15,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "base_loom_server.check_translation_files";
-        var mkdocs_page_input_path = "api/base_loom_server/check_translation_files.md";
+        var mkdocs_page_name = "base_loom_server.rename_crowdin_files";
+        var mkdocs_page_input_path = "api/base_loom_server/rename_crowdin_files.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -90,13 +90,7 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
-                <li class="toctree-l2 current"><a class="reference internal current" href="#">base_loom_server.check_translation_files</a>
-    <ul class="current">
-    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.check_translation_files.check_translation_files">check_translation_files</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.check_translation_files.report_problems">report_problems</a>
-    </li>
-    </ul>
+                <li class="toctree-l2"><a class="reference internal" href="../check_translation_files/">base_loom_server.check_translation_files</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
                 </li>
@@ -116,7 +110,11 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../reduced_pattern/">base_loom_server.reduced_pattern</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../rename_crowdin_files/">base_loom_server.rename_crowdin_files</a>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">base_loom_server.rename_crowdin_files</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.rename_crowdin_files.rename_crowdin_files">rename_crowdin_files</a>
+    </li>
+    </ul>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../testutils/">base_loom_server.testutils</a>
                 </li>
@@ -145,7 +143,7 @@
     <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">API Reference</li>
           <li class="breadcrumb-item">base_loom_server</li>
-      <li class="breadcrumb-item active">base_loom_server.check_translation_files</li>
+      <li class="breadcrumb-item active">base_loom_server.rename_crowdin_files</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -154,16 +152,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 style="display: none;">base_loom_server.check_translation_files</h1><p class="mkapi-object mkapi-page-source" id="base_loom_server.check_translation_files">
+                <h1 style="display: none;">base_loom_server.rename_crowdin_files</h1><p class="mkapi-object mkapi-page-source" id="base_loom_server.rename_crowdin_files">
 <span class="mkapi-object-link">
 
 
-<a href="../../../src/base_loom_server/check_translation_files/#base_loom_server.check_translation_files" title="Go to source">source</a>
+<a href="../../../src/base_loom_server/rename_crowdin_files/#base_loom_server.rename_crowdin_files" title="Go to source">source</a>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
 </span><span class="mkapi-object-kind">module</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.check_translation_files" title="base_loom_server.check_translation_files">base_loom_server.check_translation_files</a></span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.rename_crowdin_files" title="base_loom_server.rename_crowdin_files">base_loom_server.rename_crowdin_files</a></span>
 </p>
 <div class="mkapi-document">
 <p class="mkapi-section">
@@ -177,53 +175,36 @@
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.check_translation_files.check_translation_files" title="base_loom_server.check_translation_files.check_translation_files">check_translation_files</a></span>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.rename_crowdin_files.rename_crowdin_files" title="base_loom_server.rename_crowdin_files.rename_crowdin_files">rename_crowdin_files</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Check for issues in the language translation files.</p>
-</li>
-<li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.check_translation_files.report_problems" title="base_loom_server.check_translation_files.report_problems">report_problems</a></span>
- <span class="mkapi-dash">&mdash;</span>
-Check for issues in one file and print the results to stdout.</p>
+Process translation files from crowdin.</p>
 </li>
 </ul>
 </div>
 </div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.check_translation_files.check_translation_files">
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.rename_crowdin_files.rename_crowdin_files">
 <span class="mkapi-object-link">
 
 
-<a href="../../../src/base_loom_server/check_translation_files/#base_loom_server.check_translation_files.check_translation_files" title="Go to source">source</a>
+<a href="../../../src/base_loom_server/rename_crowdin_files/#base_loom_server.rename_crowdin_files.rename_crowdin_files" title="Go to source">source</a>
 <span class="mkapi-document-toggle" title="Toggle all docs">
 <i class="fa-regular fa-square-minus"></i>
 </span>
 </span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.check_translation_files.check_translation_files" title="base_loom_server.check_translation_files.check_translation_files">check_translation_files</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.rename_crowdin_files.rename_crowdin_files" title="base_loom_server.rename_crowdin_files.rename_crowdin_files">rename_crowdin_files</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Check for issues in the language translation files.</p>
-<p>Report to stdout.</p>
-</div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.check_translation_files.report_problems">
-<span class="mkapi-object-link">
-
-
-<a href="../../../src/base_loom_server/check_translation_files/#base_loom_server.check_translation_files.report_problems" title="Go to source">source</a>
-<span class="mkapi-document-toggle" title="Toggle all docs">
-<i class="fa-regular fa-square-minus"></i>
-</span>
-</span>
-<span class="mkapi-object-name"><a href="./#base_loom_server.check_translation_files.report_problems" title="base_loom_server.check_translation_files.report_problems">report_problems</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">filepath</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="importlib.resources.abc.Traversable">Traversable</span></span><span class="mkapi-comma">, </span><span class="mkapi-arg">desired_keys</span><span class="mkapi-colon">: </span><span class="mkapi-ann">set[str]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">lang_dict</span><span class="mkapi-colon">: </span><span class="mkapi-ann">dict[str, <span class="mkapi-tooltip" title="typing.Any">Any</span>]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">report_missing_keys</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
-</p>
-<div class="mkapi-document">
-<p>Check for issues in one file and print the results to stdout.</p>
+<p>Process translation files from crowdin.</p>
+<p>Rename crowdin files to the language name in the original language,
+and move them to a subfolder of in_dir named "locales" (which is created, if necesary).
+The user can then copy any of these files to "locales" in the base_loom_server package.</p>
 </div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../base_mock_loom/" class="btn btn-neutral float-left" title="base_loom_server.base_mock_loom"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../client_replies/" class="btn btn-neutral float-right" title="base_loom_server.client_replies">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../reduced_pattern/" class="btn btn-neutral float-left" title="base_loom_server.reduced_pattern"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../testutils/" class="btn btn-neutral float-right" title="base_loom_server.testutils">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -246,10 +227,10 @@ Check for issues in one file and print the results to stdout.</p>
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../base_mock_loom/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../reduced_pattern/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../client_replies/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../testutils/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

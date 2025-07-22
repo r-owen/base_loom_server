@@ -110,6 +110,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/reduced_pattern/">base_loom_server.reduced_pattern</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/rename_crowdin_files/">base_loom_server.rename_crowdin_files</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/testutils/">base_loom_server.testutils</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/translations/">base_loom_server.translations</a>
@@ -1691,10 +1693,10 @@
 <span class="n">TEST_DATA_FILES</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="n">_PKG_NAME</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;pattern_files&quot;</span>
 
 <span class="c1"># in Python 3.11 mypy complains: &quot;Traversable&quot; has no attribute &quot;glob&quot;</span>
-<span class="n">ALL_PATTERN_PATHS</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="nb">list</span><span class="p">(</span><span class="n">TEST_DATA_FILES</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.wif&quot;</span><span class="p">))</span>  <span class="c1"># type: ignore[attr-defined]</span>
-    <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">TEST_DATA_FILES</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.dtx&quot;</span><span class="p">))</span>  <span class="c1"># type: ignore[attr-defined]</span>
-    <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">TEST_DATA_FILES</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.wpo&quot;</span><span class="p">))</span>  <span class="c1"># type: ignore[attr-defined]</span>
+<span class="n">ALL_PATTERN_PATHS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="o">*</span><span class="n">TEST_DATA_FILES</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.wif&quot;</span><span class="p">),</span>  <span class="c1"># type: ignore[attr-defined]</span>
+    <span class="o">*</span><span class="n">TEST_DATA_FILES</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.dtx&quot;</span><span class="p">),</span>  <span class="c1"># type: ignore[attr-defined]</span>
+    <span class="o">*</span><span class="n">TEST_DATA_FILES</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.wpo&quot;</span><span class="p">),</span>  <span class="c1"># type: ignore[attr-defined]</span>
 <span class="p">)</span>
 
 <div class="mkapi-source-link" id="base_loom_server.testutils.assert_replies_equal"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.assert_replies_equal" title="Go to docs">docs</a></div>
@@ -2063,7 +2065,7 @@
 <span class="sd">            The final reply will be CommandDone and its success flag is checked</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send_dict</span><span class="p">(</span><span class="n">cmd_dict</span><span class="p">)</span>
-        <span class="n">replies</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">replies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">receive_dict</span><span class="p">()</span>
             <span class="n">replies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
@@ -2098,7 +2100,7 @@
             <span class="n">raw_data</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf_8&quot;</span><span class="p">)</span>
         <span class="n">replies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
             <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;upload&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">filepath</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">),</span>
             <span class="n">should_fail</span><span class="o">=</span><span class="n">should_fail</span><span class="p">,</span>
@@ -2170,7 +2172,7 @@
                 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
                 <span class="n">jump_end_reply</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="k">if</span> <span class="n">total_end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># Jump to end_number0 0, repeat_number 1.</span>
+                    <span class="c1"># Jump to warp thread_number0 0, repeat_number 1.</span>
                     <span class="k">assert</span> <span class="n">jump_end_reply</span> <span class="o">==</span> <span class="n">SimpleNamespace</span><span class="p">(</span>
                         <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">,</span>
                         <span class="n">total_end_number0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -2180,7 +2182,7 @@
                         <span class="n">end_repeat_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="k">elif</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># Jump to end_number0 0, repeat_number not 1.</span>
+                    <span class="c1"># Jump to warp thread_number0 0, repeat_number not 1.</span>
                     <span class="c1"># Report the last end of the previous repeat,</span>
                     <span class="c1"># rather than the magic &quot;0&quot; end_number0</span>
                     <span class="k">assert</span> <span class="n">jump_end_reply</span> <span class="o">==</span> <span class="n">SimpleNamespace</span><span class="p">(</span>
@@ -2840,7 +2842,7 @@
                 <span class="n">db_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;loom_server_database.sqlite&quot;</span>
                 <span class="n">settings_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">SETTINGS_FILE_NAME</span>
 
-                <span class="k">with</span> <span class="n">settings_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">settings_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf_8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">unusable_settings_json</span><span class="p">)</span>
 
                 <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_test_client</span><span class="p">(</span>
@@ -2887,7 +2889,7 @@
                 <span class="n">db_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;loom_server_database.sqlite&quot;</span>
                 <span class="n">settings_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">SETTINGS_FILE_NAME</span>
 
-                <span class="k">with</span> <span class="n">settings_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">settings_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf_8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">good_settings_dict</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
                 <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_test_client</span><span class="p">(</span>
