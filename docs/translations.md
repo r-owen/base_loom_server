@@ -2,33 +2,31 @@
 
 [base_loom_server](https://pypi.org/project/base-loom-server/) supports foreign languages.
 
-At present only a few translations are available, and none have been properly vetted.
-Help from others to improve the existing translations and add new ones would be most welcome.
-Weaving terminology is somewhat obscure, so translation tools may miss important subtleties. 
+At the moment all translations are preliminary.
+Help improving them and adding new languages would be most welcome.
 
-Each language is supported by a separate json file in `src/locales`.
-The name of each translation file is the native name of the language, for example `Français.json`.
+Translations are done on [crowdin](https://crowdin.com/editor/base-loom-server).
+Accounts are free and the project is public.
 
-The file `src/locales/default.json` lists all the words and phrases for which translations are wanted.
-the values are context, which are purely intended to help the translator understand the word or phrase; they are ignored by the software.
-In addition to those entries there are a few [metadata keys](#metadata-keys).
+Here is a good place to start [French](https://crowdin.com/editor/base-loom-server/5/en-fr?view=side-by-side&filter=basic&value=3). Click on French along the top left to pick another language.
+If you find it asking for which file to translate, select "default.json".
 
-The keys in the translation files are the same as in `default.json`, but the values are the translated word or phrase.
-One way to start is to copy `src/locales/default.json` to the new language file, then replace each context string with the translated string.
+You can edit strings directly in the list view or in the translate panel to the right.
+The translate panel also shows context: a string that give more information about the word or phrase to be translated.
+To open the translate panel click on the translate icon along the right:
 
-To add or change translation files, fork the project on github.
+<img src="images/screen_shots/translate_icon.jpg" alt="translate icon">
 
-If you are not confident of your translations, please append " (preliminary)", suitably translated, to the name.
-For example: "Français (préliminaire).json".
+Here is an example showing the translate panel for one French phrase. I added a purple box around the context, and the translation is shown (and can be edited) in bold at the bottom of the screen shot.
 
-An incomplete file is better than none. Missing entries will be shown in English.
+<img src="images/screen_shots/translate_panel.jpg" width=500 alt="translate panel">
+
+Another way to update a translation is to fork the [base_loom_server project on github](https://github.com/r-owen/base_loom_server/) and edit or add a translation file directly.
+Here is a link to the [French translation](https://github.com/r-owen/base_loom_server/blob/main/src/base_loom_server/locales/Français.json).
 
 ## Metadata Keys
 
-There are several optional keys that provide metadata:
+There are two special keys that provide metadata:
 
-* **_direction**: whether the language is read left-to-right (value `ltr`, the default) or right-to-left (value `rtl`).
-* **_extends**: the name of another language file of which this is a variant, without the ".json" suffix.
-  If you specify `_extends` then you need only specify the items that differ from the file named in `_extends`.
-  For example file `Québécois.json` could specify `"_extends"="Français"`.
-* **_language_code**: the ISO 639-1 language code for the language, e.g. `fr` for `Français`. Here is [one list](https://www.w3schools.com/tags/ref_language_codes.asp). This may help text-to-speech software. If omitted the value is "en".
+* **_direction**: whether the language is read left-to-right (value `ltr`, the default) or right-to-left (value `rtl`). If blank "ltr" is used.
+* **_language_code**: the ISO 639-1 language code for the language, e.g. `fr` for `Français`. Here is [one list](https://www.w3schools.com/tags/ref_language_codes.asp). The language code is not very important, but it may help text-to-speech software. If blank "en" is used.
