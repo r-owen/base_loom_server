@@ -1,5 +1,16 @@
 # Version History
 
+## 0.29 2025-07-22
+
+* Add (preliminary) translations for more languages.
+* Use crowdin for translations. As a result:
+
+  * Change the format of translation files (to "Chrome JSON").
+  * Update the translation instructions.
+  * Remove support for one translation file extending another.
+
+* html-encode translated strings for improved safety.
+
 ## 0.28 2025-07-10
 
 * Support dark mode.
