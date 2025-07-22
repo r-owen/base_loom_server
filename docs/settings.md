@@ -11,12 +11,13 @@ Settings are automatically saved, and should survive rebooting the loom server.
 Settings include:
 
 * **Language**: which language to use.
-  A language is listed as "preliminary" (in that language) if the translation is not well vetted.
-  As of June, 2025 there are only two translations, both preliminary.
-  Your help to improve existing translations or provide new ones would be much appreciated.
+  Note that this is always the first setting, and the settings panel is always the 3rd tab.
+  So if the page is a language you don't recognize, click on the first pop-up menu in the settings panel to choose a different language.
+
+  Your help to improve existing translations or add new languages would be much appreciated.
   Read [Translations](translations.md) for more information.
 
-    Note that changing languages reloads the page, but this should be fast and harmless.
+  Note that changing the languages reloads the page. This should be fast and harmless.
 
 * **Loom name**: the name of the loom, as it appears in the display.
   Use any name you like; it is just for display.
