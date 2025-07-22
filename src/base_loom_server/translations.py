@@ -9,7 +9,7 @@ PKG_FILES = importlib.resources.files("base_loom_server")
 LOCALE_FILES = PKG_FILES.joinpath("locales")
 
 # Translation keys that provide metadata instead of phrases to translate.
-METADATA_KEYS = {"_direction", "_extends", "_language_code"}
+METADATA_KEYS = {"_direction", "_language_code"}
 
 
 def get_language_names() -> list[str]:
@@ -39,6 +39,8 @@ def get_translation_dict(
 ) -> dict[str, str]:
     """Get the translation dict for the specified language.
 
+    All missing phrases use the phrase from "default.json".
+
     Args:
         language: Name of one of the available language files,
             or "English" for English. Must not be "" or "default".
@@ -49,7 +51,6 @@ def get_translation_dict(
 
     Raises:
         FileNotFoundError: If a file is not found.
-        RecursionError: If a circular "_extends" reference is found.
     """
     if language in ("", "default"):
         raise RuntimeError(f"Invalid value for {language=}")
@@ -60,28 +61,11 @@ def get_translation_dict(
     translation_dict = get_default_dict()
     valid_keys = set(translation_dict.keys())
 
-    # Keep track of the language files read, in order to
-    # prevent infinite recursion caused by translation dicts
-    # extending each other in a circular fashion.
-    languages_read: set[str] = set()
-    dict_list: list[dict[str, str]] = []
-    next_language = language
-    while next_language not in {"", "default"}:
-        if next_language in languages_read:
-            raise RecursionError(f"Circular reference for {language=}, found reading {next_language=}")
-        next_file = dir_.joinpath(f"{next_language}.json")
-        next_dict = read_one_translation_file(
-            translation_file=next_file, valid_keys=valid_keys, logger=logger
-        )
-        dict_list.append(next_dict)
-        languages_read.add(next_language)
-        next_language = next_dict.get("_extends", "")
-
-    # Apply the dicts in the correct order:
-    # default dict is overridden by last dependency (the last _extends
-    # in the chain), and so on up the (usually short) chain of dependencies.
-    for next_dict in reversed(dict_list):
-        translation_dict.update(next_dict)
+    language_file = dir_.joinpath(f"{language}.json")
+    language_dict = read_one_translation_file(
+        translation_file=language_file, valid_keys=valid_keys, logger=logger
+    )
+    translation_dict.update(language_dict)
     if html_escape:
         translation_dict = {key: html.escape(value, quote=True) for key, value in translation_dict.items()}
     return translation_dict

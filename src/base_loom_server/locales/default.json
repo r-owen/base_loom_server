@@ -3,10 +3,6 @@
     "message": "ltr",
     "description": "ltr (the default) if the language is left-to-right, rtl if right-to-left"
   },
-  "_extends": {
-    "message": "",
-    "description": "Name of a language file that this one extends; missing items are pulled from the named file. Useful for variants, e.g. Qu\u00e9b\u00e9cois could extend Franc\u0327ais."
-  },
   "_language_code": {
     "message": "en",
     "description": "Language code used by HTML, e.g. 'en'"

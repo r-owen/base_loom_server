@@ -1,5 +1,0 @@
-{
-  "_extends": {"message": "extends_c", "description": ""},
-  "Thread": {"message": "Thread b", "description": ""},
-  "Weave": {"message": "Weave b", "description": ""}
-}

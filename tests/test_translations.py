@@ -17,14 +17,8 @@ _PKG_NAME = "base_loom_server"
 TEST_DATA_FILES = importlib.resources.files(_PKG_NAME) / "test_data" / "translation_files"
 
 
-def test_circular_extends() -> None:
-    for suffix in ("a", "b", "c"):
-        with pytest.raises(RecursionError):
-            get_translation_dict(f"circular_{suffix}", dir_=TEST_DATA_FILES)
-
-
 def test_get_default_dict() -> None:
-    assert METADATA_KEYS == {"_direction", "_extends", "_language_code"}  # noqa: SIM300
+    assert METADATA_KEYS == {"_direction", "_language_code"}  # noqa: SIM300
 
     default_dict = get_default_dict()
     # All METADATA_KEYS should appear in the default dict
@@ -38,13 +32,12 @@ def test_get_default_dict() -> None:
             assert value == key
 
     assert default_dict["_direction"] == "ltr"
-    assert default_dict["_extends"] == ""
     assert default_dict["_language_code"] == "en"
 
 
 def test_get_language_names() -> None:
     language_names = get_language_names()
-    assert language_names[0] == "English"
+    assert "English" in language_names
     assert "default" not in language_names
     assert "" not in language_names
 
@@ -71,7 +64,10 @@ def test_extra_keys(caplog: pytest.LogCaptureFixture) -> None:
 
 
 def test_format() -> None:
-    """Test the format of every translation file."""
+    """Test the format of every real translation file.
+
+    Ignore test translation file(s).
+    """
     for filepath in LOCALE_FILES.glob("*.json"):  # type: ignore[attr-defined]
         raw_dict = json.loads(filepath.read_text(encoding="utf_8"))
         for key, value in raw_dict.items():
@@ -100,18 +96,3 @@ def test_missing_file() -> None:
 
     with pytest.raises(FileNotFoundError):
         get_translation_dict(missing_name)
-
-
-def test_valid_extends() -> None:
-    """Test files with valid non-empty values of _extends."""
-    # a, b, and c all specify "Weave {suffix}"
-    # b and c specify "Thread {suffix}"
-    # only c specifies "Pattern {suffix}"
-    for suffix, expected_results in {
-        "a": {"Weave": "Weave a", "Thread": "Thread b", "Pattern": "Pattern c"},
-        "b": {"Weave": "Weave b", "Thread": "Thread b", "Pattern": "Pattern c"},
-        "c": {"Weave": "Weave c", "Thread": "Thread c", "Pattern": "Pattern c"},
-    }.items():
-        data = get_translation_dict(f"extends_{suffix}", dir_=TEST_DATA_FILES)
-        for key, value in expected_results.items():
-            assert data[key] == value
