@@ -1,0 +1,262 @@
+{
+  "_direction": {
+    "message": "ltr",
+    "description": "ltr (the default) if the language is left-to-right, rtl if right-to-left"
+  },
+  "_language_code": {
+    "message": "da",
+    "description": "Language code used by HTML, e.g. 'en'"
+  },
+  "and": {
+    "message": "og",
+    "description": ""
+  },
+  "another client took control": {
+    "message": "en anden klient tog kontrol",
+    "description": "Displayed if another web client takes the connection"
+  },
+  "At start of threading": {
+    "message": "I starten af trådningen",
+    "description": "Displayed if you try to undo threading past the beginning"
+  },
+  "At start of weaving": {
+    "message": "I starten af vævning",
+    "description": "Displayed if you try to undo weaving past the beginning"
+  },
+  "Back to front": {
+    "message": "Tilbage til forsiden",
+    "description": "Setting to thread from the back of the loom to the front"
+  },
+  "cannot jump": {
+    "message": "kan ikke hoppe",
+    "description": "Part of an error messsage: cannot perform the requested jump"
+  },
+  "Change Direction": {
+    "message": "Skift Retning",
+    "description": "Button text (only in mock mode)"
+  },
+  "Clear Recents": {
+    "message": "Ryd Seneste",
+    "description": "Pattern menu item to clear recent entries"
+  },
+  "Close Connection": {
+    "message": "Luk Forbindelse",
+    "description": "Button text (only in mock mode)"
+  },
+  "Command mock loom": {
+    "message": "Styr den falske væv",
+    "description": "Heading for the debug controls that are only shown in mock mode"
+  },
+  "connected": {
+    "message": "tilsluttet",
+    "description": "Shown when the loom server is fully connected to the loom"
+  },
+  "connecting": {
+    "message": "forbinder",
+    "description": "Shown when the loom server is in the process of connecting to the loom"
+  },
+  "Debug (mock loom)": {
+    "message": "Fejlfinding (imiteret væv)",
+    "description": "Heading for debug controls when using the mock loom"
+  },
+  "Default threading group size": {
+    "message": "Standard gruppestørrelse til gevindskæring",
+    "description": "Label text"
+  },
+  "Direction control": {
+    "message": "Kontrol af retningen",
+    "description": "Label text for a setting that allows the user to specify how weave/unweave direction is controlled"
+  },
+  "Direction": {
+    "message": "Retning",
+    "description": "Label for weave/unweave and thread/unthread"
+  },
+  "disconnected": {
+    "message": "afbrudt",
+    "description": "Shown when the loom server is fully disconnected from the loom"
+  },
+  "disconnecting": {
+    "message": "frakobler",
+    "description": "Shown when the loom server in the process of disconnecting from the loom"
+  },
+  "Error": {
+    "message": "Fejl",
+    "description": ""
+  },
+  "Front to back": {
+    "message": "Foran på bagsiden",
+    "description": "Setting to thread from the front of the loom to the back"
+  },
+  "Group size": {
+    "message": "Gruppe størrelse",
+    "description": "Number of warp ends to raise shafts for when threading"
+  },
+  "Hide": {
+    "message": "Skjul",
+    "description": "Hide the debug controls"
+  },
+  "Jump to warp thread": {
+    "message": "Hop til kædetråden",
+    "description": "Jump to warp thread number..."
+  },
+  "Jump to weft thread": {
+    "message": "Hop til skudtråd",
+    "description": "Jump to weft thread number..."
+  },
+  "Jump": {
+    "message": "Hop",
+    "description": "Label for the button that applies the requested jump"
+  },
+  "Language": {
+    "message": "Sprog",
+    "description": "Label for a language setting"
+  },
+  "Left to right": {
+    "message": "Venstre mod højre",
+    "description": "Setting: thread from left to right"
+  },
+  "Loom name": {
+    "message": "Væv navn",
+    "description": "Name of the loom to display in the web interface"
+  },
+  "Loom": {
+    "message": "Væv",
+    "description": "Direction control: Loom (typically a button on the dobby head)"
+  },
+  "lost connection to server": {
+    "message": "mistet forbindelse til server",
+    "description": "Error message if the connection from the user to the loom server drops"
+  },
+  "Moving": {
+    "message": "Flytter",
+    "description": "Loom shafts are moving"
+  },
+  "Next": {
+    "message": "Næste",
+    "description": "Button label for debug control that tells the mock loom to request the next shed"
+  },
+  "Number must be": {
+    "message": "Nummer skal være",
+    "description": "Example: user-specified numeric value must be <= 0"
+  },
+  "no pattern": {
+    "message": "intet mønster",
+    "description": "Displayed if no weaving pattern has been selected"
+  },
+  "of": {
+    "message": "af",
+    "description": "As in '5 of 10'"
+  },
+  "On the left": {
+    "message": "Til venstre",
+    "description": "Setting: display warp thread 1 on the left"
+  },
+  "On the right": {
+    "message": "Til højre",
+    "description": "Setting: display warp thread 1 on the right"
+  },
+  "Pattern": {
+    "message": "Mønster",
+    "description": "Label for weaving pattern menu"
+  },
+  "Read message": {
+    "message": "Læs besked",
+    "description": "Label for debug display of the most recent message read from the loom"
+  },
+  "ready": {
+    "message": "klar",
+    "description": "The loom server is ready"
+  },
+  "repeat": {
+    "message": "gentag",
+    "description": "Label for repeat number"
+  },
+  "Reset": {
+    "message": "Reset",
+    "description": "Label to clear the Jump input"
+  },
+  "Right to left": {
+    "message": "Højre til venstre",
+    "description": "Setting: thread from right to left"
+  },
+  "Save": {
+    "message": "Gem",
+    "description": "Button that submits a new loom name"
+  },
+  "Sent command": {
+    "message": "Sendt kommando",
+    "description": "Label for debug display of the most recent command sent to the loom server"
+  },
+  "Shafts": {
+    "message": "Skakte",
+    "description": "Label for display of which shafts are raised"
+  },
+  "Separate repeats?": {
+    "message": "Adskil gentagelser?",
+    "description": "Should there be a separator row, with all shafts down, after each pattern repeat?"
+  },
+  "Settings": {
+    "message": "Indstillinger",
+    "description": "Tab heading for the Settings panel"
+  },
+  "Software": {
+    "message": "Software",
+    "description": "Direction control: Software (the web interface)"
+  },
+  "Status": {
+    "message": "Status",
+    "description": "Label for status display"
+  },
+  "Thread": {
+    "message": "Tråd",
+    "description": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front"
+  },
+  "Threading": {
+    "message": "Trådning",
+    "description": "Tab heading for the Threading panel"
+  },
+  "timed out": {
+    "message": "timede ud",
+    "description": "Part of an error message if a command times out"
+  },
+  "Too many files": {
+    "message": "For mange filer",
+    "description": "Displayed if a user tries to upload too many files at once"
+  },
+  "Unthread": {
+    "message": "Træk",
+    "description": "Threading direction: go backwards to undo a mistake"
+  },
+  "Unweave": {
+    "message": "Væv",
+    "description": "Weaving direction: go backwards to undo a mistake"
+  },
+  "Upload": {
+    "message": "Upload",
+    "description": "Button label to upload weaving pattern files"
+  },
+  "Warp thread 1": {
+    "message": "Kædetråden 1",
+    "description": "Setting: display warp thread 1 on the right or left"
+  },
+  "Warp threads": {
+    "message": "Kædetrådene",
+    "description": "Label for current warp thread numbers (in Threading mode)"
+  },
+  "Weave": {
+    "message": "Væv",
+    "description": "Weaving direction: go forward to weave new cloth"
+  },
+  "Weaving": {
+    "message": "Vævning",
+    "description": "Tab heading for the weaving panel"
+  },
+  "Weft thread": {
+    "message": "Skudtråden",
+    "description": "Label for the current weft thread number (in Weaving mode)"
+  },
+  "?": {
+    "message": "?",
+    "description": "Question mark representing an unknown value"
+  }
+}

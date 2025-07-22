@@ -1,254 +1,262 @@
 {
+  "_direction": {
+    "message": "ltr",
+    "description": "ltr (the default) if the language is left-to-right, rtl if right-to-left"
+  },
   "_language_code": {
-    "message": "fr",
+    "message": "no",
     "description": "Language code used by HTML, e.g. 'en'"
   },
   "and": {
-    "message": "et",
+    "message": "og",
     "description": ""
   },
   "another client took control": {
-    "message": "une autre cliente a pris le contr\u00f4le",
+    "message": "en annen klient tok kontroll",
     "description": "Displayed if another web client takes the connection"
   },
   "At start of threading": {
-    "message": "Au d\u00e9but de l'enfilage",
+    "message": "I begynnelsen av tråden",
     "description": "Displayed if you try to undo threading past the beginning"
   },
   "At start of weaving": {
-    "message": "Au d\u00e9but du tissage",
+    "message": "I starten av veve",
     "description": "Displayed if you try to undo weaving past the beginning"
   },
   "Back to front": {
-    "message": "Retour \u00e0 l'avant",
+    "message": "Tilbake foran",
     "description": "Setting to thread from the back of the loom to the front"
   },
   "cannot jump": {
-    "message": "Impossible de sauter jusqu'\u00e0 la fin",
+    "message": "kan ikke hoppe",
     "description": "Part of an error messsage: cannot perform the requested jump"
   },
   "Change Direction": {
-    "message": "Virer",
+    "message": "Endre retning",
     "description": "Button text (only in mock mode)"
   },
   "Clear Recents": {
-    "message": "Effacer les r\u00e9cents",
+    "message": "Tøm Nylige",
     "description": "Pattern menu item to clear recent entries"
   },
   "Close Connection": {
-    "message": "Fermer la Connexion",
+    "message": "Lukk tilkoblingen",
     "description": "Button text (only in mock mode)"
   },
   "Command mock loom": {
-    "message": "Commandez le m\u00e9tier \u00e0 tisser fictif",
+    "message": "Kommando støt",
     "description": "Heading for the debug controls that are only shown in mock mode"
   },
   "connected": {
-    "message": "connect\u00e9",
+    "message": "tilkoblet",
     "description": "Shown when the loom server is fully connected to the loom"
   },
   "connecting": {
-    "message": "connectant",
+    "message": "koble",
     "description": "Shown when the loom server is in the process of connecting to the loom"
   },
   "Debug (mock loom)": {
-    "message": "D\u00e9bogage (faux m\u00e9tier \u00e0 tisser)",
+    "message": "Feilsøking (falske vevstolen)",
     "description": "Heading for debug controls when using the mock loom"
   },
   "Default threading group size": {
-    "message": "Taille du groupe de threads par d\u00e9faut",
+    "message": "Standard gruppestørrelse for tråder",
     "description": "Label text"
   },
   "Direction control": {
-    "message": "Contr\u00f4le de la direction",
+    "message": "Retning kontroll",
     "description": "Label text for a setting that allows the user to specify how weave/unweave direction is controlled"
   },
   "Direction": {
-    "message": "Direction",
+    "message": "Retning",
     "description": "Label for weave/unweave and thread/unthread"
   },
   "disconnected": {
-    "message": "d\u00e9connect\u00e9",
+    "message": "frakoblet",
     "description": "Shown when the loom server is fully disconnected from the loom"
   },
   "disconnecting": {
-    "message": "d\u00e9connexion",
+    "message": "frakobling",
     "description": "Shown when the loom server in the process of disconnecting from the loom"
   },
-  "Warp threads": {
-    "message": "Extr\u00e9mit\u00e9s",
-    "description": "Label for current warp thread numbers (in Threading mode)"
-  },
   "Error": {
-    "message": "Erreur",
+    "message": "Feil",
     "description": ""
   },
   "Front to back": {
-    "message": "De l'avant vers l'arri\u00e8re",
+    "message": "Forside til tilbake",
     "description": "Setting to thread from the front of the loom to the back"
   },
   "Group size": {
-    "message": "Taille du groupe",
+    "message": "Gruppe størrelse",
     "description": "Number of warp ends to raise shafts for when threading"
   },
   "Hide": {
-    "message": "Masquer",
+    "message": "Skjul",
     "description": "Hide the debug controls"
   },
   "Jump to warp thread": {
-    "message": "Sauter \u00e0 la trame",
+    "message": "Hopp til varptråd",
     "description": "Jump to warp thread number..."
   },
   "Jump to weft thread": {
-    "message": "Sauter \u00e0 la s\u00e9lection",
+    "message": "Hopp til vefttråd",
     "description": "Jump to weft thread number..."
   },
   "Jump": {
-    "message": "Sauter",
+    "message": "Hopp",
     "description": "Label for the button that applies the requested jump"
   },
-  "Left to right": {
-    "message": "De gauche \u00e0 droite",
-    "description": "Setting: thread from left to right"
-  },
   "Language": {
-    "message": "Langue",
+    "message": "Språk",
     "description": "Label for a language setting"
   },
+  "Left to right": {
+    "message": "Venstre til høyre",
+    "description": "Setting: thread from left to right"
+  },
   "Loom name": {
-    "message": "Nom du m\u00e9tier \u00e0 tisser",
+    "message": "Navn på publikum",
     "description": "Name of the loom to display in the web interface"
   },
   "Loom": {
-    "message": "M\u00e9tier \u00e0 tisser",
+    "message": "Lån",
     "description": "Direction control: Loom (typically a button on the dobby head)"
   },
   "lost connection to server": {
-    "message": "perte de connexion au serveur",
+    "message": "mistet tilkoblingen til serveren",
     "description": "Error message if the connection from the user to the loom server drops"
   },
   "Moving": {
-    "message": "\u00c9mouvant",
+    "message": "Flytter",
     "description": "Loom shafts are moving"
   },
   "Next": {
-    "message": "Choix Suivant",
-    "description": "Button label for debug control that tells the mock loom to request the next pick (or thread group)"
+    "message": "Neste",
+    "description": "Button label for debug control that tells the mock loom to request the next shed"
   },
   "Number must be": {
-    "message": "Le nombre doit \u00eatre",
+    "message": "Nummeret må være",
     "description": "Example: user-specified numeric value must be <= 0"
   },
   "no pattern": {
-    "message": "pas de motif",
+    "message": "ingen mønster",
     "description": "Displayed if no weaving pattern has been selected"
   },
   "of": {
-    "message": "de",
+    "message": "av",
     "description": "As in '5 of 10'"
   },
   "On the left": {
-    "message": "\u00e0 Gauche",
+    "message": "Til venstre",
     "description": "Setting: display warp thread 1 on the left"
   },
   "On the right": {
-    "message": "\u00e0 Droite",
+    "message": "Til høyre",
     "description": "Setting: display warp thread 1 on the right"
   },
   "Pattern": {
-    "message": "Mod\u00e8le",
+    "message": "Mønster",
     "description": "Label for weaving pattern menu"
   },
-  "Weft thread": {
-    "message": "S\u00e9lection",
-    "description": "Label for the current weft thread number (in Weaving mode)"
-  },
   "Read message": {
-    "message": "Lire le message",
+    "message": "Les melding",
     "description": "Label for debug display of the most recent message read from the loom"
   },
   "ready": {
-    "message": "pr\u00eat",
+    "message": "klar",
     "description": "The loom server is ready"
   },
   "repeat": {
-    "message": "r\u00e9p\u00e9ter",
+    "message": "gjenta",
     "description": "Label for repeat number"
   },
   "Reset": {
-    "message": "Restaurer",
+    "message": "Tilbakestill",
     "description": "Label to clear the Jump input"
   },
   "Right to left": {
-    "message": "De droite \u00e0 gauche",
+    "message": "Høyre til venstre",
     "description": "Setting: thread from right to left"
   },
   "Save": {
-    "message": "Sauvegarder",
+    "message": "Lagre",
     "description": "Button that submits a new loom name"
   },
   "Sent command": {
-    "message": "Commande envoy\u00e9e",
+    "message": "Sendt kommando",
     "description": "Label for debug display of the most recent command sent to the loom server"
   },
+  "Shafts": {
+    "message": "Skaft",
+    "description": "Label for display of which shafts are raised"
+  },
   "Separate repeats?": {
-    "message": "R\u00e9p\u00e9titions s\u00e9par\u00e9es?",
+    "message": "Skill repetisjonene?",
     "description": "Should there be a separator row, with all shafts down, after each pattern repeat?"
   },
   "Settings": {
-    "message": "Param\u00e8tres",
+    "message": "Innstillinger",
     "description": "Tab heading for the Settings panel"
   },
-  "Shafts": {
-    "message": "Arbres",
-    "description": "Label for display of which shafts are raised"
-  },
   "Software": {
-    "message": "Logiciel",
+    "message": "Programvare",
     "description": "Direction control: Software (the web interface)"
   },
   "Status": {
-    "message": "Statut",
+    "message": "Status",
     "description": "Label for status display"
   },
   "Thread": {
-    "message": "Fil",
+    "message": "Tråd",
     "description": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front"
   },
   "Threading": {
-    "message": "Filetage",
+    "message": "Tråd",
     "description": "Tab heading for the Threading panel"
   },
   "timed out": {
-    "message": "d\u00e9lai d\u2019expiration",
+    "message": "tidsavbrutt",
     "description": "Part of an error message if a command times out"
   },
   "Too many files": {
-    "message": "Trop de fichiers",
+    "message": "For mange filer",
     "description": "Displayed if a user tries to upload too many files at once"
   },
   "Unthread": {
-    "message": "D\u00e9visser",
+    "message": "Angre gjenging",
     "description": "Threading direction: go backwards to undo a mistake"
   },
   "Unweave": {
-    "message": "D\u00e9tisser",
+    "message": "Angre gjenging",
     "description": "Weaving direction: go backwards to undo a mistake"
   },
   "Upload": {
-    "message": "T\u00e9l\u00e9charger",
+    "message": "Last opp",
     "description": "Button label to upload weaving pattern files"
   },
   "Warp thread 1": {
-    "message": "Extr\u00e9mit\u00e9 de cha\u00eene 1",
+    "message": "Varptråd 1",
     "description": "Setting: display warp thread 1 on the right or left"
   },
+  "Warp threads": {
+    "message": "Varptråder",
+    "description": "Label for current warp thread numbers (in Threading mode)"
+  },
   "Weave": {
-    "message": "Tisser",
+    "message": "Veving",
     "description": "Weaving direction: go forward to weave new cloth"
   },
   "Weaving": {
-    "message": "Tissage",
+    "message": "Veving",
     "description": "Tab heading for the weaving panel"
+  },
+  "Weft thread": {
+    "message": "Weft tråd",
+    "description": "Label for the current weft thread number (in Weaving mode)"
+  },
+  "?": {
+    "message": "?",
+    "description": "Question mark representing an unknown value"
   }
 }

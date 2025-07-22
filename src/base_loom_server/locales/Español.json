@@ -1,0 +1,262 @@
+{
+  "_direction": {
+    "message": "ltr",
+    "description": "ltr (the default) if the language is left-to-right, rtl if right-to-left"
+  },
+  "_language_code": {
+    "message": "es",
+    "description": "Language code used by HTML, e.g. 'en'"
+  },
+  "and": {
+    "message": "y",
+    "description": ""
+  },
+  "another client took control": {
+    "message": "otro cliente tomó el control",
+    "description": "Displayed if another web client takes the connection"
+  },
+  "At start of threading": {
+    "message": "Al principio del hilo",
+    "description": "Displayed if you try to undo threading past the beginning"
+  },
+  "At start of weaving": {
+    "message": "Al principio del tejido",
+    "description": "Displayed if you try to undo weaving past the beginning"
+  },
+  "Back to front": {
+    "message": "Volver al frente",
+    "description": "Setting to thread from the back of the loom to the front"
+  },
+  "cannot jump": {
+    "message": "no se puede saltar",
+    "description": "Part of an error messsage: cannot perform the requested jump"
+  },
+  "Change Direction": {
+    "message": "Cambiar dirección",
+    "description": "Button text (only in mock mode)"
+  },
+  "Clear Recents": {
+    "message": "Limpiar recientes",
+    "description": "Pattern menu item to clear recent entries"
+  },
+  "Close Connection": {
+    "message": "Cerrar conexión",
+    "description": "Button text (only in mock mode)"
+  },
+  "Command mock loom": {
+    "message": "Telar simulacro de comando",
+    "description": "Heading for the debug controls that are only shown in mock mode"
+  },
+  "connected": {
+    "message": "conectado",
+    "description": "Shown when the loom server is fully connected to the loom"
+  },
+  "connecting": {
+    "message": "conectando",
+    "description": "Shown when the loom server is in the process of connecting to the loom"
+  },
+  "Debug (mock loom)": {
+    "message": "Depurar (telar simulado)",
+    "description": "Heading for debug controls when using the mock loom"
+  },
+  "Default threading group size": {
+    "message": "Tamaño del grupo por defecto de hilos",
+    "description": "Label text"
+  },
+  "Direction control": {
+    "message": "Control de dirección",
+    "description": "Label text for a setting that allows the user to specify how weave/unweave direction is controlled"
+  },
+  "Direction": {
+    "message": "Dirección",
+    "description": "Label for weave/unweave and thread/unthread"
+  },
+  "disconnected": {
+    "message": "desconectado",
+    "description": "Shown when the loom server is fully disconnected from the loom"
+  },
+  "disconnecting": {
+    "message": "desconectando",
+    "description": "Shown when the loom server in the process of disconnecting from the loom"
+  },
+  "Error": {
+    "message": "Error",
+    "description": ""
+  },
+  "Front to back": {
+    "message": "Frente a atrás",
+    "description": "Setting to thread from the front of the loom to the back"
+  },
+  "Group size": {
+    "message": "Tamaño del grupo",
+    "description": "Number of warp ends to raise shafts for when threading"
+  },
+  "Hide": {
+    "message": "Ocultar",
+    "description": "Hide the debug controls"
+  },
+  "Jump to warp thread": {
+    "message": "Saltar al hilo de urdimbre",
+    "description": "Jump to warp thread number..."
+  },
+  "Jump to weft thread": {
+    "message": "Saltar al hilo de trama",
+    "description": "Jump to weft thread number..."
+  },
+  "Jump": {
+    "message": "Salto",
+    "description": "Label for the button that applies the requested jump"
+  },
+  "Language": {
+    "message": "Idioma",
+    "description": "Label for a language setting"
+  },
+  "Left to right": {
+    "message": "Izquierda a derecha",
+    "description": "Setting: thread from left to right"
+  },
+  "Loom name": {
+    "message": "Nombre luminoso",
+    "description": "Name of the loom to display in the web interface"
+  },
+  "Loom": {
+    "message": "Pérdida",
+    "description": "Direction control: Loom (typically a button on the dobby head)"
+  },
+  "lost connection to server": {
+    "message": "pérdida de conexión al servidor",
+    "description": "Error message if the connection from the user to the loom server drops"
+  },
+  "Moving": {
+    "message": "Moviendo",
+    "description": "Loom shafts are moving"
+  },
+  "Next": {
+    "message": "Siguiente",
+    "description": "Button label for debug control that tells the mock loom to request the next shed"
+  },
+  "Number must be": {
+    "message": "Número debe ser",
+    "description": "Example: user-specified numeric value must be <= 0"
+  },
+  "no pattern": {
+    "message": "sin patrón",
+    "description": "Displayed if no weaving pattern has been selected"
+  },
+  "of": {
+    "message": "de",
+    "description": "As in '5 of 10'"
+  },
+  "On the left": {
+    "message": "A la izquierda",
+    "description": "Setting: display warp thread 1 on the left"
+  },
+  "On the right": {
+    "message": "A la derecha",
+    "description": "Setting: display warp thread 1 on the right"
+  },
+  "Pattern": {
+    "message": "Patrón",
+    "description": "Label for weaving pattern menu"
+  },
+  "Read message": {
+    "message": "Leer mensaje",
+    "description": "Label for debug display of the most recent message read from the loom"
+  },
+  "ready": {
+    "message": "listo",
+    "description": "The loom server is ready"
+  },
+  "repeat": {
+    "message": "repetir",
+    "description": "Label for repeat number"
+  },
+  "Reset": {
+    "message": "Restablecer",
+    "description": "Label to clear the Jump input"
+  },
+  "Right to left": {
+    "message": "Derecha a izquierda",
+    "description": "Setting: thread from right to left"
+  },
+  "Save": {
+    "message": "Guardar",
+    "description": "Button that submits a new loom name"
+  },
+  "Sent command": {
+    "message": "Comando enviado",
+    "description": "Label for debug display of the most recent command sent to the loom server"
+  },
+  "Shafts": {
+    "message": "Contaminantes",
+    "description": "Label for display of which shafts are raised"
+  },
+  "Separate repeats?": {
+    "message": "¿Separar repetidos?",
+    "description": "Should there be a separator row, with all shafts down, after each pattern repeat?"
+  },
+  "Settings": {
+    "message": "Ajustes",
+    "description": "Tab heading for the Settings panel"
+  },
+  "Software": {
+    "message": "Software",
+    "description": "Direction control: Software (the web interface)"
+  },
+  "Status": {
+    "message": "Estado",
+    "description": "Label for status display"
+  },
+  "Thread": {
+    "message": "Hilo",
+    "description": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front"
+  },
+  "Threading": {
+    "message": "Hilo",
+    "description": "Tab heading for the Threading panel"
+  },
+  "timed out": {
+    "message": "tiempo agotado",
+    "description": "Part of an error message if a command times out"
+  },
+  "Too many files": {
+    "message": "Demasiados archivos",
+    "description": "Displayed if a user tries to upload too many files at once"
+  },
+  "Unthread": {
+    "message": "Quitar roscas",
+    "description": "Threading direction: go backwards to undo a mistake"
+  },
+  "Unweave": {
+    "message": "Quitar roscas",
+    "description": "Weaving direction: go backwards to undo a mistake"
+  },
+  "Upload": {
+    "message": "Subir",
+    "description": "Button label to upload weaving pattern files"
+  },
+  "Warp thread 1": {
+    "message": "Hilo de urdimbre 1",
+    "description": "Setting: display warp thread 1 on the right or left"
+  },
+  "Warp threads": {
+    "message": "Hilos de urdimbre",
+    "description": "Label for current warp thread numbers (in Threading mode)"
+  },
+  "Weave": {
+    "message": "Tejido",
+    "description": "Weaving direction: go forward to weave new cloth"
+  },
+  "Weaving": {
+    "message": "Tejido",
+    "description": "Tab heading for the weaving panel"
+  },
+  "Weft thread": {
+    "message": "Hilo de trama",
+    "description": "Label for the current weft thread number (in Weaving mode)"
+  },
+  "?": {
+    "message": "¿?",
+    "description": "Question mark representing an unknown value"
+  }
+}
