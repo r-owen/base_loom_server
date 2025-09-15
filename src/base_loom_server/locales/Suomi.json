@@ -12,7 +12,7 @@
     "description": ""
   },
   "another client took control": {
-    "message": "toinen asiakas otti hallinnan",
+    "message": "toinen käyttäjä otti hallinnan",
     "description": "Displayed if another web client takes the connection"
   },
   "At start of threading": {
@@ -24,7 +24,7 @@
     "description": "Displayed if you try to undo weaving past the beginning"
   },
   "Back to front": {
-    "message": "Takaisin etuun",
+    "message": "Takaa eteen",
     "description": "Setting to thread from the back of the loom to the front"
   },
   "cannot jump": {
@@ -44,7 +44,7 @@
     "description": "Button text (only in mock mode)"
   },
   "Command mock loom": {
-    "message": "Komenna väärennettyjä kangaspuita",
+    "message": "Ohjaa tekopuita",
     "description": "Heading for the debug controls that are only shown in mock mode"
   },
   "connected": {
@@ -56,11 +56,11 @@
     "description": "Shown when the loom server is in the process of connecting to the loom"
   },
   "Debug (mock loom)": {
-    "message": "Virheenkorjaus (väärennetyt kangaspuut)",
+    "message": "Virheenkorjaus (tekopuut)",
     "description": "Heading for debug controls when using the mock loom"
   },
   "Default threading group size": {
-    "message": "Ketjuryhmän oletuskoko",
+    "message": "Langoitus ryhmän oletuskoko",
     "description": "Label text"
   },
   "Direction control": {
@@ -72,11 +72,11 @@
     "description": "Label for weave/unweave and thread/unthread"
   },
   "disconnected": {
-    "message": "irrotettu",
+    "message": "kytketty irti",
     "description": "Shown when the loom server is fully disconnected from the loom"
   },
   "disconnecting": {
-    "message": "irrottaminen",
+    "message": "kytkemässä irti",
     "description": "Shown when the loom server in the process of disconnecting from the loom"
   },
   "Error": {
@@ -160,7 +160,7 @@
     "description": "Label for weaving pattern menu"
   },
   "Read message": {
-    "message": "Luettu viesti",
+    "message": "Lue viesti",
     "description": "Label for debug display of the most recent message read from the loom"
   },
   "ready": {
@@ -180,7 +180,7 @@
     "description": "Setting: thread from right to left"
   },
   "Save": {
-    "message": "Säästää",
+    "message": "Tallenna",
     "description": "Button that submits a new loom name"
   },
   "Sent command": {
@@ -188,11 +188,11 @@
     "description": "Label for debug display of the most recent command sent to the loom server"
   },
   "Shafts": {
-    "message": "Akselit",
+    "message": "Niisivarret",
     "description": "Label for display of which shafts are raised"
   },
   "Separate repeats?": {
-    "message": "Erilliset toistot?",
+    "message": "Erota toistot?",
     "description": "Should there be a separator row, with all shafts down, after each pattern repeat?"
   },
   "Settings": {
@@ -208,11 +208,11 @@
     "description": "Label for status display"
   },
   "Thread": {
-    "message": "Lanka",
+    "message": "Niisi",
     "description": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front"
   },
   "Threading": {
-    "message": "Ketjuttaminen",
+    "message": "Niisiminen",
     "description": "Tab heading for the Threading panel"
   },
   "timed out": {
@@ -244,7 +244,7 @@
     "description": "Label for current warp thread numbers (in Threading mode)"
   },
   "Weave": {
-    "message": "Kutoa",
+    "message": "Kudos",
     "description": "Weaving direction: go forward to weave new cloth"
   },
   "Weaving": {
