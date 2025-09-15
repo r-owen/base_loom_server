@@ -17,11 +17,11 @@
   },
   "Unthread": {
     "message": "Unthread",
-    "description": "Threading direction: go backwards to undo a mistake"
+    "description": "The direction shown in the Threading panel when going backwards, to undo a mistake"
   },
   "Unweave": {
     "message": "Unweave",
-    "description": "Weaving direction: go backwards to undo a mistake"
+    "description": "The direction shown in the Weaving panel when going backwards, to undo a mistake"
   },
   "Warp thread 1": {
     "message": "Warp end 1",

@@ -209,7 +209,7 @@
   },
   "Thread": {
     "message": "Niisi",
-    "description": "Threading direction: go forward to thread new heddles. Also a label for menus that control the users's preferences for threading, e.g. front to back or back to front"
+    "description": "The direction shown in the Threading panel when going forward. Also a label in the Settings panel: Thread front to back or back to front"
   },
   "Threading": {
     "message": "Niisiminen",
@@ -225,11 +225,11 @@
   },
   "Unthread": {
     "message": "Poista lanka",
-    "description": "Threading direction: go backwards to undo a mistake"
+    "description": "The direction shown in the Threading panel when going backwards, to undo a mistake"
   },
   "Unweave": {
     "message": "Kutomisen kumoaminen",
-    "description": "Weaving direction: go backwards to undo a mistake"
+    "description": "The direction shown in the Weaving panel when going backwards, to undo a mistake"
   },
   "Upload": {
     "message": "Lataa",
@@ -245,11 +245,11 @@
   },
   "Weave": {
     "message": "Kudos",
-    "description": "Weaving direction: go forward to weave new cloth"
+    "description": "The direction shown in the Weaving panel when going forward, to weave new cloth"
   },
   "Weaving": {
     "message": "Kutominen",
-    "description": "Tab heading for the weaving panel"
+    "description": "Tab heading for the Weaving panel"
   },
   "Weft thread": {
     "message": "Kudelanka",
