@@ -6,10 +6,10 @@ At the moment, most translations are preliminary.
 Help improving the existing translations would be very welcome.
 I am also open to supporting additional languages.
 
-Translations are done on [crowdin](https://crowdin.com/editor/base-loom-server).
+Translations can be done on [crowdin](https://crowdin.com/editor/base-loom-server).
 Accounts are free and the project is public.
 
-Here is a good place to start [French](https://crowdin.com/editor/base-loom-server/5/en-fr?view=side-by-side&filter=basic&value=3). Click on French along the top left to pick another language.
+Once you have created an account and logged in, visit the following link to view and edit translations: [French](https://crowdin.com/editor/base-loom-server/5/en-fr?view=side-by-side&filter=basic&value=3). Click on "French" along the top left to pick another language.
 If you find it asking for which file to translate, click "default.json".
 
 You can edit each translated string directly in the list view. There are about 65 words and phrases to translate, which are shown in at least 2 pages (if you haven't gotten to "Weft thread" yet, you are not on the last page).
@@ -20,7 +20,7 @@ With a bit of extra work, you can also see "context": a string that give more in
 
 * Then click on the translation icon along the right to show the correct panel: <img src="../images/screen_shots/translate_icon.jpg" alt="translate icon">
 
-Here is an example showing the context in the translation panel for one French phrase. I added a purple box around the context.
+Here is an example showing context in the translation panel for one French phrase. I added a purple box around the context:
 
 <img src="../images/screen_shots/translate_panel.jpg" width=500 alt="translate panel">
 
