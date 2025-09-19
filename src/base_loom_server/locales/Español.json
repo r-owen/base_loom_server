@@ -60,7 +60,7 @@
     "description": "Heading for debug controls when using the mock loom"
   },
   "Default threading group size": {
-    "message": "Tamaño del grupo por defecto de hilos",
+    "message": "Tamaño por defecto del conjunto de hilos",
     "description": "Label text"
   },
   "Direction control": {
@@ -112,7 +112,7 @@
     "description": "Label for a language setting"
   },
   "Left to right": {
-    "message": "Izquierda a derecha",
+    "message": "De izquierda a derecha",
     "description": "Setting: thread from left to right"
   },
   "Loom name": {
@@ -176,7 +176,7 @@
     "description": "Label to clear the Jump input"
   },
   "Right to left": {
-    "message": "Derecha a izquierda",
+    "message": "De derecha a izquierda",
     "description": "Setting: thread from right to left"
   },
   "Save": {
@@ -192,7 +192,7 @@
     "description": "Label for display of which shafts are raised"
   },
   "Separate repeats?": {
-    "message": "¿Separar repetidos?",
+    "message": "¿Separar repeticiones?",
     "description": "Should there be a separator row, with all shafts down, after each pattern repeat?"
   },
   "Settings": {
@@ -200,7 +200,7 @@
     "description": "Tab heading for the Settings panel"
   },
   "Software": {
-    "message": "Software",
+    "message": "Software/Programa",
     "description": "Direction control: Software (the web interface)"
   },
   "Status": {
@@ -224,12 +224,12 @@
     "description": "Displayed if a user tries to upload too many files at once"
   },
   "Unthread": {
-    "message": "Quitar roscas",
-    "description": "The direction shown in the Threading panel when going backwards, to undo a mistake"
+    "message": "Sacar los hilos de los lizos",
+    "description": "The direction shown in the Threading panel when going backwards, to undo a mistake. Please translate 'Reverse' or 'Undo' if there is no more suitable word or short phrase."
   },
   "Unweave": {
     "message": "Quitar roscas",
-    "description": "The direction shown in the Weaving panel when going backwards, to undo a mistake"
+    "description": "The direction shown in the Weaving panel when going backwards, to undo a mistake. Please translate 'Reverse' or 'Undo' if there is no more suitable word or short phrase."
   },
   "Upload": {
     "message": "Subir",
@@ -248,14 +248,14 @@
     "description": "The direction shown in the Weaving panel when going forward, to weave new cloth"
   },
   "Weaving": {
-    "message": "Tejido",
+    "message": "Tejido/tejiendo ",
     "description": "Tab heading for the Weaving panel"
   },
   "Weft thread": {
     "message": "Hilo de trama",
     "description": "Label for the current weft thread number (in Weaving mode)"
   },
-  "?": {
+  "¿?": {
     "message": "¿?",
     "description": "Question mark representing an unknown value"
   }
