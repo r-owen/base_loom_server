@@ -224,11 +224,11 @@
     "description": "Displayed if a user tries to upload too many files at once"
   },
   "Unthread": {
-    "message": "Poista lanka",
+    "message": "Peruuta",
     "description": "The direction shown in the Threading panel when going backwards, to undo a mistake. Please translate 'Reverse' or 'Undo' if there is no more suitable word or short phrase."
   },
   "Unweave": {
-    "message": "Kutomisen kumoaminen",
+    "message": "Peruuta",
     "description": "The direction shown in the Weaving panel when going backwards, to undo a mistake. Please translate 'Reverse' or 'Undo' if there is no more suitable word or short phrase."
   },
   "Upload": {
@@ -244,7 +244,7 @@
     "description": "Label for current warp thread numbers (in Threading mode)"
   },
   "Weave": {
-    "message": "Kudos",
+    "message": "Kudo",
     "description": "The direction shown in the Weaving panel when going forward, to weave new cloth"
   },
   "Weaving": {

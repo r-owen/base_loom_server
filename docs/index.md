@@ -105,4 +105,4 @@ Then reload the web page, to force the web server to make a new connection to th
 * FiberWorks for providing the .dtx file specification.
 * WeavePoint for providing the essential parts of the .wpo file specification.
 * CrowdIn for providing free use of their language translation site for this project.
-* All those who have helped with language translations.
+* All those who helped with language translations, including Kalle Pihlajasaari.
