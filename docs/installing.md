@@ -174,6 +174,6 @@ Use pip to upgrade your software. For example:
 
 On Toika's built-in web server you will almost certainly have to include the scary-looking `--break-system-packages` argument. Don't worry; it is safe in this context:
 
-        python -m pip install --upgrade dtx_to_wif base_loom_server toika_loom_server -—break-system-packages
+        python -m pip install --upgrade dtx_to_wif base_loom_server toika_loom_server --break-system-packages
 
 See pip's documentation for more information, including how to specify specific versions of packages.
