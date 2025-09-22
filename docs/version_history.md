@@ -1,5 +1,11 @@
 # Version History
 
+## 0.30b1 2025-09-21
+
+* Reconnect to the loom when the client refreshes their browser or a different browser takes control.
+  This was documented, but did not actually work.
+* Improve some translations.
+
 ## 0.29 2025-07-22
 
 * Add (preliminary) translations for more languages.
