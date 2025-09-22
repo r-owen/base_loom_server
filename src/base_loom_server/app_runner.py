@@ -92,7 +92,6 @@ class AppRunner:
             "Specify 'mock' to run a mock (simulated) loom",
         )
         parser.add_argument(
-            "-r",
             "--reset-db",
             action="store_true",
             help="Reset the pattern database, erasing all patterns.",
