@@ -94,6 +94,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_loom_server/">base_loom_server.base_loom_server</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_loom_server%20with%20allow_reconnection/">Base loom server with allow reconnection</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
@@ -194,9 +196,8 @@
 </code></pre>
 </li>
 </ul>
-<p>Please only specify the <strong>mock</strong> serial port; connecting it to a real loom will not work
-  (<code>ExampleMockLoom</code> is loosely based on a Séguin loom, but is not compatible).</p>
-<p><code>run_example_loom &lt;num_shafts&gt; mock</code> also accepts these command-line arguments:</p>
+<p>Please only specify the <strong>mock</strong> port; connecting the example loom server to a real loom will not work.</p>
+<p>These run commands accept various <a href="../installing/#command-line-options">command-line options</a>, which you can see by running  with <code>-h</code> or <code>--help</code>. Two of note for debugging are:</p>
 <pre><code>* `--reset-db` Reset the pattern database. Try this if you think the database is corrupted.
 
 * `--verbose` Print more diagnostic information.
@@ -204,6 +205,11 @@
 <p>Note that the example loom server uses the same pattern database as
   <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a>
   and <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</p>
+<p>Also note that real loom servers can also run in mock mode. For example:</p>
+<pre><code>    run_toika_loom 32 mock
+
+    run_seguin_loom 16 mock
+</code></pre>
 <ul>
 <li>
 <p>In mock mode the web page shows a few extra controls for debugging.</p>

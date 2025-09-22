@@ -102,6 +102,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="api/base_loom_server/base_loom_server/">base_loom_server.base_loom_server</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="api/base_loom_server/base_loom_server%20with%20allow_reconnection/">Base loom server with allow reconnection</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="api/base_loom_server/base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
@@ -232,9 +234,8 @@ This prevents a mystery connection from hogging the loom.
 If the connection is dropped on the device you want to use for weaving,
 simply reload the page to regain the connection.</p>
 <h2 id="reset-the-loom-connection">Reset the Loom Connection</h2>
-<p>Every time you connected to the web server or reload the page, the server refreshes
-its connection to the loom (by disconnecting and immediately reconnecting).
-So if the server is reporting a problem with its connection to the loom,
+<p>Every time you reload the web page or connect from a different device, the server refreshes its connection to the loom (by disconnecting and immediately reconnecting).</p>
+<p>If the server is reporting a problem with its connection to the loom,
 and it is not due to the loom losing power, or a disconnected or bad USB cable,
 you might try reloading the page.</p>
 <p>If the loom seems confused, try turning off the loom, waiting a few seconds, then turning it on again.
@@ -247,7 +248,7 @@ Then reload the web page, to force the web server to make a new connection to th
 <li>FiberWorks for providing the .dtx file specification.</li>
 <li>WeavePoint for providing the essential parts of the .wpo file specification.</li>
 <li>CrowdIn for providing free use of their language translation site for this project.</li>
-<li>All those who have helped with language translations.</li>
+<li>All those who helped with language translations, including Kalle Pihlajasaari.</li>
 </ul>
               
             </div>
@@ -299,5 +300,5 @@ Then reload the web page, to force the web server to make a new connection to th
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-09-16 16:08:54.305064+00:00
+Build Date UTC : 2025-09-22 01:09:31.400886+00:00
 -->

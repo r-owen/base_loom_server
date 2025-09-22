@@ -222,6 +222,8 @@
     </li>
     </ul>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_loom_server%20with%20allow_reconnection/">Base loom server with allow reconnection</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../check_translation_files/">base_loom_server.check_translation_files</a>
@@ -450,7 +452,7 @@ Obtain the loom state.</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom" title="base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom">connect_to_loom</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Connect to the loom.</p>
+Connect to the loom and start the read loom task.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.run_client" title="base_loom_server.base_loom_server.BaseLoomServer.run_client">run_client</a></span>
@@ -933,9 +935,9 @@ reports its own state when software connects to it.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom" title="base_loom_server.base_loom_server.BaseLoomServer.connect_to_loom">connect_to_loom</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Connect to the loom.</p>
-<p>If already connected to loom, disconnect first, since
-connecting again may indicate that something is wrong.</p>
+<p>Connect to the loom and start the read loom task.</p>
+<p>If already connected to loom,  disconnect first,
+since connecting again may fix some kinds of problems.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.run_client">
 <span class="mkapi-object-link">
@@ -2110,7 +2112,7 @@ https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4</p>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../app_runner/" class="btn btn-neutral float-left" title="base_loom_server.app_runner"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../base_mock_loom/" class="btn btn-neutral float-right" title="base_loom_server.base_mock_loom">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../base_loom_server%20with%20allow_reconnection/" class="btn btn-neutral float-right" title="Base loom server with allow reconnection">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -2136,7 +2138,7 @@ https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4</p>
       <span><a href="../app_runner/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../base_mock_loom/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../base_loom_server%20with%20allow_reconnection/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

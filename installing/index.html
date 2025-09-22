@@ -65,6 +65,14 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Installing</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installing-a-loom-server">Installing a Loom Server</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-a-loom-server">Running a Loom Server</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#command-line-options">Command Line Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#upgrading-software">Upgrading Software</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -89,6 +97,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/app_runner/">base_loom_server.app_runner</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_loom_server/">base_loom_server.base_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_loom_server%20with%20allow_reconnection/">Base loom server with allow reconnection</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
@@ -149,11 +159,12 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="installing">Installing</h1>
-<p>This page gives instructions for installing a loom driver such as
+<p>This page gives instructions for installing a loom server such as
 such as <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a>
 or <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>
 that is based on <a href="https://pypi.org/project/base-loom-server/">base_loom_server</a>.</p>
 <p>See <a href="../coding/">Coding</a> if you want to work on <a href="https://pypi.org/project/base-loom-server/">base_loom_server</a> or use it to develop a new loom driver.</p>
+<h2 id="installing-a-loom-server">Installing a Loom Server</h2>
 <ol>
 <li>
 <p>Pick your Computer</p>
@@ -228,6 +239,10 @@ For <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a
 <p>In either case, watch pip's output. Near the end it should tell you where it installed <code>run_toika_loom</code>.</p>
 </li>
 <li>
+<p>Learn about the <a href="#command-line-options">command-line options</a> available.</p>
+<p>Use the options that seem useful on the run commands below.</p>
+</li>
+<li>
 <p>Find the installed loom server executable:</p>
 <ul>
 <li>
@@ -273,10 +288,12 @@ Point your web browser to <code>https://hostname.local/8000</code> where <code>h
 </li>
 </ul>
 </li>
-<li>
-<p>Run the loom server.</p>
+</ol>
+<h2 id="running-a-loom-server">Running a Loom Server</h2>
 <p>Once you know how to run the loom server, run it with the real USB port for your loom.
-On macOS or unix:</p>
+Be sure to include the <a href="#command-line-options">command line options</a> you wish to use,
+even though they are not shown here.</p>
+<p>On macOS or unix:</p>
 <pre><code>run_toika_loom &lt;num_shafts&gt; &lt;usb_port_name&gt;
 </code></pre>
 <p>or, if it is not on the PATH:</p>
@@ -292,29 +309,34 @@ On macOS or unix:</p>
 <ul>
 <li>Pattern files that have too many shafts are rejected.</li>
 <li>The data format used by Toika ES dobby heads varies depending on the number of shafts.
-  If you specify the wrong value, the loom will not work correctly.</li>
+    If you specify the wrong value, the loom will not work correctly.</li>
 </ul>
-<p>The run command accepts additional options to specify the loom name, server port, etc.
-One option of note:</p>
-<ul>
-<li><code>--reset-db</code>: clear all save weaving patterns. Only use this when you want a fresh start.</li>
-</ul>
+<h2 id="command-line-options">Command Line Options</h2>
+<p>The run_x_loom commands (e.g. run_toika_loom) accept various command line options.</p>
 <p>To run more than one loom server on the same computer,
 specify loom-specific values for each of the following options:</p>
 <ul>
-<li><code>--db-path</code>: path of the pattern database</li>
-<li><code>--port</code>: server port</li>
-</ul>
-<p>For a full list of options, run the command with option <code>--help</code>.</p>
+<li>
+<p><code>--db-path</code>: path of the pattern database</p>
 </li>
 <li>
-<p>To upgrade to a newer version of one or more packages:</p>
-<pre><code>python -m pip install --upgrade dtx_to_wif base_loom_server toika_loom_server
-</code></pre>
-<p>(omit any packages you do not wish to upgrade).
-You can also specify specific versions; seee pip's documentation for details.</p>
+<p><code>--port</code>: web server port</p>
 </li>
-</ol>
+</ul>
+<p>Another option of note:</p>
+<ul>
+<li><code>--reset-db</code>: clear all save weaving patterns.
+   Use this when you want to clear all patterns or think the database might be corrupted.</li>
+</ul>
+<p>For a full list run the command with <code>-h</code> or <code>--help</code>.</p>
+<h2 id="upgrading-software">Upgrading Software</h2>
+<p>Use pip to upgrade your software. For example:</p>
+<pre><code>    python -m pip install --upgrade dtx_to_wif base_loom_server toika_loom_server
+</code></pre>
+<p>On Toika's built-in web server you will almost certainly have to include the scary-looking <code>--break-system-packages</code> argument. Don't worry; it is safe in this context:</p>
+<pre><code>    python -m pip install --upgrade dtx_to_wif base_loom_server toika_loom_server -—break-system-packages
+</code></pre>
+<p>See pip's documentation for more information, including how to specify specific versions of packages.</p>
               
             </div>
           </div><footer>
