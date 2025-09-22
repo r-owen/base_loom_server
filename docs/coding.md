@@ -31,11 +31,11 @@
 * You may run an example loom server with:
 
         run_example_loom <num_shafts> mock
+    
   
-  Please only specify the **mock** serial port; connecting it to a real loom will not work
-  (`ExampleMockLoom` is loosely based on a Séguin loom, but is not compatible).
-
-  `run_example_loom <num_shafts> mock` also accepts these command-line arguments:
+  Please only specify the **mock** port; connecting the example loom server to a real loom will not work.
+  
+  These run commands accept various [command-line options](installing.md#command-line-options), which you can see by running  with `-h` or `--help`. Two of note for debugging are:
 
     * `--reset-db` Reset the pattern database. Try this if you think the database is corrupted.
 
@@ -44,6 +44,12 @@
   Note that the example loom server uses the same pattern database as
   [seguin_loom_server](https://pypi.org/project/seguin-loom-server/)
   and [toika_loom_server](https://pypi.org/project/toika-loom-server/).
+
+  Also note that real loom servers can also run in mock mode. For example:
+
+        run_toika_loom 32 mock
+        
+        run_seguin_loom 16 mock
 
 * In mock mode the web page shows a few extra controls for debugging.
 

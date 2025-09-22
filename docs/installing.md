@@ -1,11 +1,13 @@
 # Installing
 
-This page gives instructions for installing a loom driver such as
+This page gives instructions for installing a loom server such as
 such as [seguin_loom_server](https://pypi.org/project/seguin-loom-server/)
 or [toika_loom_server](https://pypi.org/project/toika-loom-server/)
 that is based on [base_loom_server](https://pypi.org/project/base-loom-server/).
 
 See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.org/project/base-loom-server/) or use it to develop a new loom driver.
+
+## Installing a Loom Server
 
 1. Pick your Computer
 
@@ -75,7 +77,11 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
 
     In either case, watch pip's output. Near the end it should tell you where it installed `run_toika_loom`.
 
-5. Find the installed loom server executable:
+5. Learn about the [command-line options](#command-line-options) available.
+
+    Use the options that seem useful on the run commands below.
+
+6. Find the installed loom server executable:
 
     * On macOS, Raspberry Pi (if you installed with `sudo`) and most unix you can probably run the executable directly:
 
@@ -96,7 +102,7 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
     On macOS and unix you do this by editing a shell configuration file, which you can read about online.
     Here are [instructions for Windows 10](https://stackoverflow.com/q/44272416/1653413).
 
-6. Test the loom server with the `mock` port:
+7. Test the loom server with the `mock` port:
 
     Once you have found and started the server, as above, make sure you can connect to it.
     Point your web browser to `https://hostname.local/8000` where `hostname` is the host name you determined above
@@ -113,48 +119,61 @@ See [Coding](coding.md) if you want to work on [base_loom_server](https://pypi.o
     * If you plan to weave any of the patterns you uploaded, go to the beginning before you disconnect,
       because the pattern database remembers where you left off weaving and threading.
 
+## Running a Loom Server
 
-4. Run the loom server.
 
-    Once you know how to run the loom server, run it with the real USB port for your loom.
-    On macOS or unix:
+Once you know how to run the loom server, run it with the real USB port for your loom.
+Be sure to include the [command line options](#command-line-options) you wish to use,
+even though they are not shown here.
 
-        run_toika_loom <num_shafts> <usb_port_name>
-    
-    or, if it is not on the PATH:
+On macOS or unix:
 
-        <path-to-executable>/run_toika_loom <num_shafts> <usb_port_name>
-    
-    On Windows:
+    run_toika_loom <num_shafts> <usb_port_name>
 
-        run_toika_loom.exe <num_shafts> <usb_port_name>
+or, if it is not on the PATH:
 
-    or, if it is not on the PATH:
+    <path-to-executable>/run_toika_loom <num_shafts> <usb_port_name>
 
-        <path-to-executable>/run_toika_loom.exe <num_shafts> <usb_port_name>
+On Windows:
 
-    <num_shafts> is the number of shafts your loom has. This is used in two ways:
+    run_toika_loom.exe <num_shafts> <usb_port_name>
 
-    * Pattern files that have too many shafts are rejected.
-    * The data format used by Toika ES dobby heads varies depending on the number of shafts.
-      If you specify the wrong value, the loom will not work correctly.
+or, if it is not on the PATH:
 
-    The run command accepts additional options to specify the loom name, server port, etc.
-    One option of note:
+    <path-to-executable>/run_toika_loom.exe <num_shafts> <usb_port_name>
 
-    * `--reset-db`: clear all save weaving patterns. Only use this when you want a fresh start.
-    
-    To run more than one loom server on the same computer,
-    specify loom-specific values for each of the following options:
+<num_shafts> is the number of shafts your loom has. This is used in two ways:
 
-    * `--db-path`: path of the pattern database
-    * `--port`: server port
+* Pattern files that have too many shafts are rejected.
+* The data format used by Toika ES dobby heads varies depending on the number of shafts.
+    If you specify the wrong value, the loom will not work correctly.
 
-    For a full list of options, run the command with option `--help`.
+## Command Line Options
 
-5. To upgrade to a newer version of one or more packages:
+The run_x_loom commands (e.g. run_toika_loom) accept various command line options.
+
+To run more than one loom server on the same computer,
+specify loom-specific values for each of the following options:
+
+* `--db-path`: path of the pattern database
+
+* `--port`: web server port
+
+Another option of note:
+
+* `--reset-db`: clear all save weaving patterns.
+   Use this when you want to clear all patterns or think the database might be corrupted.
+
+For a full list run the command with `-h` or `--help`.
+
+## Upgrading Software
+
+Use pip to upgrade your software. For example:
 
         python -m pip install --upgrade dtx_to_wif base_loom_server toika_loom_server
 
-    (omit any packages you do not wish to upgrade).
-    You can also specify specific versions; seee pip's documentation for details.
+On Toika's built-in web server you will almost certainly have to include the scary-looking `--break-system-packages` argument. Don't worry; it is safe in this context:
+
+        python -m pip install --upgrade dtx_to_wif base_loom_server toika_loom_server -—break-system-packages
+
+See pip's documentation for more information, including how to specify specific versions of packages.

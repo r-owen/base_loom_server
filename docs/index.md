@@ -88,9 +88,9 @@ simply reload the page to regain the connection.
 
 ## Reset the Loom Connection
 
-Every time you connected to the web server or reload the page, the server refreshes
-its connection to the loom (by disconnecting and immediately reconnecting).
-So if the server is reporting a problem with its connection to the loom,
+Every time you reload the web page or connect from a different device, the server refreshes its connection to the loom (by disconnecting and immediately reconnecting).
+
+If the server is reporting a problem with its connection to the loom,
 and it is not due to the loom losing power, or a disconnected or bad USB cable,
 you might try reloading the page.
 
