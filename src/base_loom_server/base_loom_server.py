@@ -285,14 +285,16 @@ class BaseLoomServer:
         """
 
     async def connect_to_loom(self) -> None:
-        """Connect to the loom.
+        """Connect to the loom and start the read loom task.
 
-        If already connected to loom, disconnect first, since
-        connecting again may indicate that something is wrong.
+        If already connected to loom,  disconnect first,
+        since connecting again may fix some kinds of problems.
         """
         if self.loom_connected:
             await self.disconnect_from_loom()
+
         try:
+            self.log.info(f"{self}: connect to the loom on port {self.serial_port!r}")
             self.loom_connecting = True
             await self.report_loom_connection_state()
             if self.loom_info.is_mock:
@@ -319,9 +321,9 @@ class BaseLoomServer:
                         )
                     elif serial_instance.in_waiting > 0:
                         serial_instance.reset_input_buffer()
-                        self.log.info(f"{self}: Read buffer flushed")
+                        self.log.info(f"{self}: read buffer flushed")
                     else:
-                        self.log.info(f"{self}: Read buffer did not need to be flushed; it was empty")
+                        self.log.info(f"{self}: read buffer did not need to be flushed; it was empty")
 
             self.loom_connecting = False
             await self.report_loom_connection_state()
@@ -343,6 +345,8 @@ class BaseLoomServer:
         Args:
             websocket: Connection to the client.
         """
+        if self.verbose:
+            self.log.info(f"{self}: a client is connecting")
         if self.client_connected:
             self.log.info(f"{self}: a client was already connected; closing that connection")
             await self.disconnect_client()
@@ -356,11 +360,14 @@ class BaseLoomServer:
                 # Note: connect_to_loom already reported the
                 # (lack of) connection state, including the reason.
                 # But log it here.
-                self.log.exception(f"{self}: failed to reconnect to the loom")
+                self.log.exception(f"{self}: failed to connect to the loom")
         await self.done_task
 
     async def disconnect_client(self) -> None:
         """Disconnect the current client, if any."""
+        if self.verbose:
+            self.log.info(f"{self}: disconnect from the client")
+        self.client_connected = False
         self.read_client_task.cancel()
         websocket = self.websocket
         self.websocket = None
@@ -370,11 +377,16 @@ class BaseLoomServer:
                 code=CloseCode.GOING_AWAY,
                 reason=self.t("another client took control"),
             )
+        self.read_loom_task.cancel()
+        await self.disconnect_from_loom()
 
     async def disconnect_from_loom(self) -> None:
         """Disconnect the loom. A no-op if already disconnected."""
         if not self.loom_connected:
             return
+
+        if self.verbose:
+            self.log.info(f"{self}: disconnect from the loom")
         self.loom_disconnecting = True
         await self.report_loom_connection_state()
         try:
@@ -732,7 +744,7 @@ class BaseLoomServer:
         Unusable entries will be ignored, with a logged warning.
         """
         if not self.settings_path.exists():
-            self.log.info(f"Settings file {self.settings_path} does not exist")
+            self.log.info(f"{self}: settings file {self.settings_path} does not exist")
             return
 
         try:
@@ -854,7 +866,7 @@ class BaseLoomServer:
             return
         except WebSocketDisconnect:
             self.log.info(f"{self}: client disconnected")
-            return
+            self.client_connected = False
         except Exception as e:
             self.log.exception(f"{self}: bug: client read looop failed")
             await self.report_command_problem(
@@ -864,6 +876,9 @@ class BaseLoomServer:
             self.client_connected = False
             if self.websocket is not None:
                 await self.close_websocket(self.websocket, code=CloseCode.ERROR, reason=repr(e))
+        finally:
+            if not self.client_connected:
+                await self.disconnect_from_loom()
 
     async def read_loom_loop(self) -> None:
         """Read and process replies from the loom."""
