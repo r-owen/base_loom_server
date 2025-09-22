@@ -1,6 +1,6 @@
 # Version History
 
-## 0.30b1 2025-09-21
+## 0.30 2025-09-22
 
 * Reconnect to the loom when the client refreshes their browser or a different browser takes control.
   This was documented, but did not actually work.
