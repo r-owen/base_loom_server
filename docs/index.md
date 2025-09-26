@@ -24,9 +24,23 @@ and [Séguin](https://pypi.org/project/seguin-loom-server/) looms.
 The base package [base_loom_server](https://pypi.org/project/base-loom-server/) does most of the work,
 so it is easy to [support other looms](coding.md#writing-a-loom-server).
 
-This document explains how to use these loom servers.
-
+This document explains how to use these loom servers. 
 The first step is to [install](installing.md) the software. Once you have done that, read on:
+
+## Disable Automatic Sleep
+
+You may wish to disable automatic sleep on your device, so it will stay awake while you are weaving.
+If your device does go to sleep you can continue to weave, but you can't see what's going on.
+
+The simplest solution is to just disable the sleep timer.
+On iOS and macOS search for "Lock" in Settings.
+
+On iOS another solution is to [use Guided Access](#using-guided-access-on-ios-to-prevent-display-sleep).
+This requires a manual step every time you start weaving, but allows you to use the normal sleep timer the rest of the time.
+
+Note: there is a standard web API for disabling sleep, but it requires a secure https connection.
+Unfortunately https is not very practical for a device such as a loom which may not be connected to the internet,
+and so cannot reliably renew its certificate.
 
 ## Connect to the Loom Server
 
@@ -70,7 +84,8 @@ The loom server remembers the 25 most recent patterns that you have uploaded,
 and this information is saved on disk, so should not be lost in a power failure.
 
 The saved information includes the most recent pick (weaving) and the most recent warp thread group (threading).
-This allows you to switch between different patterns while weaving something.
+This allows you to switch between different patterns while weaving someth
+ing.
 However, if you upload a new pattern with the same file name as a saved pattern,
 the new pattern overwrites the old and the pick and warp thread group information is reset.
 So please be careful.
@@ -96,6 +111,32 @@ you might try reloading the page.
 
 If the loom seems confused, try turning off the loom, waiting a few seconds, then turning it on again.
 Then reload the web page, to force the web server to make a new connection to the loom.
+
+## Using Guided Access on iOS to Prevent Sleep
+
+Directions for using Guided Access on iOS to prevent your device from going to sleep.
+
+> *Warning*: Guided Access disables all notifications while in use.
+
+Configure Guided Aceess. You just need to do this once:
+
+* Turn on Guided Access in Settings:
+
+    * In Settings search for Guided Access, which is in Accessibility.
+    * Enable it by turning on the button labeled "Guided Access".
+    * Under Passcode Settings enable Face ID, to simplify getting out of this mode.
+    * Set "Display Auto-Lock" to Never.
+    * Add Guided Access control to the control center as follows:
+
+* Add a control to turn on Guided Access to the Control Center:
+
+    * Bring up the control center by dragging down from the upper right-hand corner.
+    * Press the "+" at the top left edge of the control center.
+    * Click "Add a Control" at the bottom of the control center.
+    * Search for Guided Access and add it.
+
+Then, whenever you start weaving, open the web browser, then bring up the control center to enter Guided Access.
+When you are done weaving, double-click the power button to disable Guided Access.
 
 ## Acknowledgements
 
