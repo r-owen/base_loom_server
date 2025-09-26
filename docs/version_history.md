@@ -1,5 +1,12 @@
 # Version History
 
+## 0.31 2025-09-26
+
+* Improve direction button appearance on touch screens,
+  by avoiding the persistent hover style once the button is pressed.
+  This applies to all buttons, but was nuisance bothersome for the direction button.
+* Document use of Guided Access to prevent display sleep.
+
 ## 0.30 2025-09-22
 
 * Reconnect to the loom when the client refreshes their browser or a different browser takes control.
