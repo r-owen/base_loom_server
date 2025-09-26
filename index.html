@@ -49,6 +49,8 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Home</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#disable-automatic-sleep">Disable Automatic Sleep</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#connect-to-the-loom-server">Connect to the Loom Server</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#select-the-mode">Select the Mode</a>
@@ -58,6 +60,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#multiple-connections">Multiple Connections</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#reset-the-loom-connection">Reset the Loom Connection</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-guided-access-on-ios-to-prevent-sleep">Using Guided Access on iOS to Prevent Sleep</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#acknowledgements">Acknowledgements</a>
     </li>
@@ -184,8 +188,18 @@
 and <a href="https://pypi.org/project/seguin-loom-server/">Séguin</a> looms.
 The base package <a href="https://pypi.org/project/base-loom-server/">base_loom_server</a> does most of the work,
 so it is easy to <a href="coding/#writing-a-loom-server">support other looms</a>.</p>
-<p>This document explains how to use these loom servers.</p>
-<p>The first step is to <a href="installing/">install</a> the software. Once you have done that, read on:</p>
+<p>This document explains how to use these loom servers. 
+The first step is to <a href="installing/">install</a> the software. Once you have done that, read on:</p>
+<h2 id="disable-automatic-sleep">Disable Automatic Sleep</h2>
+<p>You may wish to disable automatic sleep on your device, so it will stay awake while you are weaving.
+If your device does go to sleep you can continue to weave, but you can't see what's going on.</p>
+<p>The simplest solution is to just disable the sleep timer.
+On iOS and macOS search for "Lock" in Settings.</p>
+<p>On iOS another solution is to <a href="#using-guided-access-on-ios-to-prevent-display-sleep">use Guided Access</a>.
+This requires a manual step every time you start weaving, but allows you to use the normal sleep timer the rest of the time.</p>
+<p>Note: there is a standard web API for disabling sleep, but it requires a secure https connection.
+Unfortunately https is not very practical for a device such as a loom which may not be connected to the internet,
+and so cannot reliably renew its certificate.</p>
 <h2 id="connect-to-the-loom-server">Connect to the Loom Server</h2>
 <p>Connect to the loom server using any modern web browser (e.g. on a phone, tablet, or laptop).
 The address will be "http://<em>hostname</em>.local:8000" where <em>hostname</em> is the host name
@@ -221,7 +235,8 @@ The server accepts WIF (.wif), Fiberworks (.dtx), and WeavePoint (.wpo) files.</
 <p>The loom server remembers the 25 most recent patterns that you have uploaded,
 and this information is saved on disk, so should not be lost in a power failure.</p>
 <p>The saved information includes the most recent pick (weaving) and the most recent warp thread group (threading).
-This allows you to switch between different patterns while weaving something.
+This allows you to switch between different patterns while weaving someth
+ing.
 However, if you upload a new pattern with the same file name as a saved pattern,
 the new pattern overwrites the old and the pick and warp thread group information is reset.
 So please be careful.</p>
@@ -240,6 +255,35 @@ and it is not due to the loom losing power, or a disconnected or bad USB cable,
 you might try reloading the page.</p>
 <p>If the loom seems confused, try turning off the loom, waiting a few seconds, then turning it on again.
 Then reload the web page, to force the web server to make a new connection to the loom.</p>
+<h2 id="using-guided-access-on-ios-to-prevent-sleep">Using Guided Access on iOS to Prevent Sleep</h2>
+<p>Directions for using Guided Access on iOS to prevent your device from going to sleep.</p>
+<blockquote>
+<p><em>Warning</em>: Guided Access disables all notifications while in use.</p>
+</blockquote>
+<p>Configure Guided Aceess. You just need to do this once:</p>
+<ul>
+<li>
+<p>Turn on Guided Access in Settings:</p>
+<ul>
+<li>In Settings search for Guided Access, which is in Accessibility.</li>
+<li>Enable it by turning on the button labeled "Guided Access".</li>
+<li>Under Passcode Settings enable Face ID, to simplify getting out of this mode.</li>
+<li>Set "Display Auto-Lock" to Never.</li>
+<li>Add Guided Access control to the control center as follows:</li>
+</ul>
+</li>
+<li>
+<p>Add a control to turn on Guided Access to the Control Center:</p>
+<ul>
+<li>Bring up the control center by dragging down from the upper right-hand corner.</li>
+<li>Press the "+" at the top left edge of the control center.</li>
+<li>Click "Add a Control" at the bottom of the control center.</li>
+<li>Search for Guided Access and add it.</li>
+</ul>
+</li>
+</ul>
+<p>Then, whenever you start weaving, open the web browser, then bring up the control center to enter Guided Access.
+When you are done weaving, double-click the power button to disable Guided Access.</p>
 <h2 id="acknowledgements">Acknowledgements</h2>
 <ul>
 <li>Early adopters, including WillowGoose (<a href="https://www.instagram.com/willowlovestoweave/">willowlovestoweave</a> on Instagram), for patiently testing this software and proving valuable feedback.</li>
@@ -300,5 +344,5 @@ Then reload the web page, to force the web server to make a new connection to th
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-09-22 21:34:01.091470+00:00
+Build Date UTC : 2025-09-26 21:54:45.006409+00:00
 -->
