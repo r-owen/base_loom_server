@@ -70,8 +70,13 @@ button:disabled {
     color: var(--text-color-disabled);
 }
 
-button:hover:enabled {
-    background-color: var(--button-hover-color);
+/* Prevent persistent hover style on touch screens by only supporting hover style
+   if there is a pointer https://stackoverflow.com/a/2520670
+*/
+@media (hover: hover) {
+    button:hover:enabled {
+        background-color: var(--button-hover-color);
+    }
 }
 
 /* Style the tab bar mode buttons */
