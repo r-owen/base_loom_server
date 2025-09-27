@@ -4,8 +4,8 @@
 
 * Improve direction button appearance on touch screens,
   by avoiding the persistent hover style once the button is pressed.
-  This applies to all buttons, but was nuisance bothersome for the direction button.
-* Document use of Guided Access to prevent display sleep.
+  This was especially bothersome for the direction button, but applies to all buttons.
+* Document the desirability of preventing device sleep.
 
 ## 0.30 2025-09-22
 
