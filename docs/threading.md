@@ -19,11 +19,15 @@ This page assumes you have done all the [basics](index.md):
 
 The [Settings](settings.md) panel contains two settings specific to threading:
 
-Thread from right-to-left or left-to-right.
+* Thread "right to left" or "left to right".
 
-Thread from back-to-front or front-to-back, which this only affects the display.
-Front-to-back mode rotates the pattern 180 degrees, as if seen from the back of the loom:
+* Thread "back to front" or "front to back".
+"Front to back" rotates the pattern 180 degrees, as if seen from the back of the loom:
 shaft 1 is at the bottom, and warp end 1 is at the other edge than specified by the "Warp end 1 on" [setting](settings.md).
+
+To change between threading and unthreading see [Weave Direction](weaving.md#weave-direction).
+
+If you are using a Toika loom, you must specify whether Software or the Loom controls threading direction in [Settings](settings.md). If you thread "front to back", consider specifying Software, because it may be difficult to reach the REVERSE button on the dobby head from behind the castle.
 
 ## Threading Display
 
@@ -37,13 +41,6 @@ Special cases that may only be supported by WIF files:
 
 * Ends that are only threaded on shaft 0 (meaning not threaded through heddles on any shaft) are displayed without a shaft number.
 * Ends that are threaded through heddles on more than one shaft are only shown threaded on the lowest-numbered shaft (ignoring non-existent shaft 0).
-
-## Threading Direction
-
-See [Weave Direction](weaving.md#weave-direction) for information on changing between threading and unthreading.
-
-If you are using a Toika loom, you must specify whether Software or the Loom controls threading direction in [Settings](settings.md).
-If you thread front-to-back, consider specifying Software, because it may be difficult to reach the REVERSE button on the dobby head from behind the castle.
 
 ## Jumping
 

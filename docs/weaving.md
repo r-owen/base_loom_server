@@ -27,9 +27,10 @@ and does not display multi-layer patterns, such as doubleweave, correctly.
 
 ## Weave Direction
 
-The Weaving "Direction" button shows "Weave" (in black) or "Unweave" (in red).
-[Threading](threading.md) also has a direction button that shows "Thread" (in black) or "Unthread" (in red),
-prefixed by an arrow showing the direction of the next group of warp ends.
+The Weaving "Direction" button shows "Weave" or "Unweave".
+[Threading](threading.md) also has a direction button that shows "Thread" or "Unthread", prefixed by an arrow showing the direction of the next group of warp ends. Note that for threading you can choose which direction is forward in [Settings](settings.md).
+
+To clearly warn you when unweaving or unthreading, the direction button is shown in red, and the pattern is shown with a red border and a pink background.
 
 How you change direction depends on the loom:
 
@@ -44,7 +45,7 @@ How you change direction depends on the loom:
         **The physical REVERSE button on the dobby head is ignored.**
 
     * **Loom**: press the physical REVERSE button on the dobby head to change direction.
-        **Warning: the displayed direction does not update until you command the next pick!**
+        **The displayed direction does not update until you command the next pick!**
         This is because Toika looms only report direction when requesting a pick.
 
 * For other looms, see the loom-specific documentation with the software package.
