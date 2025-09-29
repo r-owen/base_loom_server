@@ -1,5 +1,13 @@
 # Version History
 
+## 0.32 2025-09-29
+
+* Leave more margin at the bottom on touchscreens.
+  This improves the display on iOS, but may not be needed on Android.
+* Make it much more obvious threading or weaving backwards/
+  Display the direction in white text on a red background,
+  and change the pattern background color to pink and the border color to red.
+
 ## 0.31 2025-09-26
 
 * Improve direction button appearance on touch screens,
