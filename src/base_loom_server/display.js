@@ -500,6 +500,8 @@ class LoomClient {
         }
         let threadDirectionElt = document.getElementById("thread_direction")
         let weaveDirectionElt = document.getElementById("weave_direction")
+        let patternCanvasElt = document.getElementById("pattern_canvas")
+        let threadingCanvasElt = document.getElementById("threading_canvas")
         let threadArrowPointsLeft = this.settings.thread_right_to_left
         if (!this.direction.forward) {
             threadArrowPointsLeft = !threadArrowPointsLeft
@@ -513,6 +515,8 @@ class LoomClient {
             weaveDirectionElt.classList.remove("direction_undo")
             threadDirectionElt.classList.add("direction_do")
             weaveDirectionElt.classList.add("direction_do")
+            patternCanvasElt.classList.remove("direction_undo")
+            threadingCanvasElt.classList.remove("direction_undo")
         } else {
             threadDirectionElt.textContent = `${threadArrow} ${t("Unthread")}`
             weaveDirectionElt.textContent = t("Unweave")
@@ -520,6 +524,9 @@ class LoomClient {
             weaveDirectionElt.classList.remove("direction_do")
             threadDirectionElt.classList.add("direction_undo")
             weaveDirectionElt.classList.add("direction_undo")
+            document.body.classList.add("direction_undo")
+            patternCanvasElt.classList.add("direction_undo")
+            threadingCanvasElt.classList.add("direction_undo")
         }
     }
 

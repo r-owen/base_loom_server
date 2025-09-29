@@ -57,12 +57,14 @@ button.direction_do:disabled {
 
 button.direction_undo {
     border-style: inset;
-    color: red;
+    background-color: red;
+    color: white;
 }
 
 button.direction_undo:disabled {
     border-width: 0;
-    color: red;
+    background-color: red;
+    color: white;
 }
 
 button:disabled {
@@ -114,6 +116,11 @@ button.toggle_button:disabled {
 
 canvas {
     border: 1px solid #000000;
+}
+
+canvas.direction_undo {
+    background-color: pink;
+    border-color: red;
 }
 
 /* Exclude borders and padding from dimensions 
