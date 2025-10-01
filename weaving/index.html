@@ -100,8 +100,6 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_loom_server/">base_loom_server.base_loom_server</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_loom_server%20with%20allow_reconnection/">Base loom server with allow reconnection</a>
-                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
@@ -181,9 +179,9 @@ See <a href="#repeating">Repeating</a> for more information.</p>
 <p>Note that the display is naive; it shows all threads as the same thickness,
 and does not display multi-layer patterns, such as doubleweave, correctly.</p>
 <h2 id="weave-direction">Weave Direction</h2>
-<p>The Weaving "Direction" button shows "Weave" (in black) or "Unweave" (in red).
-<a href="../threading/">Threading</a> also has a direction button that shows "Thread" (in black) or "Unthread" (in red),
-prefixed by an arrow showing the direction of the next group of warp ends.</p>
+<p>The Weaving "Direction" button shows "Weave" or "Unweave".
+<a href="../threading/">Threading</a> also has a direction button that shows "Thread" or "Unthread", prefixed by an arrow showing the direction of the next group of warp ends. Note that for threading you can choose which direction is forward in <a href="../settings/">Settings</a>.</p>
+<p>To clearly warn you when unweaving or unthreading, the direction button is shown in red, and the pattern is shown with a red border and a pink background.</p>
 <p>How you change direction depends on the loom:</p>
 <ul>
 <li>
@@ -201,7 +199,7 @@ prefixed by an arrow showing the direction of the next group of warp ends.</p>
 </li>
 <li>
 <p><strong>Loom</strong>: press the physical REVERSE button on the dobby head to change direction.
-    <strong>Warning: the displayed direction does not update until you command the next pick!</strong>
+    <strong>The displayed direction does not update until you command the next pick!</strong>
     This is because Toika looms only report direction when requesting a pick.</p>
 </li>
 </ul>

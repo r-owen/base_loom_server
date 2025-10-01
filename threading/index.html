@@ -61,8 +61,6 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#threading-display">Threading Display</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#threading-direction_1">Threading Direction</a>
-    </li>
     <li class="toctree-l2"><a class="reference internal" href="#jumping">Jumping</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#group-size">Group Size</a>
@@ -101,8 +99,6 @@
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/app_runner/">base_loom_server.app_runner</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_loom_server/">base_loom_server.base_loom_server</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_loom_server%20with%20allow_reconnection/">Base loom server with allow reconnection</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/base_mock_loom/">base_loom_server.base_mock_loom</a>
                 </li>
@@ -179,10 +175,18 @@ and a display will show you which threads belong on which shaft.</p>
 </ul>
 <h2 id="threading-direction">Threading Direction</h2>
 <p>The <a href="../settings/">Settings</a> panel contains two settings specific to threading:</p>
-<p>Thread from right-to-left or left-to-right.</p>
-<p>Thread from back-to-front or front-to-back, which this only affects the display.
-Front-to-back mode rotates the pattern 180 degrees, as if seen from the back of the loom:
+<ul>
+<li>
+<p>Thread "right to left" or "left to right".</p>
+</li>
+<li>
+<p>Thread "back to front" or "front to back".
+"Front to back" rotates the pattern 180 degrees, as if seen from the back of the loom:
 shaft 1 is at the bottom, and warp end 1 is at the other edge than specified by the "Warp end 1 on" <a href="../settings/">setting</a>.</p>
+</li>
+</ul>
+<p>To change between threading and unthreading see <a href="../weaving/#weave-direction">Weave Direction</a>.</p>
+<p>If you are using a Toika loom, you must specify whether Software or the Loom controls threading direction in <a href="../settings/">Settings</a>. If you thread "front to back", consider specifying Software, because it may be difficult to reach the REVERSE button on the dobby head from behind the castle.</p>
 <h2 id="threading-display">Threading Display</h2>
 <p>Threading is displayed as a picture that shows a group of threads (vertical colored bars) and the shaft they go through (numbers that interrupt the colored bars).
 It also shows warp end numbers above some threads.</p>
@@ -193,10 +197,6 @@ See <a href="#repeating">Repeating</a> for more information.</p>
 <li>Ends that are only threaded on shaft 0 (meaning not threaded through heddles on any shaft) are displayed without a shaft number.</li>
 <li>Ends that are threaded through heddles on more than one shaft are only shown threaded on the lowest-numbered shaft (ignoring non-existent shaft 0).</li>
 </ul>
-<h2 id="threading-direction_1">Threading Direction</h2>
-<p>See <a href="../weaving/#weave-direction">Weave Direction</a> for information on changing between threading and unthreading.</p>
-<p>If you are using a Toika loom, you must specify whether Software or the Loom controls threading direction in <a href="../settings/">Settings</a>.
-If you thread front-to-back, consider specifying Software, because it may be difficult to reach the REVERSE button on the dobby head from behind the castle.</p>
 <h2 id="jumping">Jumping</h2>
 <p>You can jump to a different group of warp ends, specified by the smaller warp end number.
 For example if the group size is 4 and you jump to end 21, the new ends will be 21, 22, 23, 24, and 25 (or fewer, if the warp has fewer than 25 threads), regardless of the threading direction.</p>
