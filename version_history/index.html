@@ -77,6 +77,8 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Version History</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#033-2025-10-02">0.33 2025-10-02</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#032-2025-09-29">0.32 2025-09-29</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#031-2025-09-26">0.31 2025-09-26</a>
@@ -251,6 +253,16 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="version-history">Version History</h1>
+<h2 id="033-2025-10-02">0.33 2025-10-02</h2>
+<ul>
+<li>Improve display of shaft state when the loom server starts, and if you refresh the page while in Settings mode.</li>
+<li>Always send a requested set of shafts to the loom, even when there is no obvious set of shafts to raise
+  (e.g. you are in in Settings mode or there is no current pattern), in which case command all shafts to go down.
+  This may avoid the loom going into an error state.</li>
+<li>Display software versions in the Settings panel.
+  This should help when reporting an issue, and allows you to see if a bug has already been fixed.</li>
+<li>Improved some translations.</li>
+</ul>
 <h2 id="032-2025-09-29">0.32 2025-09-29</h2>
 <ul>
 <li>Leave more margin at the bottom on touchscreens.

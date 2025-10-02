@@ -202,6 +202,8 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_direction">report_direction</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_version">report_version</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.reset_database">reset_database</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.save_settings">save_settings</a>
@@ -676,6 +678,11 @@ Report LanguageNames.</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_direction" title="base_loom_server.base_loom_server.BaseLoomServer.report_direction">report_direction</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Report Direction.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_version" title="base_loom_server.base_loom_server.BaseLoomServer.report_version">report_version</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report version information.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.reset_database" title="base_loom_server.base_loom_server.BaseLoomServer.reset_database">reset_database</a></span>
@@ -1413,8 +1420,7 @@ Ignored with a logged warning if the loom is not the mock loom.</p>
 <p>Handle next pick request from loom.</p>
 <p>Call this from handle_loom_reply.</p>
 <p>Figure out the next pick, send it to the loom,
-and report the current pick or end numbers to the client
-(if we were not at the beginning of the work).</p>
+and report the current pick or end numbers to the client.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle returns">
@@ -1426,10 +1432,9 @@ and report the current pick or end numbers to the client
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
-<p><span class="mkapi-item-type"><span class="mkapi-tooltip" title="base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request.did_advance">did_advance</span></span> <span class="mkapi-dash">&mdash;</span>
+<p><span class="mkapi-item-type">did_advance</span> <span class="mkapi-dash">&mdash;</span>
 True if the loom was sent the next set of shafts.
-    False if in Setting mode, or no current pattern,
-    or attemped to go beyond the start of the pattern.</p>
+    This will always be true (a change in version 0.33).</p>
 </li>
 </ul>
 </div>
@@ -1882,6 +1887,23 @@ Unusable entries will be ignored, with a logged warning.</p>
 </p>
 <div class="mkapi-document">
 <p>Report Direction.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_version">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_version" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_version" title="base_loom_server.base_loom_server.BaseLoomServer.report_version">report_version</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report version information.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.reset_database">
 <span class="mkapi-object-link">

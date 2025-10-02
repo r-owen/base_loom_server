@@ -361,7 +361,18 @@
 <span class="normal">202</span>
 <span class="normal">203</span>
 <span class="normal">204</span>
-<span class="normal">205</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">dataclasses</span>
 
 <span class="kn">from</span> <span class="nn">.enums</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ConnectionStateEnum</span><span class="p">,</span>
@@ -566,6 +577,17 @@
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;ThreadGroupSize&quot;</span><span class="p">)</span>
     <span class="n">group_size</span><span class="p">:</span> <span class="nb">int</span>
+
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">Version</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.Version"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.Version" title="Go to docs">docs</a></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Version information.&quot;&quot;&quot;</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Version&quot;</span><span class="p">)</span>
+    <span class="n">main_package_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">main_package_version</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">base_loom_server_version</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">dtx_to_wif_version</span><span class="p">:</span> <span class="nb">str</span>
 </code></pre></div></td></tr></table></div>
 
               

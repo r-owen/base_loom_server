@@ -1324,7 +1324,24 @@
 <span class="normal">1165</span>
 <span class="normal">1166</span>
 <span class="normal">1167</span>
-<span class="normal">1168</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">1168</span>
+<span class="normal">1169</span>
+<span class="normal">1170</span>
+<span class="normal">1171</span>
+<span class="normal">1172</span>
+<span class="normal">1173</span>
+<span class="normal">1174</span>
+<span class="normal">1175</span>
+<span class="normal">1176</span>
+<span class="normal">1177</span>
+<span class="normal">1178</span>
+<span class="normal">1179</span>
+<span class="normal">1180</span>
+<span class="normal">1181</span>
+<span class="normal">1182</span>
+<span class="normal">1183</span>
+<span class="normal">1184</span>
+<span class="normal">1185</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;BaseLoomServer&quot;</span><span class="p">,</span> <span class="s2">&quot;DEFAULT_DATABASE_PATH&quot;</span><span class="p">,</span> <span class="s2">&quot;MOCK_PORT_NAME&quot;</span><span class="p">]</span>
 
@@ -1351,7 +1368,7 @@
 <span class="kn">from</span> <span class="nn">.pattern_database</span> <span class="kn">import</span> <span class="n">PatternDatabase</span>
 <span class="kn">from</span> <span class="nn">.reduced_pattern</span> <span class="kn">import</span> <span class="n">ReducedPattern</span><span class="p">,</span> <span class="n">reduced_pattern_from_pattern_data</span>
 <span class="kn">from</span> <span class="nn">.translations</span> <span class="kn">import</span> <span class="n">get_language_names</span><span class="p">,</span> <span class="n">get_translation_dict</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compute_num_within_and_repeats</span><span class="p">,</span> <span class="n">compute_total_num</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compute_num_within_and_repeats</span><span class="p">,</span> <span class="n">compute_total_num</span><span class="p">,</span> <span class="n">get_version</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.base_mock_loom</span> <span class="kn">import</span> <span class="n">BaseMockLoom</span>
@@ -1482,9 +1499,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_connecting</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_disconnecting</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client_connected</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span><span class="p">:</span> <span class="n">ShaftStateEnum</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">UNKNOWN</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_reports_motion</span> <span class="k">else</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">DONE</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span><span class="p">:</span> <span class="n">ShaftStateEnum</span> <span class="o">=</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">UNKNOWN</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shaft_word</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span><span class="p">:</span> <span class="n">BaseMockLoom</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_reader</span><span class="p">:</span> <span class="n">StreamReaderType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1977,18 +1992,15 @@
 <span class="sd">        Call this from handle_loom_reply.</span>
 
 <span class="sd">        Figure out the next pick, send it to the loom,</span>
-<span class="sd">        and report the current pick or end numbers to the client</span>
-<span class="sd">        (if we were not at the beginning of the work).</span>
+<span class="sd">        and report the current pick or end numbers to the client.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            did_advance: True if the loom was sent the next set of shafts.</span>
-<span class="sd">                False if in Setting mode, or no current pattern,</span>
-<span class="sd">                or attemped to go beyond the start of the pattern.</span>
+<span class="sd">                This will always be true (a change in version 0.33).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="n">did_advance</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span><span class="p">:</span>
                 <span class="c1"># Command a new pick, if there is one.</span>
@@ -2011,7 +2023,6 @@
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="n">pick</span><span class="o">.</span><span class="n">shaft_word</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_pick_number</span><span class="p">()</span>
-                <span class="n">did_advance</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">THREAD</span><span class="p">:</span>
                 <span class="c1"># Advance to the next thread group, if there is one</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span><span class="o">.</span><span class="n">end_number0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -2035,12 +2046,16 @@
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="n">shaft_word</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_end_numbers</span><span class="p">()</span>
-                <span class="n">did_advance</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Next pick ignored in SETTINGS mode&quot;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
             <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid mode=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">did_advance</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_reports_motion</span><span class="p">:</span>
+            <span class="c1"># This gets set the first time a shaft command is sent to the loom,</span>
+            <span class="c1"># and remains set from then on.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span> <span class="o">=</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">DONE</span>
+        <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">increment_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment pick_number in the current direction.</span>
@@ -2252,6 +2267,7 @@
 
 <span class="sd">        Called just after a client connects to the server.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_version</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_loom_connection_state</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loom_info</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_language_names</span><span class="p">()</span>
@@ -2401,6 +2417,24 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
             <span class="n">client_replies</span><span class="o">.</span><span class="n">Direction</span><span class="p">(</span>
                 <span class="n">forward</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">report_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_version"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_version" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report version information.&quot;&quot;&quot;</span>
+        <span class="n">main_package_name</span> <span class="o">=</span> <span class="s2">&quot;?&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">main_package_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not obtain main package name: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
+            <span class="n">client_replies</span><span class="o">.</span><span class="n">Version</span><span class="p">(</span>
+                <span class="n">main_package_name</span><span class="o">=</span><span class="n">main_package_name</span><span class="p">,</span>
+                <span class="n">main_package_version</span><span class="o">=</span><span class="n">get_version</span><span class="p">(</span><span class="n">main_package_name</span><span class="p">)</span> <span class="k">if</span> <span class="n">main_package_name</span> <span class="o">!=</span> <span class="s2">&quot;?&quot;</span> <span class="k">else</span> <span class="s2">&quot;?&quot;</span><span class="p">,</span>
+                <span class="n">base_loom_server_version</span><span class="o">=</span><span class="n">get_version</span><span class="p">(</span><span class="s2">&quot;base_loom_server&quot;</span><span class="p">),</span>
+                <span class="n">dtx_to_wif_version</span><span class="o">=</span><span class="n">get_version</span><span class="p">(</span><span class="s2">&quot;dtx_to_wif&quot;</span><span class="p">),</span>
             <span class="p">)</span>
         <span class="p">)</span>
 

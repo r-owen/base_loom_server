@@ -1647,7 +1647,15 @@
 <span class="normal">1488</span>
 <span class="normal">1489</span>
 <span class="normal">1490</span>
-<span class="normal">1491</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
+<span class="normal">1491</span>
+<span class="normal">1492</span>
+<span class="normal">1493</span>
+<span class="normal">1494</span>
+<span class="normal">1495</span>
+<span class="normal">1496</span>
+<span class="normal">1497</span>
+<span class="normal">1498</span>
+<span class="normal">1499</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
@@ -1685,7 +1693,7 @@
     <span class="n">ReducedPattern</span><span class="p">,</span>
     <span class="n">reduced_pattern_from_pattern_data</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compute_total_num</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compute_total_num</span><span class="p">,</span> <span class="n">get_version</span>
 
 <span class="n">WebSocketType</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="n">WebSocket</span> <span class="o">|</span> <span class="n">WebSocketTestSession</span>
 
@@ -3012,6 +3020,7 @@
                 <span class="k">if</span> <span class="n">read_initial_state</span><span class="p">:</span>
                     <span class="n">seen_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
                     <span class="n">expected_types</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;Direction&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;LanguageNames&quot;</span><span class="p">,</span>
@@ -3021,17 +3030,17 @@
                         <span class="s2">&quot;PatternNames&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;Settings&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;ShaftState&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Direction&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Version&quot;</span><span class="p">,</span>
                     <span class="p">}</span>
                     <span class="k">if</span> <span class="n">expected_status_messages</span><span class="p">:</span>
                         <span class="n">expected_types</span> <span class="o">|=</span> <span class="p">{</span><span class="s2">&quot;StatusMessage&quot;</span><span class="p">}</span>
                     <span class="k">if</span> <span class="n">expected_current_pattern</span><span class="p">:</span>
                         <span class="n">expected_types</span> <span class="o">|=</span> <span class="p">{</span>
-                            <span class="s2">&quot;CurrentPickNumber&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;CurrentEndNumber&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;CurrentPickNumber&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;ReducedPattern&quot;</span><span class="p">,</span>
-                            <span class="s2">&quot;SeparateWeavingRepeats&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;SeparateThreadingRepeats&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;SeparateWeavingRepeats&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;ThreadGroupSize&quot;</span><span class="p">,</span>
                         <span class="p">}</span>
                     <span class="n">good_connection_states</span> <span class="o">=</span> <span class="p">{</span>
@@ -3067,7 +3076,8 @@
                                     <span class="n">repeat_number</span><span class="o">=</span><span class="n">expected_current_pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span><span class="p">,</span>
                                     <span class="n">repeat_len</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">expected_current_pattern</span><span class="o">.</span><span class="n">picks</span><span class="p">),</span>
                                 <span class="p">)</span>
-
+                            <span class="k">case</span> <span class="s2">&quot;Direction&quot;</span><span class="p">:</span>
+                                <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">forward</span>
                             <span class="k">case</span> <span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">:</span>
                                 <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                                     <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span>
@@ -3110,7 +3120,11 @@
                             <span class="k">case</span> <span class="s2">&quot;Settings&quot;</span><span class="p">:</span>
                                 <span class="k">assert</span> <span class="nb">vars</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span> <span class="o">==</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">loom_server</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
                             <span class="k">case</span> <span class="s2">&quot;ShaftState&quot;</span><span class="p">:</span>
-                                <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">DONE</span>
+                                <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="p">(</span>
+                                    <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">DONE</span>
+                                    <span class="k">if</span> <span class="n">loom_server</span><span class="o">.</span><span class="n">loom_reports_motion</span>
+                                    <span class="k">else</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">UNKNOWN</span>
+                                <span class="p">)</span>
                                 <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">shaft_word</span> <span class="o">==</span> <span class="mi">0</span>
                             <span class="k">case</span> <span class="s2">&quot;StatusMessage&quot;</span><span class="p">:</span>
                                 <span class="n">num_status_messages_seen</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -3119,8 +3133,10 @@
                             <span class="k">case</span> <span class="s2">&quot;ThreadGroupSize&quot;</span><span class="p">:</span>
                                 <span class="k">assert</span> <span class="n">expected_current_pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                                 <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">group_size</span> <span class="o">==</span> <span class="n">expected_current_pattern</span><span class="o">.</span><span class="n">thread_group_size</span>
-                            <span class="k">case</span> <span class="s2">&quot;Direction&quot;</span><span class="p">:</span>
-                                <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">forward</span>
+                            <span class="k">case</span> <span class="s2">&quot;Version&quot;</span><span class="p">:</span>
+                                <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">main_package_name</span> <span class="o">!=</span> <span class="s2">&quot;?&quot;</span>
+                                <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">base_loom_server_version</span> <span class="o">==</span> <span class="n">get_version</span><span class="p">(</span><span class="s2">&quot;base_loom_server&quot;</span><span class="p">)</span>
+                                <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">dtx_to_wif_version</span> <span class="o">==</span> <span class="n">get_version</span><span class="p">(</span><span class="s2">&quot;dtx_to_wif&quot;</span><span class="p">)</span>
                             <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
                                 <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected message type </span><span class="si">{</span><span class="n">reply</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                         <span class="n">seen_types</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>

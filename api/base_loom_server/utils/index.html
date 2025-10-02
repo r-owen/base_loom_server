@@ -122,6 +122,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.compute_total_num">compute_total_num</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.get_version">get_version</a>
+    </li>
     </ul>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../version/">base_loom_server.version</a>
@@ -186,6 +188,11 @@ such that total_num = (repeat_number - 1) * repeat_len + num_within.</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.compute_total_num" title="base_loom_server.utils.compute_total_num">compute_total_num</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Compute total_num from num_within, repeat_number, and repeat_len.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.get_version" title="base_loom_server.utils.get_version">get_version</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Return version.<strong>version</strong> from a package.</p>
 </li>
 </ul>
 </div>
@@ -348,6 +355,21 @@ total_num = repeat_len * (repeat_number - 1) + num_within</p>
 </li>
 </ul>
 </div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.utils.get_version">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/utils/#base_loom_server.utils.get_version" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.utils.get_version" title="base_loom_server.utils.get_version">get_version</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">package_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">str</span></span>
+</p>
+<div class="mkapi-document">
+<p>Return version.<strong>version</strong> from a package.</p>
+<p>Return "?" if there the information is not available.</p>
 </div>
               
             </div>
