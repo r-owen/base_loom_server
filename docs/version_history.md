@@ -1,5 +1,15 @@
 # Version History
 
+## 0.33 2025-10-02
+
+* Improve display of shaft state when the loom server starts, and if you refresh the page while in Settings mode.
+* Always send a requested set of shafts to the loom, even when there is no obvious set of shafts to raise
+  (e.g. you are in in Settings mode or there is no current pattern), in which case command all shafts to go down.
+  This may avoid the loom going into an error state.
+* Display software versions in the Settings panel.
+  This should help when reporting an issue, and allows you to see if a bug has already been fixed.
+* Improved some translations.
+
 ## 0.32 2025-09-29
 
 * Leave more margin at the bottom on touchscreens.
