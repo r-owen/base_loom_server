@@ -489,9 +489,7 @@ class LoomClient {
     Display the canvases that should be visible
     */
     displayCanvases(event) {
-        if (this.mode != ModeEnum.SETTINGS) {
-            this.displayShaftState()
-        }
+        this.displayShaftState()
         if (this.mode == ModeEnum.THREADING) {
             this.displayThreadingPattern(event)
         } else if (this.mode == ModeEnum.WEAVING) {
@@ -772,7 +770,7 @@ class LoomClient {
     Display shaft state on the "shafts_canvas" element.
     */
     displayShaftState() {
-        if ((this.mode == ModeEnum.SETTINGS) || (this.loomInfo == null)) {
+        if (this.loomInfo == null) {
             return
         }
         let canvas = document.getElementById("shafts_canvas")

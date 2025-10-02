@@ -229,6 +229,7 @@ class BaseMockLoom(abc.ABC):
     async def report_initial_status(self) -> None:
         """Report initial status."""
         await self.report_direction()
+        await self.report_shafts()
         await self.report_motion_state()
         await self.report_pick_wanted()
 

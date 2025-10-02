@@ -1463,7 +1463,11 @@ class BaseTestLoomServer:
                             case "Settings":
                                 assert vars(reply) == dataclasses.asdict(loom_server.settings)
                             case "ShaftState":
-                                assert reply.state == ShaftStateEnum.DONE
+                                assert reply.state == (
+                                    ShaftStateEnum.DONE
+                                    if loom_server.loom_reports_motion
+                                    else ShaftStateEnum.UNKNOWN
+                                )
                                 assert reply.shaft_word == 0
                             case "StatusMessage":
                                 num_status_messages_seen += 1

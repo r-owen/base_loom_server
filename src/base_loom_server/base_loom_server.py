@@ -156,9 +156,7 @@ class BaseLoomServer:
         self.loom_connecting: bool = False
         self.loom_disconnecting: bool = False
         self.client_connected: bool = False
-        self.shaft_state: ShaftStateEnum = (
-            ShaftStateEnum.UNKNOWN if self.loom_reports_motion else ShaftStateEnum.DONE
-        )
+        self.shaft_state: ShaftStateEnum = ShaftStateEnum.UNKNOWN
         self.shaft_word: int = 0
         self.mock_loom: BaseMockLoom | None = None
         self.loom_reader: StreamReaderType | None = None
@@ -651,18 +649,15 @@ class BaseLoomServer:
         Call this from handle_loom_reply.
 
         Figure out the next pick, send it to the loom,
-        and report the current pick or end numbers to the client
-        (if we were not at the beginning of the work).
+        and report the current pick or end numbers to the client.
 
         Returns:
             did_advance: True if the loom was sent the next set of shafts.
-                False if in Setting mode, or no current pattern,
-                or attemped to go beyond the start of the pattern.
+                This will always be true (a change in version 0.33).
         """
         if not self.current_pattern:
             return False
 
-        did_advance = False
         match self.mode:
             case ModeEnum.WEAVE:
                 # Command a new pick, if there is one.
@@ -685,7 +680,6 @@ class BaseLoomServer:
                 await self.write_shafts_to_loom(pick.shaft_word)
                 await self.clear_jumps()
                 await self.report_current_pick_number()
-                did_advance = True
             case ModeEnum.THREAD:
                 # Advance to the next thread group, if there is one
                 if self.jump_end.end_number0 is not None:
@@ -709,12 +703,16 @@ class BaseLoomServer:
                 await self.write_shafts_to_loom(shaft_word)
                 await self.clear_jumps()
                 await self.report_current_end_numbers()
-                did_advance = True
             case ModeEnum.SETTINGS:
-                self.log.warning("Next pick ignored in SETTINGS mode")
+                await self.write_shafts_to_loom(0)
+                await self.clear_jumps()
             case _:
                 raise RuntimeError(f"Invalid mode={self.mode!r}.")
-        return did_advance
+        if not self.loom_reports_motion:
+            # This gets set the first time a shaft command is sent to the loom,
+            # and remains set from then on.
+            self.shaft_state = ShaftStateEnum.DONE
+        return True
 
     def increment_pick_number(self) -> int:
         """Increment pick_number in the current direction.

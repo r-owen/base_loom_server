@@ -16,7 +16,7 @@ async def create_loom(
     """Create an ExampleMockLoom."""
     async with ExampleMockLoom(num_shafts=num_shafts, verbose=True) as loom:
         reader, writer = await loom.open_client_connection()
-        for expected_value in ("u0", "m0"):
+        for expected_value in ("u0", "c00000000", "m0"):
             reply = await read_reply(reader)
             assert reply == expected_value
         yield loom, reader, writer
