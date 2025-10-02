@@ -35,7 +35,7 @@ If your device does go to sleep you can continue to weave, but you can't see wha
 The simplest solution is to just disable the sleep timer.
 On iOS and macOS search for "Lock" in Settings.
 
-On iOS another solution is to [use Guided Access](#using-guided-access-on-ios-to-prevent-display-sleep).
+On iOS another solution is to [use Guided Access](#using-guided-access-on-ios-to-prevent-sleep).
 This requires a manual step every time you start weaving, but allows you to use the normal sleep timer the rest of the time.
 
 Note: there is a standard web API for disabling sleep, but it requires a secure https connection.
@@ -137,6 +137,14 @@ Configure Guided Aceess. You just need to do this once:
 
 Then, whenever you start weaving, open the web browser, then bring up the control center to enter Guided Access.
 When you are done weaving, double-click the power button to disable Guided Access.
+
+## Software Versions
+
+You can see the versions of the main packages in a table in [Settings](settings.md).
+Please include this information in bug reports and feature requests.
+
+Also please check the version history for each package (especially base_loom_server),
+to see if it has already been fixed in a newer version.
 
 ## Acknowledgements
 

@@ -39,3 +39,14 @@ Settings include:
 * **Default threading group size**: specify the threading group size for newly uploaded patterns.
   This setting has no effect on any pattern files that are already loaded;
   use the "Group size" control in the [Threading](threading.md) panel to change those.
+
+Below the settings you will find a table showing version numbers of the main software packages.
+Please include this information in any bug reports or feature requests:
+
+* The loom-specific package, e.g. toika_loom_server. This is rarely updated.
+* base_loom_server: this package does most of the work of driving the loom and displaying state.
+  New features and bug fixes usually appear here.
+* dtx_to_wif: this reads WIF, .dtx, and .wto files.
+  If you have an issue uploading a weaving file, this is the place to look for an update or to report a bug.
+
+Finally, the current loom connection state is shown, since you must be connected to the loom to change settings.
