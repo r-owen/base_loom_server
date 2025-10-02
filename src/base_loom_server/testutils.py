@@ -36,7 +36,7 @@ from .reduced_pattern import (
     ReducedPattern,
     reduced_pattern_from_pattern_data,
 )
-from .utils import compute_total_num
+from .utils import compute_total_num, get_version
 
 WebSocketType: TypeAlias = WebSocket | WebSocketTestSession
 
@@ -1363,6 +1363,7 @@ class BaseTestLoomServer:
                 if read_initial_state:
                     seen_types: set[str] = set()
                     expected_types = {
+                        "Direction",
                         "JumpEndNumber",
                         "JumpPickNumber",
                         "LanguageNames",
@@ -1372,17 +1373,17 @@ class BaseTestLoomServer:
                         "PatternNames",
                         "Settings",
                         "ShaftState",
-                        "Direction",
+                        "Version",
                     }
                     if expected_status_messages:
                         expected_types |= {"StatusMessage"}
                     if expected_current_pattern:
                         expected_types |= {
-                            "CurrentPickNumber",
                             "CurrentEndNumber",
+                            "CurrentPickNumber",
                             "ReducedPattern",
-                            "SeparateWeavingRepeats",
                             "SeparateThreadingRepeats",
+                            "SeparateWeavingRepeats",
                             "ThreadGroupSize",
                         }
                     good_connection_states = {
@@ -1418,7 +1419,8 @@ class BaseTestLoomServer:
                                     repeat_number=expected_current_pattern.pick_repeat_number,
                                     repeat_len=len(expected_current_pattern.picks),
                                 )
-
+                            case "Direction":
+                                assert reply.forward
                             case "JumpEndNumber":
                                 for field_name, value in vars(reply).items():
                                     if field_name == "type":
@@ -1470,8 +1472,10 @@ class BaseTestLoomServer:
                             case "ThreadGroupSize":
                                 assert expected_current_pattern is not None
                                 assert reply.group_size == expected_current_pattern.thread_group_size
-                            case "Direction":
-                                assert reply.forward
+                            case "Version":
+                                assert reply.main_package_name != "?"
+                                assert reply.base_loom_server_version == get_version("base_loom_server")
+                                assert reply.dtx_to_wif_version == get_version("dtx_to_wif")
                             case _:
                                 raise AssertionError(f"Unexpected message type {reply.type}")
                         seen_types.add(reply.type)

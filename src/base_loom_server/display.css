@@ -180,6 +180,12 @@ select {
     font-size: 90%;
 }
 
+table, th, td {
+    border: 1px solid;
+    border-collapse: collapse;
+    padding-inline: 5px;
+}
+
 #debug_div {
     margin-right: 10px;
 }

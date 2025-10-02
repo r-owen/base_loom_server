@@ -48,6 +48,13 @@ const NullSeparateData = {
     "separate": null,
 }
 
+const NullVersionData = {
+    "main_package_name": "?",
+    "main_package_version": "?",
+    "base_loom_server_version": "?",
+    "dtx_to_wif_version": "?",
+}
+
 const ConnectionStateEnum = {
     "DISCONNECTED": 0,
     "CONNECTED": 1,
@@ -346,6 +353,7 @@ class LoomClient {
         this.jumpPickData = NullPickData
         this.separateThreadingRepeatsData = NullSeparateData
         this.separateWeavingRepeatsData = NullSeparateData
+        this.versionData = NullVersionData
         this.threadGroupSize = 4
         this.loomInfo = null
         this.settings = null
@@ -1274,6 +1282,20 @@ class LoomClient {
     }
 
     /*
+    Display version information
+    */
+    displayVersion() {
+        let mainModuleNameElt = document.getElementById("main_package_name")
+        let maimModuleVersionElt = document.getElementById("main_package_version")
+        let baseLoomServerVersionElt = document.getElementById("base_loom_server_version")
+        let dtxToWifVersionElt = document.getElementById("dtx_to_wif_version")
+        mainModuleNameElt.innerHTML = this.versionData.main_package_name
+        maimModuleVersionElt.innerHTML = this.versionData.main_package_version
+        baseLoomServerVersionElt.innerHTML = this.versionData.base_loom_server_version
+        dtxToWifVersionElt.innerHTML = this.versionData.dtx_to_wif_version
+    }
+
+    /*
     Get the number of ends in the current pattern, or null if no current pattern 
     */
     getNumberOfEndsInPattern() {
@@ -1360,6 +1382,9 @@ class LoomClient {
             this.currentPickData = datadict
             this.displayWeavingPattern()
             this.displayPick()
+        } else if (datadict.type == "Direction") {
+            this.direction = datadict
+            this.displayDirection()
         } else if (datadict.type == "JumpEndNumber") {
             this.jumpEndData = datadict
             this.displayJumpEnd()
@@ -1449,13 +1474,13 @@ class LoomClient {
             resetCommandProblemMessage = false
             this.statusMessage = datadict
             this.displayStatusMessage()
-        } else if (datadict.type == "Direction") {
-            this.direction = datadict
-            this.displayDirection()
         } else if (datadict.type == "ThreadGroupSize") {
             this.threadGroupSize = datadict.group_size
             let threadGroupSizeMenu = document.getElementById("thread_group_size")
             threadGroupSizeMenu.value = this.threadGroupSize
+        } else if (datadict.type == "Version") {
+            this.versionData = datadict
+            this.displayVersion()
         } else {
             console.warn(`Unknown message type ${datadict.type}`, datadict)
         }

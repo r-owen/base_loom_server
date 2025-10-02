@@ -19,13 +19,13 @@
         </div>
     </div>
 
-    <div class="flex-column settings-flex" id="setting_loom_name_form">
+    <div class="flex-column settings-flex">
         <div class="flex-row" id="setting_language_div">
             <label for="setting_language">{Language}</label>
             <select name="setting_language" id="setting_language">
             </select>
         </div>
-        <form class="settings-flex">
+        <form class="settings-flex" id="setting_loom_name_form">
             <div class="flex-row">
                 <label for="setting_loom_name_input">{Loom name}</label>
                 <input type="text" id="setting_loom_name_input">
@@ -73,6 +73,12 @@
                 <option>10</option>
             </select>
         </div>
+        <table>
+            <tr><td colspan="2">{Versions}</td></tr>
+            <tr><td><label id="main_package_name"></label></td><td><label id="main_package_version"></label></td></tr>
+            <tr><td><label>base_loom_server</label></td><td><label id="base_loom_server_version"></label></td></tr>
+            <tr><td><label>dtx_to_wif</label></td><td><label id="dtx_to_wif_version"></label></td></tr>
+        </table>
     </div>
 
     <div class="flex-row not-settings-flex">
@@ -105,7 +111,7 @@
     </div>
 
     <div class="flex-row weaving-flex">
-        <label for="weave_direction">{Direction}</label>
+        <label for="weave_direction" id=""weave_direction_label">{Direction}</label>
         <button type="button" class="toggle_button" id="weave_direction">?</button>        
     </div>
 

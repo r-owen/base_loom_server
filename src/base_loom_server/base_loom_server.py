@@ -25,7 +25,7 @@ from .enums import ConnectionStateEnum, DirectionControlEnum, MessageSeverityEnu
 from .pattern_database import PatternDatabase
 from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
 from .translations import get_language_names, get_translation_dict
-from .utils import compute_num_within_and_repeats, compute_total_num
+from .utils import compute_num_within_and_repeats, compute_total_num, get_version
 
 if TYPE_CHECKING:
     from .base_mock_loom import BaseMockLoom
@@ -926,6 +926,7 @@ class BaseLoomServer:
 
         Called just after a client connects to the server.
         """
+        await self.report_version()
         await self.report_loom_connection_state()
         await self.write_to_client(self.loom_info)
         await self.report_language_names()
@@ -1075,6 +1076,24 @@ class BaseLoomServer:
         await self.write_to_client(
             client_replies.Direction(
                 forward=self.direction_forward,
+            )
+        )
+
+    async def report_version(self) -> None:
+        """Report version information."""
+        main_package_name = "?"
+        if self.__module__ is not None:
+            try:
+                main_package_name = self.__module__.partition(".")[0]
+            except Exception as e:
+                self.log.warning(f"Could not obtain main package name: {e!r}")
+
+        await self.write_to_client(
+            client_replies.Version(
+                main_package_name=main_package_name,
+                main_package_version=get_version(main_package_name) if main_package_name != "?" else "?",
+                base_loom_server_version=get_version("base_loom_server"),
+                dtx_to_wif_version=get_version("dtx_to_wif"),
             )
         )
 

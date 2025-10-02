@@ -203,3 +203,14 @@ class ThreadGroupSize:
 
     type: str = dataclasses.field(init=False, default="ThreadGroupSize")
     group_size: int
+
+
+@dataclasses.dataclass
+class Version:
+    """Version information."""
+
+    type: str = dataclasses.field(init=False, default="Version")
+    main_package_name: str
+    main_package_version: str
+    base_loom_server_version: str
+    dtx_to_wif_version: str
