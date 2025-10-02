@@ -228,7 +228,7 @@
     "description": "The direction shown in the Threading panel when going backwards, to undo a mistake. Please translate 'Reverse' or 'Undo' if there is no more suitable word or short phrase."
   },
   "Unweave": {
-    "message": "Ongedaan maken",
+    "message": "Inslagen ongedaan maken",
     "description": "The direction shown in the Weaving panel when going backwards, to undo a mistake. Please translate 'Reverse' or 'Undo' if there is no more suitable word or short phrase."
   },
   "Upload": {
@@ -254,6 +254,10 @@
   "Weft thread": {
     "message": "Inslag draad",
     "description": "Label for the current weft thread number (in Weaving mode)"
+  },
+  "Versions": {
+    "message": "Versies",
+    "description": "Label for a table of version numbers"
   },
   "?": {
     "message": "?",

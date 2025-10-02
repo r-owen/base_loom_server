@@ -255,6 +255,10 @@
     "message": "Weft tråd",
     "description": "Label for the current weft thread number (in Weaving mode)"
   },
+  "Versions": {
+    "message": "Versjoner",
+    "description": "Label for a table of version numbers"
+  },
   "?": {
     "message": "?",
     "description": "Question mark representing an unknown value"

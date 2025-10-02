@@ -255,6 +255,10 @@
     "message": "Kudelanka",
     "description": "Label for the current weft thread number (in Weaving mode)"
   },
+  "Versions": {
+    "message": "Versiot",
+    "description": "Label for a table of version numbers"
+  },
   "?": {
     "message": "?",
     "description": "Question mark representing an unknown value"

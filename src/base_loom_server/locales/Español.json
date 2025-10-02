@@ -248,14 +248,18 @@
     "description": "The direction shown in the Weaving panel when going forward, to weave new cloth"
   },
   "Weaving": {
-    "message": "Tejido/tejiendo ",
+    "message": "Tejiendo",
     "description": "Tab heading for the Weaving panel"
   },
   "Weft thread": {
     "message": "Hilo de trama",
     "description": "Label for the current weft thread number (in Weaving mode)"
   },
-  "¿?": {
+  "Versions": {
+    "message": "Versiones",
+    "description": "Label for a table of version numbers"
+  },
+  "?": {
     "message": "¿?",
     "description": "Question mark representing an unknown value"
   }

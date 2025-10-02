@@ -12,7 +12,7 @@
     "description": ""
   },
   "another client took control": {
-    "message": "en anden klient tog kontrol",
+    "message": "en annan klient tog kontrollen",
     "description": "Displayed if another web client takes the connection"
   },
   "At start of threading": {
@@ -188,11 +188,11 @@
     "description": "Label for debug display of the most recent command sent to the loom server"
   },
   "Shafts": {
-    "message": "Skakte",
+    "message": "Skafter",
     "description": "Label for display of which shafts are raised"
   },
   "Separate repeats?": {
-    "message": "Adskil gentagelser?",
+    "message": "Adskil gentagelserne?",
     "description": "Should there be a separator row, with all shafts down, after each pattern repeat?"
   },
   "Settings": {
@@ -254,6 +254,10 @@
   "Weft thread": {
     "message": "Skudtråden",
     "description": "Label for the current weft thread number (in Weaving mode)"
+  },
+  "Versions": {
+    "message": "Versioner",
+    "description": "Label for a table of version numbers"
   },
   "?": {
     "message": "?",
