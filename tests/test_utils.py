@@ -2,7 +2,7 @@ import itertools
 
 import pytest
 
-from base_loom_server.utils import compute_num_within_and_repeats, compute_total_num
+from base_loom_server.utils import compute_num_within_and_repeats, compute_total_num, get_version
 
 
 def test_compute_total_num() -> None:
@@ -47,3 +47,14 @@ def test_compute_num_within_and_repeats() -> None:
 
         with pytest.raises(ValueError):
             compute_num_within_and_repeats(total_num, -1)
+
+
+def test_get_version() -> None:
+    assert get_version("#_invalid_package_name") == "?"
+
+    try:
+        from base_loom_server import version  # noqa: PLC0415
+    except ImportError:
+        assert get_version("base_loom_server") == "?"
+    else:
+        assert get_version("base_loom_server") == getattr(version, "__version__", "?")

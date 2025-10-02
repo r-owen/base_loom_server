@@ -1,3 +1,6 @@
+import importlib
+
+
 def compute_num_within_and_repeats(total_num: int, repeat_len: int) -> tuple[int, int]:
     """Compute num_within and repeat_number from total_num and repeat_len
     such that total_num = (repeat_number - 1) * repeat_len + num_within.
@@ -56,3 +59,15 @@ def compute_total_num(num_within: int, repeat_number: int, repeat_len: int) -> i
         raise ValueError(f"{repeat_len=} must be positive (or None)")
 
     return repeat_len * (repeat_number - 1) + num_within
+
+
+def get_version(package_name: str) -> str:
+    """Return version.__version__ from a package.
+
+    Return "?" if there the information is not available.
+    """
+    try:
+        module = importlib.import_module(f"{package_name}.version")
+    except ImportError:
+        return "?"
+    return str(getattr(module, "__version__", "?"))
