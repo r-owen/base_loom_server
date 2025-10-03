@@ -655,25 +655,35 @@ class BaseLoomServer:
             did_advance: True if the loom was sent the next set of shafts.
                 This will always be true (a change in version 0.33).
         """
+        if not self.loom_reports_motion:
+            # This gets set the first time a shaft command is sent to the loom,
+            # and remains set from then on.
+            self.shaft_state = ShaftStateEnum.DONE
+
         if not self.current_pattern:
-            return False
+            await self.write_shafts_to_loom(0)
+            await self.clear_jumps()
+            return True
 
         match self.mode:
             case ModeEnum.WEAVE:
-                # Command a new pick, if there is one.
+                # Command a new pick, if there is one, else send 0
                 if self.jump_pick.pick_number is not None:
                     self.current_pattern.set_current_pick_number(self.jump_pick.pick_number)
                 else:
                     try:
                         self.increment_pick_number()
                     except IndexError:
+                        await self.write_shafts_to_loom(0)
+                        await self.clear_jumps()
                         await self.write_to_client(
                             client_replies.StatusMessage(
                                 message=self.t("At start of weaving"),
                                 severity=MessageSeverityEnum.ERROR,
                             )
                         )
-                        return False
+                        return True
+
                 if self.jump_pick.pick_repeat_number is not None:
                     self.current_pattern.pick_repeat_number = self.jump_pick.pick_repeat_number
                 pick = self.current_pattern.get_current_pick()
@@ -692,13 +702,16 @@ class BaseLoomServer:
                     try:
                         self.increment_end_number()
                     except IndexError:
+                        await self.write_shafts_to_loom(0)
+                        await self.clear_jumps()
                         await self.write_to_client(
                             client_replies.StatusMessage(
                                 message=self.t("At start of threading"),
                                 severity=MessageSeverityEnum.ERROR,
                             )
                         )
-                        return False
+                        return True
+
                 shaft_word = self.get_threading_shaft_word()
                 await self.write_shafts_to_loom(shaft_word)
                 await self.clear_jumps()
@@ -708,10 +721,6 @@ class BaseLoomServer:
                 await self.clear_jumps()
             case _:
                 raise RuntimeError(f"Invalid mode={self.mode!r}.")
-        if not self.loom_reports_motion:
-            # This gets set the first time a shaft command is sent to the loom,
-            # and remains set from then on.
-            self.shaft_state = ShaftStateEnum.DONE
         return True
 
     def increment_pick_number(self) -> int:

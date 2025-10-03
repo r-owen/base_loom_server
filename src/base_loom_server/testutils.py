@@ -122,6 +122,7 @@ class Client:
         expected_end_number1: int,
         expected_repeat_number: int,
         jump_pending: bool = False,
+        should_fail: bool = False,
     ) -> None:
         """Command the next threading end group and test the replies.
 
@@ -132,6 +133,9 @@ class Client:
             expected_end_number1: Expected end number1 of the next end group.
             expected_repeat_number: Expected repeat number of the next end group.
             jump_pending: Is a jump pending?
+            should_fail: Should the advance be rejected?
+                Note: this will still command shaft = 0,
+                but will report command failed and will not report end numbers.
         """
         pattern = self.loom_server.current_pattern
         assert pattern is not None
@@ -143,37 +147,46 @@ class Client:
         # Give the loom client time to process the command
         self.mock_loom.command_threading_event.wait(timeout=1)
 
-        expected_shaft_word = pattern.get_threading_shaft_word()
         expected_replies: list[dict[str, Any]] = []
-        if jump_pending:
+        if should_fail:
+            expected_shaft_word = 0
             expected_replies += [
                 dict(
-                    type="JumpEndNumber",
-                    end_number0=None,
-                    end_repeat_number=None,
+                    message="At start of threading",
+                    severity=MessageSeverityEnum.ERROR,
                 ),
             ]
-        num_ends_in_pattern = len(pattern.threading)
-        expected_total_end_number0 = compute_total_num(
-            num_within=expected_end_number0,
-            repeat_number=expected_repeat_number,
-            repeat_len=num_ends_in_pattern,
-        )
-        expected_total_end_number1 = compute_total_num(
-            num_within=expected_end_number1,
-            repeat_number=expected_repeat_number,
-            repeat_len=num_ends_in_pattern,
-        )
-        expected_replies += [
-            dict(
-                type="CurrentEndNumber",
-                end_number0=expected_end_number0,
-                end_number1=expected_end_number1,
-                total_end_number0=expected_total_end_number0,
-                total_end_number1=expected_total_end_number1,
-                end_repeat_number=expected_repeat_number,
-            ),
-        ]
+        else:
+            expected_shaft_word = pattern.get_threading_shaft_word()
+            if jump_pending:
+                expected_replies += [
+                    dict(
+                        type="JumpEndNumber",
+                        end_number0=None,
+                        end_repeat_number=None,
+                    ),
+                ]
+            num_ends_in_pattern = len(pattern.threading)
+            expected_total_end_number0 = compute_total_num(
+                num_within=expected_end_number0,
+                repeat_number=expected_repeat_number,
+                repeat_len=num_ends_in_pattern,
+            )
+            expected_total_end_number1 = compute_total_num(
+                num_within=expected_end_number1,
+                repeat_number=expected_repeat_number,
+                repeat_len=num_ends_in_pattern,
+            )
+            expected_replies += [
+                dict(
+                    type="CurrentEndNumber",
+                    end_number0=expected_end_number0,
+                    end_number1=expected_end_number1,
+                    total_end_number0=expected_total_end_number0,
+                    total_end_number1=expected_total_end_number1,
+                    end_repeat_number=expected_repeat_number,
+                ),
+            ]
         if self.loom_server.loom_reports_motion:
             expected_replies += [
                 dict(
@@ -208,6 +221,7 @@ class Client:
         expected_repeat_number: int,
         expected_shaft_word: int,
         jump_pending: bool = False,
+        should_fail: bool = False,
     ) -> None:
         """Command the next pick and test the replies.
 
@@ -219,6 +233,9 @@ class Client:
             expected_repeat_number: Expected repeat number of the next pick.
             expected_shaft_word: Expected shaft_word of the next pick.
             jump_pending: Is a jump pending?
+            should_fail: Should the advance be rejected?
+                Note: this will still command shaft = 0,
+                but will report command failed and will not report pick numbers.
         """
         replies = self.send_command(dict(type="oobcommand", command="n"))
         assert len(replies) == 1
@@ -236,22 +253,30 @@ class Client:
                     forward=self.mock_loom.direction_forward,
                 )
             ]
-        if jump_pending:
+        if should_fail:
             expected_replies += [
                 dict(
-                    type="JumpPickNumber",
-                    pick_number=None,
-                    pick_repeat_number=None,
+                    message="At start of weaving",
+                    severity=MessageSeverityEnum.ERROR,
                 ),
             ]
-        expected_replies += [
-            dict(
-                type="CurrentPickNumber",
-                pick_number=expected_pick_number,
-                total_pick_number=None,
-                pick_repeat_number=expected_repeat_number,
-            ),
-        ]
+        else:
+            if jump_pending:
+                expected_replies += [
+                    dict(
+                        type="JumpPickNumber",
+                        pick_number=None,
+                        pick_repeat_number=None,
+                    ),
+                ]
+            expected_replies += [
+                dict(
+                    type="CurrentPickNumber",
+                    pick_number=expected_pick_number,
+                    total_pick_number=None,
+                    pick_repeat_number=expected_repeat_number,
+                ),
+            ]
         if self.loom_server.loom_reports_motion:
             expected_replies += [
                 dict(
@@ -797,10 +822,12 @@ class BaseTestLoomServer:
 
                 # Another advance should be rejected,
                 # without changing the end numbers in the pattern.
-                client.send_command(dict(type="oobcommand", command="n"))
-                reply = client.receive_dict()
-                assert reply["message"] == "At start of threading"
-                assert reply["severity"] == MessageSeverityEnum.ERROR
+                client.command_next_end(
+                    expected_end_number0=0,  # should be ignored
+                    expected_end_number1=0,  # should be ignored
+                    expected_repeat_number=0,  # should be ignored
+                    should_fail=True,
+                )
                 assert pattern.end_number0 == expected_end_number0
                 assert pattern.end_number1 == expected_end_number1
                 assert pattern.end_repeat_number == expected_repeat_number
@@ -888,10 +915,12 @@ class BaseTestLoomServer:
 
             # Another advance should be rejected,
             # without changing the pick numbers in the pattern.
-            client.send_command(dict(type="oobcommand", command="n"))
-            reply = client.receive_dict()
-            assert reply["message"] == "At start of weaving"
-            assert reply["severity"] == MessageSeverityEnum.ERROR
+            client.command_next_pick(
+                expected_pick_number=0,  # should be ignored
+                expected_repeat_number=0,  # should be ignored
+                expected_shaft_word=0,  # should be ignored
+                should_fail=True,
+            )
             assert pattern.pick_number == expected_pick_number
             assert pattern.pick_repeat_number == expected_repeat_number
 
