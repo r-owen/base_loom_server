@@ -66,7 +66,9 @@ The bold word shows the current mode.
 The links above give detailed instructions for each mode.
 But before you dive into that, read the next section about pattern files:
 
-In addition, the "?" link on the same line as the mode tabs opens documentation in a new browser tab.
+In addition, you may see a "?" link to the right of the mode tabs.
+This will be shown if the server is connected to the internet and can see the help site.
+Click on "?" to open documentation in a new browser tab.
 
 ## Upload and Select Pattern Files
 
