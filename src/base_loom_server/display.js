@@ -366,6 +366,8 @@ class LoomClient {
         this.ws.onmessage = this.handleServerReply.bind(this)
         this.ws.onclose = handleWebsocketClosed
 
+        this.checkHelpURL()
+
         const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)')
         isDarkMode.addEventListener("change", this.handleDarkLightTheme.bind(this))
 
@@ -483,6 +485,25 @@ class LoomClient {
 
         screen.orientation.addEventListener("change", this.displayCanvases.bind(this))
         window.addEventListener("resize", (this.displayCanvases.bind(this)))
+    }
+
+    /*
+    Check the help URL and show the help button if accessible
+    */
+    async checkHelpURL() {
+
+        let helpLinkElt = document.getElementById("help_link")
+        const helpURL = helpLinkElt.href
+        try {
+            const response = await window.fetch(helpURL)
+            if (response.ok) {
+                helpLinkElt.style.display = "inline"
+            } else {
+                console.log(`Could not fetch helpURL: hide help link. Not connected to the internet?`)
+            }
+        } catch (error) {
+            console.log(`Could not fetch helpURL; hide help link. Error=`, error)
+        }
     }
 
     /*
