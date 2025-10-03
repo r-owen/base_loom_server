@@ -1,5 +1,11 @@
 # Version History
 
+## 0.34 2025-10-02
+
+* Bug fix: the previous version was supposed to always send a requested set of shafts to the loom,
+  even if there was no obvious shaft word to send.
+  But there were some cases where that did not occur.
+
 ## 0.33 2025-10-02
 
 * Improve display of shaft state when the loom server starts, and if you refresh the page while in Settings mode.
