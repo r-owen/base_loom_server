@@ -1,5 +1,10 @@
 # Version History
 
+## 0.35 2025-10-03
+
+* Only show the help button if the site is reachable.
+  This should hide the help button when running the server as a hotspot (not connected to the internet).
+
 ## 0.34 2025-10-02
 
 * Bug fix: the previous version was supposed to always send a requested set of shafts to the loom,
