@@ -1341,7 +1341,16 @@
 <span class="normal">1182</span>
 <span class="normal">1183</span>
 <span class="normal">1184</span>
-<span class="normal">1185</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">1185</span>
+<span class="normal">1186</span>
+<span class="normal">1187</span>
+<span class="normal">1188</span>
+<span class="normal">1189</span>
+<span class="normal">1190</span>
+<span class="normal">1191</span>
+<span class="normal">1192</span>
+<span class="normal">1193</span>
+<span class="normal">1194</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;BaseLoomServer&quot;</span><span class="p">,</span> <span class="s2">&quot;DEFAULT_DATABASE_PATH&quot;</span><span class="p">,</span> <span class="s2">&quot;MOCK_PORT_NAME&quot;</span><span class="p">]</span>
 
@@ -1998,25 +2007,35 @@
 <span class="sd">            did_advance: True if the loom was sent the next set of shafts.</span>
 <span class="sd">                This will always be true (a change in version 0.33).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_reports_motion</span><span class="p">:</span>
+            <span class="c1"># This gets set the first time a shaft command is sent to the loom,</span>
+            <span class="c1"># and remains set from then on.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span> <span class="o">=</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">DONE</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
 
         <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span><span class="p">:</span>
-                <span class="c1"># Command a new pick, if there is one.</span>
+                <span class="c1"># Command a new pick, if there is one, else send 0</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">set_current_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_number</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">increment_pick_number</span><span class="p">()</span>
                     <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
                         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
                             <span class="n">client_replies</span><span class="o">.</span><span class="n">StatusMessage</span><span class="p">(</span>
                                 <span class="n">message</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;At start of weaving&quot;</span><span class="p">),</span>
                                 <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
                             <span class="p">)</span>
                         <span class="p">)</span>
-                        <span class="k">return</span> <span class="kc">False</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_repeat_number</span>
                 <span class="n">pick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">get_current_pick</span><span class="p">()</span>
@@ -2035,13 +2054,16 @@
                     <span class="k">try</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">increment_end_number</span><span class="p">()</span>
                     <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
                         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
                             <span class="n">client_replies</span><span class="o">.</span><span class="n">StatusMessage</span><span class="p">(</span>
                                 <span class="n">message</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;At start of threading&quot;</span><span class="p">),</span>
                                 <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
                             <span class="p">)</span>
                         <span class="p">)</span>
-                        <span class="k">return</span> <span class="kc">False</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+
                 <span class="n">shaft_word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_threading_shaft_word</span><span class="p">()</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="n">shaft_word</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
@@ -2051,10 +2073,6 @@
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
             <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid mode=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_reports_motion</span><span class="p">:</span>
-            <span class="c1"># This gets set the first time a shaft command is sent to the loom,</span>
-            <span class="c1"># and remains set from then on.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">shaft_state</span> <span class="o">=</span> <span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">DONE</span>
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">increment_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="Go to docs">docs</a></div>

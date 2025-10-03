@@ -1655,7 +1655,36 @@
 <span class="normal">1496</span>
 <span class="normal">1497</span>
 <span class="normal">1498</span>
-<span class="normal">1499</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
+<span class="normal">1499</span>
+<span class="normal">1500</span>
+<span class="normal">1501</span>
+<span class="normal">1502</span>
+<span class="normal">1503</span>
+<span class="normal">1504</span>
+<span class="normal">1505</span>
+<span class="normal">1506</span>
+<span class="normal">1507</span>
+<span class="normal">1508</span>
+<span class="normal">1509</span>
+<span class="normal">1510</span>
+<span class="normal">1511</span>
+<span class="normal">1512</span>
+<span class="normal">1513</span>
+<span class="normal">1514</span>
+<span class="normal">1515</span>
+<span class="normal">1516</span>
+<span class="normal">1517</span>
+<span class="normal">1518</span>
+<span class="normal">1519</span>
+<span class="normal">1520</span>
+<span class="normal">1521</span>
+<span class="normal">1522</span>
+<span class="normal">1523</span>
+<span class="normal">1524</span>
+<span class="normal">1525</span>
+<span class="normal">1526</span>
+<span class="normal">1527</span>
+<span class="normal">1528</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
@@ -1779,6 +1808,7 @@
         <span class="n">expected_end_number1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">expected_repeat_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">jump_pending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">should_fail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Command the next threading end group and test the replies.</span>
 
@@ -1789,6 +1819,9 @@
 <span class="sd">            expected_end_number1: Expected end number1 of the next end group.</span>
 <span class="sd">            expected_repeat_number: Expected repeat number of the next end group.</span>
 <span class="sd">            jump_pending: Is a jump pending?</span>
+<span class="sd">            should_fail: Should the advance be rejected?</span>
+<span class="sd">                Note: this will still command shaft = 0,</span>
+<span class="sd">                but will report command failed and will not report end numbers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span>
         <span class="k">assert</span> <span class="n">pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -1800,37 +1833,46 @@
         <span class="c1"># Give the loom client time to process the command</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span><span class="o">.</span><span class="n">command_threading_event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_threading_shaft_word</span><span class="p">()</span>
         <span class="n">expected_replies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">jump_pending</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">should_fail</span><span class="p">:</span>
+            <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
                 <span class="nb">dict</span><span class="p">(</span>
-                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">,</span>
-                    <span class="n">end_number0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">end_repeat_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="s2">&quot;At start of threading&quot;</span><span class="p">,</span>
+                    <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
                 <span class="p">),</span>
             <span class="p">]</span>
-        <span class="n">num_ends_in_pattern</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
-        <span class="n">expected_total_end_number0</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
-            <span class="n">num_within</span><span class="o">=</span><span class="n">expected_end_number0</span><span class="p">,</span>
-            <span class="n">repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
-            <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">expected_total_end_number1</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
-            <span class="n">num_within</span><span class="o">=</span><span class="n">expected_end_number1</span><span class="p">,</span>
-            <span class="n">repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
-            <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
-            <span class="nb">dict</span><span class="p">(</span>
-                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;CurrentEndNumber&quot;</span><span class="p">,</span>
-                <span class="n">end_number0</span><span class="o">=</span><span class="n">expected_end_number0</span><span class="p">,</span>
-                <span class="n">end_number1</span><span class="o">=</span><span class="n">expected_end_number1</span><span class="p">,</span>
-                <span class="n">total_end_number0</span><span class="o">=</span><span class="n">expected_total_end_number0</span><span class="p">,</span>
-                <span class="n">total_end_number1</span><span class="o">=</span><span class="n">expected_total_end_number1</span><span class="p">,</span>
-                <span class="n">end_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
-            <span class="p">),</span>
-        <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_threading_shaft_word</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">jump_pending</span><span class="p">:</span>
+                <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">,</span>
+                        <span class="n">end_number0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">end_repeat_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">]</span>
+            <span class="n">num_ends_in_pattern</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
+            <span class="n">expected_total_end_number0</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
+                <span class="n">num_within</span><span class="o">=</span><span class="n">expected_end_number0</span><span class="p">,</span>
+                <span class="n">repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
+                <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">expected_total_end_number1</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
+                <span class="n">num_within</span><span class="o">=</span><span class="n">expected_end_number1</span><span class="p">,</span>
+                <span class="n">repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
+                <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;CurrentEndNumber&quot;</span><span class="p">,</span>
+                    <span class="n">end_number0</span><span class="o">=</span><span class="n">expected_end_number0</span><span class="p">,</span>
+                    <span class="n">end_number1</span><span class="o">=</span><span class="n">expected_end_number1</span><span class="p">,</span>
+                    <span class="n">total_end_number0</span><span class="o">=</span><span class="n">expected_total_end_number0</span><span class="p">,</span>
+                    <span class="n">total_end_number1</span><span class="o">=</span><span class="n">expected_total_end_number1</span><span class="p">,</span>
+                    <span class="n">end_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">loom_reports_motion</span><span class="p">:</span>
             <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
                 <span class="nb">dict</span><span class="p">(</span>
@@ -1865,6 +1907,7 @@
         <span class="n">expected_repeat_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">expected_shaft_word</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">jump_pending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">should_fail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Command the next pick and test the replies.</span>
 
@@ -1876,6 +1919,9 @@
 <span class="sd">            expected_repeat_number: Expected repeat number of the next pick.</span>
 <span class="sd">            expected_shaft_word: Expected shaft_word of the next pick.</span>
 <span class="sd">            jump_pending: Is a jump pending?</span>
+<span class="sd">            should_fail: Should the advance be rejected?</span>
+<span class="sd">                Note: this will still command shaft = 0,</span>
+<span class="sd">                but will report command failed and will not report pick numbers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">replies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;oobcommand&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s2">&quot;n&quot;</span><span class="p">))</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
@@ -1893,22 +1939,30 @@
                     <span class="n">forward</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">]</span>
-        <span class="k">if</span> <span class="n">jump_pending</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">should_fail</span><span class="p">:</span>
             <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
                 <span class="nb">dict</span><span class="p">(</span>
-                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">,</span>
-                    <span class="n">pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">pick_repeat_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="s2">&quot;At start of weaving&quot;</span><span class="p">,</span>
+                    <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
                 <span class="p">),</span>
             <span class="p">]</span>
-        <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
-            <span class="nb">dict</span><span class="p">(</span>
-                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;CurrentPickNumber&quot;</span><span class="p">,</span>
-                <span class="n">pick_number</span><span class="o">=</span><span class="n">expected_pick_number</span><span class="p">,</span>
-                <span class="n">total_pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">pick_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
-            <span class="p">),</span>
-        <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">jump_pending</span><span class="p">:</span>
+                <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">,</span>
+                        <span class="n">pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">pick_repeat_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">]</span>
+            <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;CurrentPickNumber&quot;</span><span class="p">,</span>
+                    <span class="n">pick_number</span><span class="o">=</span><span class="n">expected_pick_number</span><span class="p">,</span>
+                    <span class="n">total_pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">pick_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">loom_reports_motion</span><span class="p">:</span>
             <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
                 <span class="nb">dict</span><span class="p">(</span>
@@ -2454,10 +2508,12 @@
 
                 <span class="c1"># Another advance should be rejected,</span>
                 <span class="c1"># without changing the end numbers in the pattern.</span>
-                <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;oobcommand&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s2">&quot;n&quot;</span><span class="p">))</span>
-                <span class="n">reply</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">receive_dict</span><span class="p">()</span>
-                <span class="k">assert</span> <span class="n">reply</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;At start of threading&quot;</span>
-                <span class="k">assert</span> <span class="n">reply</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">command_next_end</span><span class="p">(</span>
+                    <span class="n">expected_end_number0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># should be ignored</span>
+                    <span class="n">expected_end_number1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># should be ignored</span>
+                    <span class="n">expected_repeat_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># should be ignored</span>
+                    <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
                 <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="n">expected_end_number0</span>
                 <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">==</span> <span class="n">expected_end_number1</span>
                 <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="n">expected_repeat_number</span>
@@ -2545,10 +2601,12 @@
 
             <span class="c1"># Another advance should be rejected,</span>
             <span class="c1"># without changing the pick numbers in the pattern.</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;oobcommand&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s2">&quot;n&quot;</span><span class="p">))</span>
-            <span class="n">reply</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">receive_dict</span><span class="p">()</span>
-            <span class="k">assert</span> <span class="n">reply</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;At start of weaving&quot;</span>
-            <span class="k">assert</span> <span class="n">reply</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">command_next_pick</span><span class="p">(</span>
+                <span class="n">expected_pick_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># should be ignored</span>
+                <span class="n">expected_repeat_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># should be ignored</span>
+                <span class="n">expected_shaft_word</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># should be ignored</span>
+                <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="n">expected_pick_number</span>
             <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="n">expected_repeat_number</span>
 
