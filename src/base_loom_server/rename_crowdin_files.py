@@ -5,18 +5,15 @@ from importlib.resources.abc import Traversable
 
 # Dict of language name in English, language name in the native language
 LANGUAGE_DICT = {
-    "Danish": "Dansk",
-    "Dutch": "Nederlands",
-    "English, United Kingdom": "English (UK)",
-    "English, Canada": "English (CA)",
-    "French, Quebec": "Français du Québec",
-    "Finnish": "Suomi",
-    "French": "Français",
-    "German": "Deutsch",
-    "Italian": "Italiano",
-    "Norwegian": "Norsk",
-    "Spanish": "Español",
-    "Swedish": "Svenska",
+    "da-DK": "Dansk",
+    "nl-NL": "Nederlands",
+    "fi-FI": "Suomi",
+    "fr-FR": "Français",
+    "de-DE": "Deutsch",
+    "it-IT": "Italiano",
+    "no-NO": "Norsk",
+    "es-ES": "Español",
+    "sv-SE": "Svenska",
 }
 
 
