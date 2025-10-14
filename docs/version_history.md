@@ -1,5 +1,10 @@
 # Version History
 
+## 1.0 2025-10-21
+
+* Change rename_crowdin_files to expect the input files to use detailed locale names.
+  This matches a change in the crowdin configuration to improve support for dialects.
+
 ## 0.35 2025-10-03
 
 * Only show the help button if the site is reachable.
