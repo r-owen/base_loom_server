@@ -1,5 +1,10 @@
 # Version History
 
+## 0.36?
+
+* Change rename_crowdin_files to expect the input files to use detailed locale names.
+  This improves support for dialects.
+
 ## 0.35 2025-10-03
 
 * Only show the help button if the site is reachable.
