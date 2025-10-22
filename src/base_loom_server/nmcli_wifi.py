@@ -11,7 +11,7 @@ from .utils import run_shell_command
 
 HOTSPOT_PRIORITY = 100
 WIFI_PRIORITY = 50
-NMCLI_TIMEOUT = 30  # Time limit for nmcli commands (seconds)
+DEFAULT_TIMEOUT = 30  # Default timeout for nmcli commands (seconds)
 
 
 @dataclasses.dataclass
@@ -27,7 +27,11 @@ class KnownNetwork:
 
 
 async def run_nmcli(
-    subcmd: str, *, fields: Sequence[str] = (), use_sudo: bool = False
+    subcmd: str,
+    *,
+    fields: Sequence[str] = (),
+    use_sudo: bool = False,
+    timeout: float = DEFAULT_TIMEOUT,  # noqa: ASYNC109
 ) -> list[dict[str, str]]:
     """Run an nmcli command and return the results.
 
@@ -36,6 +40,7 @@ async def run_nmcli(
             the --fields and --mode command-line options.
         fields: The full names of fields to return. Case is ignored.
         use_sudo: Run the command with sudo?
+        timeout: Time limit for the nmcli command (seconds).
 
     Returns:
         datalist: a list of data dicts, one per set of fields
@@ -53,7 +58,7 @@ async def run_nmcli(
     data_to_return: list[dict[str, str]] = []
     data_str = await asyncio.wait_for(
         run_shell_command(f"{sudo_prefix}nmcli{fields_arg}{multiline_arg} {subcmd}"),
-        timeout=NMCLI_TIMEOUT,
+        timeout=timeout,
     )
     last_field = fields[-1].lower() if fields else "?"
     datadict: dict[str, str] = dict()
