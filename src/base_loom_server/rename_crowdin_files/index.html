@@ -226,28 +226,22 @@
 <span class="normal">67</span>
 <span class="normal">68</span>
 <span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># ruff: noqa: T201</span>
+<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># ruff: noqa: T201</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">from</span> <span class="nn">importlib.resources.abc</span> <span class="kn">import</span> <span class="n">Traversable</span>
 
 <span class="c1"># Dict of language name in English, language name in the native language</span>
 <span class="n">LANGUAGE_DICT</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;Danish&quot;</span><span class="p">:</span> <span class="s2">&quot;Dansk&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Dutch&quot;</span><span class="p">:</span> <span class="s2">&quot;Nederlands&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;English, United Kingdom&quot;</span><span class="p">:</span> <span class="s2">&quot;English (UK)&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;English, Canada&quot;</span><span class="p">:</span> <span class="s2">&quot;English (CA)&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;French, Quebec&quot;</span><span class="p">:</span> <span class="s2">&quot;Français du Québec&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Finnish&quot;</span><span class="p">:</span> <span class="s2">&quot;Suomi&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;French&quot;</span><span class="p">:</span> <span class="s2">&quot;Français&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;German&quot;</span><span class="p">:</span> <span class="s2">&quot;Deutsch&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Italian&quot;</span><span class="p">:</span> <span class="s2">&quot;Italiano&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Norwegian&quot;</span><span class="p">:</span> <span class="s2">&quot;Norsk&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Spanish&quot;</span><span class="p">:</span> <span class="s2">&quot;Español&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Swedish&quot;</span><span class="p">:</span> <span class="s2">&quot;Svenska&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;da-DK&quot;</span><span class="p">:</span> <span class="s2">&quot;Dansk&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nl-NL&quot;</span><span class="p">:</span> <span class="s2">&quot;Nederlands&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fi-FI&quot;</span><span class="p">:</span> <span class="s2">&quot;Suomi&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fr-FR&quot;</span><span class="p">:</span> <span class="s2">&quot;Français&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;de-DE&quot;</span><span class="p">:</span> <span class="s2">&quot;Deutsch&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;it-IT&quot;</span><span class="p">:</span> <span class="s2">&quot;Italiano&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;no-NO&quot;</span><span class="p">:</span> <span class="s2">&quot;Norsk&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;es-ES&quot;</span><span class="p">:</span> <span class="s2">&quot;Español&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sv-SE&quot;</span><span class="p">:</span> <span class="s2">&quot;Svenska&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 
