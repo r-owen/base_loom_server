@@ -1,5 +1,11 @@
 # Version History
 
+## 1.1a3 2025-10-22
+
+* Add logging and a verbose option to WiFiManager.
+* Hack bringing up a hotspot by trying to kill the dnsmasq process first.
+  This allows starting the hotspot at the time, but does not survive reboot so more work remains.
+
 ## 1.1a2 2025-10-22
 
 * Fix many bugs in the WiFi support.
