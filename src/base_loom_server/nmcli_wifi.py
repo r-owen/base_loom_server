@@ -12,6 +12,7 @@ from .utils import run_shell_command
 HOTSPOT_PRIORITY = 100
 WIFI_PRIORITY = 50
 DEFAULT_TIMEOUT = 30  # Default timeout for nmcli commands (seconds)
+CONNECT_TIMEOUT = 90
 
 
 @dataclasses.dataclass
@@ -53,25 +54,25 @@ async def run_nmcli(
     """
     sudo_prefix = "sudo " if use_sudo else ""
     fields_str = ",".join(field.lower() for field in fields)
-    fields_arg = f' --fields "{fields_str}"' if fields else ""
-    multiline_arg = " --mode multiline" if fields else ""
+    fields_args = f' --fields "{fields_str}" --mode multiline' if fields else ""
     data_to_return: list[dict[str, str]] = []
     data_str = await asyncio.wait_for(
-        run_shell_command(f"{sudo_prefix}nmcli{fields_arg}{multiline_arg} {subcmd}"),
+        run_shell_command(f"{sudo_prefix}nmcli{fields_args} {subcmd}"),
         timeout=timeout,
     )
     last_field = fields[-1].lower() if fields else "?"
     datadict: dict[str, str] = dict()
-    for data_line in data_str.split("\n"):
-        if not data_line:
-            continue
-        raw_name, raw_value = data_line.split(":", maxsplit=1)
-        name, value = raw_name.lower(), raw_value.strip()
-        datadict[name] = value
-        if name == last_field:
-            # Reached the end of one entry
-            data_to_return.append(datadict)
-            datadict = dict()
+    if fields:
+        for data_line in data_str.split("\n"):
+            if not data_line:
+                continue
+            raw_name, raw_value = data_line.split(":", maxsplit=1)
+            name, value = raw_name.lower(), raw_value.strip()
+            datadict[name] = value
+            if name == last_field:
+                # Reached the end of one entry
+                data_to_return.append(datadict)
+                datadict = dict()
     return data_to_return
 
 
@@ -81,9 +82,10 @@ async def enable_autoconnect(network: KnownNetwork) -> None:
     if network.autoconnect and network.autoconnect_priority == priority:
         # Already configured; nothing to do
         return
-    await run_shell_command(
-        f"sudo nmcli connection modify {network.name!r} "
-        f"connection.autoconnect yes connection.autoconnect-priority {HOTSPOT_PRIORITY}"
+    await run_nmcli(
+        f'connection modify "{network.name}" '
+        f"connection.autoconnect yes connection.autoconnect-priority {HOTSPOT_PRIORITY}",
+        use_sudo=True,
     )
     network.autoconnect = True
     network.autoconnect_priority = priority
@@ -94,7 +96,7 @@ async def disable_autoconnect(network: KnownNetwork) -> None:
     if not network.autoconnect:
         # Already configured; nothing to do
         return
-    await run_shell_command(f"sudo nmcli connection modify {network.name!r} connection.autoconnect no")
+    await run_nmcli(f'connection modify "{network.name}" connection.autoconnect no', use_sudo=True)
     network.autoconnect = False
 
 
@@ -142,7 +144,8 @@ async def scan_for_networks(*, rescan: bool) -> list[str]:
     """
     suffix = " --rescan yes" if rescan else ""
     wifi_dicts = await run_nmcli(subcmd=f"device wifi list{suffix}", fields=["ssid"], use_sudo=True)
-    return [data["ssid"] for data in wifi_dicts if data["ssid"] != "--"]
+    # Use a dict as an intermediate representation to eliminate duplicates
+    return list({data["ssid"]: None for data in wifi_dicts if data["ssid"] != "--"}.keys())
 
 
 class WiFiManager:
@@ -164,7 +167,7 @@ class WiFiManager:
         self.callback_task: asyncio.Future = asyncio.Future()
         self.callback_task.set_result(None)
 
-    def start_updating_all(self, *, rescan: bool) -> None:
+    def start_updating_all(self, *, rescan: bool = True) -> None:
         """Start updating detected and known networks."""
         self.start_updating_detected(rescan=rescan)
         self.start_updating_known()
@@ -190,8 +193,15 @@ class WiFiManager:
         network = self.known_networks.pop(ssid, None)
         if network is None:
             return
-        await run_nmcli(subcmd=f'connection delete "{network.name}"', use_sudo=True)
-        self.start_updating_known()
+        await self.basic_forget_network(network.name)
+
+    async def basic_forget_network(self, name: str) -> None:
+        """Forget a network by name (not ssid).
+
+        Do not touch self.known_networks.
+        """
+        await run_nmcli(subcmd=f'connection delete "{name}"', use_sudo=True)
+        self.start_updating_all()
         await self.update_known_task
 
     async def use_network(self, ssid: str, password: str) -> None:
@@ -218,7 +228,6 @@ class WiFiManager:
         network_to_use = self.known_networks.get(ssid)
         if network_to_use is None:
             # Unknown network_to_use; add it and create a preliminary known network_to_use for it
-            await run_shell_command(f"sudo nmcli device wifi connect {ssid!r} password {password!r}")
             network_to_use = KnownNetwork(
                 name=ssid,
                 ssid=ssid,
@@ -227,6 +236,17 @@ class WiFiManager:
                 is_hotspot=False,
                 autoconnect_priority=0,
             )
+            try:
+                await run_nmcli(
+                    f'device wifi connect "{ssid}" password "{password}"',
+                    use_sudo=True,
+                    timeout=CONNECT_TIMEOUT,
+                )
+            except Exception:
+                # If the connection fails the remembered network is left in a weird state,
+                # so ditch it.
+                await self.basic_forget_network(name=ssid)
+                raise
             await enable_autoconnect(network_to_use)
         elif network_to_use.is_hotspot:
             for n in self.known_networks.values():
@@ -257,7 +277,7 @@ class WiFiManager:
                     await enable_autoconnect(n)
                 else:
                     await disable_autoconnect(network_to_use)
-        await run_nmcli(subcmd=f"connection up {network_to_use.name}", use_sudo=True)
+        await run_nmcli(subcmd=f'connection up "{network_to_use.name}"', use_sudo=True)
         self.start_updating_known()
         await self.update_known_task
 
