@@ -1131,7 +1131,7 @@ class BaseLoomServer:
             await self.write_to_client(client_replies.WiFi.create_unsupported())
             return
 
-        self.wifi_manager.start_updating_all(rescan=False)
+        self.wifi_manager.start_updating_all()
 
     async def wifi_manager_callback(self, wifi_manager: WiFiManager) -> None:
         """Callback for self.wifi_manager; report WiFi info to client."""
