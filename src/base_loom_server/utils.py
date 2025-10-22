@@ -1,3 +1,4 @@
+import asyncio
 import importlib
 
 
@@ -71,3 +72,24 @@ def get_version(package_name: str) -> str:
     except ImportError:
         return "?"
     return str(getattr(module, "__version__", "?"))
+
+
+async def run_shell_command(command: str) -> str:
+    """Run a shell command and return the result.
+
+    Args:
+        command: The shell command to run
+
+    Returns:
+        stdout decoded.
+
+    Raises:
+        RuntimeError: if the command fails.
+    """
+    proc = await asyncio.create_subprocess_shell(
+        command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+    )
+    stdout, stderr = await proc.communicate()
+    if proc.returncode != 0:
+        raise RuntimeError(f"Command failed: {stderr.decode()}")
+    return stdout.decode()
