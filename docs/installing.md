@@ -159,10 +159,19 @@ specify loom-specific values for each of the following options:
 
 * `--port`: web server port
 
-Another option of note:
+Other options of note:
+
+* `--nmcli-wifi`: enable a line in the Settings panel that controls WiFi.
+    This setting should only be used all of the following are true:
+
+    * The loom server is running "headless" (no monitor, pointer, or keyboard).
+        Use the standard GUI-based tools to manage WiFi, if possible.
+    * The loom server must have nmcli installed.
+        nmcli only runs on Linux-based operating systems (and is available by default on most).
+        It does not run on macOS or Windows.
 
 * `--reset-db`: clear all save weaving patterns.
-   Use this when you want to clear all patterns or think the database might be corrupted.
+   Use this when you want to clear all patterns, or if you think the database might be corrupted.
 
 For a full list run the command with `-h` or `--help`.
 

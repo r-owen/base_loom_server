@@ -40,6 +40,14 @@ Settings include:
   This setting has no effect on any pattern files that are already loaded;
   use the "Group size" control in the [Threading](threading.md) panel to change those.
 
+* **WiFi network**: specify which WiFi network the loom server runs.
+  This setting is only available if the loom server is run with a special command-line argument
+  (and typically only if the loom server is a box that is hard to connect to).
+
+  Choosing one of the hotspots makes the loom server run its own WiFI network
+  (to which you must connect) instead of joining your network.
+  Be very careful entering a WiFi password; if you get it wrong the loom may end up running a hotspot, or, worse in a state where you have to connect a monitor and keyboard to the server to fix the WiFi.
+
 Below the settings you will find a table showing version numbers of the main software packages.
 Please include this information in any bug reports or feature requests:
 
