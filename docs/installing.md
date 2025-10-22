@@ -166,9 +166,10 @@ Other options of note:
 
     * The loom server is running "headless" (no monitor, pointer, or keyboard).
         Use the standard GUI-based tools to manage WiFi, if possible.
-    * The loom server must have nmcli installed.
+    * The loom server must have nmcli installed, and must be allowed to run nmcli with sudo.
         nmcli only runs on Linux-based operating systems (and is available by default on most).
         It does not run on macOS or Windows.
+        A default Raspberry Pi installation should work fine.
 
 * `--reset-db`: clear all save weaving patterns.
    Use this when you want to clear all patterns, or if you think the database might be corrupted.
