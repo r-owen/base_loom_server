@@ -1,0 +1,288 @@
+from __future__ import annotations
+
+import asyncio
+import dataclasses
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable, Sequence
+
+from .utils import run_shell_command
+
+HOTSPOT_PRIORITY = 100
+WIFI_PRIORITY = 50
+NMCLI_TIMEOUT = 30  # Time limit for nmcli commands (seconds)
+
+
+@dataclasses.dataclass
+class KnownNetwork:
+    """Information about a known WiFi network."""
+
+    name: str
+    ssid: str
+    active: bool
+    autoconnect: bool
+    autoconnect_priority: int
+    is_hotspot: bool
+
+
+async def run_nmcli(
+    subcmd: str, *, fields: Sequence[str] = (), use_sudo: bool = False
+) -> list[dict[str, str]]:
+    """Run an nmcli command and return the results.
+
+    Args:
+        subcmd: The nmcli sub-command: everything after "nmcli" except
+            the --fields and --mode command-line options.
+        fields: The full names of fields to return. Case is ignored.
+        use_sudo: Run the command with sudo?
+
+    Returns:
+        datalist: a list of data dicts, one per set of fields
+            (usually one entry per connection, but this depends on the subcmd).
+            The keys are the field name cast to lowercase.
+            The values are the data for that field, with leading and trailing whitespace stripped.
+
+    Raises:
+        RuntimeError: if the command fails.
+    """
+    sudo_prefix = "sudo " if use_sudo else ""
+    fields_str = ",".join(field.lower() for field in fields)
+    fields_arg = f' --fields "{fields_str}"' if fields else ""
+    multiline_arg = " --mode multiline" if fields else ""
+    data_to_return: list[dict[str, str]] = []
+    data_str = await asyncio.wait_for(
+        run_shell_command(f"{sudo_prefix}nmcli{fields_arg}{multiline_arg} {subcmd}"),
+        timeout=NMCLI_TIMEOUT,
+    )
+    last_field = fields[-1].lower() if fields else "?"
+    datadict: dict[str, str] = dict()
+    for data_line in data_str.split("\n"):
+        if not data_line:
+            continue
+        raw_name, raw_value = data_line.split(":", maxsplit=1)
+        name, value = raw_name.lower(), raw_value.strip()
+        datadict[name] = value
+        if name == last_field:
+            # Reached the end of one entry
+            data_to_return.append(datadict)
+            datadict = dict()
+    return data_to_return
+
+
+async def enable_autoconnect(network: KnownNetwork) -> None:
+    """Configure a network to autoconnect."""
+    priority = HOTSPOT_PRIORITY if network.is_hotspot else WIFI_PRIORITY
+    if network.autoconnect and network.autoconnect_priority == priority:
+        # Already configured; nothing to do
+        return
+    await run_shell_command(
+        f"sudo nmcli connection modify {network.name!r} "
+        f"connection.autoconnect yes connection.autoconnect-priority {HOTSPOT_PRIORITY}"
+    )
+    network.autoconnect = True
+    network.autoconnect_priority = priority
+
+
+async def disable_autoconnect(network: KnownNetwork) -> None:
+    """Configure a network to not autoconnect."""
+    if not network.autoconnect:
+        # Already configured; nothing to do
+        return
+    await run_shell_command(f"sudo nmcli connection modify {network.name!r} connection.autoconnect no")
+    network.autoconnect = False
+
+
+async def get_known_networks() -> dict[str, KnownNetwork]:
+    """Get information about known (configured) WiFi networks.
+
+    Returns:
+        A dict of ssid: known network info
+    """
+    known_networks_dicts = await run_nmcli(
+        subcmd="connection show",
+        fields=["name", "type", "active", "autoconnect", "autoconnect-priority"],
+    )
+    known_networks: dict[str, KnownNetwork] = dict()
+    for network_dict in known_networks_dicts:
+        name = network_dict["name"]
+        if network_dict["type"] != "wifi":
+            continue
+        extra_data = await run_nmcli(
+            subcmd=f'connection show "{name}"',
+            fields=["802-11-wireless.mode", "802-11-wireless.ssid"],
+        )
+        if len(extra_data) != 1:
+            raise RuntimeError(
+                f'Bug: invalid info for network "{name}": {len(extra_data)} items instead of 1'
+            )
+        network_dict.update(extra_data[0])
+        ssid = network_dict["802-11-wireless.ssid"]
+        known_networks[ssid] = KnownNetwork(
+            name=name,
+            ssid=ssid,
+            active=network_dict["active"] == "yes",
+            autoconnect=network_dict["autoconnect"] == "yes",
+            autoconnect_priority=int(network_dict["autoconnect-priority"]),
+            is_hotspot=network_dict["802-11-wireless.mode"] == "ap",
+        )
+
+    return known_networks
+
+
+async def scan_for_networks(*, rescan: bool) -> list[str]:
+    """Scan for WiFi networks."""
+    suffix = " --rescan yes" if rescan else ""
+    wifi_dicts = await run_nmcli(subcmd=f"device wifi list{suffix}", fields=["ssid"])
+    return [data["ssid"] for data in wifi_dicts if data["ssid"] != "--"]
+
+
+class WiFiManager:
+    """Manage WiFI using nmcli commands.
+
+    Args:
+        callback: An function to call whenever the data changes, or None.
+            If a function, it receives one argument: the WiFiManager.
+    """
+
+    def __init__(self, callback: Callable[[WiFiManager], Awaitable[None]] | None) -> None:
+        self.callback = callback
+        self.detected_network_ssids: list[str] = []  # A list of SSIDs
+        self.known_networks: dict[str, KnownNetwork] = dict()  # a dict of SSID: KnownNetwork
+        self.update_detected_task: asyncio.Future = asyncio.Future()
+        self.update_detected_task.set_result(None)
+        self.update_known_task: asyncio.Future = asyncio.Future()
+        self.update_known_task.set_result(None)
+        self.callback_task: asyncio.Future = asyncio.Future()
+        self.callback_task.set_result(None)
+
+    def start_updating_all(self, *, rescan: bool) -> None:
+        """Start updating detected and known networks."""
+        self.start_updating_detected(rescan=rescan)
+        self.start_updating_known()
+
+    def start_updating_known(self) -> None:
+        """Start getting information for WiFi networks."""
+        if not self.update_known_task.done():
+            return
+        self.known_networks = dict()
+        self.update_known_task = asyncio.create_task(self._update_known())
+
+    def start_updating_detected(self, *, rescan: bool) -> None:
+        """Start scanning for WiFi networks."""
+        if not self.update_detected_task.done():
+            return
+        self.detected_network_ssids = []
+        self.update_detected_task = asyncio.create_task(self._update_detected(rescan=rescan))
+
+    async def forget_network(self, ssid: str) -> None:
+        """Forget the specified network."""
+        if not self.update_known_task.done():
+            await self.update_known_task
+        network = self.known_networks.pop(ssid, None)
+        if network is None:
+            return
+        await run_nmcli(subcmd=f'connection delete "{network.name}"', use_sudo=True)
+        self.start_updating_known()
+        await self.update_known_task
+
+    async def use_network(self, ssid: str, password: str) -> None:
+        """Use the specified network.
+
+        The network may be any of:
+
+        * Unknown: the ssid is not checked.
+            This is the only option that pays attention to the password.
+        * A known hotspot: the network is set to auto-connect,
+            and all other known networks are set to not auto-connect.
+        * A known WiFI network: the network is set to auto-connect
+            and a suitable hotspot (if found) is set to auto-connect at a lower priority.
+            The hotspot chosen is the first one found that already has auto-connect enabled,
+            if any, else the first one found.
+            All other networks are set to not auto-connect.
+
+        Args:
+            ssid: Network SSID.
+            password: Password. Ignored if the named network is known.
+        """
+        if not self.update_known_task.done():
+            await self.update_known_task
+        network_to_use = self.known_networks.get(ssid)
+        if network_to_use is None:
+            # Unknown network_to_use; add it and create a preliminary known network_to_use for it
+            await run_shell_command(f"sudo nmcli device wifi connect {ssid!r} password {password!r}")
+            network_to_use = KnownNetwork(
+                name=ssid,
+                ssid=ssid,
+                active=False,
+                autoconnect=False,
+                is_hotspot=False,
+                autoconnect_priority=0,
+            )
+            await enable_autoconnect(network_to_use)
+        elif network_to_use.is_hotspot:
+            for n in self.known_networks.values():
+                if n.ssid == ssid:
+                    await enable_autoconnect(n)
+                else:
+                    await disable_autoconnect(n)
+        else:
+            # Figure out which hotspot to use as a fallback:
+            # * The preferred choice is the first hotspot seen that is set to autoconnect.
+            # * The less favored choice is the first hotspot seen.
+            # * The last choice is that there is no hotspot to fall back to.
+            fallback_hotspot_name = ""
+            first_hotspot_name = ""
+            for n in self.known_networks.values():
+                if n.is_hotspot:
+                    if first_hotspot_name is None:
+                        first_hotspot_name = n.name
+                    if n.autoconnect:
+                        fallback_hotspot_name = n.name
+                        break
+            if not fallback_hotspot_name:
+                fallback_hotspot_name = first_hotspot_name
+            for n in self.known_networks.values():
+                if n.ssid == ssid:  # noqa: SIM114
+                    await enable_autoconnect(n)
+                elif n.is_hotspot and n.name == fallback_hotspot_name:
+                    await enable_autoconnect(n)
+                else:
+                    await disable_autoconnect(network_to_use)
+        await run_nmcli(subcmd=f"connection up {network_to_use.name}", use_sudo=True)
+        self.start_updating_known()
+        await self.update_known_task
+
+    async def _update_known(self) -> None:
+        """Update self.known_networks and call the callback.
+
+        Ignores self.update_known_task.
+        """
+        self.known_networks = await get_known_networks()
+        self.call_callback_shortly()
+
+    async def _update_detected(self, *, rescan: bool) -> None:
+        """Update self.detected_network_ssids and call the callback.
+
+        Ignores self.update_detected_task.
+        """
+        self.detected_network_ssids = await scan_for_networks(rescan=rescan)
+        self.call_callback_shortly()
+
+    def call_callback_shortly(self) -> None:
+        """Schedule the callback function to be called shortly.
+
+        Intended to allow an update method to trigger the callback
+        *after* the associated update task is done.
+        """
+        if not self.callback_task.done():
+            return
+        self.callback_task = asyncio.create_task(self.call_callback())
+
+    async def call_callback(self) -> None:
+        """Call the callback function after purging known networks from detected networks."""
+        self.detected_network_ssids = [
+            name for name in self.detected_network_ssids if name not in self.known_networks
+        ]
+        if self.callback is not None:
+            await self.callback(self)
