@@ -1,12 +1,19 @@
-import dataclasses
+from __future__ import annotations
 
-from .enums import (
-    ConnectionStateEnum,
-    DirectionControlEnum,
-    MessageSeverityEnum,
-    ModeEnum,
-    ShaftStateEnum,
-)
+import dataclasses
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import asyncio
+
+    from .enums import (
+        ConnectionStateEnum,
+        DirectionControlEnum,
+        MessageSeverityEnum,
+        ModeEnum,
+        ShaftStateEnum,
+    )
+    from .nmcli_wifi import WiFiManager
 
 
 @dataclasses.dataclass
@@ -214,3 +221,74 @@ class Version:
     main_package_version: str
     base_loom_server_version: str
     dtx_to_wif_version: str
+
+
+def str_from_task(task: asyncio.Future, running_text: str) -> str:
+    """Return a description of the state of a task.
+
+    Return:
+        running_text if the task is running, "" if the task succeeded,
+        or str(exception) if the task failed.
+    """
+    if not task.done():
+        return running_text
+    if task.exception() is not None:
+        return str(task.exception())
+    return ""
+
+
+@dataclasses.dataclass
+class WiFi:
+    """WiFi network information.
+
+    All network identifiers are SSIDs.
+    """
+
+    type: str = dataclasses.field(init=False, default="WiFi")
+    supported: bool
+    current: str
+    detected: list[str]
+    known: list[str]
+    hotspots: list[str]
+    detected_reason: str
+    known_reason: str
+
+    @classmethod
+    def create_unsupported(cls) -> WiFi:
+        """Make an unsupported version of WiFi."""
+        return cls(
+            supported=False,
+            current="",
+            detected=[],
+            known=[],
+            hotspots=[],
+            detected_reason="",
+            known_reason="",
+        )
+
+    @classmethod
+    def from_manager(cls, wifi_manager: WiFiManager) -> WiFi:
+        """Construct a WiFi from a WiFiManager."""
+        detected_reason = ""
+        known_reason = ""
+        detected_reason = str_from_task(wifi_manager.update_detected_task, "Scanning")
+        known_reason = str_from_task(wifi_manager.update_known_task, "Reading")
+        current = ""
+        known: list[str] = []
+        hotspots: list[str] = []
+        for network in wifi_manager.known_networks.values():
+            if network.active:
+                current = network.ssid
+            if network.is_hotspot:
+                hotspots.append(network.ssid)
+            else:
+                known.append(network.ssid)
+        return cls(
+            supported=True,
+            current=current,
+            detected=wifi_manager.detected_network_ssids,
+            known=known,
+            hotspots=hotspots,
+            detected_reason=detected_reason,
+            known_reason=known_reason,
+        )

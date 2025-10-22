@@ -121,6 +121,12 @@ class AppRunner:
             help="Server port. Specify this if you wish to run more than one web server on this computer.",
         )
         parser.add_argument(
+            "--nmcli-wifi",
+            action="store_true",
+            help="Enable WiFi settings? This only works if the computer supports the 'nmcli' command, "
+            "e.g. on Linux boxes such as Raspberry Pi.",
+        )
+        parser.add_argument(
             "--log-level",
             choices=("critical", "error", "warning", "info", "debug", "trace"),
             default="info",

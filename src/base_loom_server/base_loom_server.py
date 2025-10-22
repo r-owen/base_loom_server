@@ -22,6 +22,7 @@ from serial_asyncio import open_serial_connection  # type: ignore[import-untyped
 from . import client_replies
 from .constants import LOG_NAME
 from .enums import ConnectionStateEnum, DirectionControlEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
+from .nmcli_wifi import WiFiManager
 from .pattern_database import PatternDatabase
 from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
 from .translations import get_language_names, get_translation_dict
@@ -65,6 +66,20 @@ class CommandError(Exception):
     pass
 
 
+def str_from_task(task: asyncio.Future, running_text: str) -> str:
+    """Return an English description of the state of a task.
+
+    Return:
+        running_text if the task is running, "" if the task succeeded,
+        or str(exception) if the task failed.
+    """
+    if not task.done():
+        return running_text
+    if task.exception() is not None:
+        return str(task.exception())
+    return ""
+
+
 class BaseLoomServer:
     """Base class for a web server that controls a dobby loom.
 
@@ -80,6 +95,8 @@ class BaseLoomServer:
         db_path: Path to the pattern database. Specify None for the
             default path. Unit tests specify a non-None value, to avoid
             stomping on the real database.
+        nmcli_wifi: Support WiFi settings uing nmcli commands?
+            Only works on on Linux.
     """
 
     # Subclasses should override these, as necesary.
@@ -100,6 +117,7 @@ class BaseLoomServer:
         reset_db: bool,
         verbose: bool,
         db_path: pathlib.Path | None = None,
+        nmcli_wifi: bool,
     ) -> None:
         if self.mock_loom_type is None:
             raise RuntimeError("Subclasses must set class variable 'mock_loom_type'")
@@ -169,6 +187,9 @@ class BaseLoomServer:
         self.jump_end = client_replies.JumpEndNumber()
         self.mode = ModeEnum.WEAVE
         self.direction_forward: bool = True
+        self.wifi_manager: WiFiManager | None = (
+            WiFiManager(callback=self.wifi_manager_callback) if nmcli_wifi else None
+        )
         self.__post_init__()
 
     @abc.abstractmethod
@@ -510,6 +531,8 @@ class BaseLoomServer:
         """Handle the mode command: set the mode."""
         self.mode = ModeEnum(command.mode)
         await self.report_mode()
+        if self.mode == ModeEnum.SETTINGS and self.wifi_manager is not None:
+            await self.report_wifi()
 
     async def cmd_select_pattern(self, command: SimpleNamespace) -> None:
         """Handle the select_pattern command."""
@@ -636,6 +659,18 @@ class BaseLoomServer:
         pattern.thread_group_size = self.settings.thread_group_size
 
         await self.add_pattern(pattern)
+
+    async def cmd_wifi_forget(self, command: SimpleNamespace) -> None:
+        """Forget the specified WiFi network."""
+        if self.wifi_manager is None:
+            raise CommandError("WiFi management not enabled")
+        await self.wifi_manager.forget_network(ssid=command.ssid)
+
+    async def cmd_wifi_use(self, command: SimpleNamespace) -> None:
+        """Use the specified WiFi network."""
+        if self.wifi_manager is None:
+            raise CommandError("WiFi management not enabled")
+        await self.wifi_manager.use_network(ssid=command.ssid, password=command.password)
 
     def get_threading_shaft_word(self) -> int:
         """Get the current threading shaft word."""
@@ -904,6 +939,9 @@ class BaseLoomServer:
 
         except asyncio.CancelledError:
             pass
+        except asyncio.IncompleteReadError:
+            self.log.warning("Loom connection lost")
+            await self.disconnect_from_loom()
         except Exception as e:
             message = f"Server stopped listening to the loom: {e!r}"
             self.log.exception(f"{self}: {message}")
@@ -934,6 +972,7 @@ class BaseLoomServer:
         Called just after a client connects to the server.
         """
         await self.report_version()
+        await self.report_wifi()
         await self.report_loom_connection_state()
         await self.write_to_client(self.loom_info)
         await self.report_language_names()
@@ -1086,6 +1125,41 @@ class BaseLoomServer:
             )
         )
 
+    async def report_wifi(self) -> None:
+        """Start updating WiFI info, if supported, else report not supported."""
+        if self.wifi_manager is None:
+            await self.write_to_client(client_replies.WiFi.create_unsupported())
+            return
+
+        self.wifi_manager.start_updating_all(rescan=False)
+
+    async def wifi_manager_callback(self, wifi_manager: WiFiManager) -> None:
+        """Callback for self.wifi_manager; report WiFi info to client."""
+        detected_reason = ""
+        known_reason = ""
+        detected_reason = self.t(str_from_task(wifi_manager.update_detected_task, "Scanning"))
+        known_reason = self.t(str_from_task(wifi_manager.update_known_task, "Reading"))
+        current = ""
+        known: list[str] = []
+        hotspots: list[str] = []
+        for network in wifi_manager.known_networks.values():
+            if network.active:
+                current = network.ssid
+            if network.is_hotspot:
+                hotspots.append(network.ssid)
+            else:
+                known.append(network.ssid)
+        wifi = client_replies.WiFi(
+            supported=True,
+            current=current,
+            detected=wifi_manager.detected_network_ssids,
+            known=known,
+            hotspots=hotspots,
+            detected_reason=detected_reason,
+            known_reason=known_reason,
+        )
+        await self.write_to_client(wifi)
+
     async def report_version(self) -> None:
         """Report version information."""
         main_package_name = "?"
@@ -1135,7 +1209,7 @@ class BaseLoomServer:
 
     def t(self, phrase: str) -> str:
         """Translate a phrase, if possible."""
-        if phrase not in self.translation_dict:
+        if phrase not in self.translation_dict and phrase != "":
             self.log.warning(f"{phrase!r} not in translation dict")
         return self.translation_dict.get(phrase, phrase)
 

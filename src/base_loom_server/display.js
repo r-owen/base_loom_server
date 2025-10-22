@@ -118,6 +118,16 @@ const NullShaftStateData = {
     "shaft_word": 0,
 }
 
+const NullWiFiData = {
+    "supported": false,
+    "current": "?",
+    "detected": [],
+    "detected_reason": "?",
+    "hotspots": [],
+    "known": [],
+    "known_reason": "?",
+}
+
 /* Return the largest odd integer <= rounded value
 
 The description isn't quite right for negative values;
@@ -354,6 +364,7 @@ class LoomClient {
         this.separateThreadingRepeatsData = NullSeparateData
         this.separateWeavingRepeatsData = NullSeparateData
         this.versionData = NullVersionData
+        this.wifiData = NullWiFiData
         this.threadGroupSize = 4
         this.loomInfo = null
         this.settings = null
@@ -480,6 +491,15 @@ class LoomClient {
         weaveDirectionElt.addEventListener("click", this.handleToggleDirection.bind(this))
         let patternMenu = document.getElementById("pattern_menu")
         patternMenu.addEventListener("change", this.handlePatternMenu.bind(this))
+
+        let wifiSelect = document.getElementById("wifi_select")
+        wifiSelect.addEventListener("change", this.handleWiFiSelect.bind(this))
+
+        let wifiUseButton = document.getElementById("wifi_use_button")
+        wifiUseButton.addEventListener("click", this.handleWiFiUse.bind(this))
+
+        let wifiForgetButton = document.getElementById("wifi_forget_button")
+        wifiForgetButton.addEventListener("click", this.handleWiFiForget.bind(this))
 
         this.handleDarkLightTheme()
 
@@ -1116,9 +1136,71 @@ class LoomClient {
         }
     }
 
+    displayWiFi() {
+        let wifiDiv = document.getElementById("wifi_div")
+        if (!this.wifiData.supported) {
+            wifiDiv.style.display = "none"
+            return
+        }
+
+        wifiDiv.style.display = "block"
+        let wifiSelect = document.getElementById("wifi_select")
+        var optgroups = wifiSelect.getElementsByTagName('optgroup')
+        while (optgroups.length > 0) {
+            wifiSelect.removeChild(optgroups[0])
+        }
+
+        let optionGroup = document.createElement('optgroup')
+        optionGroup.label = t("Known Networks")
+        wifiSelect.options.add(optionGroup)
+        if (this.wifiData.known_reason == "") {
+            for (let ssid of this.wifiData.known) {
+                let option = new Option(ssid)
+                optionGroup.appendChild(option)
+            }
+        } else {
+            let option = new Option(this.wifiData.known_reason)
+            option.disabled = true
+            optionGroup.appendChild(option)
+        }
+
+        optionGroup = document.createElement('optgroup')
+        optionGroup.label = t("Unknown Networks")
+        wifiSelect.options.add(optionGroup)
+        if (this.wifiData.detected_reason == "") {
+            for (let ssid of this.wifiData.detected) {
+                let option = new Option(ssid)
+                optionGroup.appendChild(option)
+            }
+        } else {
+            let option = new Option(this.wifiData.detected_reason)
+            option.disabled = true
+            optionGroup.appendChild(option)
+        }
+
+        optionGroup = document.createElement('optgroup')
+        optionGroup.label = t("Hotspots")
+        wifiSelect.options.add(optionGroup)
+        if (this.wifiData.known_reason == "") {
+            for (let ssid of this.wifiData.hotspots) {
+                let option = new Option(ssid)
+                optionGroup.appendChild(option)
+            }
+        } else {
+            let option = new Option(this.wifiData.known_reason)
+            option.disabled = true
+            optionGroup.appendChild(option)
+        }
+
+        if (this.wifiData.current != "") {
+            wifiSelect.value = this.wifiData.current
+        }
+        this.handleWiFiSelect()
+    }
+
     /*
     Display weaving pattern on the "pattern_canvas" element.
-
+ 
     A no-op if not in WEAVING mode.
      
     Center the jump or current pick vertically.
@@ -1497,6 +1579,9 @@ class LoomClient {
             this.threadGroupSize = datadict.group_size
             let threadGroupSizeMenu = document.getElementById("thread_group_size")
             threadGroupSizeMenu.value = this.threadGroupSize
+        } else if (datadict.type == "WiFi") {
+            this.wifiData = datadict
+            this.displayWiFi()
         } else if (datadict.type == "Version") {
             this.versionData = datadict
             this.displayVersion()
@@ -1716,6 +1801,67 @@ class LoomClient {
     }
 
     /*
+    Handle clicking the WiFi Use button
+    */
+    async handleWiFiForget(event) {
+        let wifiSelect = document.getElementById("wifi_select")
+        const ssid = wifiSelect.value
+        let command = { "type": "wifi_forget", "ssid": ssid }
+        await this.sendCommand(command)
+    }
+
+    /*
+    Handle the wifi_select menu: user makes a selection or the contents change
+    */
+    async handleWiFiSelect(event) {
+        let wifiSelect = document.getElementById("wifi_select")
+        let wifiUseButton = document.getElementById("wifi_use_button")
+        let wifiForgetButton = document.getElementById("wifi_forget_button")
+        let enableUse = true
+        let enableForget = true
+        let useText = t("Use")
+        const ssid = wifiSelect.value
+        if ((ssid == "") || (ssid == this.wifiData.current)) {
+            enableUse = false
+            enableForget = false
+        } else if (this.wifiData.known.indexOf(ssid) >= 0) {
+        } else if (this.wifiData.detected.indexOf(ssid) >= 0) {
+            enableForget = false
+            useText = useText + "..."
+
+        } else if (this.wifiData.hotspots.indexOf(ssid) >= 0) {
+            enableForget = false
+        } else {
+            console.error("Unknown SSID", ssid)
+            enableUse = false
+            enableForget = false
+        }
+        wifiForgetButton.disabled = !enableForget
+        wifiUseButton.disabled = !enableUse
+        wifiUseButton.innerHTML = useText
+    }
+
+    /*
+    Handle clicking the WiFi Use button
+    */
+    async handleWiFiUse(event) {
+        let wifiSelect = document.getElementById("wifi_select")
+        let wifiUseButton = document.getElementById("wifi_use_button")
+        const ssid = wifiSelect.value
+        let password = ""
+        if (wifiUseButton.innerHTML.endsWith("...")) {
+            const label = t("Password for")
+            password = prompt(`${label} ${ssid}`)
+            if (password == null) {
+                return
+            }
+        }
+        let command = { "type": "wifi_use", "ssid": ssid, "password": password }
+        await this.sendCommand(command)
+    }
+
+
+    /*
     Handle weaving and threading direction button clicks.
     
     Send the direction command to the loom server.
@@ -1847,7 +1993,7 @@ class LoomClient {
     async uploadFiles(fileList) {
         let commandProblemElt = document.getElementById("command_problem")
         if (fileList.length > MaxFiles) {
-            commandProblemElt.textContent = t("Too many files") + `: ${fileList.length} > ${MaxFiles}`
+            commandProblemElt.textContent = t("Too many files") + `: ${fileList.length} > ${MaxFiles} `
             commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
             return
         }

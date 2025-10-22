@@ -1403,6 +1403,7 @@ class BaseTestLoomServer:
                         "Settings",
                         "ShaftState",
                         "Version",
+                        "WiFi",
                     }
                     if expected_status_messages:
                         expected_types |= {"StatusMessage"}
@@ -1509,6 +1510,8 @@ class BaseTestLoomServer:
                                 assert reply.main_package_name != "?"
                                 assert reply.base_loom_server_version == get_version("base_loom_server")
                                 assert reply.dtx_to_wif_version == get_version("dtx_to_wif")
+                            case "WiFi":
+                                assert not reply.supported
                             case _:
                                 raise AssertionError(f"Unexpected message type {reply.type}")
                         seen_types.add(reply.type)
