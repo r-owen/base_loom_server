@@ -287,8 +287,8 @@
     "message": "Weft thread",
     "description": "Label for the current weft thread number (in Weaving mode)"
   },
-  "WiFi Network": {
-    "message": "WiFi Network",
+  "WiFi network": {
+    "message": "WiFi network",
     "description": "Label for a menu of WiFI network names"
   },
   "Versions": {
