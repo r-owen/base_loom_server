@@ -188,7 +188,9 @@ class BaseLoomServer:
         self.mode = ModeEnum.WEAVE
         self.direction_forward: bool = True
         self.wifi_manager: WiFiManager | None = (
-            WiFiManager(callback=self.wifi_manager_callback) if nmcli_wifi else None
+            WiFiManager(log=self.log, callback=self.wifi_manager_callback, verbose=self.verbose)
+            if nmcli_wifi
+            else None
         )
         self.__post_init__()
 

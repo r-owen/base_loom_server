@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import asyncio
 import dataclasses
+import time
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable, Sequence
+    from logging import Logger
 
 from .utils import run_shell_command
 
@@ -152,12 +154,18 @@ class WiFiManager:
     """Manage WiFI using nmcli commands.
 
     Args:
+        log: A logger.
         callback: An function to call whenever the data changes, or None.
             If a function, it receives one argument: the WiFiManager.
+        verbose: Log details?
     """
 
-    def __init__(self, callback: Callable[[WiFiManager], Awaitable[None]] | None) -> None:
+    def __init__(
+        self, *, log: Logger, callback: Callable[[WiFiManager], Awaitable[None]] | None, verbose: bool = False
+    ) -> None:
+        self.log = log
         self.callback = callback
+        self.verbose = verbose
         self.detected_network_ssids: list[str] = []  # A list of SSIDs
         self.known_networks: dict[str, KnownNetwork] = dict()  # a dict of SSID: KnownNetwork
         self.update_detected_task: asyncio.Future = asyncio.Future()
@@ -192,7 +200,12 @@ class WiFiManager:
             await self.update_known_task
         network = self.known_networks.pop(ssid, None)
         if network is None:
+            self.log.warning(
+                f"WiFiManager: cannot forget network with SSID={ssid}; not found in known networks"
+            )
             return
+        if self.verbose:
+            self.log.info(f"WiFiManager: forget network with SSID={ssid}, name={network.name}")
         await self.basic_forget_network(network.name)
 
     async def basic_forget_network(self, name: str) -> None:
@@ -227,6 +240,8 @@ class WiFiManager:
             await self.update_known_task
         network_to_use = self.known_networks.get(ssid)
         if network_to_use is None:
+            if self.verbose:
+                self.log.info(f"WiFiManager: use unknown network SSID={ssid!r}")
             # Unknown network_to_use; add it and create a preliminary known network_to_use for it
             network_to_use = KnownNetwork(
                 name=ssid,
@@ -245,10 +260,22 @@ class WiFiManager:
             except Exception:
                 # If the connection fails the remembered network is left in a weird state,
                 # so ditch it.
+                if self.verbose:
+                    self.log.info(
+                        f"WiFiManager: failed to connect to unknown network SSID={ssid} so forget it"
+                    )
                 await self.basic_forget_network(name=ssid)
                 raise
             await enable_autoconnect(network_to_use)
         elif network_to_use.is_hotspot:
+            if self.verbose:
+                self.log.info(f"WiFiManager: use hotspot SSID={ssid!r} name={network_to_use.name!r}")
+            try:
+                self.log.info(f"WiFiManager: kill dnsmasq so hotspot SSID={ssid!r} can be started")
+                await run_shell_command("sudo pkill dnsmasq")
+            except RuntimeError:
+                # pkill fails if the process was not running, but produces no useful output.
+                pass
             for n in self.known_networks.values():
                 if n.ssid == ssid:
                     await enable_autoconnect(n)
@@ -270,14 +297,30 @@ class WiFiManager:
                         break
             if not fallback_hotspot_name:
                 fallback_hotspot_name = first_hotspot_name
+            if self.verbose:
+                self.log.info(f"WiFiManager: use known network SSID={ssid!r}")
             for n in self.known_networks.values():
-                if n.ssid == ssid:  # noqa: SIM114
+                if n.ssid == ssid:
                     await enable_autoconnect(n)
                 elif n.is_hotspot and n.name == fallback_hotspot_name:
+                    if self.verbose:
+                        self.log.info(
+                            f"WiFiManager: use hotspot SSID={n.ssid!r} name={n.name!r} as a fallback"
+                        )
                     await enable_autoconnect(n)
                 else:
                     await disable_autoconnect(network_to_use)
+        self.log.info(
+            f"WiFiManager: bring up network SSID={network_to_use.ssid!r}, name={network_to_use.name!r}"
+        )
+        t0 = time.monotonic()
         await run_nmcli(subcmd=f'connection up "{network_to_use.name}"', use_sudo=True)
+        dt = time.monotonic() - t0
+        self.log.info(
+            f"WiFiManager: success; network is up: SSID={network_to_use.ssid!r}, name={network_to_use.name!r}"
+        )
+        if self.verbose:
+            self.log.info(f"WiFiManager: it took {dt:0.1f} seconds to bring up the network.")
         self.start_updating_known()
         await self.update_known_task
 
@@ -286,6 +329,8 @@ class WiFiManager:
 
         Ignores self.update_known_task.
         """
+        if self.verbose:
+            self.log.info("WiFiManager: get nmcli configuration")
         self.known_networks = await get_known_networks()
         self.call_callback_shortly()
 
@@ -294,6 +339,8 @@ class WiFiManager:
 
         Ignores self.update_detected_task.
         """
+        if self.verbose:
+            self.log.info("WiFiManager: scan for networks")
         self.detected_network_ssids = await scan_for_networks(rescan=rescan)
         self.call_callback_shortly()
 
