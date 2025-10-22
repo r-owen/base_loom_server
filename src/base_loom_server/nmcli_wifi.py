@@ -136,9 +136,12 @@ async def get_known_networks() -> dict[str, KnownNetwork]:
 
 
 async def scan_for_networks(*, rescan: bool) -> list[str]:
-    """Scan for WiFi networks."""
+    """Scan for WiFi networks.
+
+    Using sudo is necessary in order to see unknown networks.
+    """
     suffix = " --rescan yes" if rescan else ""
-    wifi_dicts = await run_nmcli(subcmd=f"device wifi list{suffix}", fields=["ssid"])
+    wifi_dicts = await run_nmcli(subcmd=f"device wifi list{suffix}", fields=["ssid"], use_sudo=True)
     return [data["ssid"] for data in wifi_dicts if data["ssid"] != "--"]
 
 
