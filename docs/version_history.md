@@ -1,5 +1,15 @@
 # Version History
 
+## 1.1a2 2025-10-22
+
+* Fix many bugs in the WiFi support.
+
+## 1.1a1 2025-10-21
+
+* First cut at supporting WiFi using nmcli.
+  This only works on Linux-based operating systems, nmcli must be installed,
+  and the server must be able to run nmcli commands as sudo.
+
 ## 1.0 2025-10-21
 
 * Change rename_crowdin_files to expect the input files to use detailed locale names.
