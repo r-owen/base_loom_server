@@ -1,5 +1,12 @@
 # Version History
 
+## 1.1b1 2025-10-26
+
+* Add translations for new phrases.
+* Warn the user that the connection will be lost just before changing networks.
+* Remove the WiFiManager hack that kills the ndsmasq process.
+  You should disable dnsmasq in some other way.
+
 ## 1.1a3 2025-10-22
 
 * Add logging and a verbose option to WiFiManager.
