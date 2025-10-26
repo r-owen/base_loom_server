@@ -23,6 +23,10 @@
     "message": "At start of weaving",
     "description": "Displayed if you try to undo weaving past the beginning"
   },
+  "Available": {
+    "message": "Available",
+    "description": "The newest version of the software that is available"
+  },
   "Back to front": {
     "message": "Back to front",
     "description": "Setting to thread from the back of the loom to the front"
@@ -54,6 +58,10 @@
   "connecting": {
     "message": "connecting",
     "description": "Shown when the loom server is in the process of connecting to the loom"
+  },
+  "Current": {
+    "message": "Current",
+    "description": "The current version of the software"
   },
   "Debug (mock loom)": {
     "message": "Debug (mock loom)",
@@ -259,6 +267,10 @@
     "message": "Unweave",
     "description": "The direction shown in the Weaving panel when going backwards, to undo a mistake. Please translate 'Reverse' or 'Undo' if there is no more suitable word or short phrase."
   },
+  "Update": {
+    "message": "Update",
+    "description": "Update the software to the newest version that is available"
+  },
   "Upload": {
     "message": "Upload",
     "description": "Button label to upload weaving pattern files"
@@ -294,6 +306,10 @@
   "Versions": {
     "message": "Versions",
     "description": "Label for a table of version numbers"
+  },
+  "Changing networks; your connection will be lost": {
+    "message": "Changing networks; your connection will be lost",
+    "description": "Status displayed when the user commands the server to change WiFi networks."
   },
   "?": {
     "message": "?",

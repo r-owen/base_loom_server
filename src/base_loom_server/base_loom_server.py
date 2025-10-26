@@ -672,6 +672,12 @@ class BaseLoomServer:
         """Use the specified WiFi network."""
         if self.wifi_manager is None:
             raise CommandError("WiFi management not enabled")
+        await self.write_to_client(
+            client_replies.StatusMessage(
+                message=self.t("Changing networks; your connection will be lost"),
+                severity=MessageSeverityEnum.WARNING,
+            )
+        )
         await self.wifi_manager.use_network(ssid=command.ssid, password=command.password)
 
     def get_threading_shaft_word(self) -> int:
