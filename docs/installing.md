@@ -170,6 +170,7 @@ Other options of note:
         nmcli only runs on Linux-based operating systems (and is available by default on most).
         It does not run on macOS or Windows.
         A default Raspberry Pi installation should work fine.
+    * The loom server should not have dnsmasq, because it interferes with running a WiFI hotspot.
 
 * `--reset-db`: clear all save weaving patterns.
    Use this when you want to clear all patterns, or if you think the database might be corrupted.
