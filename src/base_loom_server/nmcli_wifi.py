@@ -270,12 +270,6 @@ class WiFiManager:
         elif network_to_use.is_hotspot:
             if self.verbose:
                 self.log.info(f"WiFiManager: use hotspot SSID={ssid!r} name={network_to_use.name!r}")
-            try:
-                self.log.info(f"WiFiManager: kill dnsmasq so hotspot SSID={ssid!r} can be started")
-                await run_shell_command("sudo pkill dnsmasq")
-            except RuntimeError:
-                # pkill fails if the process was not running, but produces no useful output.
-                pass
             for n in self.known_networks.values():
                 if n.ssid == ssid:
                     await enable_autoconnect(n)
