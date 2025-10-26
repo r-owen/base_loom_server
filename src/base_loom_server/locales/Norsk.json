@@ -23,6 +23,10 @@
     "message": "I starten av veve",
     "description": "Displayed if you try to undo weaving past the beginning"
   },
+  "Available": {
+    "message": "Tilgjengelig",
+    "description": "The newest version of the software that is available"
+  },
   "Back to front": {
     "message": "Tilbake foran",
     "description": "Setting to thread from the back of the loom to the front"
@@ -55,6 +59,10 @@
     "message": "koble",
     "description": "Shown when the loom server is in the process of connecting to the loom"
   },
+  "Current": {
+    "message": "Nåværende",
+    "description": "The current version of the software"
+  },
   "Debug (mock loom)": {
     "message": "Feilsøking (falske vevstolen)",
     "description": "Heading for debug controls when using the mock loom"
@@ -83,6 +91,10 @@
     "message": "Feil",
     "description": ""
   },
+  "Forget": {
+    "message": "Glem",
+    "description": "Forget the selected WiFi network"
+  },
   "Front to back": {
     "message": "Forside til tilbake",
     "description": "Setting to thread from the front of the loom to the back"
@@ -95,6 +107,10 @@
     "message": "Skjul",
     "description": "Hide the debug controls"
   },
+  "Hotspots": {
+    "message": "Punkter",
+    "description": "Heading for a list of names of WiFI hotspots (local WiFi networks running on the loom server). A typical loom server will have one hotspot, but more are allowed."
+  },
   "Jump to warp thread": {
     "message": "Hopp til varptråd",
     "description": "Jump to warp thread number..."
@@ -106,6 +122,10 @@
   "Jump": {
     "message": "Hopp",
     "description": "Label for the button that applies the requested jump"
+  },
+  "Known Networks": {
+    "message": "Kjente nettverk",
+    "description": "Heading for a list of the names of known WiFi networks (those for which a password has been saved)"
   },
   "Language": {
     "message": "Språk",
@@ -155,6 +175,10 @@
     "message": "Til høyre",
     "description": "Setting: display warp thread 1 on the right"
   },
+  "Password for": {
+    "message": "Passord for",
+    "description": "Followed by a WiFi network name, this is the label for a password entry field"
+  },
   "Pattern": {
     "message": "Mønster",
     "description": "Label for weaving pattern menu"
@@ -162,6 +186,10 @@
   "Read message": {
     "message": "Les melding",
     "description": "Label for debug display of the most recent message read from the loom"
+  },
+  "Reading": {
+    "message": "Leser",
+    "description": "Status reported when reading configuration"
   },
   "ready": {
     "message": "klar",
@@ -182,6 +210,10 @@
   "Save": {
     "message": "Lagre",
     "description": "Button that submits a new loom name"
+  },
+  "Scanning": {
+    "message": "Skanner",
+    "description": "Status reported when scanning for WiFi networks"
   },
   "Sent command": {
     "message": "Sendt kommando",
@@ -223,6 +255,10 @@
     "message": "For mange filer",
     "description": "Displayed if a user tries to upload too many files at once"
   },
+  "Unknown Networks": {
+    "message": "Ukjent nettverk",
+    "description": "Heading for a list of the names of unknown WiFi networks (those for which no password has been saved)"
+  },
   "Unthread": {
     "message": "Angre gjenging",
     "description": "The direction shown in the Threading panel when going backwards, to undo a mistake. Please translate 'Reverse' or 'Undo' if there is no more suitable word or short phrase."
@@ -231,9 +267,17 @@
     "message": "Angre gjenging",
     "description": "The direction shown in the Weaving panel when going backwards, to undo a mistake. Please translate 'Reverse' or 'Undo' if there is no more suitable word or short phrase."
   },
+  "Update": {
+    "message": "Oppdater",
+    "description": "Update the software to the newest version that is available"
+  },
   "Upload": {
     "message": "Last opp",
     "description": "Button label to upload weaving pattern files"
+  },
+  "Use": {
+    "message": "Bruk",
+    "description": "Use the selected WiFi network"
   },
   "Warp thread 1": {
     "message": "Varptråd 1",
@@ -255,9 +299,17 @@
     "message": "Weft tråd",
     "description": "Label for the current weft thread number (in Weaving mode)"
   },
+  "WiFi network": {
+    "message": "WiFi nettverk",
+    "description": "Label for a menu of WiFI network names"
+  },
   "Versions": {
     "message": "Versjoner",
     "description": "Label for a table of version numbers"
+  },
+  "Changing networks; your connection will be lost": {
+    "message": "Bytte nettverk; din tilkobling vil gå tapt",
+    "description": "Status displayed when the user commands the server to change WiFi networks."
   },
   "?": {
     "message": "?",

@@ -23,6 +23,10 @@
     "message": "Al principio del tejido",
     "description": "Displayed if you try to undo weaving past the beginning"
   },
+  "Available": {
+    "message": "Disponible",
+    "description": "The newest version of the software that is available"
+  },
   "Back to front": {
     "message": "Volver al frente",
     "description": "Setting to thread from the back of the loom to the front"
@@ -55,6 +59,10 @@
     "message": "conectando",
     "description": "Shown when the loom server is in the process of connecting to the loom"
   },
+  "Current": {
+    "message": "Actual",
+    "description": "The current version of the software"
+  },
   "Debug (mock loom)": {
     "message": "Depurar (telar simulado)",
     "description": "Heading for debug controls when using the mock loom"
@@ -83,6 +91,10 @@
     "message": "Error",
     "description": ""
   },
+  "Forget": {
+    "message": "Olvidar",
+    "description": "Forget the selected WiFi network"
+  },
   "Front to back": {
     "message": "Frente a atrás",
     "description": "Setting to thread from the front of the loom to the back"
@@ -95,6 +107,10 @@
     "message": "Ocultar",
     "description": "Hide the debug controls"
   },
+  "Hotspots": {
+    "message": "Punto de acceso",
+    "description": "Heading for a list of names of WiFI hotspots (local WiFi networks running on the loom server). A typical loom server will have one hotspot, but more are allowed."
+  },
   "Jump to warp thread": {
     "message": "Saltar al hilo de urdimbre",
     "description": "Jump to warp thread number..."
@@ -106,6 +122,10 @@
   "Jump": {
     "message": "Salto",
     "description": "Label for the button that applies the requested jump"
+  },
+  "Known Networks": {
+    "message": "Redes conocidas",
+    "description": "Heading for a list of the names of known WiFi networks (those for which a password has been saved)"
   },
   "Language": {
     "message": "Idioma",
@@ -155,6 +175,10 @@
     "message": "A la derecha",
     "description": "Setting: display warp thread 1 on the right"
   },
+  "Password for": {
+    "message": "Contraseña para",
+    "description": "Followed by a WiFi network name, this is the label for a password entry field"
+  },
   "Pattern": {
     "message": "Patrón",
     "description": "Label for weaving pattern menu"
@@ -162,6 +186,10 @@
   "Read message": {
     "message": "Leer mensaje",
     "description": "Label for debug display of the most recent message read from the loom"
+  },
+  "Reading": {
+    "message": "Leyendo",
+    "description": "Status reported when reading configuration"
   },
   "ready": {
     "message": "listo",
@@ -182,6 +210,10 @@
   "Save": {
     "message": "Guardar",
     "description": "Button that submits a new loom name"
+  },
+  "Scanning": {
+    "message": "Escaneando",
+    "description": "Status reported when scanning for WiFi networks"
   },
   "Sent command": {
     "message": "Comando enviado",
@@ -223,6 +255,10 @@
     "message": "Demasiados archivos",
     "description": "Displayed if a user tries to upload too many files at once"
   },
+  "Unknown Networks": {
+    "message": "Redes desconocidas",
+    "description": "Heading for a list of the names of unknown WiFi networks (those for which no password has been saved)"
+  },
   "Unthread": {
     "message": "Sacar los hilos de los lizos",
     "description": "The direction shown in the Threading panel when going backwards, to undo a mistake. Please translate 'Reverse' or 'Undo' if there is no more suitable word or short phrase."
@@ -231,9 +267,17 @@
     "message": "Quitar roscas",
     "description": "The direction shown in the Weaving panel when going backwards, to undo a mistake. Please translate 'Reverse' or 'Undo' if there is no more suitable word or short phrase."
   },
+  "Update": {
+    "message": "Actualizar",
+    "description": "Update the software to the newest version that is available"
+  },
   "Upload": {
     "message": "Subir",
     "description": "Button label to upload weaving pattern files"
+  },
+  "Use": {
+    "message": "Usar",
+    "description": "Use the selected WiFi network"
   },
   "Warp thread 1": {
     "message": "Hilo de urdimbre 1",
@@ -255,9 +299,17 @@
     "message": "Hilo de trama",
     "description": "Label for the current weft thread number (in Weaving mode)"
   },
+  "WiFi network": {
+    "message": "Red WiFi",
+    "description": "Label for a menu of WiFI network names"
+  },
   "Versions": {
     "message": "Versiones",
     "description": "Label for a table of version numbers"
+  },
+  "Changing networks; your connection will be lost": {
+    "message": "Cambiando redes; su conexión se perderá",
+    "description": "Status displayed when the user commands the server to change WiFi networks."
   },
   "?": {
     "message": "¿?",
