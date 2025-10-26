@@ -89,7 +89,7 @@ const ModeEnum = {
 
 const SeverityColors = {
     1: null,
-    2: "yellow",
+    2: "orange",
     3: "red",
 }
 
