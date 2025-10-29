@@ -217,6 +217,16 @@ class WiFiManager:
         self.start_updating_all()
         await self.update_known_task
 
+    async def bring_up_network(self, network: KnownNetwork) -> None:
+        """Bring up the specified network."""
+        self.log.info(f"WiFiManager: bring up network SSID={network.ssid!r}, name={network.name!r}")
+        t0 = time.monotonic()
+        await run_nmcli(subcmd=f'connection up "{network.name}"', use_sudo=True)
+        dt = time.monotonic() - t0
+        self.log.info(f"WiFiManager: success; network is up: SSID={network.ssid!r}, name={network.name!r}")
+        if self.verbose:
+            self.log.info(f"WiFiManager: it took {dt:0.1f} seconds to bring up the network.")
+
     async def use_network(self, ssid: str, password: str) -> None:
         """Use the specified network.
 
@@ -232,9 +242,15 @@ class WiFiManager:
             if any, else the first one found.
             All other networks are set to not auto-connect.
 
+        Always start by bringing up the network (except if the network is unknown,
+        in which case registr it first), because if it cannot be brought up
+        then no other changes should be made.
+
         Args:
             ssid: Network SSID.
             password: Password. Ignored if the named network is known.
+                Note: to change the password of a known network, you must
+                first forget it, then connect to it as an unknown network.
         """
         if not self.update_known_task.done():
             await self.update_known_task
@@ -266,16 +282,21 @@ class WiFiManager:
                     )
                 await self.basic_forget_network(name=ssid)
                 raise
+            await self.bring_up_network(network_to_use)
             await enable_autoconnect(network_to_use)
         elif network_to_use.is_hotspot:
             if self.verbose:
                 self.log.info(f"WiFiManager: use hotspot SSID={ssid!r} name={network_to_use.name!r}")
+            await self.bring_up_network(network_to_use)
             for n in self.known_networks.values():
                 if n.ssid == ssid:
                     await enable_autoconnect(n)
                 else:
                     await disable_autoconnect(n)
         else:
+            if self.verbose:
+                self.log.info(f"WiFiManager: use known network SSID={ssid!r}")
+            await self.bring_up_network(network_to_use)
             # Figure out which hotspot to use as a fallback:
             # * The preferred choice is the first hotspot seen that is set to autoconnect.
             # * The less favored choice is the first hotspot seen.
@@ -291,8 +312,6 @@ class WiFiManager:
                         break
             if not fallback_hotspot_name:
                 fallback_hotspot_name = first_hotspot_name
-            if self.verbose:
-                self.log.info(f"WiFiManager: use known network SSID={ssid!r}")
             for n in self.known_networks.values():
                 if n.ssid == ssid:
                     await enable_autoconnect(n)
@@ -304,17 +323,6 @@ class WiFiManager:
                     await enable_autoconnect(n)
                 else:
                     await disable_autoconnect(network_to_use)
-        self.log.info(
-            f"WiFiManager: bring up network SSID={network_to_use.ssid!r}, name={network_to_use.name!r}"
-        )
-        t0 = time.monotonic()
-        await run_nmcli(subcmd=f'connection up "{network_to_use.name}"', use_sudo=True)
-        dt = time.monotonic() - t0
-        self.log.info(
-            f"WiFiManager: success; network is up: SSID={network_to_use.ssid!r}, name={network_to_use.name!r}"
-        )
-        if self.verbose:
-            self.log.info(f"WiFiManager: it took {dt:0.1f} seconds to bring up the network.")
         self.start_updating_known()
         await self.update_known_task
 
