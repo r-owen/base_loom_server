@@ -1,5 +1,10 @@
 # Version History
 
+## 1.1b2 2025-10-29
+
+* WiFiManager: bring up the network before changing auto-connect.
+  That way auto-connect is left unchanged if the network cannot be brought up.
+
 ## 1.1b1 2025-10-26
 
 * Add translations for new phrases.
