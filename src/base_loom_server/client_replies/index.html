@@ -106,6 +106,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/mock_streams/">base_loom_server.mock_streams</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/nmcli_wifi/">base_loom_server.nmcli_wifi</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/pattern_database/">base_loom_server.pattern_database</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/reduced_pattern/">base_loom_server.reduced_pattern</a>
@@ -372,15 +374,100 @@
 <span class="normal">213</span>
 <span class="normal">214</span>
 <span class="normal">215</span>
-<span class="normal">216</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">.enums</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ConnectionStateEnum</span><span class="p">,</span>
-    <span class="n">DirectionControlEnum</span><span class="p">,</span>
-    <span class="n">MessageSeverityEnum</span><span class="p">,</span>
-    <span class="n">ModeEnum</span><span class="p">,</span>
-    <span class="n">ShaftStateEnum</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">asyncio</span>
+
+    <span class="kn">from</span> <span class="nn">.enums</span> <span class="kn">import</span> <span class="p">(</span>
+        <span class="n">ConnectionStateEnum</span><span class="p">,</span>
+        <span class="n">DirectionControlEnum</span><span class="p">,</span>
+        <span class="n">MessageSeverityEnum</span><span class="p">,</span>
+        <span class="n">ModeEnum</span><span class="p">,</span>
+        <span class="n">ShaftStateEnum</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.nmcli_wifi</span> <span class="kn">import</span> <span class="n">WiFiManager</span>
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
@@ -588,6 +675,77 @@
     <span class="n">main_package_version</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">base_loom_server_version</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">dtx_to_wif_version</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">def</span> <span class="nf">str_from_task</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">,</span> <span class="n">running_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.str_from_task"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.str_from_task" title="Go to docs">docs</a></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a description of the state of a task.</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">        running_text if the task is running, &quot;&quot; if the task succeeded,</span>
+<span class="sd">        or str(exception) if the task failed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">running_text</span>
+    <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">exception</span><span class="p">())</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">WiFi</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.WiFi"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.WiFi" title="Go to docs">docs</a></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;WiFi network information.</span>
+
+<span class="sd">    All network identifiers are SSIDs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;WiFi&quot;</span><span class="p">)</span>
+    <span class="n">supported</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">current</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">detected</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">known</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">hotspots</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">detected_reason</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">known_reason</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_unsupported</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WiFi</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.WiFi.create_unsupported"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.WiFi.create_unsupported" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make an unsupported version of WiFi.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">supported</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">current</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">detected</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">known</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">hotspots</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">detected_reason</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">known_reason</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_manager</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">wifi_manager</span><span class="p">:</span> <span class="n">WiFiManager</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WiFi</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.client_replies.WiFi.from_manager"><a href="../../../api/base_loom_server/client_replies/#base_loom_server.client_replies.WiFi.from_manager" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a WiFi from a WiFiManager.&quot;&quot;&quot;</span>
+        <span class="n">detected_reason</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">known_reason</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">detected_reason</span> <span class="o">=</span> <span class="n">str_from_task</span><span class="p">(</span><span class="n">wifi_manager</span><span class="o">.</span><span class="n">update_detected_task</span><span class="p">,</span> <span class="s2">&quot;Scanning&quot;</span><span class="p">)</span>
+        <span class="n">known_reason</span> <span class="o">=</span> <span class="n">str_from_task</span><span class="p">(</span><span class="n">wifi_manager</span><span class="o">.</span><span class="n">update_known_task</span><span class="p">,</span> <span class="s2">&quot;Reading&quot;</span><span class="p">)</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">known</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">hotspots</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">network</span> <span class="ow">in</span> <span class="n">wifi_manager</span><span class="o">.</span><span class="n">known_networks</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+                <span class="n">current</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">ssid</span>
+            <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">is_hotspot</span><span class="p">:</span>
+                <span class="n">hotspots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">ssid</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">known</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">ssid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">supported</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">current</span><span class="o">=</span><span class="n">current</span><span class="p">,</span>
+            <span class="n">detected</span><span class="o">=</span><span class="n">wifi_manager</span><span class="o">.</span><span class="n">detected_network_ssids</span><span class="p">,</span>
+            <span class="n">known</span><span class="o">=</span><span class="n">known</span><span class="p">,</span>
+            <span class="n">hotspots</span><span class="o">=</span><span class="n">hotspots</span><span class="p">,</span>
+            <span class="n">detected_reason</span><span class="o">=</span><span class="n">detected_reason</span><span class="p">,</span>
+            <span class="n">known_reason</span><span class="o">=</span><span class="n">known_reason</span><span class="p">,</span>
+        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 
               

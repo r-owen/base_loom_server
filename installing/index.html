@@ -71,6 +71,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#command-line-options">Command Line Options</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#creating-a-wifi-hotspot">Creating a WiFi Hotspot</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#upgrading-software">Upgrading Software</a>
     </li>
     </ul>
@@ -115,6 +117,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/main/">base_loom_server.main</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/mock_streams/">base_loom_server.mock_streams</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/nmcli_wifi/">base_loom_server.nmcli_wifi</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/pattern_database/">base_loom_server.pattern_database</a>
                 </li>
@@ -170,8 +174,8 @@ that is based on <a href="https://pypi.org/project/base-loom-server/">base_loom_
 Any macOS, Windows, or linux computer will work, and a laptop is a fine choice,
 especially as you can run your web browser on the same machine that runs the server.</p>
 <p>The software uses minimal resources, so an old, slow computer is fine.
-A Raspberry Pi (I suggest model 4 or better) will work, but will be a bit slow when uploading patterns.
-A used Mac Mini is a great choice if you have a spare keyboard and monitor to get it set up.</p>
+A Raspberry Pi 5 works well; a model 4 will also work, but is not recommended, because it is slow when uploading patterns and takes a long time to boot up.
+A used Mac Mini is also a good choice, if you have a spare keyboard and monitor to get it set up.</p>
 </li>
 <li>
 <p>Install <a href="https://www.python.org/downloads/">Python</a> 3.11 or later.</p>
@@ -207,6 +211,9 @@ The next step depends on the operating system:</p>
 <p>Run the same command again. There should be one new entry, which is the name of the port connected to the loom.
   If not, wait a bit longer and try again.</p>
 </li>
+<li>
+<p>Note that the device name starts with "/dev/", for example: "/dev/tty.usbserial-FTXW1MJ5"</p>
+</li>
 </ul>
 <p>On Windows this may work:</p>
 <ul>
@@ -225,6 +232,9 @@ The next step depends on the operating system:</p>
 </ul>
 </li>
 <li>
+<p>If you plan to run the server computer "headless" (no monitor, keyboard, or pointer device), <a href="#creating-a-wifi-hotspot">create a WiFi hotspot</a>.</p>
+</li>
+<li>
 <p>Install the loom server software.</p>
 <p>From here on I will assume you are installing <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.
 For <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a> replace "toika" with "seguin".</p>
@@ -238,7 +248,7 @@ For <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a
 </li>
 <li>
 <p>Learn about the <a href="#command-line-options">command-line options</a> available.</p>
-<p>Use the options that seem useful on the run commands below.</p>
+<p>Use the command line options that seem useful on the run commands below.</p>
 </li>
 <li>
 <p>Find the installed loom server executable:</p>
@@ -267,9 +277,11 @@ Here are <a href="https://stackoverflow.com/q/44272416/1653413">instructions for
 </li>
 <li>
 <p>Test the loom server with the <code>mock</code> port:</p>
-<p>Once you have found and started the server, as above, make sure you can connect to it.
-Point your web browser to <code>https://hostname.local/8000</code> where <code>hostname</code> is the host name you determined above
+<p>Once you have found and started the server with the mock port, as explained in the previous step, make sure you can connect to it.
+Point your web browser to <code>http://hostname.local:8000</code> where <code>hostname</code> is the host name you determined above
 (if the hostname ends with ".local", <em>don't</em> duplicate that).</p>
+<p>If you are running the web server on the same computer as the web browser (e.g. using a laptop)
+you can also use this simpler address: <code>http://localhost:8000</code>.</p>
 <p>Try a few things:</p>
 <ul>
 <li>
@@ -291,6 +303,8 @@ Point your web browser to <code>https://hostname.local/8000</code> where <code>h
 <p>Once you know how to run the loom server, run it with the real USB port for your loom.
 Be sure to include the <a href="#command-line-options">command line options</a> you wish to use,
 even though they are not shown here.</p>
+<p>The loom must be turned on and connected to your server computer before you can
+run the loom server (because the USB port will not exist, otherwise).</p>
 <p>On macOS or unix:</p>
 <pre><code>run_toika_loom &lt;num_shafts&gt; &lt;usb_port_name&gt;
 </code></pre>
@@ -307,7 +321,8 @@ even though they are not shown here.</p>
 <ul>
 <li>Pattern files that have too many shafts are rejected.</li>
 <li>The data format used by Toika ES dobby heads varies depending on the number of shafts.
-    If you specify the wrong value, the loom will not work correctly.</li>
+    If you specify the wrong value, the loom will not work correctly.
+    (Séguin looms do not have this issue).</li>
 </ul>
 <h2 id="command-line-options">Command Line Options</h2>
 <p>The run_x_loom commands (e.g. run_toika_loom) accept various command line options.</p>
@@ -321,17 +336,78 @@ specify loom-specific values for each of the following options:</p>
 <p><code>--port</code>: web server port</p>
 </li>
 </ul>
-<p>Another option of note:</p>
+<p>Other options of note (not complete; run with <code>-h</code> or <code>--help</code> to see the rest):</p>
 <ul>
-<li><code>--reset-db</code>: clear all save weaving patterns.
-   Use this when you want to clear all patterns or think the database might be corrupted.</li>
+<li>
+<p><code>-v</code> or <code>--verbose</code>: show much more information in the log.
+    This can be very useful for debugging problems.
+    If you want to report a bug, please run this way and provide the output.</p>
+</li>
+<li>
+<p><code>--nmcli-wifi</code>: enable a line in the Settings panel that controls WiFi.
+    This setting should only be used all of the following are true:</p>
+<ul>
+<li>The loom server is running "headless" (no monitor, pointer, or keyboard).
+    Note: if the server has a monitor, etc., it is better to use the standard GUI-based tools to manage WiFi.</li>
+<li>The loom server must have <code>nmcli</code>  (NetworkManager) installed,
+    and must be allowed to run nmcli with sudo privileges.
+    nmcli only runs on Linux-based operating systems (and is installed by default on most);
+    it does not run on macOS or Windows.</li>
+<li>The loom server should not have <code>dnsmasq</code>, because that interferes with running a WiFI hotspot.
+    See <a href="#creating-a-wifi-hotspot">Creating a WiFi Hotspot</a> for a command to uninstall <code>dnsmasq</code>.</li>
 </ul>
-<p>For a full list run the command with <code>-h</code> or <code>--help</code>.</p>
+<p>A default Raspberry Pi installation should have all of this, but you may have to uninstall <code>dnsmasq</code>.</p>
+</li>
+<li>
+<p><code>--reset-db</code>: clear all save weaving patterns.
+   Use this when you want to clear all patterns, or if you think the database might be corrupted.
+   (You can also delete the database file manually, while the loom server software is not running, if you prefer).</p>
+</li>
+<li>
+<p><code>-h</code> or <code>--help</code>: print help describing all command line options, then quit.</p>
+</li>
+</ul>
+<h2 id="creating-a-wifi-hotspot">Creating a WiFi Hotspot</h2>
+<p>Running a WiFi hotspot on your loom server is crucial if you do not have WiFi near your loom.
+The server runs its own WiFI hotspot network, and you connect your device (tablet, phone, etc.) to that network to talk to the server and control the loom.</p>
+<p>If you run your server "headless" (no monitor, keyboard, or pointing device),
+then you should set up a hotspot as a fallback.
+If the server cannot connect to your own WiFi when it starts up,
+it will fall back to running the hotspot, and you can still weave.</p>
+<p>These instructions are for Linux (e.g. Raspberry Pi).
+If you plan to run macOS or Windows headless I'll leave it to you to find the instructions.</p>
+<ul>
+<li>Disable <code>dnsmask</code> with <code>sudo apt purge dnsmasq</code> because dnsmasq interferes with running a hotspot.</li>
+<li>
+<p>Create a hotspot and configure it to auto-start,
+    where <code>&lt;hotspot-name&gt;</code> and <code>&lt;hotspot-password&gt;</code> are the desired WiFi network name and password of the hotspot:</p>
+<pre><code>sudo nmcli device wifi hotspot ifname wlan0 ssid &lt;hotspot-name&gt; password &lt;hotspot-password&gt;
+sudo nmcli connection modify &lt;hotspot-name&gt; connection.autoconnect yes connection.autoconnect-priority 100
+</code></pre>
+</li>
+<li>
+<p>If you want the loom server to connect to your own WiFI, set it up as follows,
+    where <code>&lt;wifi-name&gt;</code> and <code>&lt;wifi-password&gt;</code> are the name and password of of your WiFI network:</p>
+<pre><code>sudo nmcli device wifi connect &lt;wifi-name&gt; password &lt;wifi-password&gt;
+sudo nmcli connection modify &lt;wifi-name&gt; connection.autoconnect yes connection.autoconnect-priority 50
+</code></pre>
+<p>Note: a connection with lower numeric priority is tried first.</p>
+</li>
+<li>
+<p>Bring up the preferred connection:</p>
+<pre><code>sudo nmcli device up &lt;wifi-or-hotspot-name&gt;
+</code></pre>
+</li>
+</ul>
 <h2 id="upgrading-software">Upgrading Software</h2>
-<p>Use pip to upgrade your software. For example:</p>
+<p>Use pip to upgrade your software. Include a prefix of "sudo" if you performed the original install using sudo. Thus one of:</p>
+<pre><code>    sudo python -m pip install --upgrade dtx_to_wif base_loom_server toika_loom_server
+</code></pre>
+<p>or</p>
 <pre><code>    python -m pip install --upgrade dtx_to_wif base_loom_server toika_loom_server
 </code></pre>
-<p>On Toika's built-in web server you will almost certainly have to include the scary-looking <code>--break-system-packages</code> argument. Don't worry; it is safe in this context:</p>
+<p>On Toika's built-in web server you will almost certainly have to include the scary-looking <code>--break-system-packages</code> argument. Don't worry; it is safe in this context.
+Note that Toika does not install using sudo:</p>
 <pre><code>    python -m pip install --upgrade dtx_to_wif base_loom_server toika_loom_server --break-system-packages
 </code></pre>
 <p>See pip's documentation for more information, including how to specify specific versions of packages.</p>

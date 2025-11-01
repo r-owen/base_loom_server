@@ -106,6 +106,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../mock_streams/">base_loom_server.mock_streams</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../nmcli_wifi/">base_loom_server.nmcli_wifi</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../pattern_database/">base_loom_server.pattern_database</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../reduced_pattern/">base_loom_server.reduced_pattern</a>
@@ -123,6 +125,8 @@
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.compute_total_num">compute_total_num</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.get_version">get_version</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.run_shell_command">run_shell_command</a>
     </li>
     </ul>
                 </li>
@@ -193,6 +197,11 @@ Compute total_num from num_within, repeat_number, and repeat_len.</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.get_version" title="base_loom_server.utils.get_version">get_version</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Return version.<strong>version</strong> from a package.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.run_shell_command" title="base_loom_server.utils.run_shell_command">run_shell_command</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Run a shell command and return the result.</p>
 </li>
 </ul>
 </div>
@@ -370,6 +379,70 @@ total_num = repeat_len * (repeat_number - 1) + num_within</p>
 <div class="mkapi-document">
 <p>Return version.<strong>version</strong> from a package.</p>
 <p>Return "?" if there the information is not available.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.utils.run_shell_command">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/utils/#base_loom_server.utils.run_shell_command" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.utils.run_shell_command" title="base_loom_server.utils.run_shell_command">run_shell_command</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">str</span></span>
+</p>
+<div class="mkapi-document">
+<p>Run a shell command and return the result.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
+The shell command to run</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle returns">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Returns</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
+stdout decoded.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">RuntimeError</span>
+ <span class="mkapi-dash">&mdash;</span>
+if the command fails.</p>
+</li>
+</ul>
+</div>
 </div>
               
             </div>

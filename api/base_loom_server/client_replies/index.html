@@ -132,6 +132,16 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.client_replies.Version">Version</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.client_replies.str_from_task">str_from_task</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.client_replies.WiFi">WiFi</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.client_replies.WiFi.create_unsupported">create_unsupported</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.client_replies.WiFi.from_manager">from_manager</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
@@ -145,6 +155,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../main/">base_loom_server.main</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../mock_streams/">base_loom_server.mock_streams</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../nmcli_wifi/">base_loom_server.nmcli_wifi</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../pattern_database/">base_loom_server.pattern_database</a>
                 </li>
@@ -304,6 +316,28 @@ The threading group size for the current pattern.</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.client_replies.Version" title="base_loom_server.client_replies.Version">Version</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Version information.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.client_replies.WiFi" title="base_loom_server.client_replies.WiFi">WiFi</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+WiFi network information.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle functions">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Functions</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.client_replies.str_from_task" title="base_loom_server.client_replies.str_from_task">str_from_task</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Return a description of the state of a task.</p>
 </li>
 </ul>
 </div>
@@ -584,6 +618,108 @@ must also not be None.</p>
 </p>
 <div class="mkapi-document">
 <p>Version information.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.client_replies.str_from_task">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/client_replies/#base_loom_server.client_replies.str_from_task" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.client_replies.str_from_task" title="base_loom_server.client_replies.str_from_task">str_from_task</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">task</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="asyncio">asyncio</span>.<span class="mkapi-tooltip" title="asyncio.futures.Future">Future</span></span><span class="mkapi-comma">, </span><span class="mkapi-arg">running_text</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">str</span></span>
+</p>
+<div class="mkapi-document">
+<p>Return a description of the state of a task.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle returns">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Returns</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
+running_text if the task is running, "" if the task succeeded,
+or str(exception) if the task failed.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.client_replies.WiFi">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/client_replies/#base_loom_server.client_replies.WiFi" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">dataclass</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.client_replies.WiFi" title="base_loom_server.client_replies.WiFi">WiFi</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">supported</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">current</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">detected</span><span class="mkapi-colon">: </span><span class="mkapi-ann">list[str]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">known</span><span class="mkapi-colon">: </span><span class="mkapi-ann">list[str]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">hotspots</span><span class="mkapi-colon">: </span><span class="mkapi-ann">list[str]</span><span class="mkapi-comma">, </span><span class="mkapi-arg">detected_reason</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">known_reason</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>WiFi network information.</p>
+<p>All network identifiers are SSIDs.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle methods">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Methods</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.client_replies.WiFi.create_unsupported" title="base_loom_server.client_replies.WiFi.create_unsupported">create_unsupported</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Make an unsupported version of WiFi.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.client_replies.WiFi.from_manager" title="base_loom_server.client_replies.WiFi.from_manager">from_manager</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Construct a WiFi from a WiFiManager.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.client_replies.WiFi.create_unsupported">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/client_replies/#base_loom_server.client_replies.WiFi.create_unsupported" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">classmethod</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.client_replies.WiFi" title="base_loom_server.client_replies.WiFi">WiFi</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.client_replies.WiFi.create_unsupported" title="base_loom_server.client_replies.WiFi.create_unsupported">create_unsupported</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.client_replies.WiFi" title="base_loom_server.client_replies.WiFi">WiFi</a></span></span>
+</p>
+<div class="mkapi-document">
+<p>Make an unsupported version of WiFi.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.client_replies.WiFi.from_manager">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/client_replies/#base_loom_server.client_replies.WiFi.from_manager" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">classmethod</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.client_replies.WiFi" title="base_loom_server.client_replies.WiFi">WiFi</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.client_replies.WiFi.from_manager" title="base_loom_server.client_replies.WiFi.from_manager">from_manager</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">wifi_manager</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="../nmcli_wifi/#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.client_replies.WiFi" title="base_loom_server.client_replies.WiFi">WiFi</a></span></span>
+</p>
+<div class="mkapi-document">
+<p>Construct a WiFi from a WiFiManager.</p>
 </div>
               
             </div>

@@ -108,6 +108,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/mock_streams/">base_loom_server.mock_streams</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/nmcli_wifi/">base_loom_server.nmcli_wifi</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/pattern_database/">base_loom_server.pattern_database</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/reduced_pattern/">base_loom_server.reduced_pattern</a>
@@ -192,7 +194,15 @@ Settings are automatically saved, and should survive rebooting the loom server.<
   This setting has no effect on any pattern files that are already loaded;
   use the "Group size" control in the <a href="../threading/">Threading</a> panel to change those.</p>
 </li>
+<li>
+<p><strong>WiFi network</strong>: specify which WiFi network the loom server runs.
+  This setting is only available if the loom server is run with a special command-line argument
+  (and typically only if the loom server is a box that is hard to connect to).</p>
+</li>
 </ul>
+<p>Choosing one of the hotspots makes the loom server run its own WiFI network
+  (to which you must connect) instead of joining your network.
+  Be very careful entering a WiFi password; if you get it wrong the loom may end up running a hotspot, or, worse in a state where you have to connect a monitor and keyboard to the server to fix the WiFi.</p>
 <p>Below the settings you will find a table showing version numbers of the main software packages.
 Please include this information in any bug reports or feature requests:</p>
 <ul>

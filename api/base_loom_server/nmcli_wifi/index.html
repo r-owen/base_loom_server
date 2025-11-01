@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>base_loom_server.nmcli_wifi - Base Loom Server</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../../../css/mkapi-material.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "base_loom_server.nmcli_wifi";
+        var mkdocs_page_input_path = "api/base_loom_server/nmcli_wifi.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+ <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> Base Loom Server
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving/">Weaving</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../settings/">Settings</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../installing/">Installing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../coding/">Coding</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../translations/">Translations</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../version_history/">Version History</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >base_loom_server</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../">base_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../app_runner/">base_loom_server.app_runner</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_loom_server/">base_loom_server.base_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_mock_loom/">base_loom_server.base_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../check_translation_files/">base_loom_server.check_translation_files</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../enums/">base_loom_server.enums</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_loom_server/">base_loom_server.example_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_mock_loom/">base_loom_server.example_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../main/">base_loom_server.main</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../mock_streams/">base_loom_server.mock_streams</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">base_loom_server.nmcli_wifi</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.nmcli_wifi.KnownNetwork">KnownNetwork</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.nmcli_wifi.run_nmcli">run_nmcli</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.nmcli_wifi.enable_autoconnect">enable_autoconnect</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.nmcli_wifi.disable_autoconnect">disable_autoconnect</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.nmcli_wifi.get_known_networks">get_known_networks</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.nmcli_wifi.scan_for_networks">scan_for_networks</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.nmcli_wifi.WiFiManager.start_updating_all">start_updating_all</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.nmcli_wifi.WiFiManager.start_updating_known">start_updating_known</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.nmcli_wifi.WiFiManager.start_updating_detected">start_updating_detected</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.nmcli_wifi.WiFiManager.forget_network">forget_network</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.nmcli_wifi.WiFiManager.basic_forget_network">basic_forget_network</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.nmcli_wifi.WiFiManager.bring_up_network">bring_up_network</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.nmcli_wifi.WiFiManager.use_network">use_network</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.nmcli_wifi.WiFiManager.call_callback_shortly">call_callback_shortly</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.nmcli_wifi.WiFiManager.call_callback">call_callback</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../pattern_database/">base_loom_server.pattern_database</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../reduced_pattern/">base_loom_server.reduced_pattern</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../rename_crowdin_files/">base_loom_server.rename_crowdin_files</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../testutils/">base_loom_server.testutils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../translations/">base_loom_server.translations</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utils/">base_loom_server.utils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../version/">base_loom_server.version</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">Base Loom Server</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API Reference</li>
+          <li class="breadcrumb-item">base_loom_server</li>
+      <li class="breadcrumb-item active">base_loom_server.nmcli_wifi</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 style="display: none;">base_loom_server.nmcli_wifi</h1><p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">module</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi" title="base_loom_server.nmcli_wifi">base_loom_server.nmcli_wifi</a></span>
+</p>
+<div class="mkapi-document">
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle classes">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Classes</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.KnownNetwork" title="base_loom_server.nmcli_wifi.KnownNetwork">KnownNetwork</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Information about a known WiFi network.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Manage WiFI using nmcli commands.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle functions">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Functions</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.run_nmcli" title="base_loom_server.nmcli_wifi.run_nmcli">run_nmcli</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Run an nmcli command and return the results.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.enable_autoconnect" title="base_loom_server.nmcli_wifi.enable_autoconnect">enable_autoconnect</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Configure a network to autoconnect.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.disable_autoconnect" title="base_loom_server.nmcli_wifi.disable_autoconnect">disable_autoconnect</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Configure a network to not autoconnect.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.get_known_networks" title="base_loom_server.nmcli_wifi.get_known_networks">get_known_networks</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Get information about known (configured) WiFi networks.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.scan_for_networks" title="base_loom_server.nmcli_wifi.scan_for_networks">scan_for_networks</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Scan for WiFi networks.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.KnownNetwork">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.KnownNetwork" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">dataclass</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.KnownNetwork" title="base_loom_server.nmcli_wifi.KnownNetwork">KnownNetwork</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">ssid</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">active</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">autoconnect</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-comma">, </span><span class="mkapi-arg">autoconnect_priority</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">is_hotspot</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>Information about a known WiFi network.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.run_nmcli">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.run_nmcli" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.run_nmcli" title="base_loom_server.nmcli_wifi.run_nmcli">run_nmcli</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">subcmd</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">fields</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Sequence">Sequence</span>[str]</span><span class="mkapi-equal"> = </span><span class="mkapi-default">()</span><span class="mkapi-comma">, </span><span class="mkapi-arg">use_sudo</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-comma">, </span><span class="mkapi-arg">timeout</span><span class="mkapi-colon">: </span><span class="mkapi-ann">float</span><span class="mkapi-equal"> = </span><span class="mkapi-default"><span class="mkapi-tooltip" title="base_loom_server.nmcli_wifi.DEFAULT_TIMEOUT">DEFAULT_TIMEOUT</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">list[dict[str, str]]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Run an nmcli command and return the results.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">subcmd</span> : 
+<span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
+The nmcli sub-command: everything after "nmcli" except
+the --fields and --mode command-line options.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">fields</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="collections.abc.Sequence">Sequence</span>[str]</span> <span class="mkapi-dash">&mdash;</span>
+The full names of fields to return. Case is ignored.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">use_sudo</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
+Run the command with sudo?</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">timeout</span> : 
+<span class="mkapi-item-type">float</span> <span class="mkapi-dash">&mdash;</span>
+Time limit for the nmcli command (seconds).</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle returns">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Returns</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">datalist</span> <span class="mkapi-dash">&mdash;</span>
+a list of data dicts, one per set of fields
+    (usually one entry per connection, but this depends on the subcmd).
+    The keys are the field name cast to lowercase.
+    The values are the data for that field, with leading and trailing whitespace stripped.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">RuntimeError</span>
+ <span class="mkapi-dash">&mdash;</span>
+if the command fails.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.enable_autoconnect">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.enable_autoconnect" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.enable_autoconnect" title="base_loom_server.nmcli_wifi.enable_autoconnect">enable_autoconnect</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">network</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.nmcli_wifi.KnownNetwork" title="base_loom_server.nmcli_wifi.KnownNetwork">KnownNetwork</a></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Configure a network to autoconnect.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.disable_autoconnect">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.disable_autoconnect" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.disable_autoconnect" title="base_loom_server.nmcli_wifi.disable_autoconnect">disable_autoconnect</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">network</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.nmcli_wifi.KnownNetwork" title="base_loom_server.nmcli_wifi.KnownNetwork">KnownNetwork</a></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Configure a network to not autoconnect.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.get_known_networks">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.get_known_networks" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.get_known_networks" title="base_loom_server.nmcli_wifi.get_known_networks">get_known_networks</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">dict[str, <a href="./#base_loom_server.nmcli_wifi.KnownNetwork" title="base_loom_server.nmcli_wifi.KnownNetwork">KnownNetwork</a>]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Get information about known (configured) WiFi networks.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle returns">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Returns</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">A dict of ssid</span> <span class="mkapi-dash">&mdash;</span>
+known network info</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">RuntimeError</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.scan_for_networks">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.scan_for_networks" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.scan_for_networks" title="base_loom_server.nmcli_wifi.scan_for_networks">scan_for_networks</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">rescan</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">list[str]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Scan for WiFi networks.</p>
+<p>Using sudo is necessary in order to see unknown networks.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.WiFiManager">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.WiFiManager" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">class</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">log</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="logging.Logger">Logger</span></span><span class="mkapi-comma">, </span><span class="mkapi-arg">callback</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Callable">Callable</span>[[<a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a>], <span class="mkapi-tooltip" title="collections.abc.Awaitable">Awaitable</span>[None]] | None</span><span class="mkapi-comma">, </span><span class="mkapi-arg">verbose</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>Manage WiFI using nmcli commands.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">log</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="logging.Logger">Logger</span></span> <span class="mkapi-dash">&mdash;</span>
+A logger.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">callback</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="collections.abc.Callable">Callable</span>[[<a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a>], <span class="mkapi-tooltip" title="collections.abc.Awaitable">Awaitable</span>[None]] | None</span> <span class="mkapi-dash">&mdash;</span>
+An function to call whenever the data changes, or None.
+If a function, it receives one argument: the WiFiManager.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">verbose</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
+Log details?</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle methods">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Methods</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.start_updating_all" title="base_loom_server.nmcli_wifi.WiFiManager.start_updating_all">start_updating_all</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Start updating detected and known networks.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.start_updating_known" title="base_loom_server.nmcli_wifi.WiFiManager.start_updating_known">start_updating_known</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Start getting information for WiFi networks.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.start_updating_detected" title="base_loom_server.nmcli_wifi.WiFiManager.start_updating_detected">start_updating_detected</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Start scanning for WiFi networks.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.forget_network" title="base_loom_server.nmcli_wifi.WiFiManager.forget_network">forget_network</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Forget the specified network.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.basic_forget_network" title="base_loom_server.nmcli_wifi.WiFiManager.basic_forget_network">basic_forget_network</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Forget a network by name (not ssid).</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.bring_up_network" title="base_loom_server.nmcli_wifi.WiFiManager.bring_up_network">bring_up_network</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Bring up the specified network.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.use_network" title="base_loom_server.nmcli_wifi.WiFiManager.use_network">use_network</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Use the specified network.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.call_callback_shortly" title="base_loom_server.nmcli_wifi.WiFiManager.call_callback_shortly">call_callback_shortly</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Schedule the callback function to be called shortly.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.call_callback" title="base_loom_server.nmcli_wifi.WiFiManager.call_callback">call_callback</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Call the callback function after purging known networks from detected networks.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.WiFiManager.start_updating_all">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.WiFiManager.start_updating_all" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.start_updating_all" title="base_loom_server.nmcli_wifi.WiFiManager.start_updating_all">start_updating_all</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">rescan</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">True</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Start updating detected and known networks.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.WiFiManager.start_updating_known">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.WiFiManager.start_updating_known" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.start_updating_known" title="base_loom_server.nmcli_wifi.WiFiManager.start_updating_known">start_updating_known</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Start getting information for WiFi networks.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.WiFiManager.start_updating_detected">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.WiFiManager.start_updating_detected" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.start_updating_detected" title="base_loom_server.nmcli_wifi.WiFiManager.start_updating_detected">start_updating_detected</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">rescan</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Start scanning for WiFi networks.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.WiFiManager.forget_network">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.WiFiManager.forget_network" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.forget_network" title="base_loom_server.nmcli_wifi.WiFiManager.forget_network">forget_network</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">ssid</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Forget the specified network.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.WiFiManager.basic_forget_network">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.WiFiManager.basic_forget_network" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.basic_forget_network" title="base_loom_server.nmcli_wifi.WiFiManager.basic_forget_network">basic_forget_network</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Forget a network by name (not ssid).</p>
+<p>Do not touch self.known_networks.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.WiFiManager.bring_up_network">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.WiFiManager.bring_up_network" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.bring_up_network" title="base_loom_server.nmcli_wifi.WiFiManager.bring_up_network">bring_up_network</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">network</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><a href="./#base_loom_server.nmcli_wifi.KnownNetwork" title="base_loom_server.nmcli_wifi.KnownNetwork">KnownNetwork</a></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Bring up the specified network.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.WiFiManager.use_network">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.WiFiManager.use_network" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.use_network" title="base_loom_server.nmcli_wifi.WiFiManager.use_network">use_network</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">ssid</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">password</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Use the specified network.</p>
+<p>The network may be any of:</p>
+<ul>
+<li>Unknown: the ssid is not checked.
+    This is the only option that pays attention to the password.</li>
+<li>A known hotspot: the network is set to auto-connect,
+    and all other known networks are set to not auto-connect.</li>
+<li>A known WiFI network: the network is set to auto-connect
+    and a suitable hotspot (if found) is set to auto-connect at a lower priority.
+    The hotspot chosen is the first one found that already has auto-connect enabled,
+    if any, else the first one found.
+    All other networks are set to not auto-connect.</li>
+</ul>
+<p>Always start by bringing up the network (except if the network is unknown,
+in which case registr it first), because if it cannot be brought up
+then no other changes should be made.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">ssid</span> : 
+<span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
+Network SSID.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">password</span> : 
+<span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
+Password. Ignored if the named network is known.
+Note: to change the password of a known network, you must
+first forget it, then connect to it as an unknown network.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.WiFiManager.call_callback_shortly">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.WiFiManager.call_callback_shortly" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.call_callback_shortly" title="base_loom_server.nmcli_wifi.WiFiManager.call_callback_shortly">call_callback_shortly</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Schedule the callback function to be called shortly.</p>
+<p>Intended to allow an update method to trigger the callback
+<em>after</em> the associated update task is done.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.nmcli_wifi.WiFiManager.call_callback">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/nmcli_wifi/#base_loom_server.nmcli_wifi.WiFiManager.call_callback" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.nmcli_wifi.WiFiManager" title="base_loom_server.nmcli_wifi.WiFiManager">WiFiManager</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.nmcli_wifi.WiFiManager.call_callback" title="base_loom_server.nmcli_wifi.WiFiManager.call_callback">call_callback</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Call the callback function after purging known networks from detected networks.</p>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../mock_streams/" class="btn btn-neutral float-left" title="base_loom_server.mock_streams"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../pattern_database/" class="btn btn-neutral float-right" title="base_loom_server.pattern_database">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../mock_streams/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../pattern_database/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../javascript/mkapi.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+</script></body>
+</html>

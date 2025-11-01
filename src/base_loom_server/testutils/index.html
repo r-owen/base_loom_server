@@ -106,6 +106,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/mock_streams/">base_loom_server.mock_streams</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/nmcli_wifi/">base_loom_server.nmcli_wifi</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/pattern_database/">base_loom_server.pattern_database</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/reduced_pattern/">base_loom_server.reduced_pattern</a>
@@ -1684,7 +1686,10 @@
 <span class="normal">1525</span>
 <span class="normal">1526</span>
 <span class="normal">1527</span>
-<span class="normal">1528</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
+<span class="normal">1528</span>
+<span class="normal">1529</span>
+<span class="normal">1530</span>
+<span class="normal">1531</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
@@ -3089,6 +3094,7 @@
                         <span class="s2">&quot;Settings&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;ShaftState&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;Version&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;WiFi&quot;</span><span class="p">,</span>
                     <span class="p">}</span>
                     <span class="k">if</span> <span class="n">expected_status_messages</span><span class="p">:</span>
                         <span class="n">expected_types</span> <span class="o">|=</span> <span class="p">{</span><span class="s2">&quot;StatusMessage&quot;</span><span class="p">}</span>
@@ -3195,6 +3201,8 @@
                                 <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">main_package_name</span> <span class="o">!=</span> <span class="s2">&quot;?&quot;</span>
                                 <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">base_loom_server_version</span> <span class="o">==</span> <span class="n">get_version</span><span class="p">(</span><span class="s2">&quot;base_loom_server&quot;</span><span class="p">)</span>
                                 <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">dtx_to_wif_version</span> <span class="o">==</span> <span class="n">get_version</span><span class="p">(</span><span class="s2">&quot;dtx_to_wif&quot;</span><span class="p">)</span>
+                            <span class="k">case</span> <span class="s2">&quot;WiFi&quot;</span><span class="p">:</span>
+                                <span class="k">assert</span> <span class="ow">not</span> <span class="n">reply</span><span class="o">.</span><span class="n">supported</span>
                             <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
                                 <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected message type </span><span class="si">{</span><span class="n">reply</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                         <span class="n">seen_types</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
