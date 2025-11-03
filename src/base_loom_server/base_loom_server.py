@@ -24,7 +24,7 @@ from .constants import LOG_NAME
 from .enums import ConnectionStateEnum, DirectionControlEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
 from .nmcli_wifi import WiFiManager
 from .pattern_database import PatternDatabase
-from .reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
+from .reduced_pattern import DEFAULT_THREAD_GROUP_SIZE, ReducedPattern, reduced_pattern_from_pattern_data
 from .translations import get_language_names, get_translation_dict
 from .utils import compute_num_within_and_repeats, compute_total_num, get_version
 
@@ -161,7 +161,7 @@ class BaseLoomServer:
             language="English",
             direction_control=direction_control,
             end1_on_right=True,
-            thread_group_size=4,
+            thread_group_size=DEFAULT_THREAD_GROUP_SIZE,
             thread_right_to_left=True,
             thread_back_to_front=True,
         )
