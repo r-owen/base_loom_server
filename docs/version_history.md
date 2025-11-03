@@ -1,32 +1,13 @@
 # Version History
 
-## 1.1b2 2025-10-29
+## 1.1 2025-11-03
 
-* WiFiManager: bring up the network before changing auto-connect.
-  That way auto-connect is left unchanged if the network cannot be brought up.
-
-## 1.1b1 2025-10-26
-
-* Add translations for new phrases.
-* Warn the user that the connection will be lost just before changing networks.
-* Remove the WiFiManager hack that kills the ndsmasq process.
-  You should disable dnsmasq in some other way.
-
-## 1.1a3 2025-10-22
-
-* Add logging and a verbose option to WiFiManager.
-* Hack bringing up a hotspot by trying to kill the dnsmasq process first.
-  This allows starting the hotspot at the time, but does not survive reboot so more work remains.
-
-## 1.1a2 2025-10-22
-
-* Fix many bugs in the WiFi support.
-
-## 1.1a1 2025-10-21
-
-* First cut at supporting WiFi using nmcli.
-  This only works on Linux-based operating systems, nmcli must be installed,
-  and the server must be able to run nmcli commands as sudo.
+* Add optional support for changing the loom server computer's WiFi connection.
+  This only works on Linux operating systems, and is disabled by default.
+  See the installation section of the documentation for details.
+* Change default threading group size to 1.
+  As always, this can be changed in the Settings panel
+  (and if you have already changed it, the value you chose will still be used).
 
 ## 1.0 2025-10-21
 
