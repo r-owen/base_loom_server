@@ -77,15 +77,7 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Version History</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#11b2-2025-10-29">1.1b2 2025-10-29</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#11b1-2025-10-26">1.1b1 2025-10-26</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#11a3-2025-10-22">1.1a3 2025-10-22</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#11a2-2025-10-22">1.1a2 2025-10-22</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#11a1-2025-10-21">1.1a1 2025-10-21</a>
+    <li class="toctree-l2"><a class="reference internal" href="#11-2025-11-03">1.1 2025-11-03</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#10-2025-10-21">1.0 2025-10-21</a>
     </li>
@@ -271,33 +263,14 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="version-history">Version History</h1>
-<h2 id="11b2-2025-10-29">1.1b2 2025-10-29</h2>
+<h2 id="11-2025-11-03">1.1 2025-11-03</h2>
 <ul>
-<li>WiFiManager: bring up the network before changing auto-connect.
-  That way auto-connect is left unchanged if the network cannot be brought up.</li>
-</ul>
-<h2 id="11b1-2025-10-26">1.1b1 2025-10-26</h2>
-<ul>
-<li>Add translations for new phrases.</li>
-<li>Warn the user that the connection will be lost just before changing networks.</li>
-<li>Remove the WiFiManager hack that kills the ndsmasq process.
-  You should disable dnsmasq in some other way.</li>
-</ul>
-<h2 id="11a3-2025-10-22">1.1a3 2025-10-22</h2>
-<ul>
-<li>Add logging and a verbose option to WiFiManager.</li>
-<li>Hack bringing up a hotspot by trying to kill the dnsmasq process first.
-  This allows starting the hotspot at the time, but does not survive reboot so more work remains.</li>
-</ul>
-<h2 id="11a2-2025-10-22">1.1a2 2025-10-22</h2>
-<ul>
-<li>Fix many bugs in the WiFi support.</li>
-</ul>
-<h2 id="11a1-2025-10-21">1.1a1 2025-10-21</h2>
-<ul>
-<li>First cut at supporting WiFi using nmcli.
-  This only works on Linux-based operating systems, nmcli must be installed,
-  and the server must be able to run nmcli commands as sudo.</li>
+<li>Add optional support for changing the loom server computer's WiFi connection.
+  This only works on Linux operating systems, and is disabled by default.
+  See the installation section of the documentation for details.</li>
+<li>Change default threading group size to 1.
+  As always, this can be changed in the Settings panel
+  (and if you have already changed it, the value you chose will still be used).</li>
 </ul>
 <h2 id="10-2025-10-21">1.0 2025-10-21</h2>
 <ul>
