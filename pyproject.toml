@@ -11,10 +11,10 @@ dynamic = ["version"]
 description = "Base package for web servers that control dobby multi-shaft looms"
 readme = "README.md"
 dependencies = [
-  "aiosqlite >= 0.20",
-  "dtx_to_wif ~= 4.1",
-  "fastapi[standard] ~= 0.115",
-  "pyserial-asyncio ~= 0.6",
+  "aiosqlite >= 0.21",
+  "dtx_to_wif ~= 4.4",
+  "fastapi[standard] ~= 0.120",
+  "pyserial-asyncio-fast ~= 0.16",
 ]
 authors = [
   { name="Russell Owen", email="r3owen@gmail.com" },

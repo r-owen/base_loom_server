@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Any, Self
 from dtx_to_wif import read_pattern_data
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.websockets import WebSocketState
-from serial_asyncio import open_serial_connection  # type: ignore[import-untyped]
+from serial_asyncio_fast import open_serial_connection
 
 from . import client_replies
 from .constants import LOG_NAME
