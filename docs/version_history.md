@@ -1,5 +1,9 @@
 # Version History
 
+## 1.1.1 2025-11-07
+
+* Modernize dependencies, including using pyserial-asyncio-fast instead of the older pyserial-asyncio.
+
 ## 1.1 2025-11-03
 
 * Add optional support for changing the loom server computer's WiFi connection.
