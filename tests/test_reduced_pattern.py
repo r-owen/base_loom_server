@@ -22,6 +22,8 @@ EXPECTED_DEFAULTS = dict(
     end_repeat_number=1,
 )
 
+EXPECTED_PICK_0 = Pick(shaft_word=0, color=0)
+
 
 def shaft_set_from_reduced(reduced_pattern: ReducedPattern, pick_number: int) -> set[int]:
     """Get the shaft set for a specified 1-based pick_number."""
@@ -330,7 +332,7 @@ def test_pick_number() -> None:
 
         num_picks = len(reduced_pattern.picks)
 
-        # Test check_pick_number and set_current_pick_number
+        # Test check_pick_number, set_current_pick_number, and get_pick
         # on some bad values
         assert reduced_pattern.pick_number == 0
         assert reduced_pattern.pick_repeat_number == 1
@@ -339,16 +341,25 @@ def test_pick_number() -> None:
                 reduced_pattern.check_pick_number(pick_number)
             with pytest.raises(IndexError):
                 reduced_pattern.set_current_pick_number(pick_number)
+            with pytest.raises(IndexError):
+                reduced_pattern.get_pick(pick_number=pick_number)
         assert reduced_pattern.pick_number == 0
         assert reduced_pattern.pick_repeat_number == 1
 
-        # Test check_pick_number and set_current_pick_number
-        # on some good values.
+        # Test check_pick_number and set_current_pick_number,
+        # get_pick, and get_current_pick on some good values.
         for pick_number in (0, 1, num_picks - 1, num_picks):
             reduced_pattern.check_pick_number(pick_number)
             reduced_pattern.set_current_pick_number(pick_number)
             assert reduced_pattern.pick_number == pick_number
             assert reduced_pattern.pick_repeat_number == 1
+            pick = reduced_pattern.get_pick(pick_number=pick_number)
+            current_pick = reduced_pattern.get_current_pick()
+            assert pick == current_pick
+            if pick_number == 0:
+                assert pick == EXPECTED_PICK_0
+            else:
+                assert pick == reduced_pattern.picks[pick_number - 1]
 
         # Go forward into repeat 3
         expected_pick_number = 0
@@ -369,6 +380,12 @@ def test_pick_number() -> None:
             assert returned_pick_number == expected_pick_number
             assert reduced_pattern.pick_number == expected_pick_number
             assert reduced_pattern.pick_repeat_number == expected_repeat_number
+            pick = reduced_pattern.get_pick(pick_number=returned_pick_number)
+            assert pick == reduced_pattern.get_current_pick()
+            if returned_pick_number == 0:
+                assert pick == EXPECTED_PICK_0
+            else:
+                assert pick == reduced_pattern.picks[returned_pick_number - 1]
 
         # Go backwards to the beginning
         while True:
