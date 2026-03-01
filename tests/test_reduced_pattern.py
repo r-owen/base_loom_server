@@ -4,6 +4,7 @@ import dataclasses
 import pytest
 from dtx_to_wif import read_pattern_file
 
+from base_loom_server.compute_tabby import compute_tabby_shaft_words
 from base_loom_server.reduced_pattern import (
     NUM_ITEMS_FOR_REPEAT_SEPARATOR,
     Pick,
@@ -62,6 +63,11 @@ def test_basics() -> None:
             assert pruned_shaft_set
             shaft = max(pruned_shaft_set) if len(pruned_shaft_set) > 1 else pruned_shaft_set.pop()
             assert shaft - 1 == reduced_pattern.threading[end_number0 - 1]
+
+        assert len(reduced_pattern.tabby_picks) == 2
+        expected_tabby_shaft_words = compute_tabby_shaft_words(threading=reduced_pattern.threading)
+        for i in range(2):
+            assert reduced_pattern.tabby_picks[i].shaft_word == expected_tabby_shaft_words[i]
 
         # Test ReducedPattern.picks
         if full_pattern.liftplan:

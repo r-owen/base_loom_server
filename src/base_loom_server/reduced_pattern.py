@@ -10,7 +10,9 @@ __all__ = [
 
 import copy
 import dataclasses
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, ClassVar
+
+from .compute_tabby import compute_tabby_shaft_words
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -63,6 +65,12 @@ class ReducedPattern:
 
     Picks are accessed by pick number, which is 1-based.
     0 indicates that nothing has been woven.
+    Similarly for tabby picks and warp ends.
+
+    pick_number and end_number0/1 are within one pattern repeat,
+    and repeats are tracked with related attributes.
+    tabby_pick_number is different, since repeats of tabby are not tracked
+    (as uninteresting), the value is a "total" pick number.
     """
 
     type: str = dataclasses.field(init=False, default="ReducedPattern")
@@ -71,9 +79,13 @@ class ReducedPattern:
     warp_colors: list[int]
     threading: list[int]
     picks: list[Pick]
+    tabby_picks: list[Pick]
+    num_shafts: int
     # Keep track of where we are in weaving
     pick_number: int = 0
     pick_repeat_number: int = 1
+    # Keep track of where we are in weaving tabby
+    tabby_pick_number: int = 0
     # keep track of where we are in threading
     end_number0: int = 0
     end_number1: int = 0
@@ -83,13 +95,16 @@ class ReducedPattern:
     separate_weaving_repeats: bool = False
     separate_threading_repeats: bool = False
 
+    tabby_color: ClassVar[int] = 0
+
     @classmethod
     def from_dict(cls, datadict: dict[str, Any]) -> ReducedPattern:
         """Construct a ReducedPattern from a dict."""
         # Make a copy, so the caller doesn't see the picks field change
         datadict = copy.deepcopy(datadict)
         pop_and_check_type_field(typename="ReducedPattern", datadict=datadict)
-        datadict["picks"] = [Pick.from_dict(pickdict) for pickdict in datadict["picks"]]
+        for picks_name in ("picks", "tabby_picks"):
+            datadict[picks_name] = [Pick.from_dict(pickdict) for pickdict in datadict[picks_name]]
         return cls(**datadict)
 
     @property
@@ -259,6 +274,24 @@ class ReducedPattern:
             return Pick(shaft_word=0, color=0)
         return self.picks[pick_number - 1]
 
+    def get_tabby_pick(self, pick_number: int) -> Pick:
+        """Get the specified tabby pick.
+
+        Args:
+            pick_number: Tabby pick number; must be non-negative
+
+        Raises:
+            IndexError if pick_number < 0
+        """
+        if pick_number < 0:
+            raise IndexError(f"{pick_number=} must be >= 0")
+
+        if pick_number == 0:
+            return Pick(shaft_word=0, color=0)
+
+        pick_index = (pick_number + 1) % 2  # num->index: 1->1, 2->0, 3->1, 4->0, ...
+        return self.tabby_picks[pick_index]
+
     def get_threading_shaft_word(self) -> int:
         """Get current threading shaft word."""
         if self.end_number0 == 0:
@@ -300,6 +333,22 @@ class ReducedPattern:
             direction_forward=direction_forward
         )
         return self.pick_number
+
+    def increment_tabby_pick_number(self, *, direction_forward: bool) -> int:
+        """Increment pick_number in the specified direction.
+
+        Return the new tabby pick number.
+
+        Raises:
+            IndexError: If trying to back up past the start of weaving.
+        """
+        delta = 1 if direction_forward else -1
+        new_tabby_pick_number = self.tabby_pick_number + delta
+        if new_tabby_pick_number < 0:
+            raise IndexError(f"{new_tabby_pick_number=} must be >= 0")
+
+        self.tabby_pick_number = new_tabby_pick_number
+        return self.tabby_pick_number
 
     def set_current_end_number(
         self,
@@ -405,6 +454,7 @@ def reduced_pattern_from_pattern_data(name: str, data: dtx_to_wif.PatternData) -
     num_ends = max(data.threading.keys())
     end_numbers = list(range(1, num_ends + 1))
     threading = [_smallest_shaft(data.threading.get(end_number, {0})) - 1 for end_number in end_numbers]
+    max_threaded_shaft = max(threading)
 
     num_picks = max(data.liftplan.keys()) if data.liftplan else max(data.treadling.keys())
     pick_numbers = list(range(1, num_picks + 1))
@@ -436,12 +486,20 @@ def reduced_pattern_from_pattern_data(name: str, data: dtx_to_wif.PatternData) -
         for shaft_word, weft_color in zip(shaft_words, weft_colors, strict=True)
     ]
 
+    tabby_shaft_words = compute_tabby_shaft_words(threading)
+    tabby_picks = [
+        Pick(shaft_word=tabby_shaft_word, color=ReducedPattern.tabby_color)
+        for tabby_shaft_word in tabby_shaft_words
+    ]
+
     return ReducedPattern(
         color_table=color_strs,
         name=name,
         warp_colors=warp_colors,
         threading=threading,
         picks=picks,
+        tabby_picks=tabby_picks,
+        num_shafts=max(max_shaft_raised, max_threaded_shaft),
         separate_weaving_repeats=len(picks) > NUM_ITEMS_FOR_REPEAT_SEPARATOR,
         separate_threading_repeats=len(threading) > NUM_ITEMS_FOR_REPEAT_SEPARATOR,
     )
