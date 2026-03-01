@@ -12,8 +12,9 @@
 <body>
     <div class="flex-row" id="mode">
         <div>
-            <button class="tab_button" id="mode_weaving">{Weaving}</button>
-            <button class="tab_button" id="mode_threading">{Threading}</button>
+            <button class="tab_button" id="mode_weave_pattern">{Weave}</button>
+            <button class="tab_button" id="mode_weave_tabby">{Plain Weave}</button>
+            <button class="tab_button" id="mode_thread">{Thread}</button>
             <button class="tab_button" id="mode_settings">{Settings}</button>
             <a href="{help_url}" id="help_link" target="_blank" style="display:none;">{?}</a>
         </div>
@@ -100,28 +101,15 @@
         </form>
     </div>
 
-    <div class="canvas-grid weaving-grid">
-        <div id="pattern_canvas_container">
+    <div class="canvas-grid thread-grid weave-pattern-grid weave-tabby-grid">
+        <div id="main_canvas_container">
             <div>
-                <canvas id="pattern_canvas"></canvas>
+                <canvas id="main_canvas"></canvas>
             </div>
         </div>
     </div>
 
-    <div class="canvas-grid threading-grid" style="display: none;">
-        <div id="threading_canvas_container">
-            <div>
-                <canvas id="threading_canvas"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div class="flex-row weaving-flex">
-        <label for="weave_direction" id=""weave_direction_label">{Direction}</label>
-        <button type="button" class="toggle_button" id="weave_direction">?</button>        
-    </div>
-
-    <div class="flex-row threading-flex">
+    <div class="flex-row thread-flex">
         <label for="thread_direction">{Direction}</label>
         <button type="button" class="toggle_button" id="thread_direction">?</button>
         <div>
@@ -141,7 +129,12 @@
         </div>
     </div>
 
-    <div class="flex-row threading-flex" id="end_number_div" style="display: none;">
+    <div class="flex-row weave-pattern-flex weave-tabby-flex">
+        <label for="weave_direction" id="weave_direction_label">{Direction}</label>
+        <button type="button" class="toggle_button" id="weave_direction">?</button>        
+    </div>
+
+    <div class="flex-row thread-flex" id="end_number_div" style="display: none;">
         <label id="end_label">{Warp threads}</label>
         <label id="total_end_number0"></label>
         <label> - </label>
@@ -155,7 +148,7 @@
         <label id="end_repeat_number"></label>
     </div>
 
-    <div class="flex-row weaving-flex" id="pick_number_div">
+    <div class="flex-row weave-pattern-flex" id="pick_number_div">
         <label>{Weft thread}</label>
         <label id="total_pick_number"></label>
         <label id="pick_number"></label>
@@ -163,10 +156,16 @@
         <label id="picks_per_repeat">?</label>
         <label>{repeat}</label>
         <label id="pick_repeat_number"></label>
-        <canvas id="pick_color"></canvas>
+        <canvas class="pick-color-canvas" id="pick_color"></canvas>
     </div>
 
-    <form class="threading-flex" id="jump_to_end_form" style="display: none;">
+    <div class="flex-row weave-tabby-flex" id="tabby_pick_number_div" style="display: none";>
+        <label>{Weft thread}</label>
+        <label id="tabby_pick_number"></label>
+        <!-- <canvas class="pick-color-canvas" id="tabby_pick_color"></canvas> -->
+    </div>
+
+    <form class="thread-flex" id="jump_to_end_form" style="display: none;">
         <div class="flex-row">
             <label for="jump_total_end_number0">{Jump to warp thread}</label>
             <input type="text" size="5" id="jump_total_end_number0">
@@ -175,7 +174,7 @@
         </div>
     </form>
 
-    <form class="weaving-flex" id="jump_to_pick_form">
+    <form class="weave-pattern-flex" id="jump_to_pick_form">
         <div class="flex-row">
             <label for="jump_total_pick_number">{Jump to weft thread}</label>
             <input type="text" size="5" id="jump_total_pick_number">
@@ -184,12 +183,21 @@
         </div>
     </form>
 
-    <div class="flex-row threading-flex" id="separate_threading_repeats_grid" style="display: none;">
+    <form class="weave-tabby-flex" id="jump_to_tabby_pick_form">
+        <div class="flex-row">
+            <label for="jump_tabby_pick_number">{Jump to weft thread}</label>
+            <input type="text" size="5" id="jump_tabby_pick_number">
+            <button type="submit" id="jump_to_tabby_pick_submit">{Jump}</button>
+            <button type="button" id="jump_to_tabby_pick_reset">{Reset}</button>
+        </div>
+    </form>
+
+    <div class="flex-row thread-flex" id="separate_threading_repeats_grid" style="display: none;">
         <label for="separate_threading_repeats">{Separate repeats?}</label>
         <input type="checkbox" id="separate_threading_repeats" value="1">
     </div>
 
-    <div class="flex-row weaving-flex" id="separate_weaving_repeats_grid">
+    <div class="flex-row weave-pattern-flex" id="separate_weaving_repeats_grid">
         <label for="separate_weaving_repeats">{Separate repeats?}</label>
         <input type="checkbox" id="separate_weaving_repeats">
     </div>

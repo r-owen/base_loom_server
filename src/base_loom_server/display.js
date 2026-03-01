@@ -20,6 +20,8 @@ const WeavingThreadDisplayGap = 1
 
 const WeavingThreadHalfWidth = 10
 
+const TabbyPickColor = "lightgray"
+
 const ShaftRaisedHeight = 20
 const ShaftLoweredHeight = 5
 const ShaftMinWidth = 5
@@ -42,6 +44,10 @@ const NullPickData = {
     "total_pick_number": null,
     "pick_number": null,
     "pick_repeat_number": null,
+}
+
+const NullTabbyPickData = {
+    "tabby_pick_number": null,
 }
 
 const NullSeparateData = {
@@ -82,9 +88,10 @@ const DirectionControlEnum = {
 }
 
 const ModeEnum = {
-    "WEAVING": 1,
-    "THREADING": 2,
-    "SETTINGS": 3,
+    "WEAVE_PATTERN": 1,
+    "WEAVE_TABBY": 2,
+    "THREAD": 3,
+    "SETTINGS": 4,
 }
 
 const SeverityColors = {
@@ -308,10 +315,7 @@ class Future {
 /*
 A minimal weaving pattern, including display code.
 
-Javascript version of the python class of the same name,
-with the same attributes but different methods.
-
-Args:
+Javascript version of the python class of the same name, with the same attributes.Args:
     datadict: Data from a Python ReducedPattern dataclass.
 */
 class ReducedPattern {
@@ -321,11 +325,18 @@ class ReducedPattern {
         this.warp_colors = datadict.warp_colors
         this.threading = datadict.threading
         this.picks = []
+        this.tabby_picks = []
+        this.pick_number = datadict.pick_number
+        this.pick_repeat_number = datadict.pick_repeat_number
+        this.tabby_pick_number = datadict.tabby_pick_number
         this.end_number0 = datadict.end_number0
         this.end_number1 = datadict.end_number1
         this.repeat_end_number = datadict.repeat_end_number
         for (let pickdata of datadict.picks) {
             this.picks.push(new Pick(pickdata))
+        }
+        for (let pickdata of datadict.tabby_picks) {
+            this.tabby_picks.push(new Pick(pickdata))
         }
     }
 }
@@ -358,9 +369,11 @@ class LoomClient {
         this.statusMessage = null
         this.currentEndData = NullEndData
         this.currentPickData = NullPickData
+        this.currentTabbyPickData = NullTabbyPickData
         this.direction = NullDirectionData
         this.jumpEndData = NullEndData
         this.jumpPickData = NullPickData
+        this.jumpTabbyPickData = NullTabbyPickData
         this.separateThreadingRepeatsData = NullSeparateData
         this.separateWeavingRepeatsData = NullSeparateData
         this.versionData = NullVersionData
@@ -409,6 +422,12 @@ class LoomClient {
         let jumpToPickResetElt = document.getElementById("jump_to_pick_reset")
         jumpToPickResetElt.addEventListener("click", this.handleJumpToPickReset.bind(this))
 
+        let jumpToTabbyPickForm = document.getElementById("jump_to_tabby_pick_form")
+        jumpToTabbyPickForm.addEventListener("submit", this.handleJumpToTabbyPickSubmit.bind(this))
+
+        let jumpToTabbyPickResetElt = document.getElementById("jump_to_tabby_pick_reset")
+        jumpToTabbyPickResetElt.addEventListener("click", this.handleJumpToTabbyPickReset.bind(this))
+
         let jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
         // Select all text on focus, to make it easier to try different jump values
         // (without this, you are likely to append digits, which is rarely what you want)
@@ -418,6 +437,10 @@ class LoomClient {
         let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
         jumpTotalPickNumberElt.addEventListener("focus", this.selectOnInput.bind(this, jumpTotalPickNumberElt))
         jumpTotalPickNumberElt.addEventListener("input", this.handleJumpToPickInput.bind(this))
+
+        let jumpTabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
+        jumpTabbyPickNumberElt.addEventListener("focus", this.selectOnInput.bind(this, jumpTabbyPickNumberElt))
+        jumpTabbyPickNumberElt.addEventListener("input", this.handleJumpToTabbyPickInput.bind(this))
 
         let loomNameInputElt = document.getElementById("setting_loom_name_input")
         // Select all text on focus, to make it easier to type a new name
@@ -455,14 +478,17 @@ class LoomClient {
         let settingThreadGroupSizeElt = document.getElementById("setting_thread_group_size")
         settingThreadGroupSizeElt.addEventListener("change", this.sendSettings.bind(this))
 
-        let tabThreadingElt = document.getElementById("mode_threading")
-        tabThreadingElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.THREADING))
-
         let tabSettingsElt = document.getElementById("mode_settings")
         tabSettingsElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.SETTINGS))
 
-        let tabWeavingElt = document.getElementById("mode_weaving")
-        tabWeavingElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.WEAVING))
+        let tabThreadElt = document.getElementById("mode_thread")
+        tabThreadElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.THREAD))
+
+        let tabWeavePatternElt = document.getElementById("mode_weave_pattern")
+        tabWeavePatternElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.WEAVE_PATTERN))
+
+        let tabWeaveTabbyElt = document.getElementById("mode_weave_tabby")
+        tabWeaveTabbyElt.addEventListener("click", this.handleMode.bind(this, ModeEnum.WEAVE_TABBY))
 
         let threadDirectionElt = document.getElementById("thread_direction")
         threadDirectionElt.addEventListener("click", this.handleToggleDirection.bind(this))
@@ -503,8 +529,8 @@ class LoomClient {
 
         this.handleDarkLightTheme()
 
-        screen.orientation.addEventListener("change", this.displayCanvases.bind(this))
-        window.addEventListener("resize", (this.displayCanvases.bind(this)))
+        screen.orientation.addEventListener("change", this.displayMainCanvas.bind(this))
+        window.addEventListener("resize", (this.displayMainCanvas.bind(this)))
     }
 
     /*
@@ -527,18 +553,6 @@ class LoomClient {
     }
 
     /*
-    Display the canvases that should be visible
-    */
-    displayCanvases(event) {
-        this.displayShaftState()
-        if (this.mode == ModeEnum.THREADING) {
-            this.displayThreadingPattern(event)
-        } else if (this.mode == ModeEnum.WEAVING) {
-            this.displayWeavingPattern(event)
-        }
-    }
-
-    /*
     Display threading and weaving direction (thread/unthread, weave/unweave).
     */
     displayDirection() {
@@ -547,8 +561,7 @@ class LoomClient {
         }
         let threadDirectionElt = document.getElementById("thread_direction")
         let weaveDirectionElt = document.getElementById("weave_direction")
-        let patternCanvasElt = document.getElementById("pattern_canvas")
-        let threadingCanvasElt = document.getElementById("threading_canvas")
+        let mainCanvasElt = document.getElementById("main_canvas")
         let threadArrowPointsLeft = this.settings.thread_right_to_left
         if (!this.direction.forward) {
             threadArrowPointsLeft = !threadArrowPointsLeft
@@ -562,8 +575,7 @@ class LoomClient {
             weaveDirectionElt.classList.remove("direction_undo")
             threadDirectionElt.classList.add("direction_do")
             weaveDirectionElt.classList.add("direction_do")
-            patternCanvasElt.classList.remove("direction_undo")
-            threadingCanvasElt.classList.remove("direction_undo")
+            mainCanvasElt.classList.remove("direction_undo")
         } else {
             threadDirectionElt.textContent = `${threadArrow} ${t("Unthread")}`
             weaveDirectionElt.textContent = t("Unweave")
@@ -572,8 +584,7 @@ class LoomClient {
             threadDirectionElt.classList.add("direction_undo")
             weaveDirectionElt.classList.add("direction_undo")
             document.body.classList.add("direction_undo")
-            patternCanvasElt.classList.add("direction_undo")
-            threadingCanvasElt.classList.add("direction_undo")
+            mainCanvasElt.classList.add("direction_undo")
         }
     }
 
@@ -619,13 +630,28 @@ class LoomClient {
     displayJumpPick() {
         let totalPickNumberElt = document.getElementById("jump_total_pick_number")
         if (!this.currentPattern) {
-            this.jumpPickNumber = NullPickData
+            this.jumpPickData = NullPickData
         }
-        totalPickNumberElt.value = nullToDefault(this.jumpPickNumber.total_pick_number)
+        totalPickNumberElt.value = nullToDefault(this.jumpPickData.total_pick_number)
         if (this.currentPattern) {
             this.displayWeavingPattern()
         }
         this.handleJumpToPickInput(null)
+    }
+
+    /*
+    Display the jump pick and repeat
+    */
+    displayJumpTabbyPick() {
+        let tabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
+        if (!this.currentPattern) {
+            this.jumpTabbyPickData = NullTabbyPickData
+        }
+        tabbyPickNumberElt.value = nullToDefault(this.jumpTabbyPickData.tabby_pick_number)
+        if (this.currentPattern) {
+            this.displayTabbyPattern()
+        }
+        this.handleJumpToTabbyPickInput(null)
     }
 
     /*
@@ -661,6 +687,20 @@ class LoomClient {
     }
 
     /*
+    Display the canvases that should be visible
+    */
+    displayMainCanvas(event) {
+        this.displayShaftState()
+        if (this.mode == ModeEnum.THREAD) {
+            this.displayThreadingPattern(event)
+        } else if (this.mode == ModeEnum.WEAVE_PATTERN) {
+            this.displayWeavingPattern(event)
+        } else if (this.mode == ModeEnum.WEAVE_TABBY) {
+            this.displayTabbyPattern(event)
+        }
+    }
+
+    /*
     Display the current mode
     */
     displayMode() {
@@ -672,62 +712,106 @@ class LoomClient {
 
         let elt = null
         let modeButton = null
-        if (this.mode == ModeEnum.WEAVING) {
-            // weaving
-            modeButton = document.getElementById("mode_weaving")
-            for (const elt of document.getElementsByClassName("threading-flex")) {
-                elt.style.display = "none"
-            }
-            for (const elt of document.getElementsByClassName("threading-grid")) {
-                elt.style.display = "none"
-            }
+        if (this.mode == ModeEnum.WEAVE_PATTERN) {
+            modeButton = document.getElementById("mode_weave_pattern")
             for (const elt of document.getElementsByClassName("settings-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("thread-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("thread-grid")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weave-tabby-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weave-tabby-grid")) {
                 elt.style.display = "none"
             }
             for (const elt of document.getElementsByClassName("not-settings-flex")) {
                 elt.style.display = "flex"
             }
-            for (const elt of document.getElementsByClassName("weaving-flex")) {
+            for (const elt of document.getElementsByClassName("weave-pattern-flex")) {
                 elt.style.display = "flex"
             }
-            for (const elt of document.getElementsByClassName("weaving-grid")) {
+            for (const elt of document.getElementsByClassName("weave-pattern-grid")) {
                 elt.style.display = "grid"
             }
             this.displayWeavingPattern()
-        } else if (this.mode == ModeEnum.THREADING) {
-            modeButton = document.getElementById("mode_threading")
-            for (const elt of document.getElementsByClassName("weaving-flex")) {
-                elt.style.display = "none"
-            }
-            for (const elt of document.getElementsByClassName("weaving-grid")) {
-                elt.style.display = "none"
-            }
+        } else if (this.mode == ModeEnum.WEAVE_TABBY) {
+            modeButton = document.getElementById("mode_weave_tabby")
             for (const elt of document.getElementsByClassName("settings-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("thread-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("thread-grid")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weave-pattern-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weave-pattern-grid")) {
                 elt.style.display = "none"
             }
             for (const elt of document.getElementsByClassName("not-settings-flex")) {
                 elt.style.display = "flex"
             }
-            for (const elt of document.getElementsByClassName("threading-flex")) {
+            for (const elt of document.getElementsByClassName("weave-tabby-flex")) {
                 elt.style.display = "flex"
             }
-            for (const elt of document.getElementsByClassName("threading-grid")) {
+            for (const elt of document.getElementsByClassName("weave-tabby-grid")) {
+                elt.style.display = "grid"
+            }
+            this.displayTabbyPattern()
+        } else if (this.mode == ModeEnum.THREAD) {
+            modeButton = document.getElementById("mode_thread")
+            for (const elt of document.getElementsByClassName("settings-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weave-pattern-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weave-pattern-grid")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weave-tabby-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weave-tabby-grid")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("not-settings-flex")) {
+                elt.style.display = "flex"
+            }
+            for (const elt of document.getElementsByClassName("thread-flex")) {
+                elt.style.display = "flex"
+            }
+            for (const elt of document.getElementsByClassName("thread-grid")) {
                 elt.style.display = "grid"
             }
             this.displayDirection()  // to show correct direction arrow
             this.displayThreadingPattern()
         } else if (this.mode == ModeEnum.SETTINGS) {
             modeButton = document.getElementById("mode_settings")
-            for (const elt of document.getElementsByClassName("weaving-flex")) {
+            for (const elt of document.getElementsByClassName("thread-flex")) {
                 elt.style.display = "none"
             }
-            for (const elt of document.getElementsByClassName("weaving-grid")) {
+            for (const elt of document.getElementsByClassName("thread-grid")) {
                 elt.style.display = "none"
             }
-            for (const elt of document.getElementsByClassName("threading-flex")) {
+            for (const elt of document.getElementsByClassName("weave-pattern-flex")) {
                 elt.style.display = "none"
             }
-            for (const elt of document.getElementsByClassName("threading-grid")) {
+            for (const elt of document.getElementsByClassName("weave-pattern-grid")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weave-tabby-flex")) {
+                elt.style.display = "none"
+            }
+            for (const elt of document.getElementsByClassName("weave-tabby-grid")) {
                 elt.style.display = "none"
             }
             for (const elt of document.getElementsByClassName("not-settings-flex")) {
@@ -748,17 +832,28 @@ class LoomClient {
     Display the current pick and repeat.
     */
     displayPick() {
-        let totalPicksElt = document.getElementById("total_pick_number")
+        let totalPickElt = document.getElementById("total_pick_number")
         let pickNumberElt = document.getElementById("pick_number")
         let picksPerRepeatElt = document.getElementById("picks_per_repeat")
         let repeatNumberElt = document.getElementById("pick_repeat_number")
         if (!this.currentPattern) {
             this.currentPickData = NullPickData
         }
-        totalPicksElt.textContent = nullToDefault(this.currentPickData.total_pick_number)
+        totalPickElt.textContent = nullToDefault(this.currentPickData.total_pick_number)
         pickNumberElt.textContent = "(" + nullToDefault(this.currentPickData.pick_number)
         picksPerRepeatElt.textContent = nullToDefault(this.currentPattern.picks.length, "?") + ","
         repeatNumberElt.textContent = nullToDefault(this.currentPickData.pick_repeat_number) + ")"
+    }
+
+    /*
+    Display the current tabby pick.
+    */
+    displayTabbyPick() {
+        let tabbyPickElt = document.getElementById("tabby_pick_number")
+        if (!this.currentPattern) {
+            this.currentTabbyPickData = NullTabbyPickData
+        }
+        tabbyPickElt.textContent = nullToDefault(this.currentTabbyPickData.tabby_pick_number)
     }
 
     /*
@@ -917,16 +1012,16 @@ class LoomClient {
     }
 
     /*
-    Display a portion of threading on the "threading_canvas" element.
+    Display a portion of threading on the "main_canvas" element.
      
     Center the jump or current range horizontally.
     */
     displayThreadingPattern() {
-        if (this.mode != ModeEnum.THREADING) {
+        if (this.mode != ModeEnum.THREAD) {
             return
         }
 
-        let canvas = document.getElementById("threading_canvas")
+        let canvas = document.getElementById("main_canvas")
         let ctx = canvas.getContext("2d")
 
         // Make resizing work better,
@@ -936,7 +1031,7 @@ class LoomClient {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-        let rect = document.getElementById("threading_canvas_container").getBoundingClientRect()
+        let rect = document.getElementById("main_canvas_container").getBoundingClientRect()
         canvas.width = asOddDecreased(rect.width)
         canvas.height = asOddDecreased(rect.height)
 
@@ -1136,84 +1231,177 @@ class LoomClient {
         }
     }
 
-    displayWiFi() {
-        let wifiDiv = document.getElementById("wifi_div")
-        if (!this.wifiData.supported) {
-            wifiDiv.style.display = "none"
+    /*
+    Display tabby pattern on the "main_canvas" element.
+ 
+    A no-op if not in WEAVE_TABBY mode.
+     
+    Center the jump or current pick vertically.
+    */
+    displayTabbyPattern() {
+        if (this.mode != ModeEnum.WEAVE_TABBY) {
+            return
+        }
+        const end1OnRight = this.settings.end1_on_right
+
+        // let pickColorCanvas = document.getElementById("tabby_pick_color")
+        let canvas = document.getElementById("main_canvas")
+
+        let ctx = canvas.getContext("2d")
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        // let pickColorCtx = pickColorCanvas.getContext("2d")
+        // pickColorCtx.clearRect(0, 0, pickColorCanvas.width, pickColorCanvas.height)
+
+        // Make resizing work better,
+        // and, in the case of height, prevent the height growing with each new shed.
+        canvas.width = 150
+        canvas.height = 100
+
+        let rect = document.getElementById("main_canvas_container").getBoundingClientRect()
+        canvas.width = asOddDecreased(rect.width)
+        canvas.height = asOddDecreased(rect.height)
+
+        if ((this.settings == null)
+            || (this.currentTabbyPickData.tabby_pick_number == null)
+            || !this.currentPattern) {
+            // Now that it's the right size, leave it blank
             return
         }
 
-        wifiDiv.style.display = "block"
-        let wifiSelect = document.getElementById("wifi_select")
-        var optgroups = wifiSelect.getElementsByTagName('optgroup')
-        while (optgroups.length > 0) {
-            wifiSelect.removeChild(optgroups[0])
+        const numEnds = this.currentPattern.warp_colors.length
+        const numPicks = 2
+
+        const isJump = this.jumpTabbyPickData.tabby_pick_number != null
+        const centerPickNumber = isJump ? this.jumpTabbyPickData.tabby_pick_number : this.currentTabbyPickData.tabby_pick_number
+
+        if (centerPickNumber == null) {
+            return
         }
 
-        let optionGroup = document.createElement('optgroup')
-        optionGroup.label = t("Known Networks")
-        wifiSelect.options.add(optionGroup)
-        if (this.wifiData.known_reason == "") {
-            for (let ssid of this.wifiData.known) {
-                let option = new Option(ssid)
-                optionGroup.appendChild(option)
+        const blockSize = asOddDecreased(Math.min(
+            Math.max(Math.round(canvas.width / numEnds), MinBlockSize),
+            Math.max(Math.round(canvas.height / numPicks), MinBlockSize),
+            MaxBlockSize))
+
+        const numEndsToShow = Math.min(numEnds, Math.floor(canvas.width / blockSize))
+        const numPicksToShow = asOddDecreased(Math.ceil(canvas.height / blockSize))
+
+        let warpGradients = {}
+        for (let i = 0; i < numEndsToShow; i++) {
+            const threadColor = this.currentPattern.color_table[this.currentPattern.warp_colors[i]]
+            const xStart = end1OnRight ? canvas.width - blockSize * (i + 1) : blockSize * i
+            let warpGradient = ctx.createLinearGradient(xStart + WeavingThreadDisplayGap, 0, xStart + blockSize - (2 * WeavingThreadDisplayGap), 0)
+            warpGradient.addColorStop(0, "lightgray")
+            warpGradient.addColorStop(0.2, threadColor)
+            warpGradient.addColorStop(0.8, threadColor)
+            warpGradient.addColorStop(1, "darkgray")
+            warpGradients[i] = warpGradient
+        }
+
+        let yOffset = Math.floor((canvas.height - (blockSize * numPicksToShow)) / 2)
+
+        // Set initial totalPicknum and pickNum to 1 fewer than the first row to display,
+        // then increment the values at the start of the display loop.
+        let tabbyPickNumber = centerPickNumber - ((numPicksToShow - 1) / 2) - 1
+
+        const centerRowIndex = (numPicksToShow - 1) / 2
+        const lastColoredRowIndex = isJump ? centerRowIndex - 1 : centerRowIndex
+
+        for (let rowIndex = 0; rowIndex < numPicksToShow; rowIndex++) {
+            if ((centerPickNumber == 0) && (rowIndex == centerRowIndex)) {
+                // Display a gap
+                tabbyPickNumber = 0
+            } else {
+                tabbyPickNumber += 1
             }
-        } else {
-            let option = new Option(this.wifiData.known_reason)
-            option.disabled = true
-            optionGroup.appendChild(option)
-        }
-
-        optionGroup = document.createElement('optgroup')
-        optionGroup.label = t("Unknown Networks")
-        wifiSelect.options.add(optionGroup)
-        if (this.wifiData.detected_reason == "") {
-            for (let ssid of this.wifiData.detected) {
-                let option = new Option(ssid)
-                optionGroup.appendChild(option)
+            if (tabbyPickNumber <= 0) {
+                continue
             }
-        } else {
-            let option = new Option(this.wifiData.detected_reason)
-            option.disabled = true
-            optionGroup.appendChild(option)
-        }
 
-        optionGroup = document.createElement('optgroup')
-        optionGroup.label = t("Hotspots")
-        wifiSelect.options.add(optionGroup)
-        if (this.wifiData.known_reason == "") {
-            for (let ssid of this.wifiData.hotspots) {
-                let option = new Option(ssid)
-                optionGroup.appendChild(option)
+            let pickIndex = (tabbyPickNumber + 1) % 2
+
+            if (rowIndex <= lastColoredRowIndex) {
+                ctx.globalAlpha = 1.0
+            } else {
+                ctx.globalAlpha = 0.3
             }
-        } else {
-            let option = new Option(this.wifiData.known_reason)
-            option.disabled = true
-            optionGroup.appendChild(option)
+
+            const yStart = canvas.height - (yOffset + (blockSize * (rowIndex + 1)))
+            let pickGradient = ctx.createLinearGradient(0, yStart + WeavingThreadDisplayGap, 0, yStart + blockSize - (2 * WeavingThreadDisplayGap))
+            pickGradient.addColorStop(0, "lightgray")
+            pickGradient.addColorStop(0.2, TabbyPickColor)
+            pickGradient.addColorStop(0.8, TabbyPickColor)
+            pickGradient.addColorStop(1, "gray")
+
+            const shaft_word = this.currentPattern.tabby_picks[pickIndex].shaft_word
+            for (let end = 0; end < numEndsToShow; end++) {
+                const shaft = this.currentPattern.threading[end]
+                const xStart = end1OnRight ? canvas.width - blockSize * (end + 1) : blockSize * end
+                if (shaft_word & (1n << BigInt(shaft))) {
+                    // Display warp end
+                    ctx.fillStyle = warpGradients[end]
+                    ctx.fillRect(
+                        xStart + WeavingThreadDisplayGap,
+                        yStart,
+                        blockSize - (2 * WeavingThreadDisplayGap),
+                        blockSize)
+                } else {
+                    // Display weft pick
+                    ctx.fillStyle = pickGradient
+                    ctx.fillRect(
+                        xStart,
+                        yStart + WeavingThreadDisplayGap,
+                        blockSize,
+                        blockSize - (2 * WeavingThreadDisplayGap))
+                }
+            }
         }
 
-        if (this.wifiData.current != "") {
-            wifiSelect.value = this.wifiData.current
+        ctx.globalAlpha = 1.0
+        if (isJump) {
+            // Jump pick: draw a dashed line around the (centered) jump pick,
+            // and, if on the canvas, a solid line around the current pick
+            ctx.setLineDash([1, 3])
+            ctx.strokeRect(
+                0,
+                (canvas.height - blockSize) / 2,
+                canvas.width,
+                blockSize)
+            ctx.setLineDash([])
+            const currentPickOffset = this.currentPickData.tabby_pick_number - centerPickNumber
+            ctx.strokeRect(
+                0,
+                ((canvas.height - blockSize) / 2) - (blockSize * (currentPickOffset)),
+                canvas.width,
+                blockSize)
+        } else {
+            // No jump pick number; draw a solid line around the (centered) current pick
+            ctx.setLineDash([])
+            ctx.strokeRect(
+                0,
+                (canvas.height - blockSize) / 2,
+                canvas.width,
+                blockSize)
         }
-        this.handleWiFiSelect()
     }
 
     /*
-    Display weaving pattern on the "pattern_canvas" element.
+    Display weaving pattern on the "main_canvas" element.
  
-    A no-op if not in WEAVING mode.
+    A no-op if not in WEAVE_PATTERN mode.
      
     Center the jump or current pick vertically.
     */
     displayWeavingPattern() {
-        if (this.mode != ModeEnum.WEAVING) {
+        if (this.mode != ModeEnum.WEAVE_PATTERN) {
             return
         }
 
         const end1OnRight = this.settings.end1_on_right
 
         let pickColorCanvas = document.getElementById("pick_color")
-        let canvas = document.getElementById("pattern_canvas")
+        let canvas = document.getElementById("main_canvas")
 
         let ctx = canvas.getContext("2d")
         ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -1226,7 +1414,7 @@ class LoomClient {
         canvas.width = 150
         canvas.height = 100
 
-        let rect = document.getElementById("pattern_canvas_container").getBoundingClientRect()
+        let rect = document.getElementById("main_canvas_container").getBoundingClientRect()
         canvas.width = asOddDecreased(rect.width)
         canvas.height = asOddDecreased(rect.height)
 
@@ -1242,9 +1430,9 @@ class LoomClient {
         const numEnds = this.currentPattern.warp_colors.length
         const numPicks = this.currentPattern.picks.length
 
-        const isJump = this.jumpPickNumber.pick_number != null
-        let centerTotalPickNumber = isJump ? this.jumpPickNumber.total_pick_number : this.currentPickData.total_pick_number
-        const centerPickNumber = isJump ? this.jumpPickNumber.pick_number : this.currentPickData.pick_number
+        const isJump = this.jumpPickData.pick_number != null
+        let centerTotalPickNumber = isJump ? this.jumpPickData.total_pick_number : this.currentPickData.total_pick_number
+        const centerPickNumber = isJump ? this.jumpPickData.pick_number : this.currentPickData.pick_number
 
         if (centerPickNumber == null) {
             return
@@ -1396,6 +1584,68 @@ class LoomClient {
         dtxToWifVersionElt.innerHTML = this.versionData.dtx_to_wif_version
     }
 
+    displayWiFi() {
+        let wifiDiv = document.getElementById("wifi_div")
+        if (!this.wifiData.supported) {
+            wifiDiv.style.display = "none"
+            return
+        }
+
+        wifiDiv.style.display = "block"
+        let wifiSelect = document.getElementById("wifi_select")
+        var optgroups = wifiSelect.getElementsByTagName('optgroup')
+        while (optgroups.length > 0) {
+            wifiSelect.removeChild(optgroups[0])
+        }
+
+        let optionGroup = document.createElement('optgroup')
+        optionGroup.label = t("Known Networks")
+        wifiSelect.options.add(optionGroup)
+        if (this.wifiData.known_reason == "") {
+            for (let ssid of this.wifiData.known) {
+                let option = new Option(ssid)
+                optionGroup.appendChild(option)
+            }
+        } else {
+            let option = new Option(this.wifiData.known_reason)
+            option.disabled = true
+            optionGroup.appendChild(option)
+        }
+
+        optionGroup = document.createElement('optgroup')
+        optionGroup.label = t("Unknown Networks")
+        wifiSelect.options.add(optionGroup)
+        if (this.wifiData.detected_reason == "") {
+            for (let ssid of this.wifiData.detected) {
+                let option = new Option(ssid)
+                optionGroup.appendChild(option)
+            }
+        } else {
+            let option = new Option(this.wifiData.detected_reason)
+            option.disabled = true
+            optionGroup.appendChild(option)
+        }
+
+        optionGroup = document.createElement('optgroup')
+        optionGroup.label = t("Hotspots")
+        wifiSelect.options.add(optionGroup)
+        if (this.wifiData.known_reason == "") {
+            for (let ssid of this.wifiData.hotspots) {
+                let option = new Option(ssid)
+                optionGroup.appendChild(option)
+            }
+        } else {
+            let option = new Option(this.wifiData.known_reason)
+            option.disabled = true
+            optionGroup.appendChild(option)
+        }
+
+        if (this.wifiData.current != "") {
+            wifiSelect.value = this.wifiData.current
+        }
+        this.handleWiFiSelect()
+    }
+
     /*
     Get the number of ends in the current pattern, or null if no current pattern 
     */
@@ -1425,7 +1675,7 @@ class LoomClient {
         document.documentElement.setAttribute('data-theme', themeValue)
         // The shaft state canvas needs to contrast with the background
         // and the color is not set by css, so...
-        this.displayCanvases()
+        this.displayMainCanvas()
     }
 
     /*
@@ -1483,6 +1733,14 @@ class LoomClient {
             this.currentPickData = datadict
             this.displayWeavingPattern()
             this.displayPick()
+        } else if (datadict.type == "CurrentTabbyPickNumber") {
+            if (!this.currentPattern) {
+                this.currentTabbyPickData = NullTabbyPickData
+                console.log("Ignoring CurrentTabbyPickNumber: no pattern loaded")
+            }
+            this.currentTabbyPickData = datadict
+            this.displayTabbyPattern()
+            this.displayTabbyPick()
         } else if (datadict.type == "Direction") {
             this.direction = datadict
             this.displayDirection()
@@ -1490,8 +1748,11 @@ class LoomClient {
             this.jumpEndData = datadict
             this.displayJumpEnd()
         } else if (datadict.type == "JumpPickNumber") {
-            this.jumpPickNumber = datadict
+            this.jumpPickData = datadict
             this.displayJumpPick()
+        } else if (datadict.type == "JumpTabbyPickNumber") {
+            this.jumpTabbyPickData = datadict
+            this.displayJumpTabbyPick()
         } else if (datadict.type == "LanguageNames") {
             this.displayLanguageNames(datadict.languages)
         } else if (datadict.type == "LoomConnectionState") {
@@ -1552,9 +1813,10 @@ class LoomClient {
             this.currentPickData = NullPickData
             this.jumpEndData = NullEndData
             this.jumpPickData = NullPickData
+            this.jumpTabbyPickData = NullPickData
             let patternMenu = document.getElementById("pattern_menu")
             patternMenu.value = this.currentPattern.name
-            this.displayCanvases()
+            this.displayMainCanvas()
         } else if (datadict.type == "SeparateThreadingRepeats") {
             this.separateThreadingRepeatsData = datadict
             let separateThreadingRepeatsCheckbox = document.getElementById("separate_threading_repeats")
@@ -1629,7 +1891,7 @@ class LoomClient {
     }
 
     /*
-    Handle Reset buttin in the "jump_to_end" form.
+    Handle Reset button in the "jump_to_end" form.
     
     Reset end number and repeat number to current values.
     */
@@ -1663,7 +1925,7 @@ class LoomClient {
         let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
 
         jumpTotalPickNumberElt.value = jumpTotalPickNumberElt.value.replace(/\D/g, "")
-        const disableJump = asIntOrNull(jumpTotalPickNumberElt.value) == this.jumpPickNumber.total_pick_number
+        const disableJump = asIntOrNull(jumpTotalPickNumberElt.value) == this.jumpPickData.total_pick_number
         jumpTotalPickNumberElt.setAttribute('modified', !disableJump)
         const disableReset = disableJump && (jumpTotalPickNumberElt.value == "")
         jumpToPickSubmitElt.disabled = disableJump
@@ -1674,7 +1936,26 @@ class LoomClient {
     }
 
     /*
-    Handle Reset buttin in the "jump_to_pick" form.
+    Handle user editing of jump_tabby_pick_number.
+    */
+    async handleJumpToTabbyPickInput(event) {
+        let jumpToTabbyPickSubmitElt = document.getElementById("jump_to_tabby_pick_submit")
+        let jumpToTabbyPickResetElt = document.getElementById("jump_to_tabby_pick_reset")
+        let jumpTabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
+
+        jumpTabbyPickNumberElt.value = jumpTabbyPickNumberElt.value.replace(/\D/g, "")
+        const disableJump = asIntOrNull(jumpTabbyPickNumberElt.value) == this.jumpTabbyPickData.tabby_pick_number
+        jumpTabbyPickNumberElt.setAttribute('modified', !disableJump)
+        const disableReset = disableJump && (jumpTabbyPickNumberElt.value == "")
+        jumpToTabbyPickSubmitElt.disabled = disableJump
+        jumpToTabbyPickResetElt.disabled = disableReset
+        if (event != null) {
+            event.preventDefault()
+        }
+    }
+
+    /*
+    Handle Reset button in the "jump_to_pick" form.
     
     Reset pick number and repeat number to current values.
     */
@@ -1697,6 +1978,33 @@ class LoomClient {
         const command = { "type": "jump_to_pick", "total_pick_number": jumpTotalPickNumber }
         await this.sendCommand(command)
         jumpTotalPickNumberElt.select()
+        event.preventDefault()
+    }
+
+    /*
+    Handle Reset button in the "jump_to_pick" form.
+    
+    Reset pick number and repeat number to current values.
+    */
+    async handleJumpToTabbyPickReset(event) {
+        const jumpTabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
+        jumpTabbyPickNumberElt.value = ""
+        const command = { "type": "jump_to_tabby_pick", "tabby_pick_number": null }
+        await this.sendCommand(command)
+        event.preventDefault()
+    }
+
+    /*
+    Handle jump_to_tabby_pick form submit.
+    
+    Send the "jump_to_tabby_pick" command.
+    */
+    async handleJumpToTabbyPickSubmit(event) {
+        const jumpTabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
+        const jumpTabbyPickData = asIntOrNull(jumpTabbyPickNumberElt.value)
+        const command = { "type": "jump_to_tabby_pick", "tabby_pick_number": jumpTabbyPickData }
+        await this.sendCommand(command)
+        jumpTabbyPickNumberElt.select()
         event.preventDefault()
     }
 
@@ -1760,7 +2068,7 @@ class LoomClient {
     async handleDebugHide(event) {
         let debugDivElt = document.getElementById("debug_div")
         debugDivElt.style.display = "none"
-        this.displayCanvases()
+        this.displayMainCanvas()
     }
 
     /*

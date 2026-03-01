@@ -23,13 +23,7 @@ from starlette.testclient import WebSocketTestSession
 
 from .base_loom_server import MAX_THREAD_GROUP_SIZE, SETTINGS_FILE_NAME, BaseLoomServer
 from .base_mock_loom import BaseMockLoom
-from .enums import (
-    ConnectionStateEnum,
-    DirectionControlEnum,
-    MessageSeverityEnum,
-    ModeEnum,
-    ShaftStateEnum,
-)
+from .enums import ConnectionStateEnum, DirectionControlEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
 from .reduced_pattern import (
     DEFAULT_THREAD_GROUP_SIZE,
     NUM_ITEMS_FOR_REPEAT_SEPARATOR,
@@ -219,7 +213,6 @@ class Client:
         *,
         expected_pick_number: int,
         expected_repeat_number: int,
-        expected_shaft_word: int,
         jump_pending: bool = False,
         should_fail: bool = False,
     ) -> None:
@@ -228,18 +221,22 @@ class Client:
         Ignore info-level StatusMessage
 
         Args:
-            client: Client fixture.
             expected_pick_number: Expected pick number of the next pick.
             expected_repeat_number: Expected repeat number of the next pick.
-            expected_shaft_word: Expected shaft_word of the next pick.
             jump_pending: Is a jump pending?
             should_fail: Should the advance be rejected?
                 Note: this will still command shaft = 0,
                 but will report command failed and will not report pick numbers.
         """
+        pattern = self.loom_server.current_pattern
+        assert pattern is not None
+
         replies = self.send_command(dict(type="oobcommand", command="n"))
         assert len(replies) == 1
         expected_replies: list[dict[str, Any]] = []
+
+        expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
+
         if (
             not self.loom_server.enable_software_direction
             and not self.loom_server.loom_reports_direction
@@ -275,6 +272,94 @@ class Client:
                     pick_number=expected_pick_number,
                     total_pick_number=None,
                     pick_repeat_number=expected_repeat_number,
+                ),
+            ]
+        if self.loom_server.loom_reports_motion:
+            expected_replies += [
+                dict(
+                    type="ShaftState",
+                    state=ShaftStateEnum.MOVING,
+                    shaft_word=None,
+                ),
+                dict(
+                    type="ShaftState",
+                    state=ShaftStateEnum.MOVING,
+                    shaft_word=None,
+                ),
+            ]
+        expected_replies += [
+            dict(
+                type="ShaftState",
+                state=ShaftStateEnum.DONE,
+                shaft_word=expected_shaft_word,
+            ),
+        ]
+        for expected_reply in expected_replies:
+            reply = self.receive_dict()
+            if reply["type"] == "ServerMessage" and reply["severity"] == MessageSeverityEnum.INFO:
+                # Ignore info-level status messages
+                continue
+            assert_replies_equal(reply, expected_reply)
+
+    def command_next_tabby_pick(
+        self,
+        *,
+        expected_pick_number: int,
+        jump_pending: bool = False,
+        should_fail: bool = False,
+    ) -> None:
+        """Command the next pick and test the replies.
+
+        Ignore info-level StatusMessage
+
+        Args:
+            expected_pick_number: Expected pick number of the next pick.
+            jump_pending: Is a jump pending?
+            should_fail: Should the advance be rejected?
+                Note: this will still command shaft = 0,
+                but will report command failed and will not report pick numbers.
+        """
+        pattern = self.loom_server.current_pattern
+        assert pattern is not None
+
+        replies = self.send_command(dict(type="oobcommand", command="n"))
+        assert len(replies) == 1
+        expected_replies: list[dict[str, Any]] = []
+
+        expected_shaft_word = pattern.get_tabby_pick(expected_pick_number).shaft_word
+
+        if (
+            not self.loom_server.enable_software_direction
+            and not self.loom_server.loom_reports_direction
+            and self.loom_server.direction_forward != self.mock_loom.direction_forward
+        ):
+            # Loom only reports direction when it asks for a pick
+            # and the direction has changed
+            expected_replies += [
+                dict(
+                    type="Direction",
+                    forward=self.mock_loom.direction_forward,
+                )
+            ]
+        if should_fail:
+            expected_replies += [
+                dict(
+                    message="At start of tabby weaving",
+                    severity=MessageSeverityEnum.ERROR,
+                ),
+            ]
+        else:
+            if jump_pending:
+                expected_replies += [
+                    dict(
+                        type="JumpTabbyPickNumber",
+                        tabby_pick_number=None,
+                    ),
+                ]
+            expected_replies += [
+                dict(
+                    type="CurrentTabbyPickNumber",
+                    tabby_pick_number=expected_pick_number,
                 ),
             ]
         if self.loom_server.loom_reports_motion:
@@ -695,7 +780,6 @@ class BaseTestLoomServer:
                         client.command_next_pick(
                             expected_pick_number=jump_pick_reply.pick_number,
                             expected_repeat_number=jump_pick_reply.pick_repeat_number,
-                            expected_shaft_word=pattern.get_pick(jump_pick_reply.pick_number).shaft_word,
                             jump_pending=True,
                         )
                     case "nothing":
@@ -720,6 +804,64 @@ class BaseTestLoomServer:
                         getattr(client.loom_server.current_pattern, field_name)
                         == current_pick_data[field_name]
                     )
+
+    def test_jump_to_tabby_pick(self) -> None:
+        """Test the jump_to_tabby_pick command."""
+        pattern_name = ALL_PATTERN_PATHS[3].name
+
+        with self.create_test_client(
+            app=self.app,
+            num_shafts=32,
+            upload_patterns=ALL_PATTERN_PATHS[2:5],
+        ) as client:
+            client.select_pattern(pattern_name=pattern_name)
+
+            replies = client.send_command(dict(type="mode", mode=ModeEnum.WEAVE_TABBY))
+            assert len(replies) == 2  # noqa: PLR2004
+            assert replies[0] == dict(type="Mode", mode=ModeEnum.WEAVE_TABBY)
+
+            # post_action sets what to do after sending the jump_to_pick cmd:
+            # * cancel: cancel the jump_to_pick
+            # * next: advance to the next pick (thus accepting the jump)
+            # * nothing: do nothing
+            for post_action, tabby_pick_number in itertools.product(
+                ("cancel", "next", "nothing"), (0, 1, 2, 3, 4)
+            ):
+                replies = client.send_command(
+                    dict(type="jump_to_tabby_pick", tabby_pick_number=tabby_pick_number)
+                )
+                assert len(replies) == 2  # noqa: PLR2004
+                jump_pick_reply = SimpleNamespace(**replies[0])
+                assert jump_pick_reply == SimpleNamespace(
+                    type="JumpTabbyPickNumber", tabby_pick_number=tabby_pick_number
+                )
+                match post_action:
+                    case "cancel":
+                        replies = client.send_command(dict(type="jump_to_tabby_pick", tabby_pick_number=None))
+                        assert len(replies) == 2  # noqa: PLR2004
+                        jump_pick_cancel_reply = SimpleNamespace(**replies[0])
+                        assert jump_pick_cancel_reply == SimpleNamespace(
+                            type="JumpTabbyPickNumber", tabby_pick_number=None
+                        )
+                    case "next":
+                        client.command_next_tabby_pick(
+                            expected_pick_number=jump_pick_reply.tabby_pick_number, jump_pending=True
+                        )
+                    case "nothing":
+                        pass
+                    case _:
+                        raise RuntimeError(f"Unsupported {post_action=!r}")
+
+            # Test jumping to invalid picks, including
+            # that the bad command doesn't change the pattern's pick numbers.
+            assert client.loom_server.current_pattern is not None
+            current_tabby_pick_number = client.loom_server.current_pattern.tabby_pick_number
+            for bad_tabby_pick_number in (-1, -2):
+                client.send_command(
+                    dict(type="jump_to_pick", tabby_pick_number=bad_tabby_pick_number),
+                    should_fail=True,
+                )
+                assert client.loom_server.current_pattern.tabby_pick_number == current_tabby_pick_number
 
     def test_next_end(self) -> None:
         """Test advancing to the next end."""
@@ -884,11 +1026,9 @@ class BaseTestLoomServer:
                 expected_pick_number, expected_repeat_number = pattern.compute_next_pick_numbers(
                     direction_forward=True
                 )
-                expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
                 client.command_next_pick(
                     expected_pick_number=expected_pick_number,
                     expected_repeat_number=expected_repeat_number,
-                    expected_shaft_word=expected_shaft_word,
                 )
                 if expected_repeat_number == 3:  # noqa: PLR2004
                     break
@@ -904,11 +1044,9 @@ class BaseTestLoomServer:
                     )
                 except IndexError:
                     break
-                expected_shaft_word = pattern.get_pick(expected_pick_number).shaft_word
                 client.command_next_pick(
                     expected_pick_number=expected_pick_number,
                     expected_repeat_number=expected_repeat_number,
-                    expected_shaft_word=expected_shaft_word,
                 )
             assert expected_pick_number == 0
             assert expected_repeat_number == 1
@@ -918,11 +1056,51 @@ class BaseTestLoomServer:
             client.command_next_pick(
                 expected_pick_number=0,  # should be ignored
                 expected_repeat_number=0,  # should be ignored
-                expected_shaft_word=0,  # should be ignored
                 should_fail=True,
             )
             assert pattern.pick_number == expected_pick_number
             assert pattern.pick_repeat_number == expected_repeat_number
+
+            # Change direction to forward
+            client.change_direction()
+            assert client.loom_server.direction_forward
+
+    def test_next_tabby_pick(self) -> None:
+        """Test advancing to the next tabby pick."""
+        pattern_name = ALL_PATTERN_PATHS[2].name
+
+        with self.create_test_client(
+            app=self.app,
+            upload_patterns=ALL_PATTERN_PATHS[0:3],
+        ) as client:
+            pattern = client.select_pattern(pattern_name=pattern_name)
+
+            replies = client.send_command(dict(type="mode", mode=ModeEnum.WEAVE_TABBY))
+            assert len(replies) == 2  # noqa: PLR2004
+            assert replies[0] == dict(type="Mode", mode=ModeEnum.WEAVE_TABBY)
+
+            # Make enough forward picks to get into the 3rd repeat
+            assert client.loom_server.direction_forward
+            for expected_pick_number in range(1, 5):
+                client.command_next_tabby_pick(expected_pick_number=expected_pick_number)
+
+            client.change_direction()
+            assert not client.loom_server.direction_forward
+
+            # Now go backwards to the beginning
+            expected_pick_number = pattern.tabby_pick_number
+            while expected_pick_number > 0:
+                expected_pick_number -= 1
+                client.command_next_tabby_pick(expected_pick_number=expected_pick_number)
+            assert expected_pick_number == 0
+
+            # Another advance should be rejected,
+            # without changing the pick numbers in the pattern.
+            client.command_next_tabby_pick(
+                expected_pick_number=0,  # should be ignored
+                should_fail=True,
+            )
+            assert pattern.pick_number == 0
 
             # Change direction to forward
             client.change_direction()
@@ -948,10 +1126,10 @@ class BaseTestLoomServer:
                 assert len(ALL_PATTERN_PATHS) > 3  # noqa: PLR2004
                 for path in (ALL_PATTERN_PATHS[0], ALL_PATTERN_PATHS[3]):
                     # If needed, go to weaving mode
-                    if client.loom_server.mode != ModeEnum.WEAVE:
-                        replies = client.send_command(dict(type="mode", mode=ModeEnum.WEAVE))
+                    if client.loom_server.mode != ModeEnum.WEAVE_PATTERN:
+                        replies = client.send_command(dict(type="mode", mode=ModeEnum.WEAVE_PATTERN))
                         assert len(replies) == 2  # noqa: PLR2004
-                        assert replies[0] == dict(type="Mode", mode=ModeEnum.WEAVE)
+                        assert replies[0] == dict(type="Mode", mode=ModeEnum.WEAVE_PATTERN)
 
                     pattern = client.select_pattern(pattern_name=path.name)
                     num_ends_in_pattern = len(pattern.threading)
@@ -1023,12 +1201,10 @@ class BaseTestLoomServer:
                         pick_number=pick_number,
                         pick_repeat_number=pick_repeat_number,
                     )
-                    expected_shaft_word = pattern.get_pick(pick_number).shaft_word
                     client.command_next_pick(
                         jump_pending=True,
                         expected_pick_number=pick_number,
                         expected_repeat_number=pick_repeat_number,
-                        expected_shaft_word=expected_shaft_word,
                     )
 
                     # Now advance to the desired end.
@@ -1395,6 +1571,7 @@ class BaseTestLoomServer:
                         "Direction",
                         "JumpEndNumber",
                         "JumpPickNumber",
+                        "JumpTabbyPickNumber",
                         "LanguageNames",
                         "LoomConnectionState",
                         "LoomInfo",
@@ -1411,6 +1588,7 @@ class BaseTestLoomServer:
                         expected_types |= {
                             "CurrentEndNumber",
                             "CurrentPickNumber",
+                            "CurrentTabbyPickNumber",
                             "ReducedPattern",
                             "SeparateThreadingRepeats",
                             "SeparateWeavingRepeats",
@@ -1449,18 +1627,25 @@ class BaseTestLoomServer:
                                     repeat_number=expected_current_pattern.pick_repeat_number,
                                     repeat_len=len(expected_current_pattern.picks),
                                 )
+                            case "CurrentTabbyPickNumber":
+                                assert expected_current_pattern is not None
+                                assert reply.tabby_pick_number == expected_current_pattern.tabby_pick_number
                             case "Direction":
                                 assert reply.forward
                             case "JumpEndNumber":
-                                for field_name, value in vars(reply).items():
-                                    if field_name == "type":
-                                        continue
-                                    assert value is None
+                                for field_name in (
+                                    "total_end_number0",
+                                    "total_end_number1",
+                                    "end_number0",
+                                    "end_number1",
+                                    "end_repeat_number",
+                                ):
+                                    assert getattr(reply, field_name) is None
                             case "JumpPickNumber":
-                                for field_name, value in vars(reply).items():
-                                    if field_name == "type":
-                                        continue
-                                    assert value is None
+                                for field_name in ("total_pick_number", "pick_number", "pick_repeat_number"):
+                                    assert getattr(reply, field_name) is None
+                            case "JumpTabbyPickNumber":
+                                assert reply.tabby_pick_number is None
                             case "LanguageNames":
                                 assert "English" in reply.languages
                             case "LoomConnectionState":
@@ -1473,7 +1658,7 @@ class BaseTestLoomServer:
                             case "LoomInfo":
                                 assert vars(reply) == dataclasses.asdict(loom_server.loom_info)
                             case "Mode":
-                                assert reply.mode == ModeEnum.WEAVE
+                                assert reply.mode == ModeEnum.WEAVE_PATTERN
                             case "PatternNames":
                                 assert reply.names == expected_pattern_names
                             case "ReducedPattern":

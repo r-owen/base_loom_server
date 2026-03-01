@@ -39,9 +39,10 @@ class MessageSeverityEnum(enum.IntEnum):
 class ModeEnum(enum.IntEnum):
     """The current server mode."""
 
-    WEAVE = 1
-    THREAD = 2
-    SETTINGS = 3
+    WEAVE_PATTERN = 1
+    WEAVE_TABBY = 2
+    THREAD = 3
+    SETTINGS = 4
 
 
 class ShaftStateEnum(enum.IntEnum):

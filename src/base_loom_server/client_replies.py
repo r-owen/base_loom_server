@@ -63,6 +63,14 @@ class CurrentPickNumber:
 
 
 @dataclasses.dataclass
+class CurrentTabbyPickNumber:
+    """The current tabby_pick_number."""
+
+    type: str = dataclasses.field(init=False, default="CurrentTabbyPickNumber")
+    tabby_pick_number: int
+
+
+@dataclasses.dataclass
 class Direction:
     """The weaving and threading direction."""
 
@@ -103,6 +111,14 @@ class JumpPickNumber:
                 f"{self.pick_number=} and {self.pick_repeat_number=} must not be None "
                 f"if {self.total_pick_number=} is not None"
             )
+
+
+@dataclasses.dataclass
+class JumpTabbyPickNumber:
+    """Pending jump_pick_number."""
+
+    type: str = dataclasses.field(init=False, default="JumpTabbyPickNumber")
+    tabby_pick_number: int | None = None
 
 
 @dataclasses.dataclass

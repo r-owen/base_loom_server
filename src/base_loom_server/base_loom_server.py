@@ -184,8 +184,9 @@ class BaseLoomServer:
         self.done_task: asyncio.Future[None] = asyncio.Future()
         self.current_pattern: ReducedPattern | None = None
         self.jump_pick = client_replies.JumpPickNumber()
+        self.jump_tabby_pick = client_replies.JumpTabbyPickNumber()
         self.jump_end = client_replies.JumpEndNumber()
-        self.mode = ModeEnum.WEAVE
+        self.mode = ModeEnum.WEAVE_PATTERN
         self.direction_forward: bool = True
         self.wifi_manager: WiFiManager | None = (
             WiFiManager(log=self.log, callback=self.wifi_manager_callback, verbose=self.verbose)
@@ -454,10 +455,24 @@ class BaseLoomServer:
         if do_report:
             await self.report_jump_pick()
 
+    async def clear_jump_tabby_pick(self, *, force_output: bool = False) -> None:
+        """Clear self.jump_tabby_pick and report value if changed or force_output.
+
+        Args:
+            force_output: If true, report `JumpTabbyPickNumber`,
+                even if it has not changed.
+        """
+        null_jump_tabby_pick = client_replies.JumpTabbyPickNumber()
+        do_report = force_output or self.jump_tabby_pick != null_jump_tabby_pick
+        self.jump_tabby_pick = null_jump_tabby_pick
+        if do_report:
+            await self.report_jump_tabby_pick()
+
     async def clear_jumps(self, *, force_output: bool = False) -> None:
         """Clear all jumps and report values if changed or force_output."""
         await self.clear_jump_end(force_output=force_output)
         await self.clear_jump_pick(force_output=force_output)
+        await self.clear_jump_tabby_pick(force_output=force_output)
 
     async def cmd_clear_pattern_names(
         self,
@@ -528,6 +543,20 @@ class BaseLoomServer:
                 pick_repeat_number=pick_repeat_number,
             )
         await self.report_jump_pick()
+
+    async def cmd_jump_to_tabby_pick(self, command: SimpleNamespace) -> None:
+        """Handle the jump_to_tabby_pick command."""
+        if self.current_pattern is None:
+            raise CommandError(self.t("cannot jump") + ": " + self.t("no pattern"))
+        if command.tabby_pick_number is None:
+            self.jump_tabby_pick = client_replies.JumpTabbyPickNumber()
+        else:
+            if command.tabby_pick_number < 0:
+                raise CommandError(self.t("Number must be") + " >= 0")
+            self.jump_tabby_pick = client_replies.JumpTabbyPickNumber(
+                tabby_pick_number=command.tabby_pick_number,
+            )
+        await self.report_jump_tabby_pick()
 
     async def cmd_mode(self, command: SimpleNamespace) -> None:
         """Handle the mode command: set the mode."""
@@ -709,8 +738,8 @@ class BaseLoomServer:
             return True
 
         match self.mode:
-            case ModeEnum.WEAVE:
-                # Command a new pick, if there is one, else send 0
+            case ModeEnum.WEAVE_PATTERN:
+                # Command a new pattern pick, if there is one, else send 0
                 if self.jump_pick.pick_number is not None:
                     self.current_pattern.set_current_pick_number(self.jump_pick.pick_number)
                 else:
@@ -733,6 +762,28 @@ class BaseLoomServer:
                 await self.write_shafts_to_loom(pick.shaft_word)
                 await self.clear_jumps()
                 await self.report_current_pick_number()
+            case ModeEnum.WEAVE_TABBY:
+                # Command a new tabby pick, if there is one, else send 0
+                if self.jump_tabby_pick.tabby_pick_number is not None:
+                    self.current_pattern.set_current_tabby_pick_number(self.jump_tabby_pick.tabby_pick_number)
+                else:
+                    try:
+                        self.increment_tabby_pick_number()
+                    except IndexError:
+                        await self.write_shafts_to_loom(0)
+                        await self.clear_jumps()
+                        await self.write_to_client(
+                            client_replies.StatusMessage(
+                                message=self.t("At start of tabby weaving"),
+                                severity=MessageSeverityEnum.ERROR,
+                            )
+                        )
+                        return True
+
+                tabby_pick = self.current_pattern.get_current_tabby_pick()
+                await self.write_shafts_to_loom(tabby_pick.shaft_word)
+                await self.clear_jumps()
+                await self.report_current_tabby_pick_number()
             case ModeEnum.THREAD:
                 # Advance to the next thread group, if there is one
                 if self.jump_end.end_number0 is not None:
@@ -766,25 +817,29 @@ class BaseLoomServer:
                 raise RuntimeError(f"Invalid mode={self.mode!r}.")
         return True
 
-    def increment_pick_number(self) -> int:
-        """Increment pick_number in the current direction.
-
-        Increment pick_repeat_number as well, if appropriate.
-
-        Return the new pick number. This will be 0 if
-        pick_repeat_number changed,
-        or if unweaving and pick_repeat_number
-        would be decremented to 0.
-        """
-        if self.current_pattern is None:
-            return 0
-        return self.current_pattern.increment_pick_number(direction_forward=self.direction_forward)
-
     def increment_end_number(self) -> None:
-        """Increment end_number0 in the current direction."""
+        """Increment current_pattern.end_number0 and end_number1 in the current direction.
+
+        end_repeat_number as well.
+        """
         if self.current_pattern is None:
             return
         self.current_pattern.increment_end_number(thread_low_to_high=self.thread_low_to_high)
+
+    def increment_pick_number(self) -> None:
+        """Increment self.current_pattern.pick_number in the current direction.
+
+        Increment self.current_pattern.pick_repeat_number as well, if appropriate.
+        """
+        if self.current_pattern is None:
+            return
+        self.current_pattern.increment_pick_number(direction_forward=self.direction_forward)
+
+    def increment_tabby_pick_number(self) -> None:
+        """Increment tabby_pick_number in the current direction."""
+        if self.current_pattern is None:
+            return
+        self.current_pattern.increment_tabby_pick_number(direction_forward=self.direction_forward)
 
     def load_settings(self) -> None:
         """Read the settings file, if it exists.
@@ -992,6 +1047,7 @@ class BaseLoomServer:
         await self.report_current_pattern()
         await self.report_current_end_numbers()
         await self.report_current_pick_number()
+        await self.report_current_tabby_pick_number()
         await self.report_separate_threading_repeats()
         await self.report_separate_weaving_repeats()
         await self.report_shaft_state()
@@ -1039,6 +1095,22 @@ class BaseLoomServer:
         )
         await self.write_to_client(reply)
 
+    async def report_current_tabby_pick_number(self) -> None:
+        """Report CurrentTabbyPickNumber to the client.
+
+        Also update tabby pick number in the database.
+        """
+        if self.current_pattern is None:
+            return
+        await self.pattern_db.update_tabby_pick_number(
+            pattern_name=self.current_pattern.name,
+            tabby_pick_number=self.current_pattern.tabby_pick_number,
+        )
+        reply = client_replies.CurrentTabbyPickNumber(
+            tabby_pick_number=self.current_pattern.tabby_pick_number,
+        )
+        await self.write_to_client(reply)
+
     async def report_current_end_numbers(self) -> None:
         """Report CurrentEndNumber to the client.
 
@@ -1078,6 +1150,10 @@ class BaseLoomServer:
     async def report_jump_pick(self) -> None:
         """Report JumpPickNumber to the client."""
         await self.write_to_client(self.jump_pick)
+
+    async def report_jump_tabby_pick(self) -> None:
+        """Report JumpPickNumber to the client."""
+        await self.write_to_client(self.jump_tabby_pick)
 
     async def report_shaft_state(self) -> None:
         """Report ShaftState to the client."""

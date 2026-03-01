@@ -11,6 +11,10 @@
     "message": "Jump to pick",
     "description": "Jump to weft thread number..."
   },
+  "Plain Weave": {
+    "message": "Tabby",
+    "description": "Plain weave (also known as tabby). A tab heading"
+  },
   "Weft thread": {
     "message": "Pick",
     "description": "Label for the current weft thread number (in Weaving mode)"

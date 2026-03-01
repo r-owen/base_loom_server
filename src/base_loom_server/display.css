@@ -207,7 +207,7 @@ table, th, td {
     text-overflow: ellipsis;
 }
 
-#pick_color {
+canvas.pick-color-canvas {
     background-color: rgba(0, 0, 0, 0);
     border-style: solid;
     border-width: 1px;
