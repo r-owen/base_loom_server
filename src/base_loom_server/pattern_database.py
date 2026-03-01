@@ -15,6 +15,7 @@ FIELD_TYPE_DICT = dict(
     pattern_json="text",
     pick_number="integer",
     pick_repeat_number="integer",
+    tabby_pick_number="integer",
     end_number0="integer",
     end_number1="integer",
     end_repeat_number="integer",
@@ -40,6 +41,7 @@ INSERT_STR = _make_insert_str()
 CACHE_FIELD_NAMES = (
     "pick_number",
     "pick_repeat_number",
+    "tabby_pick_number",
     "end_number0",
     "end_number1",
     "end_repeat_number",
@@ -116,6 +118,7 @@ class PatternDatabase:
 
                 * pick_number
                 * pick_repeat_number
+                * tabby_pick_number
                 * end_number0
                 * end_number1
                 * end_repeat_number
@@ -195,7 +198,7 @@ class PatternDatabase:
         async with aiosqlite.connect(self.dbpath) as conn:
             await conn.execute(
                 "update patterns "
-                "set pick_number = ?, pick_repeat_number = ?, timestamp_sec = ?"
+                "set pick_number = ?, pick_repeat_number = ?, timestamp_sec = ? "
                 "where pattern_name = ?",
                 (pick_number, pick_repeat_number, time.time(), pattern_name),
             )
@@ -213,7 +216,7 @@ class PatternDatabase:
         async with aiosqlite.connect(self.dbpath) as conn:
             await conn.execute(
                 "update patterns "
-                "set end_number0 = ?, end_number1 = ?, end_repeat_number = ?, timestamp_sec = ?"
+                "set end_number0 = ?, end_number1 = ?, end_repeat_number = ?, timestamp_sec = ? "
                 "where pattern_name = ?",
                 (
                     end_number0,
@@ -234,7 +237,8 @@ class PatternDatabase:
         """Update separate_threading_repeats for the specified pattern."""
         async with aiosqlite.connect(self.dbpath) as conn:
             await conn.execute(
-                "update patterns set separate_threading_repeats = ?, timestamp_sec = ?where pattern_name = ?",
+                "update patterns set separate_threading_repeats = ?, timestamp_sec = ? "
+                "where pattern_name = ?",
                 (int(separate_threading_repeats), time.time(), pattern_name),
             )
             await conn.commit()
@@ -248,8 +252,26 @@ class PatternDatabase:
         """Update separate_weaving_repeats for the specified pattern."""
         async with aiosqlite.connect(self.dbpath) as conn:
             await conn.execute(
-                "update patterns set separate_weaving_repeats = ?, timestamp_sec = ?where pattern_name = ?",
+                "update patterns set separate_weaving_repeats = ?, timestamp_sec = ? where pattern_name = ?",
                 (int(separate_weaving_repeats), time.time(), pattern_name),
+            )
+            await conn.commit()
+
+    async def update_tabby_pick_number(
+        self,
+        *,
+        pattern_name: str,
+        tabby_pick_number: int,
+    ) -> None:
+        """Update tabby pick number for the specified pattern."""
+        async with aiosqlite.connect(self.dbpath) as conn:
+            await conn.execute(
+                "update patterns set tabby_pick_number = ?, timestamp_sec = ? where pattern_name = ?",
+                (
+                    tabby_pick_number,
+                    time.time(),
+                    pattern_name,
+                ),
             )
             await conn.commit()
 
@@ -257,7 +279,7 @@ class PatternDatabase:
         """Update thread_group_size for the specified pattern."""
         async with aiosqlite.connect(self.dbpath) as conn:
             await conn.execute(
-                "update patterns set thread_group_size = ?, timestamp_sec = ?where pattern_name = ?",
+                "update patterns set thread_group_size = ?, timestamp_sec = ? where pattern_name = ?",
                 (thread_group_size, time.time(), pattern_name),
             )
             await conn.commit()

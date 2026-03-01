@@ -6,15 +6,8 @@ import aiosqlite
 import pytest
 from dtx_to_wif import read_pattern_file
 
-from base_loom_server.pattern_database import (
-    FIELD_TYPE_DICT,
-    PatternDatabase,
-    create_pattern_database,
-)
-from base_loom_server.reduced_pattern import (
-    ReducedPattern,
-    reduced_pattern_from_pattern_data,
-)
+from base_loom_server.pattern_database import FIELD_TYPE_DICT, PatternDatabase, create_pattern_database
+from base_loom_server.reduced_pattern import ReducedPattern, reduced_pattern_from_pattern_data
 from base_loom_server.testutils import ALL_PATTERN_PATHS
 
 
@@ -257,6 +250,37 @@ async def test_update_separate_threading_repeats() -> None:
             assert pattern.name == pattern_name
             assert pattern.separate_threading_repeats == separate_threading_repeats
             assert pattern.separate_weaving_repeats == separate_weaving_repeats
+
+
+async def test_update_tabby_pick_number() -> None:
+    with tempfile.NamedTemporaryFile() as f:
+        dbpath = pathlib.Path(f.name)
+        db = await create_pattern_database(dbpath)
+        initial_pattern_names = await db.get_pattern_names()
+        assert initial_pattern_names == []
+
+        num_to_add = 3
+        for patternpath in ALL_PATTERN_PATHS[0:num_to_add]:
+            pattern = read_reduced_pattern(patternpath)
+            await db.add_pattern(pattern)
+
+        pattern_names = await db.get_pattern_names()
+        expected_pattern_names = [patternpath.name for patternpath in ALL_PATTERN_PATHS[0:num_to_add]]
+        assert pattern_names == expected_pattern_names
+
+        for pattern_name, tabby_pick_number in (
+            (pattern_names[0], 50),
+            (pattern_names[1], 3),
+            (pattern_names[0], 0),
+            (pattern_names[2], 15),
+        ):
+            await db.update_tabby_pick_number(
+                pattern_name=pattern_name,
+                tabby_pick_number=tabby_pick_number,
+            )
+            pattern = await db.get_pattern(pattern_name)
+            assert pattern.name == pattern_name
+            assert pattern.tabby_pick_number == tabby_pick_number
 
 
 async def test_update_thread_group_size() -> None:
