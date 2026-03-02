@@ -13,10 +13,9 @@ import dataclasses
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from .compute_tabby import compute_tabby_shaft_words
+from .utils import bitmask_from_bits
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
-
     import dtx_to_wif
 
 DEFAULT_THREAD_GROUP_SIZE = 1
@@ -66,6 +65,8 @@ class ReducedPattern:
     Picks are accessed by pick number, which is 1-based.
     0 indicates that nothing has been woven.
     Similarly for tabby picks and warp ends.
+
+    Shaft numbers in threading are 0-based.
 
     pick_number and end_number0/1 are within one pattern repeat,
     and repeats are tracked with related attributes.
@@ -260,6 +261,10 @@ class ReducedPattern:
         """Get the current pick."""
         return self.get_pick(self.pick_number)
 
+    def get_current_tabby_pick(self) -> Pick:
+        """Get the current tabby pick."""
+        return self.get_tabby_pick(self.tabby_pick_number)
+
     def get_pick(self, pick_number: int) -> Pick:
         """Get the specified pick.
 
@@ -274,30 +279,31 @@ class ReducedPattern:
             return Pick(shaft_word=0, color=0)
         return self.picks[pick_number - 1]
 
-    def get_tabby_pick(self, pick_number: int) -> Pick:
+    def get_tabby_pick(self, tabby_pick_number: int) -> Pick:
         """Get the specified tabby pick.
 
         Args:
-            pick_number: Tabby pick number; must be non-negative
+            tabby_pick_number: Tabby pick number; must be non-negative
 
         Raises:
-            IndexError if pick_number < 0
+            IndexError if tabby_pick_number < 0
         """
-        if pick_number < 0:
-            raise IndexError(f"{pick_number=} must be >= 0")
+        if tabby_pick_number < 0:
+            raise IndexError(f"{tabby_pick_number=} must be >= 0")
 
-        if pick_number == 0:
+        if tabby_pick_number == 0:
             return Pick(shaft_word=0, color=0)
 
-        pick_index = (pick_number + 1) % 2  # num->index: 1->1, 2->0, 3->1, 4->0, ...
-        return self.tabby_picks[pick_index]
+        tabby_pick_index = (tabby_pick_number + 1) % 2  # num->index: 1->1, 2->0, 3->1, 4->0, ...
+        return self.tabby_picks[tabby_pick_index]
 
     def get_threading_shaft_word(self) -> int:
         """Get current threading shaft word."""
         if self.end_number0 == 0:
             return 0
-        shaft_set = {self.threading[i] for i in range(self.end_number0 - 1, self.end_number1)}
-        return sum(1 << shaft for shaft in shaft_set if shaft >= 0)
+        # Shafts in threading are 0-based but bitmask_from_bits wants 1-based values
+        shaft_nums = {self.threading[i] + 1 for i in range(self.end_number0 - 1, self.end_number1)}
+        return bitmask_from_bits(shaft_nums)
 
     def increment_end_number(self, *, thread_low_to_high: bool) -> None:
         """Increment self.end_number0 in the specified direction.
@@ -319,12 +325,13 @@ class ReducedPattern:
             end_repeat_number=end_repeat_number,
         )
 
-    def increment_pick_number(self, *, direction_forward: bool) -> int:
+    def increment_pick_number(self, *, direction_forward: bool) -> None:
         """Increment pick_number in the specified direction.
 
-        Increment pick_repeat_number as well, if appropriate.
+        Update pick_repeat_number as well, if appropriate.
 
-        Return the new pick number.
+        Returns:
+            pick_number: The new pick number.
 
         Raises:
             IndexError: If trying to back up past the start of weaving.
@@ -332,12 +339,12 @@ class ReducedPattern:
         self.pick_number, self.pick_repeat_number = self.compute_next_pick_numbers(
             direction_forward=direction_forward
         )
-        return self.pick_number
 
-    def increment_tabby_pick_number(self, *, direction_forward: bool) -> int:
-        """Increment pick_number in the specified direction.
+    def increment_tabby_pick_number(self, *, direction_forward: bool) -> None:
+        """Increment tabby_pick_number in the specified direction.
 
-        Return the new tabby pick number.
+        Returns:
+            tabby_pick_number: The new tabby pick number.
 
         Raises:
             IndexError: If trying to back up past the start of weaving.
@@ -348,7 +355,6 @@ class ReducedPattern:
             raise IndexError(f"{new_tabby_pick_number=} must be >= 0")
 
         self.tabby_pick_number = new_tabby_pick_number
-        return self.tabby_pick_number
 
     def set_current_end_number(
         self,
@@ -397,10 +403,24 @@ class ReducedPattern:
         Args:
             pick_number: The pick number.
 
-        Raise IndexError if pick_number < 0 or > num picks.
+        Raises:
+            IndexError if pick_number < 0 or > num picks.
         """
         self.check_pick_number(pick_number)
         self.pick_number = pick_number
+
+    def set_current_tabby_pick_number(self, tabby_pick_number: int) -> None:
+        """Set pick_number.
+
+        Args:
+            tabby_pick_number: The tabby pick number.
+
+        Raises:
+            IndexError if pick_number < 0 or > num picks.
+        """
+        if tabby_pick_number < 0:
+            raise IndexError(f"{tabby_pick_number=} must be >= 0")
+        self.tabby_pick_number = tabby_pick_number
 
 
 def _smallest_shaft(shafts: set[int]) -> int:
@@ -478,9 +498,9 @@ def reduced_pattern_from_pattern_data(name: str, data: dtx_to_wif.PatternData) -
         raise RuntimeError("No shafts are raised") from None
     all_shafts = set(range(1, max_shaft_raised + 1))
     if data.is_rising_shed:
-        shaft_words = [shaft_word_from_shaft_set(shaft_set) for shaft_set in shaft_sets]
+        shaft_words = [bitmask_from_bits(shaft_set) for shaft_set in shaft_sets]
     else:
-        shaft_words = [shaft_word_from_shaft_set(all_shafts - shaft_set) for shaft_set in shaft_sets]
+        shaft_words = [bitmask_from_bits(all_shafts - shaft_set) for shaft_set in shaft_sets]
     picks = [
         Pick(shaft_word=shaft_word, color=weft_color)
         for shaft_word, weft_color in zip(shaft_words, weft_colors, strict=True)
@@ -503,23 +523,3 @@ def reduced_pattern_from_pattern_data(name: str, data: dtx_to_wif.PatternData) -
         separate_weaving_repeats=len(picks) > NUM_ITEMS_FOR_REPEAT_SEPARATOR,
         separate_threading_repeats=len(threading) > NUM_ITEMS_FOR_REPEAT_SEPARATOR,
     )
-
-
-def shaft_word_from_shaft_set(shaft_set: Iterable[int]) -> int:
-    """Convert a shaft set to a shaft word.
-
-    A shaft set is a collection of 1-based shafts numbers
-    for shafts that are up. If 0 is present, it is ignored.
-    A shaft word is a bit mask, with bit 0 = shaft 1;
-    if a bit is high, that shaft is up.
-    """
-    return sum(1 << shaft - 1 for shaft in shaft_set if shaft > 0)
-
-
-def shaft_set_from_shaft_word(shaft_word: int) -> set[int]:
-    """Convert a shaft word to a shaft set.
-
-    See shaft_word_from_shaft_set for details.
-    """
-    bin_str = bin(shaft_word)[2:]
-    return {i + 1 for i, bit in enumerate(reversed(bin_str)) if bit == "1"}

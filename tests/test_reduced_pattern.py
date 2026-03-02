@@ -10,9 +10,9 @@ from base_loom_server.reduced_pattern import (
     Pick,
     ReducedPattern,
     reduced_pattern_from_pattern_data,
-    shaft_set_from_shaft_word,
 )
 from base_loom_server.testutils import ALL_PATTERN_PATHS
+from base_loom_server.utils import bits_from_bitmask
 
 # Dict of field name: default value
 EXPECTED_DEFAULTS = dict(
@@ -24,12 +24,6 @@ EXPECTED_DEFAULTS = dict(
 )
 
 EXPECTED_PICK_0 = Pick(shaft_word=0, color=0)
-
-
-def shaft_set_from_reduced(reduced_pattern: ReducedPattern, pick_number: int) -> set[int]:
-    """Get the shaft set for a specified 1-based pick_number."""
-    reduced_pick = reduced_pattern.picks[pick_number - 1]
-    return set(shaft_set_from_shaft_word(reduced_pick.shaft_word))
 
 
 def test_basics() -> None:
@@ -73,18 +67,18 @@ def test_basics() -> None:
         if full_pattern.liftplan:
             assert len(full_pattern.liftplan) == len(reduced_pattern.picks)
             for pick_number, shaft_set_from_liftplan in full_pattern.liftplan.items():
-                assert shaft_set_from_liftplan == shaft_set_from_reduced(
-                    reduced_pattern=reduced_pattern, pick_number=pick_number
-                )
+                pick = reduced_pattern.picks[pick_number - 1]
+                shaft_set_from_pick = set(bits_from_bitmask(pick.shaft_word))
+                assert shaft_set_from_liftplan == shaft_set_from_pick
         else:
             assert len(full_pattern.treadling) == len(reduced_pattern.picks)
             for pick_number, treadle_set in full_pattern.treadling.items():
                 shaft_set_from_treadles: set[int] = set()
                 for treadle in treadle_set - {0}:
                     shaft_set_from_treadles |= full_pattern.tieup[treadle]
-                assert shaft_set_from_treadles == shaft_set_from_reduced(
-                    reduced_pattern=reduced_pattern, pick_number=pick_number
-                )
+                pick = reduced_pattern.picks[pick_number - 1]
+                shaft_set_from_pick = set(bits_from_bitmask(pick.shaft_word))
+                assert shaft_set_from_treadles == shaft_set_from_pick
 
 
 def test_color_table() -> None:
@@ -317,11 +311,19 @@ def test_end_number() -> None:
                     assert reduced_pattern.end_number1 == expected_end_number1
                     assert reduced_pattern.end_repeat_number == expected_repeat_number
 
+                # Sanity-check the backwards loop
+                assert reduced_pattern.end_number0 == 0
+                assert reduced_pattern.end_number1 == 0
+                assert reduced_pattern.end_repeat_number == 1
+
                 # At the beginning; test going past it
                 with pytest.raises(IndexError):
                     reduced_pattern.compute_next_end_numbers(thread_low_to_high=False)
                 with pytest.raises(IndexError):
                     reduced_pattern.increment_end_number(thread_low_to_high=False)
+                assert reduced_pattern.pick_number == 0
+                assert reduced_pattern.pick_repeat_number == 1
+                assert reduced_pattern.tabby_pick_number == 0
                 assert reduced_pattern.end_number0 == 0
                 assert reduced_pattern.end_number1 == 0
                 assert reduced_pattern.end_repeat_number == 1
@@ -382,16 +384,9 @@ def test_pick_number() -> None:
                 expected_repeat_number,
             ) == reduced_pattern.compute_next_pick_numbers(direction_forward=True)
 
-            returned_pick_number = reduced_pattern.increment_pick_number(direction_forward=True)
-            assert returned_pick_number == expected_pick_number
+            reduced_pattern.increment_pick_number(direction_forward=True)
             assert reduced_pattern.pick_number == expected_pick_number
             assert reduced_pattern.pick_repeat_number == expected_repeat_number
-            pick = reduced_pattern.get_pick(pick_number=returned_pick_number)
-            assert pick == reduced_pattern.get_current_pick()
-            if returned_pick_number == 0:
-                assert pick == EXPECTED_PICK_0
-            else:
-                assert pick == reduced_pattern.picks[returned_pick_number - 1]
 
         # Go backwards to the beginning
         while True:
@@ -414,16 +409,92 @@ def test_pick_number() -> None:
                 expected_repeat_number,
             ) == reduced_pattern.compute_next_pick_numbers(direction_forward=False)
 
-            returned_pick_number = reduced_pattern.increment_pick_number(direction_forward=False)
-            assert returned_pick_number == expected_pick_number
+            reduced_pattern.increment_pick_number(direction_forward=False)
             assert reduced_pattern.pick_number == expected_pick_number
             assert reduced_pattern.pick_repeat_number == expected_repeat_number
+
+            pick = reduced_pattern.get_pick(pick_number=expected_pick_number)
+            assert pick == reduced_pattern.get_current_pick()
+            if expected_pick_number == 0:
+                assert pick == EXPECTED_PICK_0
+            else:
+                assert pick == reduced_pattern.picks[expected_pick_number - 1]
+
+        # Sanity-check the backwards loop
+        assert reduced_pattern.pick_number == 0
+        assert reduced_pattern.pick_repeat_number == 1
 
         # At the beginning; try to go past it
         with pytest.raises(IndexError):
             reduced_pattern.compute_next_pick_numbers(direction_forward=False)
         with pytest.raises(IndexError):
             reduced_pattern.increment_pick_number(direction_forward=False)
+        assert reduced_pattern.pick_number == 0
+        assert reduced_pattern.pick_repeat_number == 1
+        assert reduced_pattern.tabby_pick_number == 0
+        assert reduced_pattern.end_number0 == 0
+        assert reduced_pattern.end_number1 == 0
+        assert reduced_pattern.end_repeat_number == 1
+
+
+def test_tabby_pick_number() -> None:
+    for filepath in ALL_PATTERN_PATHS:
+        full_pattern = read_pattern_file(filepath)
+        reduced_pattern = reduced_pattern_from_pattern_data(name=filepath.name, data=full_pattern)
+
+        # Test check_tabby_pick_number, set_current_tabby_pick_number, and get_tabby_pick
+        # on some bad values
+        assert reduced_pattern.tabby_pick_number == 0
+        for tabby_pick_number in (-1, -2, -10):
+            with pytest.raises(IndexError):
+                reduced_pattern.set_current_tabby_pick_number(tabby_pick_number)
+            with pytest.raises(IndexError):
+                reduced_pattern.get_tabby_pick(tabby_pick_number=tabby_pick_number)
+        assert reduced_pattern.tabby_pick_number == 0
+
+        # Test check_tabby_pick_number and set_current_tabby_pick_number,
+        # get_tabby_pick, and get_current_tabby_pick on some good values.
+        for tabby_pick_number in (0, 1, 2, 99, 100):
+            reduced_pattern.set_current_tabby_pick_number(tabby_pick_number)
+            assert reduced_pattern.tabby_pick_number == tabby_pick_number
+            tabby_pick = reduced_pattern.get_tabby_pick(tabby_pick_number=tabby_pick_number)
+            current_tabby_pick = reduced_pattern.get_current_tabby_pick()
+            assert tabby_pick == current_tabby_pick
+            tabby_pick_index = (tabby_pick_number + 1) % 2
+            if tabby_pick_number == 0:
+                assert tabby_pick == EXPECTED_PICK_0
+            else:
+                assert tabby_pick == reduced_pattern.tabby_picks[tabby_pick_index]
+
+        # Go forward for awhile
+        reduced_pattern.set_current_tabby_pick_number(tabby_pick_number=0)
+        for expected_tabby_pick_number in range(1, 10):
+            reduced_pattern.increment_tabby_pick_number(direction_forward=True)
+            assert reduced_pattern.tabby_pick_number == expected_tabby_pick_number
+
+        # Go backwards to the beginning
+        while expected_tabby_pick_number > 0:
+            expected_tabby_pick_number -= 1
+            reduced_pattern.increment_tabby_pick_number(direction_forward=False)
+            assert reduced_pattern.tabby_pick_number == expected_tabby_pick_number
+            tabby_pick = reduced_pattern.get_tabby_pick(tabby_pick_number=expected_tabby_pick_number)
+            assert tabby_pick == reduced_pattern.get_current_tabby_pick()
+            tabby_pick_index = (expected_tabby_pick_number + 1) % 2
+            if expected_tabby_pick_number == 0:
+                assert tabby_pick == EXPECTED_PICK_0
+            else:
+                assert tabby_pick == reduced_pattern.tabby_picks[tabby_pick_index]
+
+        # Sanity-check the backwards loop
+        assert reduced_pattern.tabby_pick_number == 0
+
+        # At the beginning; try to back up further
+        with pytest.raises(IndexError):
+            reduced_pattern.increment_tabby_pick_number(direction_forward=False)
+
+        assert reduced_pattern.tabby_pick_number == 0
+        assert reduced_pattern.pick_number == 0
+        assert reduced_pattern.pick_repeat_number == 1
         assert reduced_pattern.end_number0 == 0
         assert reduced_pattern.end_number1 == 0
         assert reduced_pattern.end_repeat_number == 1
