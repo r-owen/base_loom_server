@@ -1,5 +1,9 @@
 # Version History
 
+## 1.2b1 2026-03-05
+
+* Add support for weaving tabby, via a new Tabby mode.
+
 ## 1.1.1 2025-11-07
 
 * Modernize dependencies, including using pyserial-asyncio-fast instead of the older pyserial-asyncio.
