@@ -183,6 +183,10 @@
     "message": "Mønster",
     "description": "Label for weaving pattern menu"
   },
+  "Plain Weave": {
+    "message": "Toskaftbinding",
+    "description": "Plain weave (also known as tabby). A tab heading"
+  },
   "Read message": {
     "message": "Les melding",
     "description": "Label for debug display of the most recent message read from the loom"
