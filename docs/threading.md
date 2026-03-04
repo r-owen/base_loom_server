@@ -5,7 +5,7 @@
 <img src="../images/screen_shots/threading_safari_iphone_mini.jpg" width="150" alt="Threading: Safari on iPhone mini">
 </div>
 
-The threading mode helps you correctly thread warp strings through the heddles.
+The **Thread** mode helps you correctly thread warp strings through the heddles.
 Every time you press the pedal, the loom will raise the next group of shafts
 and a display will show you which threads belong on which shaft.
 
@@ -17,6 +17,10 @@ This page assumes you have done all the [basics](index.md):
 
 ## Threading Direction
 
+The Direction button shows "Thread" or "Unthread", prefixed by an arrow showing the direction of the next group of warp ends.
+
+To change between threading and unthreading see [Weaving: Direction](weaving.md#weave-direction).
+
 The [Settings](settings.md) panel contains two settings specific to threading:
 
 * Thread "right to left" or "left to right".
@@ -24,8 +28,6 @@ The [Settings](settings.md) panel contains two settings specific to threading:
 * Thread "back to front" or "front to back".
 "Front to back" rotates the pattern 180 degrees, as if seen from the back of the loom:
 shaft 1 is at the bottom, and warp end 1 is at the other edge than specified by the "Warp end 1 on" [setting](settings.md).
-
-To change between threading and unthreading see [Weave Direction](weaving.md#weave-direction).
 
 If you are using a Toika loom, you must specify whether Software or the Loom controls threading direction in [Settings](settings.md). If you thread "front to back", consider specifying Software, because it may be difficult to reach the REVERSE button on the dobby head from behind the castle.
 
@@ -47,34 +49,14 @@ Special cases that may only be supported by WIF files:
 You can jump to a different group of warp ends, specified by the smaller warp end number.
 For example if the group size is 4 and you jump to end 21, the new ends will be 21, 22, 23, 24, and 25 (or fewer, if the warp has fewer than 25 threads), regardless of the threading direction.
 
-Jumping is a two-step process: first you request the jump, then you advance to it by pressing the loom's pedal.
-(Two steps are necessary because most looms will not accept an unsolicited command to raise shafts.)
-In detail:
-
-* Enter the desired warp end number in the box to the right of "Jump to warp thread".
-  The box will turn pink and the Jump button will be enabled.
-
-* Press the "return" keyboard key or click the "Jump" button on the web page to send the requested jump to the server.
-  You will see several changes:
-
-    * The jump input box will have a white background and the jump button will be disabled.
-
-    * The pattern display will show the new thread group, with a dotted box around it.
-
-* Advance to the next group by pressing the loom's pedal.
-
-* Until you advance to the next group, you may request a different jump (in case you got it wrong the first time) or cancel the jump.
-  To cancel the jump you may do any of the following:
-
-    * Press the "Reset" button to the right of "Jump".
-
-    * Reload the page.
-
-    * Select a new pattern.
+See [Weaving: Jumping](weaving.md#jumping) for details.
 
 ## Group Size
 
 The "Group size" menu selects how many warp ends are in a group, All shafts for a group are raised at once.
+
+Unless the threading is trivial, I suggest using a group size of 1 (only lift one shaft at a time).
+It is a bit slower, but much safer.
 
 You can change the group size whenever you like; the change takes effect for the next thread group (next time you push the pedal to advance).
 

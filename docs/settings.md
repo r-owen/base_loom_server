@@ -5,7 +5,7 @@
 <img src="../images/screen_shots/settings_safari_iphone_mini.jpg" width="150" alt="Settings: Safari on iPhone mini">
 </div>
 
-The Settings allows you to specify settings that apply to all weaving patterns.
+The Settings mode allows you to specify settings that apply to all weaving patterns.
 Settings are automatically saved, and should survive rebooting the loom server.
 
 Settings include:
@@ -39,6 +39,9 @@ Settings include:
 * **Default threading group size**: specify the threading group size for newly uploaded patterns.
   This setting has no effect on any pattern files that are already loaded;
   use the "Group size" control in the [Threading](threading.md) panel to change those.
+
+  Unless the threading is trivial, I suggest using a group size of 1 (only lift one shaft at a time).
+  It is a bit slower, but much safer.
 
 * **WiFi network**: specify which WiFi network the loom server runs.
   This setting is only available if the loom server is run with a special command-line argument

@@ -5,6 +5,8 @@ A loom server allows you to control a computer-controlled loom from a web browse
 <div>
 <img src="images/screen_shots/weaving_safari_macos.jpg" width="100" alt="Weaving: Safari on macOS">
 <img src="images/screen_shots/weaving_safari_iphone_mini.jpg" width="50" alt="Weaving: Safari on iPhone mini">
+<img src="images/screen_shots/weaving_tabby_safari_macos.jpg" width="100" alt="Weaving: Safari on macOS">
+<img src="images/screen_shots/weaving_tabby_safari_iphone_mini.jpg" width="50" alt="Weaving: Safari on iPhone mini">
 <img src="images/screen_shots/threading_safari_macos.jpg" width="100" alt="Threading: Safari on macOS">
 <img src="images/screen_shots/threading_safari_iphone_mini.jpg" width="50" alt="Threading: Safari on iPhone mini">
 </div>
@@ -52,11 +54,13 @@ If you are running the web browser and web server on the same computer, you can 
 
 ## Select the Mode
 
-The server has three modes, which are listed at the top of the web page:
+The server has four modes, which are shown as tabs at the top of the web page:
 
-* [Weaving](weaving.md) is used to weave fabric; this is by far the most common mode.
+* [Weave](weaving.md) weaves fabric; this is by far the most common mode.
 
-* [Threading](threading.md) helps you thread the loom, by lifting shafts for groups of threads.
+* [Tabby](weaving_tabby.md) weave tabby (plain weave), or a reasonable approximation.
+
+* [Thread](threading.md) helps you thread the loom, by lifting shafts for one or more threads.
 
 * [Settings](settings.md) allows you specify settings that apply to all weaving pattern files.
 

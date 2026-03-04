@@ -6,7 +6,9 @@
 <img src="../images/screen_shots/weaving_safari_iphone_mini.jpg" width="150" alt="Weaving: Safari on iPhone mini">
 </div>
 
-This page assumes you have done all the [basics](index.md):
+The **Weave** mode allows you to weave your chosen design.
+
+The following assumes you have done all the [basics](index.md):
 
 * Connected your web browser to the loom server
 * Uploaded at least one pattern, and selected a pattern from the pattern menu
@@ -27,8 +29,7 @@ and does not display multi-layer patterns, such as doubleweave, correctly.
 
 ## Weave Direction
 
-The Weaving "Direction" button shows "Weave" or "Unweave".
-[Threading](threading.md) also has a direction button that shows "Thread" or "Unthread", prefixed by an arrow showing the direction of the next group of warp ends. Note that for threading you can choose which direction is forward in [Settings](settings.md).
+The "Direction" button shows "Weave" or "Unweave". (In [Thread](threading.md) mode the button shows "Thread" or "Unthread", prefixed by an arrow showing the direction of the next group of warp ends.)
 
 To clearly warn you when unweaving or unthreading, the direction button is shown in red, and the pattern is shown with a red border and a pink background.
 

@@ -2,6 +2,7 @@ site_name: Base Loom Server
 nav:
   - Home: index.md
   - Weaving: weaving.md
+  - Weaving Tabby: weaving_tabby.md
   - Threading: threading.md
   - Settings: settings.md
   - Installing: installing.md
