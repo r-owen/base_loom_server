@@ -1,5 +1,24 @@
 import asyncio
 import importlib
+from collections.abc import Iterable
+
+
+def bitmask_from_bits(bit_nums: Iterable[int]) -> int:
+    """Convert a collection of 1-based bit numbers to a bitmask (binary word).
+
+    Repeated values are ignored (naturally).
+    """
+    bit_set = set(bit_nums)
+    return sum(1 << bit_num - 1 for bit_num in bit_set if bit_num > 0)
+
+
+def bits_from_bitmask(bitmask: int) -> list[int]:
+    """Convert a bitmask (binary word) to a list of 1-based bit numbers.
+
+    The numbers will be in increasing order.
+    """
+    bin_str = bin(bitmask)[2:]
+    return [i + 1 for i, bit_char in enumerate(reversed(bin_str)) if bit_char == "1"]
 
 
 def compute_num_within_and_repeats(total_num: int, repeat_len: int) -> tuple[int, int]:

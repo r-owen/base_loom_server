@@ -2,7 +2,41 @@ import itertools
 
 import pytest
 
-from base_loom_server.utils import compute_num_within_and_repeats, compute_total_num, get_version
+from base_loom_server.utils import (
+    bitmask_from_bits,
+    bits_from_bitmask,
+    compute_num_within_and_repeats,
+    compute_total_num,
+    get_version,
+)
+
+
+def test_bitmask_functions() -> None:
+    # Bits are 1-based and values < 1 are ignored
+    for bits, expected_bitmask in (
+        ([], 0),
+        ([1], 0b1),
+        ([2], 0b10),
+        ([3, 1], 0b101),
+    ):
+        bitmask = bitmask_from_bits(bits)
+        assert bitmask == expected_bitmask
+
+        bits_with_ignored_values = [0, -1, -2, -99, *bits, 0, -1, -2, -99]
+        bitmask = bitmask_from_bits(bits_with_ignored_values)
+        assert bitmask == expected_bitmask
+
+        bits_with_repeated_values = bits + bits
+        bitmask = bitmask_from_bits(bits_with_repeated_values)
+        assert bitmask == expected_bitmask
+
+        bits_round_trip = bits_from_bitmask(bitmask)
+        assert isinstance(bits_round_trip, list)
+        assert sorted(bits) == bits_round_trip
+
+    for bitmask in (0xFFFFFFFFFF, 0x101010101010, 0xFFFFFFFF, 0xFFFFFFFE, 0xF1F1, 0xF, 0xE, 0x1, 0x0):
+        bits = bits_from_bitmask(bitmask)
+        assert bitmask == bitmask_from_bits(bits)
 
 
 def test_compute_total_num() -> None:
