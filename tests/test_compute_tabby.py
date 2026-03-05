@@ -37,7 +37,7 @@ def test_known_values() -> None:
         ([6, 5, 4, 3, 3, 4, 5], 0b101000, 0b010111, 5),
         ([5, 4, 3, 2, 2, 3, 4], 0b10100, 0b01011, 5),
         ([1, 1, 2, 2], 0b01, 0b10, 1),
-        ([1, 1, 1, 2, 2, 3, 3, 3], 0b010, 0b101, 2),
+        ([1, 1, 1, 2, 2, 3, 3, 3], 0b101, 0b010, 2),
         # Overshot (perfect interlacemet)
         ([1, 2, 1, 2, 3, 2, 3, 4, 3, 4, 1, 4, 1], 0b0101, 0b1010, 0),
         # Bronson lace (perfect interlacemet)
@@ -61,11 +61,11 @@ def test_known_values() -> None:
             tabby_shaft_word1=tabby_shaft_word1, max_threaded_shaft=max_threaded_shaft
         )
 
-        computed_num_transitions = compute_num_transitions(tabby_shaft_word1, threading=threading)
+        num_transitions = compute_num_transitions(tabby_shaft_word1, threading=threading)
 
         assert tabby_shaft_word1 == expected_shaft_word1
         assert tabby_shaft_word2 == expected_shaft_word2
-        assert computed_num_transitions == expected_num_transitions
+        assert num_transitions == expected_num_transitions
 
         assert expected_shaft_word1, expected_shaft_word2 == compute_tabby_shaft_words(threading)
 

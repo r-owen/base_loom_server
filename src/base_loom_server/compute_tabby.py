@@ -46,16 +46,15 @@ def compute_tabby_shaft_word1(threading: list[int]) -> int:
             or if the warp ends are threaded on fewer than 2 different shaft_set.
 
     Notes:
-        The basic algorithm is as follows:
+        The algorithm is as follows:
 
         First make a pruned version of the threading with no 0s
         (warp ends that are not threaded) and no repeating ends.
 
-        Now check the simple case: if all even (pruned) warp ends are threaded
-        on a separate set of shafts than all odd warp ends (a very common case,
-        and one that allows the best possible interlacement) then
-        return a tabby shaft word that raises every shaft in the odd warp ends set
-        (or even, of that is shorter).
+        Now check the most common case: if all even (pruned) warp ends
+        are threaded on a separate set of shafts than all odd warp ends,
+        (a case that allows optimal interlacement) then return
+        a tabby shaft word that raises every shaft in the odd warp ends set.
 
         If that fails, use a harder and less ideal algorithm:
         Loop through the (pruned) warp ends. For each shaft that
@@ -88,10 +87,7 @@ def compute_tabby_shaft_word1(threading: list[int]) -> int:
     even_ends_shaft_set = set(pruned_threading[1::2])
     if even_ends_shaft_set & odd_ends_shaft_set == set():
         tabby_shaft_word = 0
-        iter_set = (
-            odd_ends_shaft_set if len(odd_ends_shaft_set) <= len(even_ends_shaft_set) else even_ends_shaft_set
-        )
-        for shaft in iter_set:
+        for shaft in odd_ends_shaft_set:
             tabby_shaft_word |= 1 << (shaft - 1)
         return tabby_shaft_word
 
