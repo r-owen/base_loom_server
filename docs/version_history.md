@@ -1,5 +1,9 @@
 # Version History
 
+## 1.2b3 2026-03-06
+
+* Improve computation of tabby.
+
 ## 1.2b2 2026-03-05
 
 * Fix initial display of tabby panel.
