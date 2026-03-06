@@ -62,16 +62,26 @@ class ReducedPattern:
     Contains just enough information to allow loom control,
     with a simple display.
 
-    Picks are accessed by pick number, which is 1-based.
-    0 indicates that nothing has been woven.
-    Similarly for tabby picks and warp ends.
+    Warp ends that are not threaded on any shaft are omitted.
+    Warp ends that are threaded on more than one shaft are
+    only threaded on the lowest-numbered shaft.
+    Weft picks that are not treadled are omitted.
 
-    Shaft numbers in threading are 0-based.
+    Values in lists, such as color_table, warp_colors and threading, are 0-based.
+    Thus color_table is a list of 0-based colors,
+    warp_colors is a list of 0-based indices into color_table,
+    and threading is a list of 0-based shaft numbers.
+
+    However, pick number and end numbers are 1-based
+    (in general "number" in the name indicates it is 1-based).
+    A value of 0 indicates "no such pick" or "no such end",
+    and is the initial state of weaving and threading,
+    as well as a separator gap between pattern repeats.
 
     pick_number and end_number0/1 are within one pattern repeat,
     and repeats are tracked with related attributes.
-    tabby_pick_number is different, since repeats of tabby are not tracked
-    (as uninteresting), the value is a "total" pick number.
+    However, tabby_pick_number is absolute, because repeats of tabby
+    are not interesting, and so are not tracked.
     """
 
     type: str = dataclasses.field(init=False, default="ReducedPattern")
@@ -473,8 +483,9 @@ def reduced_pattern_from_pattern_data(name: str, data: dtx_to_wif.PatternData) -
 
     num_ends = max(data.threading.keys())
     end_numbers = list(range(1, num_ends + 1))
+    # Shaft numbers in threading are 0-based
     threading = [_smallest_shaft(data.threading.get(end_number, {0})) - 1 for end_number in end_numbers]
-    max_threaded_shaft = max(threading)
+    max_threaded_shaft_number = max(threading) + 1  # +1 because 1-based
 
     num_picks = max(data.liftplan.keys()) if data.liftplan else max(data.treadling.keys())
     pick_numbers = list(range(1, num_picks + 1))
@@ -493,10 +504,10 @@ def reduced_pattern_from_pattern_data(name: str, data: dtx_to_wif.PatternData) -
     if len(shaft_sets) != len(weft_colors):
         raise RuntimeError(f"{len(shaft_sets)=} != {len(weft_colors)=}\n{shaft_sets=}\n{weft_colors=}")
     try:
-        max_shaft_raised = max(max(shaft_set) for shaft_set in shaft_sets if shaft_set)
+        max_raised_shaft_number = max(max(shaft_set) for shaft_set in shaft_sets if shaft_set)
     except (ValueError, TypeError):
         raise RuntimeError("No shafts are raised") from None
-    all_shafts = set(range(1, max_shaft_raised + 1))
+    all_shafts = set(range(1, max_raised_shaft_number + 1))
     if data.is_rising_shed:
         shaft_words = [bitmask_from_bits(shaft_set) for shaft_set in shaft_sets]
     else:
@@ -519,7 +530,7 @@ def reduced_pattern_from_pattern_data(name: str, data: dtx_to_wif.PatternData) -
         threading=threading,
         picks=picks,
         tabby_picks=tabby_picks,
-        num_shafts=max(max_shaft_raised, max_threaded_shaft),
+        num_shafts=max(max_raised_shaft_number, max_threaded_shaft_number),
         separate_weaving_repeats=len(picks) > NUM_ITEMS_FOR_REPEAT_SEPARATOR,
         separate_threading_repeats=len(threading) > NUM_ITEMS_FOR_REPEAT_SEPARATOR,
     )
