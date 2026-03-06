@@ -12,9 +12,9 @@ def compute_num_transitions(tabby_shaft_word: int, threading: list[int]) -> int:
 
     Args:
         tabby_shaft_word: Tabby shaft word.
-        threading: Which shaft each warp end is on.
+        threading: 0-based shaft number for each warp end.
     """
-    threading_shaft_words = [1 << (shaft - 1) for shaft in threading if shaft > 0]
+    threading_shaft_words = [1 << shaft for shaft in threading]
     return _basic_compute_num_transitions(
         tabby_shaft_word=tabby_shaft_word, threading_shaft_words=threading_shaft_words
     )
@@ -35,8 +35,7 @@ def compute_tabby_shaft_word1(threading: list[int]) -> int:
     """Compute which shaft_set should go up for the best tabby pick 1.
 
     Args:
-        threading: List of 1-based shaft number for each warp end.
-            Ends with shaft < 1 are ignored.
+        threading: 0-based shaft number for each warp end.
 
     Returns:
         shaft_word: Which shaft_set should be up for pick 1, 3, 5... of tabby.
@@ -48,10 +47,9 @@ def compute_tabby_shaft_word1(threading: list[int]) -> int:
     Notes:
         The algorithm is as follows:
 
-        First make a pruned version of the threading with no 0s
-        (warp ends that are not threaded) and no repeating ends.
+        Make a pruned version of the threading with no no repeating ends.
 
-        Now check the most common case: if all even (pruned) warp ends
+        Check the most common case: if all even (pruned) warp ends
         are threaded on a separate set of shafts than all odd warp ends,
         (a case that allows optimal interlacement) then return
         a tabby shaft word that raises every shaft in the odd warp ends set.
@@ -66,17 +64,16 @@ def compute_tabby_shaft_word1(threading: list[int]) -> int:
         in the threading, and pick the tabby shaft word that gives
         the most consecutive transitions.
     """
-    nonzero_threading = [shaft for shaft in threading if shaft > 0]
-    num_threaded_shafts = len(set(nonzero_threading))
-    if len(nonzero_threading) <= 1:
+    if len(threading) <= 1:
         raise ValueError("Need at least 2 threaded warp ends to weave tabby.")
+    num_threaded_shafts = len(set(threading))
     if num_threaded_shafts <= 1:
         raise ValueError("Need at least 2 threaded shafts to weave tabby.")
 
     # Prune repeating duplicate ends
     pruned_threading: list[int] = []
     prev_end = 0
-    for end in nonzero_threading:
+    for end in threading:
         if end != prev_end:
             prev_end = end
             pruned_threading.append(end)
@@ -88,17 +85,17 @@ def compute_tabby_shaft_word1(threading: list[int]) -> int:
     if even_ends_shaft_set & odd_ends_shaft_set == set():
         tabby_shaft_word = 0
         for shaft in odd_ends_shaft_set:
-            tabby_shaft_word |= 1 << (shaft - 1)
+            tabby_shaft_word |= 1 << shaft
         return tabby_shaft_word
 
     # Try the harder and less ideal algorithm.
-    threading_shaft_words = [1 << (shaft - 1) for shaft in threading if shaft > 0]
-
-    best_num_transitions = 0
-    best_tabby_shaft_word = 0
+    optimal_num_transitions = len(pruned_threading) - 1
+    threading_shaft_words = [1 << shaft for shaft in threading]
 
     # Try starting at several different points in the threading,
     # in order to get a somewhat better result.
+    best_num_transitions = 0
+    best_tabby_shaft_word = 0
     num_threads = len(pruned_threading)
     start_interval = ((num_threads - 1) // MAX_ITER) + 1
     if num_threads < MAX_ITER * 2:
@@ -120,7 +117,7 @@ def compute_tabby_shaft_word1(threading: list[int]) -> int:
 
         tabby_shaft_word = 0
         for shaft in seen_shaft_arr[::2]:
-            tabby_shaft_word |= 1 << (shaft - 1)
+            tabby_shaft_word |= 1 << shaft
 
         num_transitions = _basic_compute_num_transitions(
             tabby_shaft_word=tabby_shaft_word, threading_shaft_words=threading_shaft_words
@@ -128,44 +125,53 @@ def compute_tabby_shaft_word1(threading: list[int]) -> int:
         if num_transitions > best_num_transitions:
             best_num_transitions = num_transitions
             best_tabby_shaft_word = tabby_shaft_word
-            if num_transitions == len(pruned_threading) - 1:
-                # Unlikely, since the simple case failed
-                # but it's quick to check and we can't do better
+            if num_transitions == optimal_num_transitions:
+                # As good as it gets
                 break
     return best_tabby_shaft_word
 
 
-def compute_tabby_shaft_word2(tabby_shaft_word1: int, max_threaded_shaft: int) -> int:
+def compute_tabby_shaft_word2(tabby_shaft_word1: int, threading: list[int]) -> int:
     """Compute tabby_shaft_word2 as the complement of tabby_shaft_word1.
 
     Args:
         tabby_shaft_word1: tabby shaft word computed by compute_tabby_shaft_word1.
-        max_threaded_shaft: max(threading); the maximum shaft number (1-based)
-            that has any warp strings threaded on it. All bits beyond that
-            will be 0.
+        threading: The shaft (0-based) for each warp end.
 
     Returns:
         tabby_shaft_word2: which shaft_set should be up picks 2, 4, 6... of tabby.
-            The complement tabby_shaft_word1, will all shaft_set beyond max_threaded_shaft
+            The complement tabby_shaft_word1, will all shaft_set beyond max_threaded_shaft_number
             set to 0.
 
     Raises:
-        ValueError if max_threaded_shaft < 2.
+        ValueError if max_threaded_shaft_number < 2.
+
+    Notes:
+        Takes threading instead of max_threaded_shaft_number for two reasons:
+
+        * It proved too easy to mis-compute the value. Threading is 0-based
+            and it was too easy to pass in max(threading), which is 1 too small.
+        * We may wish to switch to using a sparse mask of threaded shafts,
+            lowering all unused shafts, not just those beyond the last threaded shaft.
     """
     if tabby_shaft_word1 < 1:
         raise ValueError(f"{tabby_shaft_word1=} must be positive")
-    if max_threaded_shaft <= 1:
-        raise ValueError(f"{max_threaded_shaft=} must be > 1")
-    all_shaft_set_mask = (1 << max_threaded_shaft) - 1
-    return ~tabby_shaft_word1 & all_shaft_set_mask
+    max_threaded_shaft_number = max(threading) + 1  # threading is 0-based
+    if max_threaded_shaft_number <= 1:
+        raise ValueError(f"{max_threaded_shaft_number=} must be > 1")
+
+    all_shaft_set_mask = (1 << max_threaded_shaft_number) - 1
+    tabby_shaft_word2 = ~tabby_shaft_word1 & all_shaft_set_mask
+    if tabby_shaft_word2 < 1:
+        raise ValueError(f"Result is invalid; check {tabby_shaft_word1=} and {threading=}")
+    return tabby_shaft_word2
 
 
 def compute_tabby_shaft_words(threading: list[int]) -> tuple[int, int]:
     """Compute tabby_shaft_words 1 and 2.
 
     Args:
-        threading: List of 1-based shaft number for each warp end.
-            Ends with shaft < 1 are ignored.
+        threading: 0-based shaft number for each warp end.
 
     Returns:
         (shaft_word1, shaft_word2): Which shaft_set should be up for the two picks of tabby
@@ -176,8 +182,5 @@ def compute_tabby_shaft_words(threading: list[int]) -> tuple[int, int]:
             or if the warp ends are threaded on fewer than 2 different shaft_set.
     """
     tabby_shaft_word1 = compute_tabby_shaft_word1(threading=threading)
-    max_threaded_shaft = max(threading)
-    tabby_shaft_word2 = compute_tabby_shaft_word2(
-        tabby_shaft_word1=tabby_shaft_word1, max_threaded_shaft=max_threaded_shaft
-    )
+    tabby_shaft_word2 = compute_tabby_shaft_word2(tabby_shaft_word1=tabby_shaft_word1, threading=threading)
     return (tabby_shaft_word1, tabby_shaft_word2)
