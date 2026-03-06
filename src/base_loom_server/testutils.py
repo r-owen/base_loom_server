@@ -445,8 +445,9 @@ class Client:
         """
         expected_seen_types = {
             "CommandDone",
-            "CurrentPickNumber",
             "CurrentEndNumber",
+            "CurrentPickNumber",
+            "CurrentTabbyPickNumber",
             "ReducedPattern",
             "SeparateThreadingRepeats",
             "SeparateWeavingRepeats",
@@ -486,6 +487,8 @@ class Client:
                         repeat_number=pattern_in_reply.pick_repeat_number,
                         repeat_len=len(pattern_in_reply.picks),
                     )
+                case "CurrentTabbyPickNumber":
+                    assert reply.tabby_pick_number == pattern_in_reply.tabby_pick_number
                 case "CurrentEndNumber":
                     assert reply.end_number0 == pattern_in_reply.end_number0
                     assert reply.end_number1 == pattern_in_reply.end_number1
