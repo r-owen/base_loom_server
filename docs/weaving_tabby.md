@@ -7,7 +7,7 @@
 </div>
 
 The **Tabby** mode allows you to weave tabby (plain weave), or a close approximation.
-This can be used to weaving hems or item separators.
+This can be used to weave hems or item separators.
 
 Caveats:
 
