@@ -1,8 +1,14 @@
 # Version History
 
+## 1.2b2 2026-03-05
+
+* Fix initial display of tabby panel.
+
 ## 1.2b1 2026-03-05
 
 * Add support for weaving tabby, via a new Tabby mode.
+
+Warning: the pattern storage will be reset.
 
 ## 1.1.1 2025-11-07
 
