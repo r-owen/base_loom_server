@@ -1287,6 +1287,7 @@ class BaseLoomServer:
         await self.report_current_pattern()
         await self.report_current_end_numbers()
         await self.report_current_pick_number()
+        await self.report_current_tabby_pick_number()
         await self.report_separate_threading_repeats()
         await self.report_separate_weaving_repeats()
         await self.report_thread_group_size()
