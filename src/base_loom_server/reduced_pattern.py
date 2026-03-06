@@ -38,7 +38,7 @@ class Pick:
 
     Args:
         color: Weft color, as an index into the color table.
-        shaft_word: A bit mask, with bit 1 = shaft 0.
+        shaft_word: A bit mask, with bit 1 = shaft number 1 (index 0).
             The shaft is up if the bit is set.
     """
 
@@ -67,13 +67,14 @@ class ReducedPattern:
     only threaded on the lowest-numbered shaft.
     Weft picks that are not treadled are omitted.
 
-    Values in lists, such as color_table, warp_colors and threading, are 0-based.
-    Thus color_table is a list of 0-based colors,
-    warp_colors is a list of 0-based indices into color_table,
-    and threading is a list of 0-based shaft numbers.
+    Values in threading and warp_colors, are 0-based indices:
 
-    However, pick number and end numbers are 1-based
-    (in general "number" in the name indicates it is 1-based).
+    * threading is a list of shaft indices (shaft index 0 is shaft number 1).
+    * warp_colors is a list of indices into color_table.
+        Likewise for the color attribute of Pick.
+
+    pick_number and end_number0/1 are 1-based (in general "number"
+    in the name indicates it is 1-based).
     A value of 0 indicates "no such pick" or "no such end",
     and is the initial state of weaving and threading,
     as well as a separator gap between pattern repeats.
