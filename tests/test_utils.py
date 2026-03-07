@@ -8,6 +8,7 @@ from base_loom_server.utils import (
     compute_num_within_and_repeats,
     compute_total_num,
     get_version,
+    prune_duplicates,
 )
 
 
@@ -37,20 +38,6 @@ def test_bitmask_functions() -> None:
     for bitmask in (0xFFFFFFFFFF, 0x101010101010, 0xFFFFFFFF, 0xFFFFFFFE, 0xF1F1, 0xF, 0xE, 0x1, 0x0):
         bits = bits_from_bitmask(bitmask)
         assert bitmask == bitmask_from_bits(bits)
-
-
-def test_compute_total_num() -> None:
-    for num_within, repeat_number, repeat_len in itertools.product(
-        (-50, -33, -1, 0, 1, 33, 50), (-1, 0, 1), (1, 21, 33, 50)
-    ):
-        total_num = compute_total_num(num_within, repeat_number, repeat_len)
-        assert total_num == (repeat_number - 1) * repeat_len + num_within
-
-        with pytest.raises(ValueError):
-            compute_total_num(num_within, repeat_number, 0)
-
-        with pytest.raises(ValueError):
-            compute_total_num(num_within, repeat_number, -1)
 
 
 def test_compute_num_within_and_repeats() -> None:
@@ -83,6 +70,20 @@ def test_compute_num_within_and_repeats() -> None:
             compute_num_within_and_repeats(total_num, -1)
 
 
+def test_compute_total_num() -> None:
+    for num_within, repeat_number, repeat_len in itertools.product(
+        (-50, -33, -1, 0, 1, 33, 50), (-1, 0, 1), (1, 21, 33, 50)
+    ):
+        total_num = compute_total_num(num_within, repeat_number, repeat_len)
+        assert total_num == (repeat_number - 1) * repeat_len + num_within
+
+        with pytest.raises(ValueError):
+            compute_total_num(num_within, repeat_number, 0)
+
+        with pytest.raises(ValueError):
+            compute_total_num(num_within, repeat_number, -1)
+
+
 def test_get_version() -> None:
     assert get_version("#_invalid_package_name") == "?"
 
@@ -92,3 +93,22 @@ def test_get_version() -> None:
         assert get_version("base_loom_server") == "?"
     else:
         assert get_version("base_loom_server") == getattr(version, "__version__", "?")
+
+
+def test_prune_duplicates() -> None:
+    for data in (
+        [],
+        [1, 1, 1, 2, 3, 3, 0, 3, 2, -1, -1],
+        [-1, 2, 0, 1],
+        [0, 55, 55, 22, 22, -1, -1, 55],
+    ):
+        pruned_data = prune_duplicates(data)
+        # compare to a different implementation
+        desired_pruned_data: list[int] = []
+        prev_val: int | None = None
+        for end in data:
+            if end != prev_val:
+                prev_val = end
+                desired_pruned_data.append(end)
+
+        assert pruned_data == desired_pruned_data

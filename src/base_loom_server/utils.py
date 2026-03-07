@@ -1,6 +1,7 @@
 import asyncio
 import importlib
-from collections.abc import Iterable
+import itertools
+from collections.abc import Iterable, Sequence
 
 
 def bitmask_from_bits(bit_nums: Iterable[int]) -> int:
@@ -9,6 +10,7 @@ def bitmask_from_bits(bit_nums: Iterable[int]) -> int:
     Repeated values are ignored (naturally).
     """
     bit_set = set(bit_nums)
+
     return sum(1 << bit_num - 1 for bit_num in bit_set if bit_num > 0)
 
 
@@ -91,6 +93,13 @@ def get_version(package_name: str) -> str:
     except ImportError:
         return "?"
     return str(getattr(module, "__version__", "?"))
+
+
+def prune_duplicates(data: Sequence[int]) -> list[int]:
+    """Prune duplicate entries in an ordered sequence."""
+    if len(data) == 0:
+        return []
+    return [data[0]] + [val1 for val0, val1 in itertools.pairwise(data) if val1 != val0]
 
 
 async def run_shell_command(command: str) -> str:
