@@ -65,9 +65,8 @@ def compute_tabby_shaft_word1_simple(threading: list[int]) -> int:
 def _compute_tabby_shaft_word1_simple_impl(threading_shaft_words: list[int]) -> int:
     """Implementation of compute_tabby_shaft_word1_simple.
 
-    Handle the trivial case that all (threaded and non-duplicated)
-    even threads are on different shafts than all odd threads.
-    Return 0 if that is not the case.
+    Handle the trivial case that all even threads are on different
+    shafts than all odd threads. Return 0 if that is not the case.
 
     Args:
         threading_shaft_words: Shaft words for each warp end.
