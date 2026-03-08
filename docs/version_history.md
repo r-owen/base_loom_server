@@ -1,5 +1,9 @@
 # Version History
 
+## 1.2b4 2026-03-07
+
+* Further improve computation of tabby.
+
 ## 1.2b3 2026-03-06
 
 * Improve computation of tabby.
