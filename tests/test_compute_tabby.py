@@ -34,13 +34,13 @@ def test_known_values() -> None:
         ([3, 4, 5, 6, 5, 4, 3], 0b010100, 0),
         ([1, 10, 3, 6], 0b0000000101, 0),
         ([2, 5, 4, 9], 0b000001010, 0),
-        ([2, 1, 2, 3, 4, 5], 0b10101, 0),
+        ([2, 1, 2, 3, 4, 5], 0b01010, 0),
         # Some repeating warp ends; ignoring those
         # the fabric is fully interlaced.
-        ([6, 5, 4, 3, 3, 4, 5], 0b10100, 0),
+        ([6, 5, 4, 3, 3, 4, 5], 0b010100, 0),
         ([5, 4, 3, 2, 2, 3, 4], 0b01010, 0),
         ([1, 1, 2, 2], 0b01, 1),
-        ([1, 1, 1, 2, 2, 3, 3, 3], 0b101, 0),
+        ([1, 1, 1, 2, 2, 3, 3, 3], 0b010, 0),
         # Overshot (perfect interlacemet)
         ([1, 2, 1, 2, 3, 2, 3, 4, 3, 4, 1, 4, 1], 0b0101, 0),
         # Bronson lace (perfect interlacemet)
@@ -50,12 +50,12 @@ def test_known_values() -> None:
         # Diversified plain weave (various forms)
         # The first two forms
         ([2, 3, 1, 2, 4, 1, 2, 5, 1], 0b00011, 6),
-        ([1, 2, 3, 1, 2, 4, 1, 2, 5], 0b11101, 6),  # 0b00011 would be prettier
+        ([1, 2, 3, 1, 2, 4, 1, 2, 5], 0b00010, 6),  # the standard 0b00011 has one fewer transitions
         ([1, 3, 1, 2, 4, 2, 1, 5, 1], 0b01001, 0),  # the simple algorithm works
-        ([2, 3, 2, 1, 4, 1, 2, 5, 2], 0b10101, 0),  # the simple algorithm works
+        ([2, 3, 2, 1, 4, 1, 2, 5, 2], 0b01010, 0),  # the simple algorithm works
         # Other cases where the simple algorithm does not work.
-        ([1, 2, 3, 1, 2, 3], 0b101, 4),
-        ([1, 2, 4, 2, 3, 1], 0b1101, 4),
+        ([1, 2, 3, 1, 2, 3], 0b010, 4),
+        ([1, 2, 4, 2, 3, 1], 0b0010, 4),
     ):
         threading = [shaft - 1 for shaft in threading_1based]
         if expected_num_transitions == 0:
