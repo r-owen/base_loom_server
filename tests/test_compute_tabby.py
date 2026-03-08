@@ -6,6 +6,7 @@ from base_loom_server.compute_tabby import (
     compute_tabby_shaft_word2,
     compute_tabby_shaft_words,
 )
+from base_loom_server.utils import prune_duplicates
 
 # Dict of field name: default value
 EXPECTED_DEFAULTS = dict(
@@ -21,6 +22,8 @@ def test_known_values() -> None:
     """Get the shaft set for a specified 1-based pick_number."""
     # Explicit values use 1-based shafts, for readability,
     # but internally the threading array uses 0-based shafts.
+    # Set expected_num_transitions to 0 if the threading allows full interlacement
+    # (aside from adjacent repeats); the expected value is computed.
     for threading_1based, expected_shaft_word1, expected_num_transitions in (
         # Fully interlaced
         ([1, 2], 0b01, 0),
@@ -34,26 +37,30 @@ def test_known_values() -> None:
         ([2, 1, 2, 3, 4, 5], 0b10101, 0),
         # Some repeating warp ends; ignoring those
         # the fabric is fully interlaced.
-        ([6, 5, 4, 3, 3, 4, 5], 0b10100, 5),
-        ([5, 4, 3, 2, 2, 3, 4], 0b01010, 5),
+        ([6, 5, 4, 3, 3, 4, 5], 0b10100, 0),
+        ([5, 4, 3, 2, 2, 3, 4], 0b01010, 0),
         ([1, 1, 2, 2], 0b01, 1),
-        ([1, 1, 1, 2, 2, 3, 3, 3], 0b101, 2),
+        ([1, 1, 1, 2, 2, 3, 3, 3], 0b101, 0),
         # Overshot (perfect interlacemet)
         ([1, 2, 1, 2, 3, 2, 3, 4, 3, 4, 1, 4, 1], 0b0101, 0),
         # Bronson lace (perfect interlacemet)
         ([1, 2, 1, 2, 1, 3, 1, 3, 1, 4, 1, 4], 0b0001, 0),
         # Canvas weave
-        ([1, 2, 2, 1, 4, 3, 3, 4], 0b0101, 5),
-        # Non-trivial cases. The even warp ends and odd warp ends
-        # are not on unique sets of shafts (after purging repeating shafts).
-        # These are the only test cases that exercise the
-        # non-simple branch of the algorithm.
+        ([1, 2, 2, 1, 4, 3, 3, 4], 0b0101, 0),
+        # Diversified plain weave (various forms)
+        # The first two forms
+        ([2, 3, 1, 2, 4, 1, 2, 5, 1], 0b00011, 6),
+        ([1, 2, 3, 1, 2, 4, 1, 2, 5], 0b11101, 6),  # 0b00011 would be prettier
+        ([1, 3, 1, 2, 4, 2, 1, 5, 1], 0b01001, 0),  # the simple algorithm works
+        ([2, 3, 2, 1, 4, 1, 2, 5, 2], 0b10101, 0),  # the simple algorithm works
+        # Other cases where the simple algorithm does not work.
         ([1, 2, 3, 1, 2, 3], 0b101, 4),
         ([1, 2, 4, 2, 3, 1], 0b1101, 4),
     ):
         threading = [shaft - 1 for shaft in threading_1based]
         if expected_num_transitions == 0:
-            expected_num_transitions = len(threading) - 1  # noqa: PLW2901
+            pruned_threading = prune_duplicates(threading)
+            expected_num_transitions = len(pruned_threading) - 1  # noqa: PLW2901
 
         max_shaft_number = max(threading) + 1
         expected_shaft_word2 = ~expected_shaft_word1 & (2**max_shaft_number - 1)
