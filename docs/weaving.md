@@ -76,8 +76,7 @@ In detail:
 
 * You may also use the "-" and "+" buttons.
   These work much like the input box, but are immediately applied (there is no need to push the "return" keyboard key or click "Jump").
-  The new jump value is relative to the value in the box, if any, else to the current pick.
-  These buttons are not available in the Tabby mode, to reduce clutter.
+  The new jump value is relative to the value in the box, if there is one, else it is relative to the current pick.
 
 * Advance to the next pick by pressing the loom's pedal.
 
