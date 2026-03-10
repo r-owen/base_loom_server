@@ -413,11 +413,24 @@ class LoomClient {
         let jumpToEndForm = document.getElementById("jump_to_end_form")
         jumpToEndForm.addEventListener("submit", this.handleJumpToEndSubmit.bind(this))
 
+        let jumpToEndMinusOneElt = document.getElementById("jump_to_end_minus_one")
+        jumpToEndMinusOneElt.addEventListener("click", this.handleJumpToEndMinusOne.bind(this))
+
+        let jumpToEndPlusOneElt = document.getElementById("jump_to_end_plus_one")
+        jumpToEndPlusOneElt.addEventListener("click", this.handleJumpToEndPlusOne.bind(this))
+
         let jumpToEndResetElt = document.getElementById("jump_to_end_reset")
         jumpToEndResetElt.addEventListener("click", this.handleJumpToEndReset.bind(this))
 
+
         let jumpToPickForm = document.getElementById("jump_to_pick_form")
         jumpToPickForm.addEventListener("submit", this.handleJumpToPickSubmit.bind(this))
+
+        let jumpToPickMinusOneElt = document.getElementById("jump_to_pick_minus_one")
+        jumpToPickMinusOneElt.addEventListener("click", this.handleJumpToPickMinusOne.bind(this))
+
+        let jumpToPickPlusOneElt = document.getElementById("jump_to_pick_plus_one")
+        jumpToPickPlusOneElt.addEventListener("click", this.handleJumpToPickPlusOne.bind(this))
 
         let jumpToPickResetElt = document.getElementById("jump_to_pick_reset")
         jumpToPickResetElt.addEventListener("click", this.handleJumpToPickReset.bind(this))
@@ -1667,6 +1680,48 @@ class LoomClient {
     }
 
     /*
+    Get jump total_end_number0, for the -/+ buttons.
+
+    Return the user entered jump value, if there is one,
+    else jumpEndData.total_end_number0 if not null,
+    else currentEndData.total_end_number0 if not null,
+    else returns null.
+    */
+    getJumpTotalEndNumber0() {
+        const jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
+        let userValue = asIntOrNull(jumpTotalEndNumber0Elt.value)
+        if (userValue != null) {
+            return userValue
+        } else if (this.jumpEndData.total_end_number0 != null) {
+            return this.jumpEndData.total_end_number0
+        } else if (this.currentEndData.total_end_number0 != null) {
+            return this.currentEndData.total_end_number0
+        }
+        return null
+    }
+
+    /*
+    Get jump total_pick_number, for the -/+ buttons.
+
+    Return the user entered jump value, if there is one,
+    else jumpPickData.total_end_number if not null,
+    else currentPickData.total_end_number if not null,
+    else returns null.
+    */
+    getJumpTotalPickNumber() {
+        const jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
+        let userValue = asIntOrNull(jumpTotalPickNumberElt.value)
+        if (userValue != null) {
+            return userValue
+        } else if (this.jumpPickData.total_pick_number != null) {
+            return this.jumpPickData.total_pick_number
+        } else if (this.currentPickData.total_pick_number != null) {
+            return this.currentPickData.total_pick_number
+        }
+        return null
+    }
+
+    /*
     Handle dark/light theme
     */
     handleDarkLightTheme() {
@@ -1879,15 +1934,51 @@ class LoomClient {
         let jumpToEndSubmitElt = document.getElementById("jump_to_end_submit")
         let jumpToEndResetElt = document.getElementById("jump_to_end_reset")
         let jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
+        let jumpToEndMinusOneElt = document.getElementById("jump_to_end_minus_one")
+
         jumpTotalEndNumber0Elt.value = jumpTotalEndNumber0Elt.value.replace(/\D/g, "")
         let disableJump = (asIntOrNull(jumpTotalEndNumber0Elt.value) == this.jumpEndData.total_end_number0)
         jumpTotalEndNumber0Elt.setAttribute('modified', !disableJump)
         const disableReset = disableJump && (jumpTotalEndNumber0Elt.value == "")
         jumpToEndSubmitElt.disabled = disableJump
         jumpToEndResetElt.disabled = disableReset
+
+        const jumpEndNumber = this.getJumpTotalEndNumber0()
+        jumpToEndMinusOneElt.disabled = (jumpEndNumber == 0)
         if (event != null) {
             event.preventDefault()
         }
+    }
+
+    /*
+    Handle minus - button in the "jump_to_end" form.
+    */
+    async handleJumpToEndMinusOne(event) {
+        let totalEndNumber0 = this.getJumpTotalEndNumber0()
+        if (totalEndNumber0 == null) {
+            return
+        }
+        if (totalEndNumber0 < 1) {
+            return
+        }
+        totalEndNumber0 -= 1
+        const command = { "type": "jump_to_end", "total_end_number0": totalEndNumber0 }
+        await this.sendCommand(command)
+        event.preventDefault()
+    }
+
+    /*
+    Handle plus - button in the "jump_to_end" form.
+    */
+    async handleJumpToEndPlusOne(event) {
+        let totalEndNumber0 = this.getJumpTotalEndNumber0()
+        if (totalEndNumber0 == null) {
+            return
+        }
+        totalEndNumber0 += 1
+        const command = { "type": "jump_to_end", "total_end_number0": totalEndNumber0 }
+        await this.sendCommand(command)
+        event.preventDefault()
     }
 
     /*
@@ -1923,6 +2014,7 @@ class LoomClient {
         let jumpToPickSubmitElt = document.getElementById("jump_to_pick_submit")
         let jumpToPickResetElt = document.getElementById("jump_to_pick_reset")
         let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
+        let jumpToPickMinusOneElt = document.getElementById("jump_to_pick_minus_one")
 
         jumpTotalPickNumberElt.value = jumpTotalPickNumberElt.value.replace(/\D/g, "")
         const disableJump = asIntOrNull(jumpTotalPickNumberElt.value) == this.jumpPickData.total_pick_number
@@ -1930,28 +2022,43 @@ class LoomClient {
         const disableReset = disableJump && (jumpTotalPickNumberElt.value == "")
         jumpToPickSubmitElt.disabled = disableJump
         jumpToPickResetElt.disabled = disableReset
+
+        const jumpPickNumber = this.getJumpTotalPickNumber()
+        jumpToPickMinusOneElt.disabled = (jumpPickNumber == 0)
         if (event != null) {
             event.preventDefault()
         }
     }
 
     /*
-    Handle user editing of jump_tabby_pick_number.
+    Handle minus - button in the "jump_to_end" form.
     */
-    async handleJumpToTabbyPickInput(event) {
-        let jumpToTabbyPickSubmitElt = document.getElementById("jump_to_tabby_pick_submit")
-        let jumpToTabbyPickResetElt = document.getElementById("jump_to_tabby_pick_reset")
-        let jumpTabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
-
-        jumpTabbyPickNumberElt.value = jumpTabbyPickNumberElt.value.replace(/\D/g, "")
-        const disableJump = asIntOrNull(jumpTabbyPickNumberElt.value) == this.jumpTabbyPickData.tabby_pick_number
-        jumpTabbyPickNumberElt.setAttribute('modified', !disableJump)
-        const disableReset = disableJump && (jumpTabbyPickNumberElt.value == "")
-        jumpToTabbyPickSubmitElt.disabled = disableJump
-        jumpToTabbyPickResetElt.disabled = disableReset
-        if (event != null) {
-            event.preventDefault()
+    async handleJumpToPickMinusOne(event) {
+        let totalPickNumber = this.getJumpTotalPickNumber()
+        if (totalPickNumber == null) {
+            return
         }
+        if (totalPickNumber < 1) {
+            return
+        }
+        totalPickNumber -= 1
+        const command = { "type": "jump_to_pick", "total_pick_number": totalPickNumber }
+        await this.sendCommand(command)
+        event.preventDefault()
+    }
+
+    /*
+    Handle plus - button in the "jump_to_pick" form.
+    */
+    async handleJumpToPickPlusOne(event) {
+        let totalPickNumber = this.getJumpTotalPickNumber()
+        if (totalPickNumber == null) {
+            return
+        }
+        totalPickNumber += 1
+        const command = { "type": "jump_to_pick", "total_pick_number": totalPickNumber }
+        await this.sendCommand(command)
+        event.preventDefault()
     }
 
     /*
@@ -1979,6 +2086,25 @@ class LoomClient {
         await this.sendCommand(command)
         jumpTotalPickNumberElt.select()
         event.preventDefault()
+    }
+
+    /*
+    Handle user editing of jump_tabby_pick_number.
+    */
+    async handleJumpToTabbyPickInput(event) {
+        let jumpToTabbyPickSubmitElt = document.getElementById("jump_to_tabby_pick_submit")
+        let jumpToTabbyPickResetElt = document.getElementById("jump_to_tabby_pick_reset")
+        let jumpTabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
+
+        jumpTabbyPickNumberElt.value = jumpTabbyPickNumberElt.value.replace(/\D/g, "")
+        const disableJump = asIntOrNull(jumpTabbyPickNumberElt.value) == this.jumpTabbyPickData.tabby_pick_number
+        jumpTabbyPickNumberElt.setAttribute('modified', !disableJump)
+        const disableReset = disableJump && (jumpTabbyPickNumberElt.value == "")
+        jumpToTabbyPickSubmitElt.disabled = disableJump
+        jumpToTabbyPickResetElt.disabled = disableReset
+        if (event != null) {
+            event.preventDefault()
+        }
     }
 
     /*
