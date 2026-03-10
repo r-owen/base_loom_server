@@ -1,5 +1,13 @@
 # Version History
 
+## 1.2b6 ?
+
+* Tabby panel changes:
+
+  * Add the word Tabby to the right of the pick number to make it more obvious we're in Tabby mode.
+  * Add - and + buttons to Tabby jump controls, making it like Weave and Thread.
+    (Internally this uses a new class to handle jump controls in a uniform way, reducing code duplication.)
+
 ## 1.2b5 2026-03-09
 
 * Add - and + buttons to the jump controls for Weave and Thread. (They didn't seem worth the clutter for the Tabby panel.)
