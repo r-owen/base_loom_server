@@ -205,6 +205,17 @@ function preventDefaults(event) {
     event.preventDefault()
     event.stopPropagation()
 }
+/*
+* Select the text in an input field when it gets focus
+*
+* Use as follows:
+*   myInputElt.addEventListener("focus", selectOnInput.bind(this, myInputElt))
+*
+* See https://stackoverflow.com/a/13542708/1653413 for why the obvious solution fails.
+*/
+function selectOnInput(inputField) {
+    setTimeout(function () { inputField.select() }, 0)
+}
 
 /*
 Read a binary file and encode it using base64
@@ -313,6 +324,187 @@ class Future {
 }
 
 /*
+Handle Jump controls
+
+Args:
+    loomClient: an instance of LoomClient
+    name: one of pick, end, tabby_pick
+*/
+class JumpHandler {
+    constructor(loomClient, name) {
+        this.loomClient = loomClient
+        this.name = name
+
+        this.jumpCommandParameterName = ""
+        switch (name) {
+            case "end":
+                this.jumpCommandParameterName = "total_end_number0"
+                break
+            case "pick":
+                this.jumpCommandParameterName = "total_pick_number"
+                break
+            case "tabby_pick":
+                this.jumpCommandParameterName = "tabby_pick_number"
+                break
+            default:
+                throw EvalError(`Unsupported name=${name}`)
+        }
+        this.jumpCommand = { "type": `jump_to_${name}` }
+        this.jumpCommand[this.jumpCommandParameterName] = null
+
+        const form = document.getElementById(`jump_to_${name}_form`)
+        form.addEventListener("submit", this.handleSubmit.bind(this))
+
+        this.inputElt = document.getElementById(`jump_to_${name}_input`)
+        this.submitElt = document.getElementById(`jump_to_${name}_submit`)
+        this.minusOneElt = document.getElementById(`jump_to_${name}_minus_one`)
+        this.plusOneElt = document.getElementById(`jump_to_${name}_plus_one`)
+        this.resetElt = document.getElementById(`jump_to_${name}_reset`)
+
+        this.inputElt.addEventListener("focus", selectOnInput.bind(this, this.inputElt))
+        this.inputElt.addEventListener("input", this.handleInput.bind(this))
+        this.minusOneElt.addEventListener("click", this.handleMinusOne.bind(this))
+        this.plusOneElt.addEventListener("click", this.handlePlusOne.bind(this))
+        this.resetElt.addEventListener("click", this.handleReset.bind(this))
+    }
+
+    /*
+    Get the current total_{end0/pick/tabby_pick}_number, if any.
+    */
+    getClientCurrentTotalNumber() {
+        switch (this.name) {
+            case "end":
+                return this.loomClient.currentEndData.total_end_number0
+                break
+            case "pick":
+                return this.loomClient.currentPickData.total_pick_number
+                break
+            case "tabby_pick":
+                return this.loomClient.currentTabbyPickData.tabby_pick_number
+                break
+        }
+    }
+
+    /*
+    Get the pending total_{end0/pick/tabby_pick}_number, if any.
+    */
+    getClientJumpTotalNumber() {
+        switch (this.name) {
+            case "end":
+                return this.loomClient.jumpEndData.total_end_number0
+                break
+            case "pick":
+                return this.loomClient.jumpPickData.total_pick_number
+                break
+            case "tabby_pick":
+                return this.loomClient.jumpTabbyPickData.tabby_pick_number
+                break
+        }
+    }
+
+    /*
+    Get the most relevant jump number.
+     
+    * If the user has entered a value, return that
+    * Else if a jump is pending, return that
+    * Else return the current number
+    */
+    getJumpNumber() {
+        let result = asIntOrNull(this.inputElt.value)
+        if (result == null) {
+            result = this.getClientJumpTotalNumber()
+            if (result == null) {
+                result = this.getClientCurrentTotalNumber()
+            }
+        }
+        return result
+    }
+
+    /*
+    Display the value reported by the loom server.
+    */
+    async displayReportedValue() {
+        this.inputElt.value = this.getClientJumpTotalNumber()
+        this.handleInput(null)
+    }
+
+    /*
+    Handle user editing of jump_total_pick_number.
+    */
+    async handleInput(event) {
+        this.inputElt.value = this.inputElt.value.replace(/\D/g, "")
+        const disableJump = asIntOrNull(this.inputElt.value) == this.getClientJumpTotalNumber()
+        this.inputElt.setAttribute('modified', !disableJump)
+        const disableReset = disableJump && (this.inputElt.value == "")
+        this.submitElt.disabled = disableJump
+        this.resetElt.disabled = disableReset
+
+        const jumpPickNumber = this.getClientJumpTotalNumber()
+        this.minusOneElt.disabled = (jumpPickNumber == 0)
+        if (event != null) {
+            event.preventDefault()
+        }
+    }
+
+    /*
+    Handle minus (-) button.
+    */
+    async handleMinusOne(event) {
+        let totalNumber = this.getJumpNumber()
+        if (totalNumber == null) {
+            return
+        }
+        if (totalNumber < 1) {
+            return
+        }
+        totalNumber -= 1
+        await this.sendJumpCommand(totalNumber)
+        event.preventDefault()
+    }
+
+
+    /*
+    Handle plus (+) button.
+    */
+    async handlePlusOne(event) {
+        let totalNumber = this.getJumpNumber()
+        if (totalNumber == null) {
+            return
+        }
+        totalNumber += 1
+        await this.sendJumpCommand(totalNumber)
+        event.preventDefault()
+    }
+
+    /*
+    Handle Reset button.
+    */
+    async handleReset(event) {
+        this.inputElt.value = ""
+        await this.sendJumpCommand(null)
+        event.preventDefault()
+    }
+
+    /*
+    Handle submit.
+    */
+    async handleSubmit(event) {
+        const totalNumber = asIntOrNull(this.inputElt.value)
+        await this.sendJumpCommand(totalNumber)
+        event.preventDefault()
+    }
+
+    /*
+    Send the jump command
+    */
+    async sendJumpCommand(totalNumber) {
+        this.jumpCommand[this.jumpCommandParameterName] = totalNumber
+        await this.loomClient.sendCommand(this.jumpCommand)
+    }
+}
+
+
+/*
 A minimal weaving pattern, including display code.
 
 Javascript version of the python class of the same name, with the same attributes.Args:
@@ -383,6 +575,9 @@ class LoomClient {
         this.settings = null
         this.shaftState = NullShaftStateData
         this.weaveForward = true
+        this.jumpEndHandler = new JumpHandler(this, "end")
+        this.jumpPickHandler = new JumpHandler(this, "pick")
+        this.jumpTabbyPickHandler = new JumpHandler(this, "tabby_pick")
         this.ws = new WebSocket("ws")
     }
 
@@ -410,55 +605,10 @@ class LoomClient {
         let groupSizeElt = document.getElementById("thread_group_size")
         groupSizeElt.addEventListener("change", this.handleThreadGroupSize.bind(this))
 
-        let jumpToEndForm = document.getElementById("jump_to_end_form")
-        jumpToEndForm.addEventListener("submit", this.handleJumpToEndSubmit.bind(this))
-
-        let jumpToEndMinusOneElt = document.getElementById("jump_to_end_minus_one")
-        jumpToEndMinusOneElt.addEventListener("click", this.handleJumpToEndMinusOne.bind(this))
-
-        let jumpToEndPlusOneElt = document.getElementById("jump_to_end_plus_one")
-        jumpToEndPlusOneElt.addEventListener("click", this.handleJumpToEndPlusOne.bind(this))
-
-        let jumpToEndResetElt = document.getElementById("jump_to_end_reset")
-        jumpToEndResetElt.addEventListener("click", this.handleJumpToEndReset.bind(this))
-
-
-        let jumpToPickForm = document.getElementById("jump_to_pick_form")
-        jumpToPickForm.addEventListener("submit", this.handleJumpToPickSubmit.bind(this))
-
-        let jumpToPickMinusOneElt = document.getElementById("jump_to_pick_minus_one")
-        jumpToPickMinusOneElt.addEventListener("click", this.handleJumpToPickMinusOne.bind(this))
-
-        let jumpToPickPlusOneElt = document.getElementById("jump_to_pick_plus_one")
-        jumpToPickPlusOneElt.addEventListener("click", this.handleJumpToPickPlusOne.bind(this))
-
-        let jumpToPickResetElt = document.getElementById("jump_to_pick_reset")
-        jumpToPickResetElt.addEventListener("click", this.handleJumpToPickReset.bind(this))
-
-        let jumpToTabbyPickForm = document.getElementById("jump_to_tabby_pick_form")
-        jumpToTabbyPickForm.addEventListener("submit", this.handleJumpToTabbyPickSubmit.bind(this))
-
-        let jumpToTabbyPickResetElt = document.getElementById("jump_to_tabby_pick_reset")
-        jumpToTabbyPickResetElt.addEventListener("click", this.handleJumpToTabbyPickReset.bind(this))
-
-        let jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
-        // Select all text on focus, to make it easier to try different jump values
-        // (without this, you are likely to append digits, which is rarely what you want)
-        jumpTotalEndNumber0Elt.addEventListener("focus", this.selectOnInput.bind(this, jumpTotalEndNumber0Elt))
-        jumpTotalEndNumber0Elt.addEventListener("input", this.handleJumpToEndInput.bind(this))
-
-        let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
-        jumpTotalPickNumberElt.addEventListener("focus", this.selectOnInput.bind(this, jumpTotalPickNumberElt))
-        jumpTotalPickNumberElt.addEventListener("input", this.handleJumpToPickInput.bind(this))
-
-        let jumpTabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
-        jumpTabbyPickNumberElt.addEventListener("focus", this.selectOnInput.bind(this, jumpTabbyPickNumberElt))
-        jumpTabbyPickNumberElt.addEventListener("input", this.handleJumpToTabbyPickInput.bind(this))
-
         let loomNameInputElt = document.getElementById("setting_loom_name_input")
         // Select all text on focus, to make it easier to type a new name
         // (without this, you are likely to append to the existing name, instead of replacing it).
-        loomNameInputElt.addEventListener("focus", this.selectOnInput.bind(this, loomNameInputElt))
+        loomNameInputElt.addEventListener("focus", selectOnInput.bind(this, loomNameInputElt))
         loomNameInputElt.addEventListener("input", this.handleLoomNameInput.bind(this))
 
         let loomNameResetButton = document.getElementById("setting_loom_name_reset")
@@ -626,45 +776,39 @@ class LoomClient {
     Display the jump end and repeat
     */
     displayJumpEnd() {
-        let endNumber0Elt = document.getElementById("jump_total_end_number0")
         if (!this.currentPattern) {
             this.jumpEndData = NullPickData
         }
-        endNumber0Elt.value = nullToDefault(this.jumpEndData.total_end_number0)
+        this.jumpEndHandler.displayReportedValue()
         if (this.currentPattern) {
             this.displayThreadingPattern()
         }
-        this.handleJumpToEndInput(null)
     }
 
     /*
     Display the jump pick and repeat
     */
     displayJumpPick() {
-        let totalPickNumberElt = document.getElementById("jump_total_pick_number")
         if (!this.currentPattern) {
             this.jumpPickData = NullPickData
         }
-        totalPickNumberElt.value = nullToDefault(this.jumpPickData.total_pick_number)
+        this.jumpPickHandler.displayReportedValue()
         if (this.currentPattern) {
             this.displayWeavingPattern()
         }
-        this.handleJumpToPickInput(null)
     }
 
     /*
-    Display the jump pick and repeat
+    Display the tabby jump pick and repeat
     */
     displayJumpTabbyPick() {
-        let tabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
         if (!this.currentPattern) {
             this.jumpTabbyPickData = NullTabbyPickData
         }
-        tabbyPickNumberElt.value = nullToDefault(this.jumpTabbyPickData.tabby_pick_number)
+        this.jumpTabbyPickHandler.displayReportedValue()
         if (this.currentPattern) {
             this.displayTabbyPattern()
         }
-        this.handleJumpToTabbyPickInput(null)
     }
 
     /*
@@ -1680,48 +1824,6 @@ class LoomClient {
     }
 
     /*
-    Get jump total_end_number0, for the -/+ buttons.
-
-    Return the user entered jump value, if there is one,
-    else jumpEndData.total_end_number0 if not null,
-    else currentEndData.total_end_number0 if not null,
-    else returns null.
-    */
-    getJumpTotalEndNumber0() {
-        const jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
-        let userValue = asIntOrNull(jumpTotalEndNumber0Elt.value)
-        if (userValue != null) {
-            return userValue
-        } else if (this.jumpEndData.total_end_number0 != null) {
-            return this.jumpEndData.total_end_number0
-        } else if (this.currentEndData.total_end_number0 != null) {
-            return this.currentEndData.total_end_number0
-        }
-        return null
-    }
-
-    /*
-    Get jump total_pick_number, for the -/+ buttons.
-
-    Return the user entered jump value, if there is one,
-    else jumpPickData.total_end_number if not null,
-    else currentPickData.total_end_number if not null,
-    else returns null.
-    */
-    getJumpTotalPickNumber() {
-        const jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
-        let userValue = asIntOrNull(jumpTotalPickNumberElt.value)
-        if (userValue != null) {
-            return userValue
-        } else if (this.jumpPickData.total_pick_number != null) {
-            return this.jumpPickData.total_pick_number
-        } else if (this.currentPickData.total_pick_number != null) {
-            return this.currentPickData.total_pick_number
-        }
-        return null
-    }
-
-    /*
     Handle dark/light theme
     */
     handleDarkLightTheme() {
@@ -1925,213 +2027,6 @@ class LoomClient {
             command = { "type": "select_pattern", "name": patternMenu.value }
         }
         await this.sendCommand(command)
-    }
-
-    /*
-    Handle user editing of jump_end_number.
-    */
-    async handleJumpToEndInput(event) {
-        let jumpToEndSubmitElt = document.getElementById("jump_to_end_submit")
-        let jumpToEndResetElt = document.getElementById("jump_to_end_reset")
-        let jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
-        let jumpToEndMinusOneElt = document.getElementById("jump_to_end_minus_one")
-
-        jumpTotalEndNumber0Elt.value = jumpTotalEndNumber0Elt.value.replace(/\D/g, "")
-        let disableJump = (asIntOrNull(jumpTotalEndNumber0Elt.value) == this.jumpEndData.total_end_number0)
-        jumpTotalEndNumber0Elt.setAttribute('modified', !disableJump)
-        const disableReset = disableJump && (jumpTotalEndNumber0Elt.value == "")
-        jumpToEndSubmitElt.disabled = disableJump
-        jumpToEndResetElt.disabled = disableReset
-
-        const jumpEndNumber = this.getJumpTotalEndNumber0()
-        jumpToEndMinusOneElt.disabled = (jumpEndNumber == 0)
-        if (event != null) {
-            event.preventDefault()
-        }
-    }
-
-    /*
-    Handle minus - button in the "jump_to_end" form.
-    */
-    async handleJumpToEndMinusOne(event) {
-        let totalEndNumber0 = this.getJumpTotalEndNumber0()
-        if (totalEndNumber0 == null) {
-            return
-        }
-        if (totalEndNumber0 < 1) {
-            return
-        }
-        totalEndNumber0 -= 1
-        const command = { "type": "jump_to_end", "total_end_number0": totalEndNumber0 }
-        await this.sendCommand(command)
-        event.preventDefault()
-    }
-
-    /*
-    Handle plus - button in the "jump_to_end" form.
-    */
-    async handleJumpToEndPlusOne(event) {
-        let totalEndNumber0 = this.getJumpTotalEndNumber0()
-        if (totalEndNumber0 == null) {
-            return
-        }
-        totalEndNumber0 += 1
-        const command = { "type": "jump_to_end", "total_end_number0": totalEndNumber0 }
-        await this.sendCommand(command)
-        event.preventDefault()
-    }
-
-    /*
-    Handle Reset button in the "jump_to_end" form.
-    
-    Reset end number and repeat number to current values.
-    */
-    async handleJumpToEndReset(event) {
-        const jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
-        jumpTotalEndNumber0Elt.value = ""
-        const command = { "type": "jump_to_end", "total_end_number0": null }
-        await this.sendCommand(command)
-        event.preventDefault()
-    }
-
-    /*
-    Handle jump_to_end form submit.
-    
-    Send the "jump_to_end" command.
-    */
-    async handleJumpToEndSubmit(event) {
-        const jumpTotalEndNumber0Elt = document.getElementById("jump_total_end_number0")
-        const totalEndNumber0 = asIntOrNull(jumpTotalEndNumber0Elt.value)
-        const command = { "type": "jump_to_end", "total_end_number0": totalEndNumber0 }
-        await this.sendCommand(command)
-        event.preventDefault()
-    }
-
-    /*
-    Handle user editing of jump_total_pick_number.
-    */
-    async handleJumpToPickInput(event) {
-        let jumpToPickSubmitElt = document.getElementById("jump_to_pick_submit")
-        let jumpToPickResetElt = document.getElementById("jump_to_pick_reset")
-        let jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
-        let jumpToPickMinusOneElt = document.getElementById("jump_to_pick_minus_one")
-
-        jumpTotalPickNumberElt.value = jumpTotalPickNumberElt.value.replace(/\D/g, "")
-        const disableJump = asIntOrNull(jumpTotalPickNumberElt.value) == this.jumpPickData.total_pick_number
-        jumpTotalPickNumberElt.setAttribute('modified', !disableJump)
-        const disableReset = disableJump && (jumpTotalPickNumberElt.value == "")
-        jumpToPickSubmitElt.disabled = disableJump
-        jumpToPickResetElt.disabled = disableReset
-
-        const jumpPickNumber = this.getJumpTotalPickNumber()
-        jumpToPickMinusOneElt.disabled = (jumpPickNumber == 0)
-        if (event != null) {
-            event.preventDefault()
-        }
-    }
-
-    /*
-    Handle minus - button in the "jump_to_end" form.
-    */
-    async handleJumpToPickMinusOne(event) {
-        let totalPickNumber = this.getJumpTotalPickNumber()
-        if (totalPickNumber == null) {
-            return
-        }
-        if (totalPickNumber < 1) {
-            return
-        }
-        totalPickNumber -= 1
-        const command = { "type": "jump_to_pick", "total_pick_number": totalPickNumber }
-        await this.sendCommand(command)
-        event.preventDefault()
-    }
-
-    /*
-    Handle plus - button in the "jump_to_pick" form.
-    */
-    async handleJumpToPickPlusOne(event) {
-        let totalPickNumber = this.getJumpTotalPickNumber()
-        if (totalPickNumber == null) {
-            return
-        }
-        totalPickNumber += 1
-        const command = { "type": "jump_to_pick", "total_pick_number": totalPickNumber }
-        await this.sendCommand(command)
-        event.preventDefault()
-    }
-
-    /*
-    Handle Reset button in the "jump_to_pick" form.
-    
-    Reset pick number and repeat number to current values.
-    */
-    async handleJumpToPickReset(event) {
-        const jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
-        jumpTotalPickNumberElt.value = ""
-        const command = { "type": "jump_to_pick", "total_pick_number": null }
-        await this.sendCommand(command)
-        event.preventDefault()
-    }
-
-    /*
-    Handle jump_to_pick form submit.
-    
-    Send the "jump_to_pick" command.
-    */
-    async handleJumpToPickSubmit(event) {
-        const jumpTotalPickNumberElt = document.getElementById("jump_total_pick_number")
-        const jumpTotalPickNumber = asIntOrNull(jumpTotalPickNumberElt.value)
-        const command = { "type": "jump_to_pick", "total_pick_number": jumpTotalPickNumber }
-        await this.sendCommand(command)
-        jumpTotalPickNumberElt.select()
-        event.preventDefault()
-    }
-
-    /*
-    Handle user editing of jump_tabby_pick_number.
-    */
-    async handleJumpToTabbyPickInput(event) {
-        let jumpToTabbyPickSubmitElt = document.getElementById("jump_to_tabby_pick_submit")
-        let jumpToTabbyPickResetElt = document.getElementById("jump_to_tabby_pick_reset")
-        let jumpTabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
-
-        jumpTabbyPickNumberElt.value = jumpTabbyPickNumberElt.value.replace(/\D/g, "")
-        const disableJump = asIntOrNull(jumpTabbyPickNumberElt.value) == this.jumpTabbyPickData.tabby_pick_number
-        jumpTabbyPickNumberElt.setAttribute('modified', !disableJump)
-        const disableReset = disableJump && (jumpTabbyPickNumberElt.value == "")
-        jumpToTabbyPickSubmitElt.disabled = disableJump
-        jumpToTabbyPickResetElt.disabled = disableReset
-        if (event != null) {
-            event.preventDefault()
-        }
-    }
-
-    /*
-    Handle Reset button in the "jump_to_pick" form.
-    
-    Reset pick number and repeat number to current values.
-    */
-    async handleJumpToTabbyPickReset(event) {
-        const jumpTabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
-        jumpTabbyPickNumberElt.value = ""
-        const command = { "type": "jump_to_tabby_pick", "tabby_pick_number": null }
-        await this.sendCommand(command)
-        event.preventDefault()
-    }
-
-    /*
-    Handle jump_to_tabby_pick form submit.
-    
-    Send the "jump_to_tabby_pick" command.
-    */
-    async handleJumpToTabbyPickSubmit(event) {
-        const jumpTabbyPickNumberElt = document.getElementById("jump_tabby_pick_number")
-        const jumpTabbyPickData = asIntOrNull(jumpTabbyPickNumberElt.value)
-        const command = { "type": "jump_to_tabby_pick", "tabby_pick_number": jumpTabbyPickData }
-        await this.sendCommand(command)
-        jumpTabbyPickNumberElt.select()
-        event.preventDefault()
     }
 
     /*
@@ -2339,17 +2234,6 @@ class LoomClient {
         return this.loomConnectionState.state == ConnectionStateEnum.CONNECTED
     }
 
-    /*
-    * Select the text in an input field when it gets focus
-    *
-    * Use as follows:
-    *   myInputElt.addEventListener("focus", this.selectOnInput.bind(this, myInputElt))
-    *
-    * See https://stackoverflow.com/a/13542708/1653413 for why the obvious solution fails.
-    */
-    selectOnInput(inputField) {
-        setTimeout(function () { inputField.select() }, 0)
-    }
 
     /*
     Send a command to the loom server.
