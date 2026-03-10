@@ -74,6 +74,11 @@ In detail:
 
   * The pattern display will show the jump-to pick in the center row, with a dotted box around it.
 
+* You may also use the "-" and "+" buttons.
+  These work much like the input box, but are immediately applied (there is no need to push the "return" keyboard key or click "Jump").
+  The new jump value is relative to the value in the box, if any, else to the current pick.
+  These buttons are not available in the Tabby mode, to reduce clutter.
+
 * Advance to the next pick by pressing the loom's pedal.
 
 * Until you advance to the next pick, you may request a different jump
