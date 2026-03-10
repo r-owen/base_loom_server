@@ -1,6 +1,7 @@
 import functools
 import itertools
 import operator
+from collections.abc import Iterable
 
 from .utils import prune_duplicates
 
@@ -9,7 +10,7 @@ from .utils import prune_duplicates
 MAX_ITER_TABBY1 = 10
 
 
-def compute_num_transitions(tabby_shaft_word: int, threading: list[int]) -> int:
+def compute_num_transitions(tabby_shaft_word: int, threading: Iterable[int]) -> int:
     """Compute the number of transitions produced by a tabby shaft word.
 
     The largest possible value is len(threading_shaft_words) - 1.
@@ -20,21 +21,21 @@ def compute_num_transitions(tabby_shaft_word: int, threading: list[int]) -> int:
             Negative values are ignored (and adjacent duplicate values
             naturally do not affect the result).
     """
-    threading_shaft_words = [1 << shaft for shaft in threading if shaft >= 0]
+    threading_shaft_words = (1 << shaft for shaft in threading if shaft >= 0)
     return _compute_num_transitions_impl(
         tabby_shaft_word=tabby_shaft_word, threading_shaft_words=threading_shaft_words
     )
 
 
-def _compute_num_transitions_impl(tabby_shaft_word: int, threading_shaft_words: list[int]) -> int:
+def _compute_num_transitions_impl(tabby_shaft_word: int, threading_shaft_words: Iterable[int]) -> int:
     """Implementation of compute_num_transitions.
 
     Args:
         tabby_shaft_word: Tabby shaft word.
         threading_shaft_words: Shaft word for each warp end.
     """
-    is_up_list = [bool(tsw & tabby_shaft_word) for tsw in threading_shaft_words]
-    return sum(1 for val1, val2 in itertools.pairwise(is_up_list) if val1 != val2)
+    is_up_iter = (bool(tsw & tabby_shaft_word) for tsw in threading_shaft_words)
+    return sum(1 for val1, val2 in itertools.pairwise(is_up_iter) if val1 != val2)
 
 
 def compute_tabby_shaft_word1_simple(threading: list[int]) -> int:
