@@ -1,5 +1,10 @@
 # Version History
 
+## 1.2b5 2026-03-09
+
+* Add - and + buttons to the jump controls for Weave and Thread. (They didn't seem worth the clutter for the Tabby panel.)
+* Tweak tabby computation. Increase the number of iterations, and always set the highest threaded shaft down for the first tabby pick.
+
 ## 1.2b4 2026-03-07
 
 * Further improve computation of tabby.
