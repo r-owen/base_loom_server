@@ -1,41 +1,117 @@
 import functools
 import itertools
+import math
 import operator
 from collections.abc import Iterable
+from typing import NamedTuple
 
 from .utils import prune_duplicates
 
 # Maximum number of starting points for iterations in compute_tabby_shaft_word1.
 # Avoid very large values to keep compute time reasonable.
-MAX_ITER_TABBY1 = 10
+MAX_ITER_TABBY1 = 20
+
+# The initial tabby quality to use while iteration -- the worst possible quality.
+INITIAL_TABBY_METRIC = (math.inf, math.inf, math.inf, math.inf)
 
 
-def compute_num_transitions(tabby_shaft_word: int, threading: Iterable[int]) -> int:
-    """Compute the number of transitions produced by a tabby shaft word.
+class TabbyMetric(NamedTuple):
+    """Tabby metric.
 
-    The largest possible value is len(threading_shaft_words) - 1.
+    Smaller values are better, as in:
+
+    if tabby_metric < best_tabby_metric:
+        best_tabby_metri = tabby_metric
+
+    The fields are (in descending order of importance):
+
+        missing_transitions: The number of missed transitions = num transitions - len(threading) - 1.
+            0 for optimal interlacement.
+        longest_float_length: The length of the longest float. 1 for optimal interlacement.
+        num_longest_floats: The number of occurrances of the longest float.
+        tabby_shaft_word: The tabby shaft word being measured.
+
+    The reason tabby_shaft_word is included is to algorithms can favor the shortest
+    shaft word that minimizes the other criteria.
+    """
+
+    missing_transitions: int
+    longest_float_length: int
+    num_longest_floats: int
+    tabby_shaft_word: int
+
+
+def compute_tabby_metric(tabby_shaft_word: int, threading: Iterable[int]) -> TabbyMetric:
+    """Compute the a measure of tabby quality.
+
+    The intent is that you can compare a new solution to an old one:
+    if tabby_metric < best_tabby_metric then choose the new solution.
 
     Args:
         tabby_shaft_word: Tabby shaft word.
         threading: Shaft index (0-based) for each warp end.
             Negative values are ignored (and adjacent duplicate values
             naturally do not affect the result).
+
+    Returns:
+        tabby_metric: The computed tabby metric.
     """
     threading_shaft_words = (1 << shaft for shaft in threading if shaft >= 0)
-    return _compute_num_transitions_impl(
+    return _compute_tabby_metric_impl(
         tabby_shaft_word=tabby_shaft_word, threading_shaft_words=threading_shaft_words
     )
 
 
-def _compute_num_transitions_impl(tabby_shaft_word: int, threading_shaft_words: Iterable[int]) -> int:
-    """Implementation of compute_num_transitions.
+def _compute_tabby_metric_impl(tabby_shaft_word: int, threading_shaft_words: Iterable[int]) -> TabbyMetric:
+    """Implementation of compute_tabby_metric.
 
     Args:
         tabby_shaft_word: Tabby shaft word.
         threading_shaft_words: Shaft word for each warp end.
     """
     is_up_iter = (bool(tsw & tabby_shaft_word) for tsw in threading_shaft_words)
-    return sum(1 for val1, val2 in itertools.pairwise(is_up_iter) if val1 != val2)
+    num_transitions = 0
+    float_length = 1
+    longest_float_length = 1
+    num_longest_floats = 1
+    is_transition: bool | None = None
+    # The maximum possible number of transitions = len(threading_shaft_words) - 1
+    # but we can't get the length of an iterator, so keep track during the iteration.
+    max_possible_transitions = 0
+    for prev_is_up, is_up in itertools.pairwise(is_up_iter):
+        max_possible_transitions += 1
+        is_transition = is_up != prev_is_up
+        if is_transition:
+            num_transitions += 1
+            if float_length > longest_float_length:
+                # The longest float seen so far
+                longest_float_length = float_length
+                num_longest_floats = 1
+            elif float_length == longest_float_length:
+                # Another instances of the existing longest float
+                num_longest_floats += 1
+            float_length = 1
+        else:
+            float_length += 1
+
+    if max_possible_transitions < 1:
+        raise ValueError("This algorithm requires at least 2 warp ends")
+
+    # The last thread was not a transition
+    # so perform a final check.
+    if not is_transition:
+        if float_length > longest_float_length:
+            longest_float_length = float_length
+            num_longest_floats = 1
+        elif float_length == longest_float_length:
+            num_longest_floats += 1
+
+    return TabbyMetric(
+        missing_transitions=max_possible_transitions - num_transitions,
+        longest_float_length=longest_float_length,
+        num_longest_floats=num_longest_floats,
+        tabby_shaft_word=tabby_shaft_word,
+    )
 
 
 def compute_tabby_shaft_word1_simple(threading: list[int]) -> int:
@@ -147,7 +223,7 @@ def compute_tabby_shaft_word1(threading: list[int]) -> int:
     max_threaded_shaft = max(pruned_threading)
     all_shafts_word = (1 << (max_threaded_shaft + 1)) - 1
 
-    best_num_transitions = 0
+    best_tabby_metric = INITIAL_TABBY_METRIC
     best_tabby_shaft_word = 0
 
     # Try starting at several different points in the threading,
@@ -182,17 +258,14 @@ def compute_tabby_shaft_word1(threading: list[int]) -> int:
         if max_shaft_word & tabby_shaft_word > 0:
             tabby_shaft_word = ~tabby_shaft_word & all_shafts_word
 
-        num_transitions = _compute_num_transitions_impl(
+        tabby_metric = _compute_tabby_metric_impl(
             tabby_shaft_word=tabby_shaft_word,
             threading_shaft_words=threading_shaft_words,
         )
-        if num_transitions > best_num_transitions or (
-            (num_transitions == best_num_transitions) and (tabby_shaft_word < best_tabby_shaft_word)
-        ):
-            best_num_transitions = num_transitions
+        if tabby_metric < best_tabby_metric:
+            best_tabby_metric = tabby_metric
             best_tabby_shaft_word = tabby_shaft_word
-            if num_transitions == len(pruned_threading) - 1:
-                break
+
     return best_tabby_shaft_word
 
 

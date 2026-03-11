@@ -1,12 +1,12 @@
 import pytest
 
 from base_loom_server.compute_tabby import (
-    compute_num_transitions,
+    TabbyMetric,
+    compute_tabby_metric,
     compute_tabby_shaft_word1,
     compute_tabby_shaft_word2,
     compute_tabby_shaft_words,
 )
-from base_loom_server.utils import prune_duplicates
 
 # Dict of field name: default value
 EXPECTED_DEFAULTS = dict(
@@ -22,66 +22,79 @@ def test_known_values() -> None:
     """Get the shaft set for a specified 1-based pick_number."""
     # Explicit values use 1-based shafts, for readability,
     # but internally the threading array uses 0-based shafts.
-    # Set expected_num_transitions to 0 if the threading allows full interlacement
-    # (aside from adjacent repeats); the expected value is computed.
-    for threading_1based, expected_shaft_word1, expected_num_transitions in (
+    # If expected_tabby_metric == 0 use len(threading),
+    # which is only appropriate for perfect interlacement.
+    for (
+        threading_1based,
+        expected_tabby_shaft_word1,
+        expected_missing_transitions,
+        expected_longest_float_length,
+        expected_num_longest_floats,
+    ) in (
         # Fully interlaced
-        ([1, 2], 0b01, 0),
-        ([1, 2, 3, 4, 3, 2, 1], 0b0101, 0),
-        ([1, 2, 3, 4, 1, 2, 3], 0b0101, 0),
-        ([4, 3, 2, 1, 2, 3, 4], 0b0101, 0),
-        ([2, 3, 4, 5, 4, 3, 2], 0b01010, 0),
-        ([3, 4, 5, 6, 5, 4, 3], 0b010100, 0),
-        ([1, 10, 3, 6], 0b0000000101, 0),
-        ([2, 5, 4, 9], 0b000001010, 0),
-        ([2, 1, 2, 3, 4, 5], 0b01010, 0),
+        ([1, 2], 0b01, 0, 1, 0),
+        ([1, 2, 3, 4, 3, 2, 1], 0b0101, 0, 1, 0),
+        ([1, 2, 3, 4, 1, 2, 3], 0b0101, 0, 1, 0),
+        ([4, 3, 2, 1, 2, 3, 4], 0b0101, 0, 1, 0),
+        ([2, 3, 4, 5, 4, 3, 2], 0b01010, 0, 1, 0),
+        ([3, 4, 5, 6, 5, 4, 3], 0b010100, 0, 1, 0),
+        ([1, 10, 3, 6], 0b0000000101, 0, 1, 0),
+        ([2, 5, 4, 9], 0b000001010, 0, 1, 0),
+        ([2, 1, 2, 3, 4, 5], 0b01010, 0, 1, 0),
         # Some repeating warp ends; ignoring those
         # the fabric is fully interlaced.
-        ([6, 5, 4, 3, 3, 4, 5], 0b010100, 0),
-        ([5, 4, 3, 2, 2, 3, 4], 0b01010, 0),
-        ([1, 1, 2, 2], 0b01, 1),
-        ([1, 1, 1, 2, 2, 3, 3, 3], 0b010, 0),
+        ([6, 5, 4, 3, 3, 4, 5], 0b010100, 1, 2, 1),
+        ([5, 4, 3, 2, 2, 3, 4], 0b01010, 1, 2, 1),
+        ([1, 1, 2, 2], 0b01, 2, 2, 2),
+        ([1, 1, 2, 2, 3, 3, 3], 0b010, 4, 3, 1),
         # Overshot (perfect interlacemet)
-        ([1, 2, 1, 2, 3, 2, 3, 4, 3, 4, 1, 4, 1], 0b0101, 0),
+        ([1, 2, 1, 2, 3, 2, 3, 4, 3, 4, 1, 4, 1], 0b0101, 0, 1, 0),
         # Bronson lace (perfect interlacemet)
-        ([1, 2, 1, 2, 1, 3, 1, 3, 1, 4, 1, 4], 0b0001, 0),
+        ([1, 2, 1, 2, 1, 3, 1, 3, 1, 4, 1, 4], 0b0001, 0, 1, 0),
         # Canvas weave
-        ([1, 2, 2, 1, 4, 3, 3, 4], 0b0101, 0),
+        ([1, 2, 2, 1, 4, 3, 3, 4], 0b0101, 2, 2, 2),
         # Diversified plain weave (various forms)
         # The first two forms
-        ([2, 3, 1, 2, 4, 1, 2, 5, 1], 0b00011, 6),
-        ([1, 2, 3, 1, 2, 4, 1, 2, 5], 0b00010, 6),  # the standard 0b00011 has one fewer transitions
-        ([1, 3, 1, 2, 4, 2, 1, 5, 1], 0b01001, 0),  # the simple algorithm works
-        ([2, 3, 2, 1, 4, 1, 2, 5, 2], 0b01010, 0),  # the simple algorithm works
+        ([2, 3, 1, 2, 4, 1, 2, 5, 1], 0b00011, 2, 2, 2),
+        ([1, 2, 3, 1, 2, 4, 1, 2, 5], 0b00010, 2, 2, 2),  # the standard 0b00011 has one fewer transitions
+        ([1, 3, 1, 2, 4, 2, 1, 5, 1], 0b01001, 0, 1, 0),  # the simple algorithm works
+        ([2, 3, 2, 1, 4, 1, 2, 5, 2], 0b01010, 0, 1, 0),  # the simple algorithm works
         # Other cases where the simple algorithm does not work.
-        ([1, 2, 3, 1, 2, 3], 0b010, 4),
-        ([1, 2, 4, 2, 3, 1], 0b0010, 4),
+        ([1, 2, 3, 1, 2, 3], 0b010, 1, 2, 1),
+        ([1, 2, 4, 2, 3, 1], 0b0010, 1, 2, 1),
     ):
+        if expected_num_longest_floats == 0:
+            expected_num_longest_floats = len(threading_1based)  # noqa: PLW2901
+
+        expected_tabby_metric = TabbyMetric(
+            missing_transitions=expected_missing_transitions,
+            longest_float_length=expected_longest_float_length,
+            num_longest_floats=expected_num_longest_floats,
+            tabby_shaft_word=expected_tabby_shaft_word1,
+        )
         threading = [shaft - 1 for shaft in threading_1based]
-        if expected_num_transitions == 0:
-            pruned_threading = prune_duplicates(threading)
-            expected_num_transitions = len(pruned_threading) - 1  # noqa: PLW2901
 
         max_shaft_number = max(threading) + 1
-        expected_shaft_word2 = ~expected_shaft_word1 & (2**max_shaft_number - 1)
+        expected_shaft_word2 = ~expected_tabby_shaft_word1 & (2**max_shaft_number - 1)
 
         tabby_shaft_word1 = compute_tabby_shaft_word1(threading=threading)
         tabby_shaft_word2 = compute_tabby_shaft_word2(
             tabby_shaft_word1=tabby_shaft_word1, threading=threading
         )
-        num_transitions = compute_num_transitions(tabby_shaft_word1, threading=threading)
+        tabby_metric = compute_tabby_metric(tabby_shaft_word1, threading=threading)
 
-        if tabby_shaft_word1 != expected_shaft_word1 or num_transitions != expected_num_transitions:
+        if expected_tabby_metric != tabby_metric:
             print(  # noqa: T201
-                f"Failed for {threading_1based=}; {tabby_shaft_word1=:b}, "
-                f"{expected_shaft_word1=:b}, {num_transitions=}, {expected_num_transitions=}"
+                f"Failed for {threading_1based=}: "
+                f"{tabby_shaft_word1=:b}, {expected_tabby_shaft_word1=:b}\n"
+                f"         {tabby_metric=}\n{expected_tabby_metric=}",
             )
 
-        assert tabby_shaft_word1 == expected_shaft_word1
+        assert tabby_shaft_word1 == expected_tabby_shaft_word1
         assert tabby_shaft_word2 == expected_shaft_word2
-        assert num_transitions == expected_num_transitions
+        assert tabby_metric == expected_tabby_metric
 
-        assert expected_shaft_word1, expected_shaft_word2 == compute_tabby_shaft_words(threading)
+        assert expected_tabby_shaft_word1, expected_shaft_word2 == compute_tabby_shaft_words(threading)
 
 
 def test_invalid_values() -> None:
