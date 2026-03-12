@@ -1,35 +1,9 @@
 # Version History
 
-## 1.2b6 2026-03-11
+## 1.2 2026-03-12
 
-* Tabby panel changes:
-
-  * Add the word Tabby to the right of the pick number to make it more obvious we're in Tabby mode.
-  * Add - and + buttons to Tabby jump controls, making it like Weave and Thread.
-    (Internally this uses a new class to handle jump controls in a uniform way, reducing code duplication.)
-  
-* Improve tabby computation to take floats into account (instead of simply the number of transitions).
-
-## 1.2b5 2026-03-09
-
-* Add - and + buttons to the jump controls for Weave and Thread. (They didn't seem worth the clutter for the Tabby panel.)
-* Tweak tabby computation. Increase the number of iterations, and always set the highest threaded shaft down for the first tabby pick.
-
-## 1.2b4 2026-03-07
-
-* Further improve computation of tabby.
-
-## 1.2b3 2026-03-06
-
-* Improve computation of tabby.
-
-## 1.2b2 2026-03-05
-
-* Fix initial display of tabby panel.
-
-## 1.2b1 2026-03-05
-
-* Add support for weaving tabby, via a new Tabby mode.
+* Add support for weaving tabby, via a new Tabby panel.
+* Add - and + buttons to the Jump controls.
 
 Warning: the pattern storage will be reset.
 
