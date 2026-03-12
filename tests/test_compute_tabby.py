@@ -4,6 +4,7 @@ from base_loom_server.compute_tabby import (
     TabbyMetric,
     compute_tabby_metric,
     compute_tabby_shaft_word1,
+    compute_tabby_shaft_word1_simple,
     compute_tabby_shaft_word2,
     compute_tabby_shaft_words,
 )
@@ -98,7 +99,11 @@ def test_known_values() -> None:
 
 
 def test_invalid_values() -> None:
-    # Use 0-based threading here, as readability is less important
+    # Smallest valid tabby shaft word
+    valid_tabby_shaft_word = 0b1
+
+    # Use 0-based threading (unlike in test_known_values),
+    # as readability of the exact shafts used is less important
     for threading in (
         # Need at least two threaded warp ends
         [],
@@ -112,11 +117,13 @@ def test_invalid_values() -> None:
         with pytest.raises(ValueError):
             compute_tabby_shaft_word1(threading=threading)
         with pytest.raises(ValueError):
+            compute_tabby_shaft_word1_simple(threading=threading)
+        with pytest.raises(ValueError):
             compute_tabby_shaft_words(threading=threading)
         if len(threading) == 0:
             # No warp ends are threaded
             with pytest.raises(ValueError):
-                compute_tabby_shaft_word2(tabby_shaft_word1=0b1, threading=threading)
+                compute_tabby_shaft_word2(tabby_shaft_word1=valid_tabby_shaft_word, threading=threading)
         else:
             # Raise no shafts on tabby 1
             with pytest.raises(ValueError):
@@ -127,3 +134,12 @@ def test_invalid_values() -> None:
             all_shafts_up = 2**max_threaded_shaft_number - 1
             with pytest.raises(ValueError):
                 compute_tabby_shaft_word2(tabby_shaft_word1=all_shafts_up, threading=threading)
+
+    for threading in (
+        # Need at least two threaded warp ends
+        [],
+        [0],
+        [1],
+    ):
+        with pytest.raises(ValueError):
+            compute_tabby_metric(tabby_shaft_word=valid_tabby_shaft_word, threading=threading)

@@ -55,6 +55,9 @@ def compute_tabby_metric(tabby_shaft_word: int, threading: Iterable[int]) -> Tab
 
     Returns:
         tabby_metric: The computed tabby metric.
+
+    Raises:
+        ValueError if there are fewer than two warp ends.
     """
     threading_shaft_words = (1 << shaft for shaft in threading if shaft >= 0)
     return _compute_tabby_metric_impl(
@@ -67,7 +70,7 @@ def _compute_tabby_metric_impl(tabby_shaft_word: int, threading_shaft_words: Ite
 
     Args:
         tabby_shaft_word: Tabby shaft word.
-        threading_shaft_words: Shaft word for each warp end.
+        threading_shaft_words: Shaft word for each warp end. Each word will just one bit set.
     """
     is_up_iter = (bool(tsw & tabby_shaft_word) for tsw in threading_shaft_words)
     num_transitions = 0
@@ -127,14 +130,13 @@ def compute_tabby_shaft_word1_simple(threading: list[int]) -> int:
     Returns:
         tabby_shaft_word: Tabby shaft word, or 0 if the simple case is not satified.
             The highest threaded shaft bit will be 0.
+
+    Raises:
+        ValueError if there are fewer than 2 threaded warp ends,
+            or if the warp ends are threaded on fewer than 2 different shaft_set.
     """
     # Ignore unthreaded shafts and duplicates
     pruned_threading = prune_duplicates([shaft for shaft in threading if shaft >= 0])
-    num_threaded_shafts = len(set(threading))
-    if len(threading) <= 1:
-        raise ValueError("Need at least 2 threaded warp ends to weave tabby.")
-    if num_threaded_shafts <= 1:
-        raise ValueError("Need at least 2 threaded shafts to weave tabby.")
 
     threading_shaft_words = [1 << shaft for shaft in pruned_threading]
     return _compute_tabby_shaft_word1_simple_impl(threading_shaft_words=threading_shaft_words)
@@ -147,15 +149,22 @@ def _compute_tabby_shaft_word1_simple_impl(threading_shaft_words: list[int]) -> 
     shafts than all odd threads. Return 0 if that is not the case.
 
     Args:
-        threading_shaft_words: Shaft words for each warp end.
-            Duplicates should be removed.
+        threading_shaft_words: Shaft word for each warp end. Each word will just one bit set.
+            For best results, remote duplicates before calling.
 
     Returns:
         tabby_shaft_word: Tabby shaft word, or 0 if the simple case is not satified.
             The highest threaded shaft bit will be 0.
+
+    Raises:
+        ValueError if there are fewer than 2 threaded warp ends,
+            or if the warp ends are threaded on fewer than 2 different shaft_set.
     """
-    if len(threading_shaft_words) == 0:
-        return 0
+    if len(threading_shaft_words) <= 1:
+        raise ValueError("Need at least 2 threaded warp ends to weave tabby.")
+    num_threaded_shafts = len(set(threading_shaft_words))
+    if num_threaded_shafts <= 1:
+        raise ValueError("Need at least 2 threaded shafts to weave tabby.")
 
     tabby_shaft_word = 0
     odd_ends_shaft_word = functools.reduce(operator.or_, threading_shaft_words[0::2], 0)
@@ -204,9 +213,9 @@ def compute_tabby_shaft_word1(threading: list[int]) -> int:
     """
     # Ignore unthreaded shafts and duplicates
     pruned_threading = prune_duplicates([shaft for shaft in threading if shaft >= 0])
-    num_threaded_shafts = len(set(threading))
     if len(threading) <= 1:
         raise ValueError("Need at least 2 threaded warp ends to weave tabby.")
+    num_threaded_shafts = len(set(threading))
     if num_threaded_shafts <= 1:
         raise ValueError("Need at least 2 threaded shafts to weave tabby.")
 
