@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Coding - Base Loom Server</title>
+    <title>Weaving Tabby - Base Loom Server</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -15,8 +15,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Coding";
-        var mkdocs_page_input_path = "coding.md";
+        var mkdocs_page_name = "Weaving Tabby";
+        var mkdocs_page_input_path = "weaving_tabby.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -54,8 +54,16 @@
                 <li class="toctree-l1"><a class="reference internal" href="../weaving/">Weaving</a>
                 </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../weaving_tabby/">Weaving Tabby</a>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Weaving Tabby</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#pattern-display">Pattern Display</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#weave-direction">Weave Direction</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#jumping">Jumping</a>
+    </li>
+    </ul>
                 </li>
               </ul>
               <ul>
@@ -70,14 +78,8 @@
                 <li class="toctree-l1"><a class="reference internal" href="../installing/">Installing</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">Coding</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#installing-source-code">Installing Source Code</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#writing-a-loom-server">Writing a Loom Server</a>
-    </li>
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../coding/">Coding</a>
                 </li>
               </ul>
               <ul>
@@ -151,7 +153,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Coding</li>
+      <li class="breadcrumb-item active">Weaving Tabby</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -160,116 +162,49 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="coding">Coding</h1>
-<h2 id="installing-source-code">Installing Source Code</h2>
-<ul>
-<li>
-<p>Install Python as explained in <a href="../installing/">Installing</a>.</p>
-</li>
-<li>
-<p>Download the source code from <a href="https://github.com/r-owen/base_loom_server.git">github</a>,
-  or make a fork and git clone that.</p>
-</li>
-<li>
-<p>Inside the directory, do the following:</p>
-<ul>
-<li>Make "editable installation" of the package.
-  An editable installation runs from the source code,
-  so changes you make to the source are used when you run or test the code,
-  without the need to reinstall the package:<pre><code>pip install -e .'[dev]'
-</code></pre>
-</li>
-</ul>
-<p>where the single quotes around <code>[dev]</code> are required in zsh, but not in bash.
-  <code>'[dev]'</code> installs development-related packages such as pytest
-  (see the file <code>pyproject.toml</code> for the full list).</p>
-<ul>
-<li>
-<p>Activate the pre-commit hooks:</p>
-<pre><code>pre-commit install
-</code></pre>
-</li>
-<li>
-<p>Run unit tests to test your installation:</p>
-<pre><code>pytest
-</code></pre>
-</li>
-</ul>
-</li>
-<li>
-<p>You may run an example loom server with:</p>
-<pre><code>run_example_loom &lt;num_shafts&gt; mock
-</code></pre>
-</li>
-</ul>
-<p>Please only specify the <strong>mock</strong> port; connecting the example loom server to a real loom will not work.</p>
-<p>These run commands accept various <a href="../installing/#command-line-options">command-line options</a>, which you can see by running  with <code>-h</code> or <code>--help</code>. Two of note for debugging are:</p>
-<pre><code>* `--reset-db` Reset the pattern database. Try this if you think the database is corrupted.
+                <h1 id="weaving-tabby">Weaving Tabby</h1>
+<div>
+<a class="glightbox" href="../images/screen_shots/weaving_tabby_safari_macos.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/weaving_tabby_safari_macos.jpg" width="300" alt="Weaving: Safari on macOS"></a>
+<a class="glightbox" href="../images/screen_shots/weaving_tabby_safari_iphone_mini.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/weaving_tabby_safari_iphone_mini.jpg" width="150" alt="Weaving: Safari on iPhone mini"></a>
+</div>
 
-* `--verbose` Print more diagnostic information.
-</code></pre>
-<p>Note that the example loom server uses the same pattern database as
-  <a href="https://pypi.org/project/seguin-loom-server/">seguin_loom_server</a>
-  and <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</p>
-<p>Also note that real loom servers can also run in mock mode. For example:</p>
-<pre><code>    run_toika_loom 32 mock
-
-    run_seguin_loom 16 mock
-</code></pre>
+<p>The <strong>Tabby</strong> mode allows you to weave tabby (plain weave), or a close approximation.
+This can be used to weave hems or item separators.</p>
+<p>Caveats:</p>
 <ul>
 <li>
-<p>In mock mode the web page shows a few extra controls for debugging.</p>
+<p>The software does the best it can to determine suitable tabby picks, but the algorithm is not perfect.
+If you are unsatisified with the tabby pattern, create your own tabby pattern file, upload it, and weave it using the Weaving panel.</p>
 </li>
 <li>
-<p>Warning: the web server's automatic reload feature, which reloads Python code whenever you save changes,
-  <em>does not work</em> with this software.
-  Instead you have to kill the web server by typing control-C several times, until you get a terminal prompt, then run the server again.
-  This may be a bug in uvicorn; see <a href="https://github.com/encode/uvicorn/discussions/2075">this discussion</a> for more information.</p>
+<p>This is not intended to intersperse tie down picks with pattern picks in patterns such as overshot. Tie-down picks should be part of the pattern file.</p>
 </li>
 </ul>
-<h2 id="writing-a-loom-server">Writing a Loom Server</h2>
+<p>The two tabby picks are always opposites: if a shaft is raised in one pick, it will be lowered in the other. However, shafts beyond the last threaded shaft are always lowered.</p>
+<p>The following assumes you have done all the <a href="../">basics</a>:</p>
 <ul>
-<li>
-<p>Install the <code>base_loom_server</code> package either using pip, or from source (as described above).
-  Source makes it easier to look through the code.</p>
-</li>
-<li>
-<p>Write a subclass of <code>BaseMockLoom</code> that emulates your loom.
-  Two examples are <code>ExampleMockLoom</code> in this package and <code>MockLoom</code>
-  in <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</p>
-</li>
+<li>Connected your web browser to the loom server</li>
+<li>Uploaded at least one pattern, and selected a pattern from the pattern menu</li>
+<li>Selected the Tabby mode.</li>
 </ul>
-<p>For simplicity and future compatibility, try to avoid overriding the constructor.
-  Instead, perform loom-specific initialization by overriding the <code>__post_init__</code> method
-  (which is normally a no-op in <code>BaseMockLoom</code>, so you need not call <code>super().__post_init__</code>).</p>
-<ul>
-<li>Write a subclass of <code>BaseLoomServer</code> that talks to the loom.
-  Two examples are <code>ExampleLoomServer</code> in this package and <code>LoomServer</code>
-  in <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</li>
-</ul>
-<p>For simplicity and future compatibility, try to avoid overriding the constructor.
-  Instead, perform loom-specific initialization by overriding the <code>__post_init__</code> method
-  (which is a no-op in <code>BaseLoomServer</code>, so you need not call <code>super().__post_init__</code>).</p>
-<ul>
-<li>
-<p>Write a <code>main.py</code> like the one in <code>base_loom_server</code>, to run your loom server.</p>
-</li>
-<li>
-<p>Copy <code>tests/test_mock_loom.py</code> and modify it to suit your mock loom.</p>
-</li>
-<li>
-<p>The unit tests for your loom server should be able to use <code>testutils.BaseTestLoomServer</code>, as <code>tests/test_loom_server.py</code> does.</p>
-</li>
-<li>
-<p>Write a <code>pyproject.toml</code> like the one for <a href="https://pypi.org/project/toika-loom-server/">toika_loom_server</a>.</p>
-</li>
-</ul>
+<h2 id="pattern-display">Pattern Display</h2>
+<p>The tabby pattern is displayed as a picture that shows woven tabby fabric in the bottom half,
+and potential future fabric, somewhat grayed out, in the top half.</p>
+<p>A <a href="../settings/">setting</a> allows you to specify whether warp end 1 is shown at the right or left.</p>
+<p>Note that the display is naive: it shows all threads as the same thickness.</p>
+<h2 id="weave-direction">Weave Direction</h2>
+<p>The "Direction" button shows "Weave" or "Unweave".</p>
+<p>To change between threading and unthreading see <a href="../weaving/#weave-direction">Weaving: Direction</a>.</p>
+<p>Note that there is rarely any reason to unweave tabby: backwards is the same as forwards, except you cannot back up beyond pick 0.</p>
+<h2 id="jumping">Jumping</h2>
+<p>You can jump to a different pick. See <a href="../weaving/#jumping">Weaving: Jumping</a> for details.</p>
+<p>Note that there is rarely any reason to jump when weaving tabby.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../installing/" class="btn btn-neutral float-left" title="Installing"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../translations/" class="btn btn-neutral float-right" title="Translations">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../weaving/" class="btn btn-neutral float-left" title="Weaving"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../threading/" class="btn btn-neutral float-right" title="Threading">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -292,10 +227,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../installing/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../weaving/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../translations/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../threading/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

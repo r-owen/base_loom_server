@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>base_loom_server.compute_tabby - Base Loom Server</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../../../css/mkapi-material.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "base_loom_server.compute_tabby";
+        var mkdocs_page_input_path = "api/base_loom_server/compute_tabby.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+ <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> Base Loom Server
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving/">Weaving</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving_tabby/">Weaving Tabby</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../settings/">Settings</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../installing/">Installing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../coding/">Coding</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../translations/">Translations</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../version_history/">Version History</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >base_loom_server</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../">base_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../app_runner/">base_loom_server.app_runner</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_loom_server/">base_loom_server.base_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../base_mock_loom/">base_loom_server.base_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../check_translation_files/">base_loom_server.check_translation_files</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">base_loom_server.compute_tabby</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.compute_tabby.TabbyMetric">TabbyMetric</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.compute_tabby.compute_tabby_metric">compute_tabby_metric</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.compute_tabby.compute_tabby_shaft_word1_simple">compute_tabby_shaft_word1_simple</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.compute_tabby.compute_tabby_shaft_word1">compute_tabby_shaft_word1</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.compute_tabby.compute_tabby_shaft_word2">compute_tabby_shaft_word2</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.compute_tabby.compute_tabby_shaft_words">compute_tabby_shaft_words</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../enums/">base_loom_server.enums</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_loom_server/">base_loom_server.example_loom_server</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../example_mock_loom/">base_loom_server.example_mock_loom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../main/">base_loom_server.main</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../mock_streams/">base_loom_server.mock_streams</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../nmcli_wifi/">base_loom_server.nmcli_wifi</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../pattern_database/">base_loom_server.pattern_database</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../reduced_pattern/">base_loom_server.reduced_pattern</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../rename_crowdin_files/">base_loom_server.rename_crowdin_files</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../testutils/">base_loom_server.testutils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../translations/">base_loom_server.translations</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utils/">base_loom_server.utils</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../version/">base_loom_server.version</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">Base Loom Server</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API Reference</li>
+          <li class="breadcrumb-item">base_loom_server</li>
+      <li class="breadcrumb-item active">base_loom_server.compute_tabby</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 style="display: none;">base_loom_server.compute_tabby</h1><p class="mkapi-object mkapi-page-source" id="base_loom_server.compute_tabby">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/compute_tabby/#base_loom_server.compute_tabby" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">module</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.compute_tabby" title="base_loom_server.compute_tabby">base_loom_server.compute_tabby</a></span>
+</p>
+<div class="mkapi-document">
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle classes">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Classes</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.compute_tabby.TabbyMetric" title="base_loom_server.compute_tabby.TabbyMetric">TabbyMetric</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Tabby metric.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle functions">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Functions</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.compute_tabby.compute_tabby_metric" title="base_loom_server.compute_tabby.compute_tabby_metric">compute_tabby_metric</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Compute the a measure of tabby quality.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.compute_tabby.compute_tabby_shaft_word1_simple" title="base_loom_server.compute_tabby.compute_tabby_shaft_word1_simple">compute_tabby_shaft_word1_simple</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Trivial tabby computation that may fail.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.compute_tabby.compute_tabby_shaft_word1" title="base_loom_server.compute_tabby.compute_tabby_shaft_word1">compute_tabby_shaft_word1</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Compute which shaft_set should go up for the best tabby pick 1.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.compute_tabby.compute_tabby_shaft_word2" title="base_loom_server.compute_tabby.compute_tabby_shaft_word2">compute_tabby_shaft_word2</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Compute tabby_shaft_word2 as the complement of tabby_shaft_word1.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.compute_tabby.compute_tabby_shaft_words" title="base_loom_server.compute_tabby.compute_tabby_shaft_words">compute_tabby_shaft_words</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Compute tabby_shaft_words 1 and 2.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.compute_tabby.TabbyMetric">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/compute_tabby/#base_loom_server.compute_tabby.TabbyMetric" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">class</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.compute_tabby.TabbyMetric" title="base_loom_server.compute_tabby.TabbyMetric">TabbyMetric</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p><p class="mkapi-bases" markdown="1">Bases :
+<span class="mkapi-base"><span class="mkapi-tooltip" title="typing.NamedTuple">NamedTuple</span></span></p></p>
+<p>Tabby metric.</p>
+<p>Smaller values are better, as in:</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle if tabby_metric &lt; best_tabby_metric">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">if tabby_metric &lt; best_tabby_metric</span>
+</p>
+<div class="mkapi-section-content">
+<p>best_tabby_metri = tabby_metric</p>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle the fields are (in descending order of importance)">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">The fields are (in descending order of importance)</span>
+</p>
+<div class="mkapi-section-content">
+<div class="highlight"><pre><span></span><code>missing_transitions: The number of missed transitions = num transitions - len(threading) - 1.
+    0 for optimal interlacement.
+longest_float_length: The length of the longest float. 1 for optimal interlacement.
+num_longest_floats: The number of occurrances of the longest float.
+tabby_shaft_word: The tabby shaft word being measured.
+</code></pre></div>
+</div>
+<div class="mkapi-section-content">
+<p>The reason tabby_shaft_word is included is to algorithms can favor the shortest
+shaft word that minimizes the other criteria.</p>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.compute_tabby.compute_tabby_metric">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/compute_tabby/#base_loom_server.compute_tabby.compute_tabby_metric" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.compute_tabby.compute_tabby_metric" title="base_loom_server.compute_tabby.compute_tabby_metric">compute_tabby_metric</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">tabby_shaft_word</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">threading</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[int]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><a href="./#base_loom_server.compute_tabby.TabbyMetric" title="base_loom_server.compute_tabby.TabbyMetric">TabbyMetric</a></span></span>
+</p>
+<div class="mkapi-document">
+<p>Compute the a measure of tabby quality.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle the intent is that you can compare a new solution to an old one">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">The intent is that you can compare a new solution to an old one</span>
+</p>
+<div class="mkapi-section-content">
+<p>if tabby_metric &lt; best_tabby_metric then choose the new solution.</p>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">tabby_shaft_word</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
+Tabby shaft word.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">threading</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[int]</span> <span class="mkapi-dash">&mdash;</span>
+Shaft index (0-based) for each warp end.
+Negative values are ignored (and adjacent duplicate values
+naturally do not affect the result).</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle returns">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Returns</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">tabby_metric</span> <span class="mkapi-dash">&mdash;</span>
+The computed tabby metric.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">ValueError if there are fewer than two warp ends.</span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.compute_tabby.compute_tabby_shaft_word1_simple">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/compute_tabby/#base_loom_server.compute_tabby.compute_tabby_shaft_word1_simple" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.compute_tabby.compute_tabby_shaft_word1_simple" title="base_loom_server.compute_tabby.compute_tabby_shaft_word1_simple">compute_tabby_shaft_word1_simple</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">threading</span><span class="mkapi-colon">: </span><span class="mkapi-ann">list[int]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document">
+<p>Trivial tabby computation that may fail.</p>
+<p>Handle the trivial case that all even threads are on different
+shafts than all odd threads. Return 0 if that is not the case.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">threading</span> : 
+<span class="mkapi-item-type">list[int]</span> <span class="mkapi-dash">&mdash;</span>
+Shaft index (0-based) for each warp end.
+Negative values and adjacent duplicates are ignored.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle returns">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Returns</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">tabby_shaft_word</span> <span class="mkapi-dash">&mdash;</span>
+Tabby shaft word, or 0 if the simple case is not satified.
+    The highest threaded shaft bit will be 0.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">ValueError if there are fewer than 2 threaded warp ends,</span>
+ <span class="mkapi-dash">&mdash;</span>
+or if the warp ends are threaded on fewer than 2 different shaft_set.</p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.compute_tabby.compute_tabby_shaft_word1">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/compute_tabby/#base_loom_server.compute_tabby.compute_tabby_shaft_word1" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.compute_tabby.compute_tabby_shaft_word1" title="base_loom_server.compute_tabby.compute_tabby_shaft_word1">compute_tabby_shaft_word1</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">threading</span><span class="mkapi-colon">: </span><span class="mkapi-ann">list[int]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document">
+<p>Compute which shaft_set should go up for the best tabby pick 1.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">threading</span> : 
+<span class="mkapi-item-type">list[int]</span> <span class="mkapi-dash">&mdash;</span>
+Shaft index (0-based) for each warp end.
+Negative values and adjacent duplicates are ignored.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle returns">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Returns</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">shaft_word</span> <span class="mkapi-dash">&mdash;</span>
+Best tabby shaft word found. The highest threaded shaft bit will be 0.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">ValueError if there are fewer than 2 threaded warp ends,</span>
+ <span class="mkapi-dash">&mdash;</span>
+or if the warp ends are threaded on fewer than 2 different shaft_set.</p>
+</li>
+<li>
+<p><span class="mkapi-item-type">ValueError</span></p>
+</li>
+</ul>
+</div>
+<div class="mkapi-section-content">
+<div class="admonition note">
+<p class="admonition-title">Notes</p>
+<p>The algorithm works by examining transitions between adjacent warp ends, as follows:</p>
+<p>First make a pruned version of threading with no negative values
+(warp ends that are not threaded) and no repeating ends.</p>
+<p>Initialize tabby_shafts and seen_shafts to the first entry in the pruned threading.
+For each shaft in the rest of the pruned threading:
+    If shaft is not in seen_shafts:
+        Add it to seen_shafts
+        If previous_shaft is not in tabby_shafts, put the new shaft in tabby_shafts.
+    Set previous_shaft to shaft
+If the resulting tabby shaft word does not included the minimum threaded shaft,
+invert it to provide more predictable results.</p>
+<p>Try this several times, from different starting points in the threading,
+and pick the tabby that gives the most consecutive transitions.</p>
+</div>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.compute_tabby.compute_tabby_shaft_word2">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/compute_tabby/#base_loom_server.compute_tabby.compute_tabby_shaft_word2" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.compute_tabby.compute_tabby_shaft_word2" title="base_loom_server.compute_tabby.compute_tabby_shaft_word2">compute_tabby_shaft_word2</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">tabby_shaft_word1</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-comma">, </span><span class="mkapi-arg">threading</span><span class="mkapi-colon">: </span><span class="mkapi-ann">list[int]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document">
+<p>Compute tabby_shaft_word2 as the complement of tabby_shaft_word1.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">tabby_shaft_word1</span> : 
+<span class="mkapi-item-type">int</span> <span class="mkapi-dash">&mdash;</span>
+Tabby shaft word, e.g. as returned by compute_tabby_shaft_word1.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">threading</span> : 
+<span class="mkapi-item-type">list[int]</span> <span class="mkapi-dash">&mdash;</span>
+Shaft index (0-based) for each warp end.
+Negative values and adjacent duplicates are ignored.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle returns">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Returns</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type"><span class="mkapi-tooltip" title="base_loom_server.compute_tabby.compute_tabby_shaft_word2.tabby_shaft_word2">tabby_shaft_word2</span></span> <span class="mkapi-dash">&mdash;</span>
+The complement of tabby_shaft_word1,
+    with bits beyond the max (last) threaded shaft set to 0.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">ValueError if max_threaded_shaft_number &lt; 2.</span></p>
+</li>
+<li>
+<p><span class="mkapi-item-type">ValueError</span></p>
+</li>
+</ul>
+</div>
+<div class="mkapi-section-content">
+<div class="admonition note">
+<p class="admonition-title">Notes</p>
+<p>Takes threading instead of max_threaded_shaft_number for two reasons:</p>
+<ul>
+<li>It proved too easy to mis-compute the value. Threading is 0-based
+    and it was easy to pass in max(threading), which is 1 too small.</li>
+<li>We may wish to switch to using a sparse mask of threaded shafts,
+    lowering all unused shafts, not just those beyond the last threaded shaft.</li>
+</ul>
+</div>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.compute_tabby.compute_tabby_shaft_words">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/compute_tabby/#base_loom_server.compute_tabby.compute_tabby_shaft_words" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.compute_tabby.compute_tabby_shaft_words" title="base_loom_server.compute_tabby.compute_tabby_shaft_words">compute_tabby_shaft_words</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">threading</span><span class="mkapi-colon">: </span><span class="mkapi-ann">list[int]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">tuple[int, int]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Compute tabby_shaft_words 1 and 2.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">threading</span> : 
+<span class="mkapi-item-type">list[int]</span> <span class="mkapi-dash">&mdash;</span>
+Shaft index (0-based) for each warp end.
+Negative values and adjacent duplicates are ignored.</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle returns">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Returns</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type">(shaft_word1, shaft_word2)</span> <span class="mkapi-dash">&mdash;</span>
+Which shaft_set should be up for the two picks of tabby
+    (word 1 is for picks 1, 3, 5.., word 2 is for picks 2, 4, 6...).</p>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">ValueError if there are fewer than 2 threaded warp ends,</span>
+ <span class="mkapi-dash">&mdash;</span>
+or if the warp ends are threaded on fewer than 2 different shaft_set.</p>
+</li>
+</ul>
+</div>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../client_replies/" class="btn btn-neutral float-left" title="base_loom_server.client_replies"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../constants/" class="btn btn-neutral float-right" title="base_loom_server.constants">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../client_replies/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../constants/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../javascript/mkapi.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+</script></body>
+</html>

@@ -55,6 +55,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving_tabby/">Weaving Tabby</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
                 </li>
               </ul>
@@ -93,6 +97,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/compute_tabby/">base_loom_server.compute_tabby</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/constants/">base_loom_server.constants</a>
                 </li>
@@ -1689,7 +1695,195 @@
 <span class="normal">1528</span>
 <span class="normal">1529</span>
 <span class="normal">1530</span>
-<span class="normal">1531</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
+<span class="normal">1531</span>
+<span class="normal">1532</span>
+<span class="normal">1533</span>
+<span class="normal">1534</span>
+<span class="normal">1535</span>
+<span class="normal">1536</span>
+<span class="normal">1537</span>
+<span class="normal">1538</span>
+<span class="normal">1539</span>
+<span class="normal">1540</span>
+<span class="normal">1541</span>
+<span class="normal">1542</span>
+<span class="normal">1543</span>
+<span class="normal">1544</span>
+<span class="normal">1545</span>
+<span class="normal">1546</span>
+<span class="normal">1547</span>
+<span class="normal">1548</span>
+<span class="normal">1549</span>
+<span class="normal">1550</span>
+<span class="normal">1551</span>
+<span class="normal">1552</span>
+<span class="normal">1553</span>
+<span class="normal">1554</span>
+<span class="normal">1555</span>
+<span class="normal">1556</span>
+<span class="normal">1557</span>
+<span class="normal">1558</span>
+<span class="normal">1559</span>
+<span class="normal">1560</span>
+<span class="normal">1561</span>
+<span class="normal">1562</span>
+<span class="normal">1563</span>
+<span class="normal">1564</span>
+<span class="normal">1565</span>
+<span class="normal">1566</span>
+<span class="normal">1567</span>
+<span class="normal">1568</span>
+<span class="normal">1569</span>
+<span class="normal">1570</span>
+<span class="normal">1571</span>
+<span class="normal">1572</span>
+<span class="normal">1573</span>
+<span class="normal">1574</span>
+<span class="normal">1575</span>
+<span class="normal">1576</span>
+<span class="normal">1577</span>
+<span class="normal">1578</span>
+<span class="normal">1579</span>
+<span class="normal">1580</span>
+<span class="normal">1581</span>
+<span class="normal">1582</span>
+<span class="normal">1583</span>
+<span class="normal">1584</span>
+<span class="normal">1585</span>
+<span class="normal">1586</span>
+<span class="normal">1587</span>
+<span class="normal">1588</span>
+<span class="normal">1589</span>
+<span class="normal">1590</span>
+<span class="normal">1591</span>
+<span class="normal">1592</span>
+<span class="normal">1593</span>
+<span class="normal">1594</span>
+<span class="normal">1595</span>
+<span class="normal">1596</span>
+<span class="normal">1597</span>
+<span class="normal">1598</span>
+<span class="normal">1599</span>
+<span class="normal">1600</span>
+<span class="normal">1601</span>
+<span class="normal">1602</span>
+<span class="normal">1603</span>
+<span class="normal">1604</span>
+<span class="normal">1605</span>
+<span class="normal">1606</span>
+<span class="normal">1607</span>
+<span class="normal">1608</span>
+<span class="normal">1609</span>
+<span class="normal">1610</span>
+<span class="normal">1611</span>
+<span class="normal">1612</span>
+<span class="normal">1613</span>
+<span class="normal">1614</span>
+<span class="normal">1615</span>
+<span class="normal">1616</span>
+<span class="normal">1617</span>
+<span class="normal">1618</span>
+<span class="normal">1619</span>
+<span class="normal">1620</span>
+<span class="normal">1621</span>
+<span class="normal">1622</span>
+<span class="normal">1623</span>
+<span class="normal">1624</span>
+<span class="normal">1625</span>
+<span class="normal">1626</span>
+<span class="normal">1627</span>
+<span class="normal">1628</span>
+<span class="normal">1629</span>
+<span class="normal">1630</span>
+<span class="normal">1631</span>
+<span class="normal">1632</span>
+<span class="normal">1633</span>
+<span class="normal">1634</span>
+<span class="normal">1635</span>
+<span class="normal">1636</span>
+<span class="normal">1637</span>
+<span class="normal">1638</span>
+<span class="normal">1639</span>
+<span class="normal">1640</span>
+<span class="normal">1641</span>
+<span class="normal">1642</span>
+<span class="normal">1643</span>
+<span class="normal">1644</span>
+<span class="normal">1645</span>
+<span class="normal">1646</span>
+<span class="normal">1647</span>
+<span class="normal">1648</span>
+<span class="normal">1649</span>
+<span class="normal">1650</span>
+<span class="normal">1651</span>
+<span class="normal">1652</span>
+<span class="normal">1653</span>
+<span class="normal">1654</span>
+<span class="normal">1655</span>
+<span class="normal">1656</span>
+<span class="normal">1657</span>
+<span class="normal">1658</span>
+<span class="normal">1659</span>
+<span class="normal">1660</span>
+<span class="normal">1661</span>
+<span class="normal">1662</span>
+<span class="normal">1663</span>
+<span class="normal">1664</span>
+<span class="normal">1665</span>
+<span class="normal">1666</span>
+<span class="normal">1667</span>
+<span class="normal">1668</span>
+<span class="normal">1669</span>
+<span class="normal">1670</span>
+<span class="normal">1671</span>
+<span class="normal">1672</span>
+<span class="normal">1673</span>
+<span class="normal">1674</span>
+<span class="normal">1675</span>
+<span class="normal">1676</span>
+<span class="normal">1677</span>
+<span class="normal">1678</span>
+<span class="normal">1679</span>
+<span class="normal">1680</span>
+<span class="normal">1681</span>
+<span class="normal">1682</span>
+<span class="normal">1683</span>
+<span class="normal">1684</span>
+<span class="normal">1685</span>
+<span class="normal">1686</span>
+<span class="normal">1687</span>
+<span class="normal">1688</span>
+<span class="normal">1689</span>
+<span class="normal">1690</span>
+<span class="normal">1691</span>
+<span class="normal">1692</span>
+<span class="normal">1693</span>
+<span class="normal">1694</span>
+<span class="normal">1695</span>
+<span class="normal">1696</span>
+<span class="normal">1697</span>
+<span class="normal">1698</span>
+<span class="normal">1699</span>
+<span class="normal">1700</span>
+<span class="normal">1701</span>
+<span class="normal">1702</span>
+<span class="normal">1703</span>
+<span class="normal">1704</span>
+<span class="normal">1705</span>
+<span class="normal">1706</span>
+<span class="normal">1707</span>
+<span class="normal">1708</span>
+<span class="normal">1709</span>
+<span class="normal">1710</span>
+<span class="normal">1711</span>
+<span class="normal">1712</span>
+<span class="normal">1713</span>
+<span class="normal">1714</span>
+<span class="normal">1715</span>
+<span class="normal">1716</span>
+<span class="normal">1717</span>
+<span class="normal">1718</span>
+<span class="normal">1719</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
@@ -1714,13 +1908,7 @@
 
 <span class="kn">from</span> <span class="nn">.base_loom_server</span> <span class="kn">import</span> <span class="n">MAX_THREAD_GROUP_SIZE</span><span class="p">,</span> <span class="n">SETTINGS_FILE_NAME</span><span class="p">,</span> <span class="n">BaseLoomServer</span>
 <span class="kn">from</span> <span class="nn">.base_mock_loom</span> <span class="kn">import</span> <span class="n">BaseMockLoom</span>
-<span class="kn">from</span> <span class="nn">.enums</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ConnectionStateEnum</span><span class="p">,</span>
-    <span class="n">DirectionControlEnum</span><span class="p">,</span>
-    <span class="n">MessageSeverityEnum</span><span class="p">,</span>
-    <span class="n">ModeEnum</span><span class="p">,</span>
-    <span class="n">ShaftStateEnum</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.enums</span> <span class="kn">import</span> <span class="n">ConnectionStateEnum</span><span class="p">,</span> <span class="n">DirectionControlEnum</span><span class="p">,</span> <span class="n">MessageSeverityEnum</span><span class="p">,</span> <span class="n">ModeEnum</span><span class="p">,</span> <span class="n">ShaftStateEnum</span>
 <span class="kn">from</span> <span class="nn">.reduced_pattern</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">DEFAULT_THREAD_GROUP_SIZE</span><span class="p">,</span>
     <span class="n">NUM_ITEMS_FOR_REPEAT_SEPARATOR</span><span class="p">,</span>
@@ -1910,7 +2098,6 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">expected_pick_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">expected_repeat_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">expected_shaft_word</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">jump_pending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">should_fail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1919,18 +2106,22 @@
 <span class="sd">        Ignore info-level StatusMessage</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            client: Client fixture.</span>
 <span class="sd">            expected_pick_number: Expected pick number of the next pick.</span>
 <span class="sd">            expected_repeat_number: Expected repeat number of the next pick.</span>
-<span class="sd">            expected_shaft_word: Expected shaft_word of the next pick.</span>
 <span class="sd">            jump_pending: Is a jump pending?</span>
 <span class="sd">            should_fail: Should the advance be rejected?</span>
 <span class="sd">                Note: this will still command shaft = 0,</span>
 <span class="sd">                but will report command failed and will not report pick numbers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span>
+        <span class="k">assert</span> <span class="n">pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
         <span class="n">replies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;oobcommand&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s2">&quot;n&quot;</span><span class="p">))</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
         <span class="n">expected_replies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span><span class="n">expected_pick_number</span><span class="p">)</span><span class="o">.</span><span class="n">shaft_word</span>
+
         <span class="k">if</span> <span class="p">(</span>
             <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">enable_software_direction</span>
             <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">loom_reports_direction</span>
@@ -1966,6 +2157,94 @@
                     <span class="n">pick_number</span><span class="o">=</span><span class="n">expected_pick_number</span><span class="p">,</span>
                     <span class="n">total_pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">pick_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">loom_reports_motion</span><span class="p">:</span>
+            <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;ShaftState&quot;</span><span class="p">,</span>
+                    <span class="n">state</span><span class="o">=</span><span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">MOVING</span><span class="p">,</span>
+                    <span class="n">shaft_word</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;ShaftState&quot;</span><span class="p">,</span>
+                    <span class="n">state</span><span class="o">=</span><span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">MOVING</span><span class="p">,</span>
+                    <span class="n">shaft_word</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;ShaftState&quot;</span><span class="p">,</span>
+                <span class="n">state</span><span class="o">=</span><span class="n">ShaftStateEnum</span><span class="o">.</span><span class="n">DONE</span><span class="p">,</span>
+                <span class="n">shaft_word</span><span class="o">=</span><span class="n">expected_shaft_word</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">expected_reply</span> <span class="ow">in</span> <span class="n">expected_replies</span><span class="p">:</span>
+            <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">receive_dict</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">reply</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ServerMessage&quot;</span> <span class="ow">and</span> <span class="n">reply</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">INFO</span><span class="p">:</span>
+                <span class="c1"># Ignore info-level status messages</span>
+                <span class="k">continue</span>
+            <span class="n">assert_replies_equal</span><span class="p">(</span><span class="n">reply</span><span class="p">,</span> <span class="n">expected_reply</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">command_next_tabby_pick</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.testutils.Client.command_next_tabby_pick"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.Client.command_next_tabby_pick" title="Go to docs">docs</a></div>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">expected_pick_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">jump_pending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">should_fail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Command the next pick and test the replies.</span>
+
+<span class="sd">        Ignore info-level StatusMessage</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            expected_pick_number: Expected pick number of the next pick.</span>
+<span class="sd">            jump_pending: Is a jump pending?</span>
+<span class="sd">            should_fail: Should the advance be rejected?</span>
+<span class="sd">                Note: this will still command shaft = 0,</span>
+<span class="sd">                but will report command failed and will not report pick numbers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span>
+        <span class="k">assert</span> <span class="n">pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">replies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;oobcommand&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s2">&quot;n&quot;</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">expected_replies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_tabby_pick</span><span class="p">(</span><span class="n">expected_pick_number</span><span class="p">)</span><span class="o">.</span><span class="n">shaft_word</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">enable_software_direction</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">loom_reports_direction</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span><span class="o">.</span><span class="n">direction_forward</span>
+        <span class="p">):</span>
+            <span class="c1"># Loom only reports direction when it asks for a pick</span>
+            <span class="c1"># and the direction has changed</span>
+            <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Direction&quot;</span><span class="p">,</span>
+                    <span class="n">forward</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+        <span class="k">if</span> <span class="n">should_fail</span><span class="p">:</span>
+            <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">message</span><span class="o">=</span><span class="s2">&quot;At start of tabby weaving&quot;</span><span class="p">,</span>
+                    <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">jump_pending</span><span class="p">:</span>
+                <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpTabbyPickNumber&quot;</span><span class="p">,</span>
+                        <span class="n">tabby_pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">]</span>
+            <span class="n">expected_replies</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;CurrentTabbyPickNumber&quot;</span><span class="p">,</span>
+                    <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">expected_pick_number</span><span class="p">,</span>
                 <span class="p">),</span>
             <span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">loom_reports_motion</span><span class="p">:</span>
@@ -2051,8 +2330,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">expected_seen_types</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;CommandDone&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;CurrentPickNumber&quot;</span><span class="p">,</span>
             <span class="s2">&quot;CurrentEndNumber&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;CurrentPickNumber&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;CurrentTabbyPickNumber&quot;</span><span class="p">,</span>
             <span class="s2">&quot;ReducedPattern&quot;</span><span class="p">,</span>
             <span class="s2">&quot;SeparateThreadingRepeats&quot;</span><span class="p">,</span>
             <span class="s2">&quot;SeparateWeavingRepeats&quot;</span><span class="p">,</span>
@@ -2092,6 +2372,8 @@
                         <span class="n">repeat_number</span><span class="o">=</span><span class="n">pattern_in_reply</span><span class="o">.</span><span class="n">pick_repeat_number</span><span class="p">,</span>
                         <span class="n">repeat_len</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">pattern_in_reply</span><span class="o">.</span><span class="n">picks</span><span class="p">),</span>
                     <span class="p">)</span>
+                <span class="k">case</span> <span class="s2">&quot;CurrentTabbyPickNumber&quot;</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="o">==</span> <span class="n">pattern_in_reply</span><span class="o">.</span><span class="n">tabby_pick_number</span>
                 <span class="k">case</span> <span class="s2">&quot;CurrentEndNumber&quot;</span><span class="p">:</span>
                     <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="n">pattern_in_reply</span><span class="o">.</span><span class="n">end_number0</span>
                     <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">end_number1</span> <span class="o">==</span> <span class="n">pattern_in_reply</span><span class="o">.</span><span class="n">end_number1</span>
@@ -2386,7 +2668,6 @@
                         <span class="n">client</span><span class="o">.</span><span class="n">command_next_pick</span><span class="p">(</span>
                             <span class="n">expected_pick_number</span><span class="o">=</span><span class="n">jump_pick_reply</span><span class="o">.</span><span class="n">pick_number</span><span class="p">,</span>
                             <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">jump_pick_reply</span><span class="o">.</span><span class="n">pick_repeat_number</span><span class="p">,</span>
-                            <span class="n">expected_shaft_word</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span><span class="n">jump_pick_reply</span><span class="o">.</span><span class="n">pick_number</span><span class="p">)</span><span class="o">.</span><span class="n">shaft_word</span><span class="p">,</span>
                             <span class="n">jump_pending</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                         <span class="p">)</span>
                     <span class="k">case</span> <span class="s2">&quot;nothing&quot;</span><span class="p">:</span>
@@ -2411,6 +2692,64 @@
                         <span class="nb">getattr</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
                         <span class="o">==</span> <span class="n">current_pick_data</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
                     <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_jump_to_tabby_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_tabby_pick"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_tabby_pick" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the jump_to_tabby_pick command.&quot;&quot;&quot;</span>
+        <span class="n">pattern_name</span> <span class="o">=</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_test_client</span><span class="p">(</span>
+            <span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span>
+            <span class="n">num_shafts</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">upload_patterns</span><span class="o">=</span><span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">select_pattern</span><span class="p">(</span><span class="n">pattern_name</span><span class="o">=</span><span class="n">pattern_name</span><span class="p">)</span>
+
+            <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_TABBY</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
+            <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_TABBY</span><span class="p">)</span>
+
+            <span class="c1"># post_action sets what to do after sending the jump_to_pick cmd:</span>
+            <span class="c1"># * cancel: cancel the jump_to_pick</span>
+            <span class="c1"># * next: advance to the next pick (thus accepting the jump)</span>
+            <span class="c1"># * nothing: do nothing</span>
+            <span class="k">for</span> <span class="n">post_action</span><span class="p">,</span> <span class="n">tabby_pick_number</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">,</span> <span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;nothing&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_tabby_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">tabby_pick_number</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
+                <span class="n">jump_pick_reply</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">assert</span> <span class="n">jump_pick_reply</span> <span class="o">==</span> <span class="n">SimpleNamespace</span><span class="p">(</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpTabbyPickNumber&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">tabby_pick_number</span>
+                <span class="p">)</span>
+                <span class="k">match</span> <span class="n">post_action</span><span class="p">:</span>
+                    <span class="k">case</span> <span class="s2">&quot;cancel&quot;</span><span class="p">:</span>
+                        <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_tabby_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+                        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
+                        <span class="n">jump_pick_cancel_reply</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="k">assert</span> <span class="n">jump_pick_cancel_reply</span> <span class="o">==</span> <span class="n">SimpleNamespace</span><span class="p">(</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpTabbyPickNumber&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="kc">None</span>
+                        <span class="p">)</span>
+                    <span class="k">case</span> <span class="s2">&quot;next&quot;</span><span class="p">:</span>
+                        <span class="n">client</span><span class="o">.</span><span class="n">command_next_tabby_pick</span><span class="p">(</span>
+                            <span class="n">expected_pick_number</span><span class="o">=</span><span class="n">jump_pick_reply</span><span class="o">.</span><span class="n">tabby_pick_number</span><span class="p">,</span> <span class="n">jump_pending</span><span class="o">=</span><span class="kc">True</span>
+                        <span class="p">)</span>
+                    <span class="k">case</span> <span class="s2">&quot;nothing&quot;</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                    <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported </span><span class="si">{</span><span class="n">post_action</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Test jumping to invalid picks, including</span>
+            <span class="c1"># that the bad command doesn&#39;t change the pattern&#39;s pick numbers.</span>
+            <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="n">current_tabby_pick_number</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">tabby_pick_number</span>
+            <span class="k">for</span> <span class="n">bad_tabby_pick_number</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">bad_tabby_pick_number</span><span class="p">),</span>
+                    <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="o">==</span> <span class="n">current_tabby_pick_number</span>
 
     <span class="k">def</span> <span class="nf">test_next_end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_next_end"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_next_end" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Test advancing to the next end.&quot;&quot;&quot;</span>
@@ -2575,11 +2914,9 @@
                 <span class="n">expected_pick_number</span><span class="p">,</span> <span class="n">expected_repeat_number</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">compute_next_pick_numbers</span><span class="p">(</span>
                     <span class="n">direction_forward</span><span class="o">=</span><span class="kc">True</span>
                 <span class="p">)</span>
-                <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span><span class="n">expected_pick_number</span><span class="p">)</span><span class="o">.</span><span class="n">shaft_word</span>
                 <span class="n">client</span><span class="o">.</span><span class="n">command_next_pick</span><span class="p">(</span>
                     <span class="n">expected_pick_number</span><span class="o">=</span><span class="n">expected_pick_number</span><span class="p">,</span>
                     <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
-                    <span class="n">expected_shaft_word</span><span class="o">=</span><span class="n">expected_shaft_word</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">expected_repeat_number</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># noqa: PLR2004</span>
                     <span class="k">break</span>
@@ -2595,11 +2932,9 @@
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
                     <span class="k">break</span>
-                <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span><span class="n">expected_pick_number</span><span class="p">)</span><span class="o">.</span><span class="n">shaft_word</span>
                 <span class="n">client</span><span class="o">.</span><span class="n">command_next_pick</span><span class="p">(</span>
                     <span class="n">expected_pick_number</span><span class="o">=</span><span class="n">expected_pick_number</span><span class="p">,</span>
                     <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">expected_repeat_number</span><span class="p">,</span>
-                    <span class="n">expected_shaft_word</span><span class="o">=</span><span class="n">expected_shaft_word</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">assert</span> <span class="n">expected_pick_number</span> <span class="o">==</span> <span class="mi">0</span>
             <span class="k">assert</span> <span class="n">expected_repeat_number</span> <span class="o">==</span> <span class="mi">1</span>
@@ -2609,11 +2944,51 @@
             <span class="n">client</span><span class="o">.</span><span class="n">command_next_pick</span><span class="p">(</span>
                 <span class="n">expected_pick_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># should be ignored</span>
                 <span class="n">expected_repeat_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># should be ignored</span>
-                <span class="n">expected_shaft_word</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># should be ignored</span>
                 <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="n">expected_pick_number</span>
             <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="n">expected_repeat_number</span>
+
+            <span class="c1"># Change direction to forward</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">change_direction</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">direction_forward</span>
+
+    <span class="k">def</span> <span class="nf">test_next_tabby_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_next_tabby_pick"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_next_tabby_pick" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test advancing to the next tabby pick.&quot;&quot;&quot;</span>
+        <span class="n">pattern_name</span> <span class="o">=</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_test_client</span><span class="p">(</span>
+            <span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span>
+            <span class="n">upload_patterns</span><span class="o">=</span><span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">select_pattern</span><span class="p">(</span><span class="n">pattern_name</span><span class="o">=</span><span class="n">pattern_name</span><span class="p">)</span>
+
+            <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_TABBY</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
+            <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_TABBY</span><span class="p">)</span>
+
+            <span class="c1"># Make enough forward picks to get into the 3rd repeat</span>
+            <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">direction_forward</span>
+            <span class="k">for</span> <span class="n">expected_pick_number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">command_next_tabby_pick</span><span class="p">(</span><span class="n">expected_pick_number</span><span class="o">=</span><span class="n">expected_pick_number</span><span class="p">)</span>
+
+            <span class="n">client</span><span class="o">.</span><span class="n">change_direction</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">direction_forward</span>
+
+            <span class="c1"># Now go backwards to the beginning</span>
+            <span class="n">expected_pick_number</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">tabby_pick_number</span>
+            <span class="k">while</span> <span class="n">expected_pick_number</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">expected_pick_number</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">command_next_tabby_pick</span><span class="p">(</span><span class="n">expected_pick_number</span><span class="o">=</span><span class="n">expected_pick_number</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">expected_pick_number</span> <span class="o">==</span> <span class="mi">0</span>
+
+            <span class="c1"># Another advance should be rejected,</span>
+            <span class="c1"># without changing the pick numbers in the pattern.</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">command_next_tabby_pick</span><span class="p">(</span>
+                <span class="n">expected_pick_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># should be ignored</span>
+                <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span>
 
             <span class="c1"># Change direction to forward</span>
             <span class="n">client</span><span class="o">.</span><span class="n">change_direction</span><span class="p">()</span>
@@ -2639,10 +3014,10 @@
                 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ALL_PATTERN_PATHS</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span>  <span class="c1"># noqa: PLR2004</span>
                 <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">3</span><span class="p">]):</span>
                     <span class="c1"># If needed, go to weaving mode</span>
-                    <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span><span class="p">:</span>
-                        <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_PATTERN</span><span class="p">:</span>
+                        <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_PATTERN</span><span class="p">))</span>
                         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
-                        <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span><span class="p">)</span>
+                        <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_PATTERN</span><span class="p">)</span>
 
                     <span class="n">pattern</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">select_pattern</span><span class="p">(</span><span class="n">pattern_name</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                     <span class="n">num_ends_in_pattern</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
@@ -2714,12 +3089,10 @@
                         <span class="n">pick_number</span><span class="o">=</span><span class="n">pick_number</span><span class="p">,</span>
                         <span class="n">pick_repeat_number</span><span class="o">=</span><span class="n">pick_repeat_number</span><span class="p">,</span>
                     <span class="p">)</span>
-                    <span class="n">expected_shaft_word</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span><span class="n">pick_number</span><span class="p">)</span><span class="o">.</span><span class="n">shaft_word</span>
                     <span class="n">client</span><span class="o">.</span><span class="n">command_next_pick</span><span class="p">(</span>
                         <span class="n">jump_pending</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                         <span class="n">expected_pick_number</span><span class="o">=</span><span class="n">pick_number</span><span class="p">,</span>
                         <span class="n">expected_repeat_number</span><span class="o">=</span><span class="n">pick_repeat_number</span><span class="p">,</span>
-                        <span class="n">expected_shaft_word</span><span class="o">=</span><span class="n">expected_shaft_word</span><span class="p">,</span>
                     <span class="p">)</span>
 
                     <span class="c1"># Now advance to the desired end.</span>
@@ -3086,6 +3459,7 @@
                         <span class="s2">&quot;Direction&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;JumpTabbyPickNumber&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;LanguageNames&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;LoomConnectionState&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;LoomInfo&quot;</span><span class="p">,</span>
@@ -3102,6 +3476,7 @@
                         <span class="n">expected_types</span> <span class="o">|=</span> <span class="p">{</span>
                             <span class="s2">&quot;CurrentEndNumber&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;CurrentPickNumber&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;CurrentTabbyPickNumber&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;ReducedPattern&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;SeparateThreadingRepeats&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;SeparateWeavingRepeats&quot;</span><span class="p">,</span>
@@ -3140,18 +3515,25 @@
                                     <span class="n">repeat_number</span><span class="o">=</span><span class="n">expected_current_pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span><span class="p">,</span>
                                     <span class="n">repeat_len</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">expected_current_pattern</span><span class="o">.</span><span class="n">picks</span><span class="p">),</span>
                                 <span class="p">)</span>
+                            <span class="k">case</span> <span class="s2">&quot;CurrentTabbyPickNumber&quot;</span><span class="p">:</span>
+                                <span class="k">assert</span> <span class="n">expected_current_pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                                <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="o">==</span> <span class="n">expected_current_pattern</span><span class="o">.</span><span class="n">tabby_pick_number</span>
                             <span class="k">case</span> <span class="s2">&quot;Direction&quot;</span><span class="p">:</span>
                                 <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">forward</span>
                             <span class="k">case</span> <span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">:</span>
-                                <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                                    <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span>
-                                        <span class="k">continue</span>
-                                    <span class="k">assert</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span>
+                                <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="p">(</span>
+                                    <span class="s2">&quot;total_end_number0&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;total_end_number1&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;end_number0&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;end_number1&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;end_repeat_number&quot;</span><span class="p">,</span>
+                                <span class="p">):</span>
+                                    <span class="k">assert</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">reply</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
                             <span class="k">case</span> <span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">:</span>
-                                <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                                    <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span>
-                                        <span class="k">continue</span>
-                                    <span class="k">assert</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span>
+                                <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;total_pick_number&quot;</span><span class="p">,</span> <span class="s2">&quot;pick_number&quot;</span><span class="p">,</span> <span class="s2">&quot;pick_repeat_number&quot;</span><span class="p">):</span>
+                                    <span class="k">assert</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">reply</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+                            <span class="k">case</span> <span class="s2">&quot;JumpTabbyPickNumber&quot;</span><span class="p">:</span>
+                                <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="ow">is</span> <span class="kc">None</span>
                             <span class="k">case</span> <span class="s2">&quot;LanguageNames&quot;</span><span class="p">:</span>
                                 <span class="k">assert</span> <span class="s2">&quot;English&quot;</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">languages</span>
                             <span class="k">case</span> <span class="s2">&quot;LoomConnectionState&quot;</span><span class="p">:</span>
@@ -3164,7 +3546,7 @@
                             <span class="k">case</span> <span class="s2">&quot;LoomInfo&quot;</span><span class="p">:</span>
                                 <span class="k">assert</span> <span class="nb">vars</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span> <span class="o">==</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">loom_server</span><span class="o">.</span><span class="n">loom_info</span><span class="p">)</span>
                             <span class="k">case</span> <span class="s2">&quot;Mode&quot;</span><span class="p">:</span>
-                                <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span>
+                                <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_PATTERN</span>
                             <span class="k">case</span> <span class="s2">&quot;PatternNames&quot;</span><span class="p">:</span>
                                 <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">expected_pattern_names</span>
                             <span class="k">case</span> <span class="s2">&quot;ReducedPattern&quot;</span><span class="p">:</span>

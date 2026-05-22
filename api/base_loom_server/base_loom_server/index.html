@@ -55,6 +55,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving_tabby/">Weaving Tabby</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
                 </li>
               </ul>
@@ -124,6 +128,8 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_pick">clear_jump_pick</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_tabby_pick">clear_jump_tabby_pick</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps">clear_jumps</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names">cmd_clear_pattern_names</a>
@@ -133,6 +139,8 @@
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end">cmd_jump_to_end</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick">cmd_jump_to_pick</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_tabby_pick">cmd_jump_to_tabby_pick</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode">cmd_mode</a>
     </li>
@@ -158,9 +166,11 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.handle_next_pick_request">handle_next_pick_request</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number">increment_end_number</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number">increment_pick_number</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number">increment_end_number</a>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.increment_tabby_pick_number">increment_tabby_pick_number</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.load_settings">load_settings</a>
     </li>
@@ -182,11 +192,15 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_current_pick_number">report_current_pick_number</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_current_tabby_pick_number">report_current_tabby_pick_number</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers">report_current_end_numbers</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_jump_end">report_jump_end</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick">report_jump_pick</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_jump_tabby_pick">report_jump_tabby_pick</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state">report_shaft_state</a>
     </li>
@@ -239,6 +253,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../check_translation_files/">base_loom_server.check_translation_files</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../compute_tabby/">base_loom_server.compute_tabby</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
                 </li>
@@ -520,6 +536,11 @@ Clear self.jump_end and report value if changed or force_output.</p>
 Clear self.jump_pick and report value if changed or force_output.</p>
 </li>
 <li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_tabby_pick" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_tabby_pick">clear_jump_tabby_pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Clear self.jump_tabby_pick and report value if changed or force_output.</p>
+</li>
+<li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jumps">clear_jumps</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Clear all jumps and report values if changed or force_output.</p>
@@ -543,6 +564,11 @@ Handle the jump_to_end command.</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick">cmd_jump_to_pick</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Handle the jump_to_pick command.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_tabby_pick" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_tabby_pick">cmd_jump_to_tabby_pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Handle the jump_to_tabby_pick command.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_mode">cmd_mode</a></span>
@@ -605,14 +631,19 @@ Get the current threading shaft word.</p>
 Handle next pick request from loom.</p>
 </li>
 <li>
-<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number">increment_pick_number</a></span>
- <span class="mkapi-dash">&mdash;</span>
-Increment pick_number in the current direction.</p>
-</li>
-<li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_end_number">increment_end_number</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Increment end_number0 in the current direction.</p>
+Increment current_pattern.end_number0 and end_number1 in the current direction.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number">increment_pick_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Increment self.current_pattern.pick_number in the current direction.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_tabby_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_tabby_pick_number">increment_tabby_pick_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Increment tabby_pick_number in the current direction.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.load_settings" title="base_loom_server.base_loom_server.BaseLoomServer.load_settings">load_settings</a></span>
@@ -665,6 +696,11 @@ Report PatternNames to the client.</p>
 Report CurrentPickNumber to the client.</p>
 </li>
 <li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_current_tabby_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.report_current_tabby_pick_number">report_current_tabby_pick_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report CurrentTabbyPickNumber to the client.</p>
+</li>
+<li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers" title="base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers">report_current_end_numbers</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Report CurrentEndNumber to the client.</p>
@@ -676,6 +712,11 @@ Report JumpEndNumber to the client.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick" title="base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick">report_jump_pick</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Report JumpPickNumber to the client.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_jump_tabby_pick" title="base_loom_server.base_loom_server.BaseLoomServer.report_jump_tabby_pick">report_jump_tabby_pick</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Report JumpPickNumber to the client.</p>
 </li>
@@ -1156,6 +1197,41 @@ even if it has not changed.</p>
 </ul>
 </div>
 </div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_tabby_pick">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_tabby_pick" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_tabby_pick" title="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_tabby_pick">clear_jump_tabby_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">force_output</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-equal"> = </span><span class="mkapi-default">False</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Clear self.jump_tabby_pick and report value if changed or force_output.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">force_output</span> : 
+<span class="mkapi-item-type">bool</span> <span class="mkapi-dash">&mdash;</span>
+If true, report <code>JumpTabbyPickNumber</code>,
+even if it has not changed.</p>
+</li>
+</ul>
+</div>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jumps">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1256,6 +1332,38 @@ even if it has not changed.</p>
 </p>
 <div class="mkapi-document">
 <p>Handle the jump_to_pick command.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle raises">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Raises</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-type"><a href="./#base_loom_server.base_loom_server.CommandError" title="base_loom_server.base_loom_server.CommandError">CommandError</a></span></p>
+</li>
+</ul>
+</div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_tabby_pick">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_tabby_pick" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_tabby_pick" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_tabby_pick">cmd_jump_to_tabby_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Handle the jump_to_tabby_pick command.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -1573,28 +1681,6 @@ True if the loom was sent the next set of shafts.
 </ul>
 </div>
 </div>
-<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number">
-<span class="mkapi-object-link">
-<span class="mkapi-parent-toggle" title="Toggle class names">
-<i class="fa-solid fa-square-plus"></i>
-</span>
-
-<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="Go to source">source</a>
-<span class="mkapi-document-toggle" title="Toggle all docs">
-<i class="fa-regular fa-square-minus"></i>
-</span>
-</span><span class="mkapi-object-kind">method</span>
-<span class="mkapi-object-parent">
-<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number">increment_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
-</p>
-<div class="mkapi-document">
-<p>Increment pick_number in the current direction.</p>
-<p>Increment pick_repeat_number as well, if appropriate.</p>
-<p>Return the new pick number. This will be 0 if
-pick_repeat_number changed,
-or if unweaving and pick_repeat_number
-would be decremented to 0.</p>
-</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.increment_end_number">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1610,7 +1696,43 @@ would be decremented to 0.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_end_number">increment_end_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Increment end_number0 in the current direction.</p>
+<p>Increment current_pattern.end_number0 and end_number1 in the current direction.</p>
+<p>end_repeat_number as well.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number">increment_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Increment self.current_pattern.pick_number in the current direction.</p>
+<p>Increment self.current_pattern.pick_repeat_number as well, if appropriate.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.increment_tabby_pick_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_tabby_pick_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.increment_tabby_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.increment_tabby_pick_number">increment_tabby_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Increment tabby_pick_number in the current direction.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.load_settings">
 <span class="mkapi-object-link">
@@ -1802,6 +1924,24 @@ Unusable entries will be ignored, with a logged warning.</p>
 <p>Report CurrentPickNumber to the client.</p>
 <p>Also update pick information in the database.</p>
 </div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_current_tabby_pick_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_current_tabby_pick_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_current_tabby_pick_number" title="base_loom_server.base_loom_server.BaseLoomServer.report_current_tabby_pick_number">report_current_tabby_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report CurrentTabbyPickNumber to the client.</p>
+<p>Also update tabby pick number in the database.</p>
+</div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers">
 <span class="mkapi-object-link">
 <span class="mkapi-parent-toggle" title="Toggle class names">
@@ -1850,6 +1990,23 @@ Unusable entries will be ignored, with a logged warning.</p>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick" title="base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick">report_jump_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Report JumpPickNumber to the client.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.report_jump_tabby_pick">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_jump_tabby_pick" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_jump_tabby_pick" title="base_loom_server.base_loom_server.BaseLoomServer.report_jump_tabby_pick">report_jump_tabby_pick</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Report JumpPickNumber to the client.</p>

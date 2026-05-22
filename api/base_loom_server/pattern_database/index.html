@@ -55,6 +55,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving_tabby/">Weaving Tabby</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
                 </li>
               </ul>
@@ -94,6 +98,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../compute_tabby/">base_loom_server.compute_tabby</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../enums/">base_loom_server.enums</a>
@@ -131,6 +137,8 @@
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.pattern_database.PatternDatabase.update_separate_threading_repeats">update_separate_threading_repeats</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.pattern_database.PatternDatabase.update_separate_weaving_repeats">update_separate_weaving_repeats</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.pattern_database.PatternDatabase.update_tabby_pick_number">update_tabby_pick_number</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.pattern_database.PatternDatabase.update_thread_group_size">update_thread_group_size</a>
     </li>
@@ -307,6 +315,11 @@ Update separate_threading_repeats for the specified pattern.</p>
 Update separate_weaving_repeats for the specified pattern.</p>
 </li>
 <li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_tabby_pick_number" title="base_loom_server.pattern_database.PatternDatabase.update_tabby_pick_number">update_tabby_pick_number</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Update tabby pick number for the specified pattern.</p>
+</li>
+<li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_thread_group_size" title="base_loom_server.pattern_database.PatternDatabase.update_thread_group_size">update_thread_group_size</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Update thread_group_size for the specified pattern.</p>
@@ -392,6 +405,7 @@ are set to values from the pattern:</p>
 <ul>
 <li>pick_number</li>
 <li>pick_repeat_number</li>
+<li>tabby_pick_number</li>
 <li>end_number0</li>
 <li>end_number1</li>
 <li>end_repeat_number</li>
@@ -543,6 +557,23 @@ the oldest are purged.</p>
 </p>
 <div class="mkapi-document">
 <p>Update separate_weaving_repeats for the specified pattern.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.pattern_database.PatternDatabase.update_tabby_pick_number">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/pattern_database/#base_loom_server.pattern_database.PatternDatabase.update_tabby_pick_number" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">async method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.pattern_database.PatternDatabase" title="base_loom_server.pattern_database.PatternDatabase">PatternDatabase</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.pattern_database.PatternDatabase.update_tabby_pick_number" title="base_loom_server.pattern_database.PatternDatabase.update_tabby_pick_number">update_tabby_pick_number</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">pattern_name</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">tabby_pick_number</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+</p>
+<div class="mkapi-document">
+<p>Update tabby pick number for the specified pattern.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.pattern_database.PatternDatabase.update_thread_group_size">
 <span class="mkapi-object-link">

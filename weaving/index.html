@@ -67,6 +67,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../weaving_tabby/">Weaving Tabby</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../threading/">Threading</a>
                 </li>
               </ul>
@@ -105,6 +109,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/compute_tabby/">base_loom_server.compute_tabby</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/constants/">base_loom_server.constants</a>
                 </li>
@@ -166,7 +172,8 @@
 <a class="glightbox" href="../images/screen_shots/weaving_safari_iphone_mini.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/weaving_safari_iphone_mini.jpg" width="150" alt="Weaving: Safari on iPhone mini"></a>
 </div>
 
-<p>This page assumes you have done all the <a href="../">basics</a>:</p>
+<p>The <strong>Weave</strong> mode allows you to weave your chosen design.</p>
+<p>The following assumes you have done all the <a href="../">basics</a>:</p>
 <ul>
 <li>Connected your web browser to the loom server</li>
 <li>Uploaded at least one pattern, and selected a pattern from the pattern menu</li>
@@ -181,8 +188,7 @@ See <a href="#repeating">Repeating</a> for more information.</p>
 <p>Note that the display is naive; it shows all threads as the same thickness,
 and does not display multi-layer patterns, such as doubleweave, correctly.</p>
 <h2 id="weave-direction">Weave Direction</h2>
-<p>The Weaving "Direction" button shows "Weave" or "Unweave".
-<a href="../threading/">Threading</a> also has a direction button that shows "Thread" or "Unthread", prefixed by an arrow showing the direction of the next group of warp ends. Note that for threading you can choose which direction is forward in <a href="../settings/">Settings</a>.</p>
+<p>The "Direction" button shows "Weave" or "Unweave". (In <a href="../threading/">Thread</a> mode the button shows "Thread" or "Unthread", prefixed by an arrow showing the direction of the next group of warp ends.)</p>
 <p>To clearly warn you when unweaving or unthreading, the direction button is shown in red, and the pattern is shown with a red border and a pink background.</p>
 <p>How you change direction depends on the loom:</p>
 <ul>
@@ -234,6 +240,11 @@ In detail:</p>
 <p>The pattern display will show the jump-to pick in the center row, with a dotted box around it.</p>
 </li>
 <li>
+<p>You may also use the "-" and "+" buttons.
+  These work much like the input box, but are immediately applied (there is no need to push the "return" keyboard key or click "Jump").
+  The new jump value is relative to the value in the box, if there is one, else it is relative to the current pick.</p>
+</li>
+<li>
 <p>Advance to the next pick by pressing the loom's pedal.</p>
 </li>
 <li>
@@ -274,7 +285,7 @@ and may also be different for different patterns. They are saved in the pattern 
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../threading/" class="btn btn-neutral float-right" title="Threading">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../weaving_tabby/" class="btn btn-neutral float-right" title="Weaving Tabby">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -300,7 +311,7 @@ and may also be different for different patterns. They are saved in the pattern 
       <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../threading/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../weaving_tabby/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

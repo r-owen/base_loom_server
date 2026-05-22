@@ -54,6 +54,10 @@
                 <li class="toctree-l1"><a class="reference internal" href="../weaving/">Weaving</a>
                 </li>
               </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../weaving_tabby/">Weaving Tabby</a>
+                </li>
+              </ul>
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Threading</a>
     <ul class="current">
@@ -105,6 +109,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/compute_tabby/">base_loom_server.compute_tabby</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/constants/">base_loom_server.constants</a>
                 </li>
@@ -166,7 +172,7 @@
 <a class="glightbox" href="../images/screen_shots/threading_safari_iphone_mini.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/threading_safari_iphone_mini.jpg" width="150" alt="Threading: Safari on iPhone mini"></a>
 </div>
 
-<p>The threading mode helps you correctly thread warp strings through the heddles.
+<p>The <strong>Thread</strong> mode helps you correctly thread warp strings through the heddles.
 Every time you press the pedal, the loom will raise the next group of shafts
 and a display will show you which threads belong on which shaft.</p>
 <p>This page assumes you have done all the <a href="../">basics</a>:</p>
@@ -176,6 +182,8 @@ and a display will show you which threads belong on which shaft.</p>
 <li>Selected the Threading mode.</li>
 </ul>
 <h2 id="threading-direction">Threading Direction</h2>
+<p>The Direction button shows "Thread" or "Unthread", prefixed by an arrow showing the direction of the next group of warp ends.</p>
+<p>To change between threading and unthreading see <a href="../weaving/#weave-direction">Weaving: Direction</a>.</p>
 <p>The <a href="../settings/">Settings</a> panel contains two settings specific to threading:</p>
 <ul>
 <li>
@@ -187,7 +195,6 @@ and a display will show you which threads belong on which shaft.</p>
 shaft 1 is at the bottom, and warp end 1 is at the other edge than specified by the "Warp end 1 on" <a href="../settings/">setting</a>.</p>
 </li>
 </ul>
-<p>To change between threading and unthreading see <a href="../weaving/#weave-direction">Weave Direction</a>.</p>
 <p>If you are using a Toika loom, you must specify whether Software or the Loom controls threading direction in <a href="../settings/">Settings</a>. If you thread "front to back", consider specifying Software, because it may be difficult to reach the REVERSE button on the dobby head from behind the castle.</p>
 <h2 id="threading-display">Threading Display</h2>
 <p>Threading is displayed as a picture that shows a group of threads (vertical colored bars) and the shaft they go through (numbers that interrupt the colored bars).
@@ -202,47 +209,11 @@ See <a href="#repeating">Repeating</a> for more information.</p>
 <h2 id="jumping">Jumping</h2>
 <p>You can jump to a different group of warp ends, specified by the smaller warp end number.
 For example if the group size is 4 and you jump to end 21, the new ends will be 21, 22, 23, 24, and 25 (or fewer, if the warp has fewer than 25 threads), regardless of the threading direction.</p>
-<p>Jumping is a two-step process: first you request the jump, then you advance to it by pressing the loom's pedal.
-(Two steps are necessary because most looms will not accept an unsolicited command to raise shafts.)
-In detail:</p>
-<ul>
-<li>
-<p>Enter the desired warp end number in the box to the right of "Jump to warp thread".
-  The box will turn pink and the Jump button will be enabled.</p>
-</li>
-<li>
-<p>Press the "return" keyboard key or click the "Jump" button on the web page to send the requested jump to the server.
-  You will see several changes:</p>
-<ul>
-<li>
-<p>The jump input box will have a white background and the jump button will be disabled.</p>
-</li>
-<li>
-<p>The pattern display will show the new thread group, with a dotted box around it.</p>
-</li>
-</ul>
-</li>
-<li>
-<p>Advance to the next group by pressing the loom's pedal.</p>
-</li>
-<li>
-<p>Until you advance to the next group, you may request a different jump (in case you got it wrong the first time) or cancel the jump.
-  To cancel the jump you may do any of the following:</p>
-<ul>
-<li>
-<p>Press the "Reset" button to the right of "Jump".</p>
-</li>
-<li>
-<p>Reload the page.</p>
-</li>
-<li>
-<p>Select a new pattern.</p>
-</li>
-</ul>
-</li>
-</ul>
+<p>See <a href="../weaving/#jumping">Weaving: Jumping</a> for details.</p>
 <h2 id="group-size">Group Size</h2>
 <p>The "Group size" menu selects how many warp ends are in a group, All shafts for a group are raised at once.</p>
+<p>Unless the threading is trivial, I suggest using a group size of 1 (only lift one shaft at a time).
+It is a bit slower, but much safer.</p>
 <p>You can change the group size whenever you like; the change takes effect for the next thread group (next time you push the pedal to advance).</p>
 <h2 id="repeating">Repeating</h2>
 <p>The software will automatically repeat threading if you thread beyond the end.
@@ -265,7 +236,7 @@ and may also be different for different patterns. They are saved in the pattern 
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../weaving/" class="btn btn-neutral float-left" title="Weaving"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../weaving_tabby/" class="btn btn-neutral float-left" title="Weaving Tabby"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../settings/" class="btn btn-neutral float-right" title="Settings">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -289,7 +260,7 @@ and may also be different for different patterns. They are saved in the pattern 
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../weaving/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../weaving_tabby/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../settings/" style="color: #fcfcfc">Next &raquo;</a></span>

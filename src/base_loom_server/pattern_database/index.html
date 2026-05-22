@@ -55,6 +55,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving_tabby/">Weaving Tabby</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
                 </li>
               </ul>
@@ -93,6 +97,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/compute_tabby/">base_loom_server.compute_tabby</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/constants/">base_loom_server.constants</a>
                 </li>
@@ -442,7 +448,29 @@
 <span class="normal">281</span>
 <span class="normal">282</span>
 <span class="normal">283</span>
-<span class="normal">284</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PatternDatabase&quot;</span><span class="p">,</span> <span class="s2">&quot;create_pattern_database&quot;</span><span class="p">]</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PatternDatabase&quot;</span><span class="p">,</span> <span class="s2">&quot;create_pattern_database&quot;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -459,6 +487,7 @@
     <span class="n">pattern_json</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
     <span class="n">pick_number</span><span class="o">=</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span>
     <span class="n">pick_repeat_number</span><span class="o">=</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span>
+    <span class="n">tabby_pick_number</span><span class="o">=</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span>
     <span class="n">end_number0</span><span class="o">=</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span>
     <span class="n">end_number1</span><span class="o">=</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span>
     <span class="n">end_repeat_number</span><span class="o">=</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span>
@@ -484,6 +513,7 @@
 <span class="n">CACHE_FIELD_NAMES</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">&quot;pick_number&quot;</span><span class="p">,</span>
     <span class="s2">&quot;pick_repeat_number&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;tabby_pick_number&quot;</span><span class="p">,</span>
     <span class="s2">&quot;end_number0&quot;</span><span class="p">,</span>
     <span class="s2">&quot;end_number1&quot;</span><span class="p">,</span>
     <span class="s2">&quot;end_repeat_number&quot;</span><span class="p">,</span>
@@ -560,6 +590,7 @@
 
 <span class="sd">                * pick_number</span>
 <span class="sd">                * pick_repeat_number</span>
+<span class="sd">                * tabby_pick_number</span>
 <span class="sd">                * end_number0</span>
 <span class="sd">                * end_number1</span>
 <span class="sd">                * end_repeat_number</span>
@@ -639,7 +670,7 @@
         <span class="k">async</span> <span class="k">with</span> <span class="n">aiosqlite</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbpath</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
                 <span class="s2">&quot;update patterns &quot;</span>
-                <span class="s2">&quot;set pick_number = ?, pick_repeat_number = ?, timestamp_sec = ?&quot;</span>
+                <span class="s2">&quot;set pick_number = ?, pick_repeat_number = ?, timestamp_sec = ? &quot;</span>
                 <span class="s2">&quot;where pattern_name = ?&quot;</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">pick_number</span><span class="p">,</span> <span class="n">pick_repeat_number</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">pattern_name</span><span class="p">),</span>
             <span class="p">)</span>
@@ -657,7 +688,7 @@
         <span class="k">async</span> <span class="k">with</span> <span class="n">aiosqlite</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbpath</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
                 <span class="s2">&quot;update patterns &quot;</span>
-                <span class="s2">&quot;set end_number0 = ?, end_number1 = ?, end_repeat_number = ?, timestamp_sec = ?&quot;</span>
+                <span class="s2">&quot;set end_number0 = ?, end_number1 = ?, end_repeat_number = ?, timestamp_sec = ? &quot;</span>
                 <span class="s2">&quot;where pattern_name = ?&quot;</span><span class="p">,</span>
                 <span class="p">(</span>
                     <span class="n">end_number0</span><span class="p">,</span>
@@ -678,7 +709,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update separate_threading_repeats for the specified pattern.&quot;&quot;&quot;</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">aiosqlite</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbpath</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-                <span class="s2">&quot;update patterns set separate_threading_repeats = ?, timestamp_sec = ?where pattern_name = ?&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;update patterns set separate_threading_repeats = ?, timestamp_sec = ? &quot;</span>
+                <span class="s2">&quot;where pattern_name = ?&quot;</span><span class="p">,</span>
                 <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">separate_threading_repeats</span><span class="p">),</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">pattern_name</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
@@ -692,8 +724,26 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update separate_weaving_repeats for the specified pattern.&quot;&quot;&quot;</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">aiosqlite</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbpath</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-                <span class="s2">&quot;update patterns set separate_weaving_repeats = ?, timestamp_sec = ?where pattern_name = ?&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;update patterns set separate_weaving_repeats = ?, timestamp_sec = ? where pattern_name = ?&quot;</span><span class="p">,</span>
                 <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">separate_weaving_repeats</span><span class="p">),</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">pattern_name</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">update_tabby_pick_number</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.pattern_database.PatternDatabase.update_tabby_pick_number"><a href="../../../api/base_loom_server/pattern_database/#base_loom_server.pattern_database.PatternDatabase.update_tabby_pick_number" title="Go to docs">docs</a></div>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">pattern_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">tabby_pick_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update tabby pick number for the specified pattern.&quot;&quot;&quot;</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">aiosqlite</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbpath</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="s2">&quot;update patterns set tabby_pick_number = ?, timestamp_sec = ? where pattern_name = ?&quot;</span><span class="p">,</span>
+                <span class="p">(</span>
+                    <span class="n">tabby_pick_number</span><span class="p">,</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+                    <span class="n">pattern_name</span><span class="p">,</span>
+                <span class="p">),</span>
             <span class="p">)</span>
             <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 <div class="mkapi-source-link" id="base_loom_server.pattern_database.PatternDatabase.update_thread_group_size"><a href="../../../api/base_loom_server/pattern_database/#base_loom_server.pattern_database.PatternDatabase.update_thread_group_size" title="Go to docs">docs</a></div>
@@ -701,7 +751,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update thread_group_size for the specified pattern.&quot;&quot;&quot;</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">aiosqlite</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbpath</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-                <span class="s2">&quot;update patterns set thread_group_size = ?, timestamp_sec = ?where pattern_name = ?&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;update patterns set thread_group_size = ?, timestamp_sec = ? where pattern_name = ?&quot;</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">thread_group_size</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">pattern_name</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>

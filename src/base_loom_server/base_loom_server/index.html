@@ -55,6 +55,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving_tabby/">Weaving Tabby</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
                 </li>
               </ul>
@@ -93,6 +97,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/compute_tabby/">base_loom_server.compute_tabby</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/constants/">base_loom_server.constants</a>
                 </li>
@@ -1434,7 +1440,84 @@
 <span class="normal">1273</span>
 <span class="normal">1274</span>
 <span class="normal">1275</span>
-<span class="normal">1276</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">1276</span>
+<span class="normal">1277</span>
+<span class="normal">1278</span>
+<span class="normal">1279</span>
+<span class="normal">1280</span>
+<span class="normal">1281</span>
+<span class="normal">1282</span>
+<span class="normal">1283</span>
+<span class="normal">1284</span>
+<span class="normal">1285</span>
+<span class="normal">1286</span>
+<span class="normal">1287</span>
+<span class="normal">1288</span>
+<span class="normal">1289</span>
+<span class="normal">1290</span>
+<span class="normal">1291</span>
+<span class="normal">1292</span>
+<span class="normal">1293</span>
+<span class="normal">1294</span>
+<span class="normal">1295</span>
+<span class="normal">1296</span>
+<span class="normal">1297</span>
+<span class="normal">1298</span>
+<span class="normal">1299</span>
+<span class="normal">1300</span>
+<span class="normal">1301</span>
+<span class="normal">1302</span>
+<span class="normal">1303</span>
+<span class="normal">1304</span>
+<span class="normal">1305</span>
+<span class="normal">1306</span>
+<span class="normal">1307</span>
+<span class="normal">1308</span>
+<span class="normal">1309</span>
+<span class="normal">1310</span>
+<span class="normal">1311</span>
+<span class="normal">1312</span>
+<span class="normal">1313</span>
+<span class="normal">1314</span>
+<span class="normal">1315</span>
+<span class="normal">1316</span>
+<span class="normal">1317</span>
+<span class="normal">1318</span>
+<span class="normal">1319</span>
+<span class="normal">1320</span>
+<span class="normal">1321</span>
+<span class="normal">1322</span>
+<span class="normal">1323</span>
+<span class="normal">1324</span>
+<span class="normal">1325</span>
+<span class="normal">1326</span>
+<span class="normal">1327</span>
+<span class="normal">1328</span>
+<span class="normal">1329</span>
+<span class="normal">1330</span>
+<span class="normal">1331</span>
+<span class="normal">1332</span>
+<span class="normal">1333</span>
+<span class="normal">1334</span>
+<span class="normal">1335</span>
+<span class="normal">1336</span>
+<span class="normal">1337</span>
+<span class="normal">1338</span>
+<span class="normal">1339</span>
+<span class="normal">1340</span>
+<span class="normal">1341</span>
+<span class="normal">1342</span>
+<span class="normal">1343</span>
+<span class="normal">1344</span>
+<span class="normal">1345</span>
+<span class="normal">1346</span>
+<span class="normal">1347</span>
+<span class="normal">1348</span>
+<span class="normal">1349</span>
+<span class="normal">1350</span>
+<span class="normal">1351</span>
+<span class="normal">1352</span>
+<span class="normal">1353</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;BaseLoomServer&quot;</span><span class="p">,</span> <span class="s2">&quot;DEFAULT_DATABASE_PATH&quot;</span><span class="p">,</span> <span class="s2">&quot;MOCK_PORT_NAME&quot;</span><span class="p">]</span>
 
@@ -1453,7 +1536,7 @@
 <span class="kn">from</span> <span class="nn">dtx_to_wif</span> <span class="kn">import</span> <span class="n">read_pattern_data</span>
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">WebSocket</span><span class="p">,</span> <span class="n">WebSocketDisconnect</span>
 <span class="kn">from</span> <span class="nn">fastapi.websockets</span> <span class="kn">import</span> <span class="n">WebSocketState</span>
-<span class="kn">from</span> <span class="nn">serial_asyncio</span> <span class="kn">import</span> <span class="n">open_serial_connection</span>  <span class="c1"># type: ignore[import-untyped]</span>
+<span class="kn">from</span> <span class="nn">serial_asyncio_fast</span> <span class="kn">import</span> <span class="n">open_serial_connection</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">client_replies</span>
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">LOG_NAME</span>
@@ -1620,8 +1703,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">done_task</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="p">:</span> <span class="n">ReducedPattern</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpPickNumber</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpTabbyPickNumber</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpEndNumber</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_PATTERN</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wifi_manager</span><span class="p">:</span> <span class="n">WiFiManager</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">WiFiManager</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wifi_manager_callback</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
@@ -1889,11 +1973,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span> <span class="o">=</span> <span class="n">null_jump_pick</span>
         <span class="k">if</span> <span class="n">do_report</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_jump_pick</span><span class="p">()</span>
+<div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jump_tabby_pick"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jump_tabby_pick" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">clear_jump_tabby_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear self.jump_tabby_pick and report value if changed or force_output.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            force_output: If true, report `JumpTabbyPickNumber`,</span>
+<span class="sd">                even if it has not changed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">null_jump_tabby_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpTabbyPickNumber</span><span class="p">()</span>
+        <span class="n">do_report</span> <span class="o">=</span> <span class="n">force_output</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span> <span class="o">!=</span> <span class="n">null_jump_tabby_pick</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span> <span class="o">=</span> <span class="n">null_jump_tabby_pick</span>
+        <span class="k">if</span> <span class="n">do_report</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_jump_tabby_pick</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">clear_jumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.clear_jumps"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.clear_jumps" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all jumps and report values if changed or force_output.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jump_end</span><span class="p">(</span><span class="n">force_output</span><span class="o">=</span><span class="n">force_output</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jump_pick</span><span class="p">(</span><span class="n">force_output</span><span class="o">=</span><span class="n">force_output</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jump_tabby_pick</span><span class="p">(</span><span class="n">force_output</span><span class="o">=</span><span class="n">force_output</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_clear_pattern_names</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_clear_pattern_names" title="Go to docs">docs</a></div>
         <span class="bp">self</span><span class="p">,</span>
@@ -1964,6 +2062,20 @@
                 <span class="n">pick_repeat_number</span><span class="o">=</span><span class="n">pick_repeat_number</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_jump_pick</span><span class="p">()</span>
+<div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_tabby_pick"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_tabby_pick" title="Go to docs">docs</a></div>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_jump_to_tabby_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the jump_to_tabby_pick command.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;cannot jump&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;no pattern&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpTabbyPickNumber</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;Number must be&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &gt;= 0&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpTabbyPickNumber</span><span class="p">(</span>
+                <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">tabby_pick_number</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_jump_tabby_pick</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_mode"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the mode command: set the mode.&quot;&quot;&quot;</span>
@@ -2145,8 +2257,8 @@
             <span class="k">return</span> <span class="kc">True</span>
 
         <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
-            <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE</span><span class="p">:</span>
-                <span class="c1"># Command a new pick, if there is one, else send 0</span>
+            <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_PATTERN</span><span class="p">:</span>
+                <span class="c1"># Command a new pattern pick, if there is one, else send 0</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">set_current_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_number</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -2169,6 +2281,28 @@
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="n">pick</span><span class="o">.</span><span class="n">shaft_word</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_pick_number</span><span class="p">()</span>
+            <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_TABBY</span><span class="p">:</span>
+                <span class="c1"># Command a new tabby pick, if there is one, else send 0</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">set_current_tabby_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span><span class="o">.</span><span class="n">tabby_pick_number</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">increment_tabby_pick_number</span><span class="p">()</span>
+                    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
+                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
+                            <span class="n">client_replies</span><span class="o">.</span><span class="n">StatusMessage</span><span class="p">(</span>
+                                <span class="n">message</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;At start of tabby weaving&quot;</span><span class="p">),</span>
+                                <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+
+                <span class="n">tabby_pick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">get_current_tabby_pick</span><span class="p">()</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="n">tabby_pick</span><span class="o">.</span><span class="n">shaft_word</span><span class="p">)</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_tabby_pick_number</span><span class="p">()</span>
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">THREAD</span><span class="p">:</span>
                 <span class="c1"># Advance to the next thread group, if there is one</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span><span class="o">.</span><span class="n">end_number0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -2202,25 +2336,29 @@
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid mode=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">increment_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment pick_number in the current direction.</span>
-
-<span class="sd">        Increment pick_repeat_number as well, if appropriate.</span>
-
-<span class="sd">        Return the new pick number. This will be 0 if</span>
-<span class="sd">        pick_repeat_number changed,</span>
-<span class="sd">        or if unweaving and pick_repeat_number</span>
-<span class="sd">        would be decremented to 0.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">increment_pick_number</span><span class="p">(</span><span class="n">direction_forward</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">increment_end_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.increment_end_number"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_end_number" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment end_number0 in the current direction.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment current_pattern.end_number0 and end_number1 in the current direction.</span>
+
+<span class="sd">        end_repeat_number as well.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">increment_end_number</span><span class="p">(</span><span class="n">thread_low_to_high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_low_to_high</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">increment_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_pick_number" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment self.current_pattern.pick_number in the current direction.</span>
+
+<span class="sd">        Increment self.current_pattern.pick_repeat_number as well, if appropriate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">increment_pick_number</span><span class="p">(</span><span class="n">direction_forward</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">increment_tabby_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.increment_tabby_pick_number"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.increment_tabby_pick_number" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment tabby_pick_number in the current direction.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">increment_tabby_pick_number</span><span class="p">(</span><span class="n">direction_forward</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">load_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.load_settings"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.load_settings" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the settings file, if it exists.</span>
@@ -2428,6 +2566,7 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_pattern</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_end_numbers</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_pick_number</span><span class="p">()</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_tabby_pick_number</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_separate_threading_repeats</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_separate_weaving_repeats</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_shaft_state</span><span class="p">()</span>
@@ -2475,6 +2614,22 @@
         <span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">report_current_tabby_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_current_tabby_pick_number"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_current_tabby_pick_number" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report CurrentTabbyPickNumber to the client.</span>
+
+<span class="sd">        Also update tabby pick number in the database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">update_tabby_pick_number</span><span class="p">(</span>
+            <span class="n">pattern_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">tabby_pick_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">tabby_pick_number</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">reply</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">CurrentTabbyPickNumber</span><span class="p">(</span>
+            <span class="n">tabby_pick_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">tabby_pick_number</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_current_end_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_current_end_numbers" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Report CurrentEndNumber to the client.</span>
 
@@ -2514,6 +2669,10 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_jump_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_jump_pick" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Report JumpPickNumber to the client.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">report_jump_tabby_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_jump_tabby_pick"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_jump_tabby_pick" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report JumpPickNumber to the client.&quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_shaft_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_shaft_state" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Report ShaftState to the client.&quot;&quot;&quot;</span>
@@ -2647,6 +2806,7 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_pattern</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_end_numbers</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_pick_number</span><span class="p">()</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_current_tabby_pick_number</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_separate_threading_repeats</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_separate_weaving_repeats</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_thread_group_size</span><span class="p">()</span>

@@ -55,6 +55,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../weaving_tabby/">Weaving Tabby</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../threading/">Threading</a>
                 </li>
               </ul>
@@ -95,6 +99,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/compute_tabby/">base_loom_server.compute_tabby</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../api/base_loom_server/constants/">base_loom_server.constants</a>
                 </li>
@@ -156,7 +162,7 @@
 <a class="glightbox" href="../images/screen_shots/settings_safari_iphone_mini.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="../images/screen_shots/settings_safari_iphone_mini.jpg" width="150" alt="Settings: Safari on iPhone mini"></a>
 </div>
 
-<p>The Settings allows you to specify settings that apply to all weaving patterns.
+<p>The Settings mode allows you to specify settings that apply to all weaving patterns.
 Settings are automatically saved, and should survive rebooting the loom server.</p>
 <p>Settings include:</p>
 <ul>
@@ -194,11 +200,13 @@ Settings are automatically saved, and should survive rebooting the loom server.<
   This setting has no effect on any pattern files that are already loaded;
   use the "Group size" control in the <a href="../threading/">Threading</a> panel to change those.</p>
 </li>
-<li>
-<p><strong>WiFi network</strong>: specify which WiFi network the loom server runs.
+</ul>
+<p>Unless the threading is trivial, I suggest using a group size of 1 (only lift one shaft at a time).
+  It is a bit slower, but much safer.</p>
+<ul>
+<li><strong>WiFi network</strong>: specify which WiFi network the loom server runs.
   This setting is only available if the loom server is run with a special command-line argument
-  (and typically only if the loom server is a box that is hard to connect to).</p>
-</li>
+  (and typically only if the loom server is a box that is hard to connect to).</li>
 </ul>
 <p>Choosing one of the hotspots makes the loom server run its own WiFI network
   (to which you must connect) instead of joining your network.

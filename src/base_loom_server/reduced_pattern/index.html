@@ -55,6 +55,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving_tabby/">Weaving Tabby</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
                 </li>
               </ul>
@@ -93,6 +97,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/check_translation_files/">base_loom_server.check_translation_files</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/client_replies/">base_loom_server.client_replies</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/compute_tabby/">base_loom_server.compute_tabby</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../../api/base_loom_server/constants/">base_loom_server.constants</a>
                 </li>
@@ -619,7 +625,83 @@
 <span class="normal">458</span>
 <span class="normal">459</span>
 <span class="normal">460</span>
-<span class="normal">461</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
+<span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
+<span class="normal">475</span>
+<span class="normal">476</span>
+<span class="normal">477</span>
+<span class="normal">478</span>
+<span class="normal">479</span>
+<span class="normal">480</span>
+<span class="normal">481</span>
+<span class="normal">482</span>
+<span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span>
+<span class="normal">486</span>
+<span class="normal">487</span>
+<span class="normal">488</span>
+<span class="normal">489</span>
+<span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span>
+<span class="normal">494</span>
+<span class="normal">495</span>
+<span class="normal">496</span>
+<span class="normal">497</span>
+<span class="normal">498</span>
+<span class="normal">499</span>
+<span class="normal">500</span>
+<span class="normal">501</span>
+<span class="normal">502</span>
+<span class="normal">503</span>
+<span class="normal">504</span>
+<span class="normal">505</span>
+<span class="normal">506</span>
+<span class="normal">507</span>
+<span class="normal">508</span>
+<span class="normal">509</span>
+<span class="normal">510</span>
+<span class="normal">511</span>
+<span class="normal">512</span>
+<span class="normal">513</span>
+<span class="normal">514</span>
+<span class="normal">515</span>
+<span class="normal">516</span>
+<span class="normal">517</span>
+<span class="normal">518</span>
+<span class="normal">519</span>
+<span class="normal">520</span>
+<span class="normal">521</span>
+<span class="normal">522</span>
+<span class="normal">523</span>
+<span class="normal">524</span>
+<span class="normal">525</span>
+<span class="normal">526</span>
+<span class="normal">527</span>
+<span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span>
+<span class="normal">531</span>
+<span class="normal">532</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;DEFAULT_THREAD_GROUP_SIZE&quot;</span><span class="p">,</span>
@@ -631,11 +713,12 @@
 
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span>
+
+<span class="kn">from</span> <span class="nn">.compute_tabby</span> <span class="kn">import</span> <span class="n">compute_tabby_shaft_words</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">bitmask_from_bits</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
-
     <span class="kn">import</span> <span class="nn">dtx_to_wif</span>
 
 <span class="n">DEFAULT_THREAD_GROUP_SIZE</span> <span class="o">=</span> <span class="mi">1</span>
@@ -658,7 +741,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        color: Weft color, as an index into the color table.</span>
-<span class="sd">        shaft_word: A bit mask, with bit 1 = shaft 0.</span>
+<span class="sd">        shaft_word: A bit mask, with bit 1 = shaft number 1 (index 0).</span>
 <span class="sd">            The shaft is up if the bit is set.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -682,8 +765,27 @@
 <span class="sd">    Contains just enough information to allow loom control,</span>
 <span class="sd">    with a simple display.</span>
 
-<span class="sd">    Picks are accessed by pick number, which is 1-based.</span>
-<span class="sd">    0 indicates that nothing has been woven.</span>
+<span class="sd">    Warp ends that are not threaded on any shaft are omitted.</span>
+<span class="sd">    Warp ends that are threaded on more than one shaft are</span>
+<span class="sd">    only threaded on the lowest-numbered shaft.</span>
+<span class="sd">    Weft picks that are not treadled are omitted.</span>
+
+<span class="sd">    Values in threading and warp_colors, are 0-based indices:</span>
+
+<span class="sd">    * threading is a list of shaft indices (shaft index 0 is shaft number 1).</span>
+<span class="sd">    * warp_colors is a list of indices into color_table.</span>
+<span class="sd">        Likewise for the color attribute of Pick.</span>
+
+<span class="sd">    pick_number and end_number0/1 are 1-based (in general &quot;number&quot;</span>
+<span class="sd">    in the name indicates it is 1-based).</span>
+<span class="sd">    A value of 0 indicates &quot;no such pick&quot; or &quot;no such end&quot;,</span>
+<span class="sd">    and is the initial state of weaving and threading,</span>
+<span class="sd">    as well as a separator gap between pattern repeats.</span>
+
+<span class="sd">    pick_number and end_number0/1 are within one pattern repeat,</span>
+<span class="sd">    and repeats are tracked with related attributes.</span>
+<span class="sd">    However, tabby_pick_number is absolute, because repeats of tabby</span>
+<span class="sd">    are not interesting, and so are not tracked.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;ReducedPattern&quot;</span><span class="p">)</span>
@@ -692,10 +794,13 @@
     <span class="n">warp_colors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
     <span class="n">threading</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
     <span class="n">picks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pick</span><span class="p">]</span>
-    <span class="n">pick0</span><span class="p">:</span> <span class="n">Pick</span>
+    <span class="n">tabby_picks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pick</span><span class="p">]</span>
+    <span class="n">num_shafts</span><span class="p">:</span> <span class="nb">int</span>
     <span class="c1"># Keep track of where we are in weaving</span>
     <span class="n">pick_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">pick_repeat_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="c1"># Keep track of where we are in weaving tabby</span>
+    <span class="n">tabby_pick_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="c1"># keep track of where we are in threading</span>
     <span class="n">end_number0</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">end_number1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
@@ -705,14 +810,16 @@
     <span class="n">separate_weaving_repeats</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">separate_threading_repeats</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
+    <span class="n">tabby_color</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">datadict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ReducedPattern</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.from_dict"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.from_dict" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a ReducedPattern from a dict.&quot;&quot;&quot;</span>
         <span class="c1"># Make a copy, so the caller doesn&#39;t see the picks field change</span>
         <span class="n">datadict</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">datadict</span><span class="p">)</span>
         <span class="n">pop_and_check_type_field</span><span class="p">(</span><span class="n">typename</span><span class="o">=</span><span class="s2">&quot;ReducedPattern&quot;</span><span class="p">,</span> <span class="n">datadict</span><span class="o">=</span><span class="n">datadict</span><span class="p">)</span>
-        <span class="n">datadict</span><span class="p">[</span><span class="s2">&quot;picks&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pick</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">pickdict</span><span class="p">)</span> <span class="k">for</span> <span class="n">pickdict</span> <span class="ow">in</span> <span class="n">datadict</span><span class="p">[</span><span class="s2">&quot;picks&quot;</span><span class="p">]]</span>
-        <span class="n">datadict</span><span class="p">[</span><span class="s2">&quot;pick0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Pick</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">datadict</span><span class="p">[</span><span class="s2">&quot;pick0&quot;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">picks_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;picks&quot;</span><span class="p">,</span> <span class="s2">&quot;tabby_picks&quot;</span><span class="p">):</span>
+            <span class="n">datadict</span><span class="p">[</span><span class="n">picks_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pick</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">pickdict</span><span class="p">)</span> <span class="k">for</span> <span class="n">pickdict</span> <span class="ow">in</span> <span class="n">datadict</span><span class="p">[</span><span class="n">picks_name</span><span class="p">]]</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">datadict</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -782,8 +889,6 @@
 <span class="sd">            IndexError: if self.end_number0 is invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_end_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">thread_low_to_high</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span>
 
         <span class="n">max_end_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
         <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
@@ -800,7 +905,11 @@
                 <span class="c1"># At the end of one repeat; start the next.</span>
                 <span class="n">new_end_number0</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="k">else</span> <span class="mi">1</span>
                 <span class="n">new_end_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># noqa: PLR5501</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Thread high to low</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;At start of threading&quot;</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separate_threading_repeats</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_repeat_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="c1"># We are at the beginning of a pattern repeat and</span>
                 <span class="c1"># either we separate repeats or it is the very first.</span>
@@ -830,29 +939,34 @@
 <span class="sd">        in the specified direction.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            IndexError: If trying to increment past the start of weaving.</span>
+<span class="sd">            IndexError: If trying to back up past the start of weaving.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">direction_forward</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span>
 
-        <span class="c1"># Start by assuming the common case.</span>
+        <span class="c1"># Start by assuming we are not at the end of a pattern repeat.</span>
         <span class="n">next_pick_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span>
-        <span class="n">next_pick_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">direction_forward</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">delta_pick_number</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">direction_forward</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">next_pick_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">+</span> <span class="n">delta_pick_number</span>
 
-        <span class="c1"># Handle special cases: end of pattern repeats</span>
+        <span class="c1"># Now handle end of pattern repeat, and check if backing up too far.</span>
         <span class="k">if</span> <span class="n">direction_forward</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picks</span><span class="p">):</span>
-                <span class="c1"># At the end; start a new repeat.</span>
+                <span class="c1"># Advance past the end of a pattern repeat.</span>
                 <span class="n">next_pick_number</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span> <span class="k">else</span> <span class="mi">1</span>
                 <span class="n">next_pick_repeat_number</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># noqa: PLR5501</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Backing up.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># At start of pattern; cannot back up.</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;At start of pattern&quot;</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="c1"># At the beginning of a repeat, and either we</span>
-                <span class="c1"># separate repeats or it is the very first. Go to pick 0.</span>
+                <span class="c1"># We are at pick 1 and either separating weaving repeats or in repeat 1.</span>
+                <span class="c1"># Back up to pick 0 without changing the pattern repeat:</span>
                 <span class="n">next_pick_number</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_weaving_repeats</span><span class="p">):</span>
-                <span class="c1"># Start the previous repeat.</span>
+                <span class="c1"># We are either at pick 0, or at pick 1 and not separating pattern repeats.</span>
+                <span class="c1"># Back up to the end of the previous pattern repeat.</span>
                 <span class="n">next_pick_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picks</span><span class="p">)</span>
                 <span class="n">next_pick_repeat_number</span> <span class="o">-=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">next_pick_number</span><span class="p">,</span> <span class="n">next_pick_repeat_number</span><span class="p">)</span>
@@ -861,10 +975,14 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current pick.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pick</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">get_current_tabby_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pick</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.get_current_tabby_pick"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.get_current_tabby_pick" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current tabby pick.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tabby_pick</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tabby_pick_number</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">get_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pick_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pick</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.get_pick"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.get_pick" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the specified pick.</span>
 
-<span class="sd">        Return self.pick0 if pick_number = 0,</span>
+<span class="sd">        Return a pick with shaft_word=0 if pick_number = 0,</span>
 <span class="sd">        else return self.picks[pick_number-1] if pick_number in range.</span>
 
 <span class="sd">        Raises:</span>
@@ -872,15 +990,34 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_pick_number</span><span class="p">(</span><span class="n">pick_number</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pick_number</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick0</span>
+            <span class="k">return</span> <span class="n">Pick</span><span class="p">(</span><span class="n">shaft_word</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">picks</span><span class="p">[</span><span class="n">pick_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">get_tabby_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pick</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.get_tabby_pick"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.get_tabby_pick" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the specified tabby pick.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tabby_pick_number: Tabby pick number; must be non-negative</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError if tabby_pick_number &lt; 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tabby_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tabby_pick_number</span><span class="si">=}</span><span class="s2"> must be &gt;= 0&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tabby_pick_number</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Pick</span><span class="p">(</span><span class="n">shaft_word</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">tabby_pick_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">tabby_pick_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span>  <span class="c1"># num-&gt;index: 1-&gt;1, 2-&gt;0, 3-&gt;1, 4-&gt;0, ...</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabby_picks</span><span class="p">[</span><span class="n">tabby_pick_index</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_threading_shaft_word</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.get_threading_shaft_word"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.get_threading_shaft_word" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get current threading shaft word.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
-        <span class="n">shaft_set</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span><span class="p">)}</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">shaft</span> <span class="k">for</span> <span class="n">shaft</span> <span class="ow">in</span> <span class="n">shaft_set</span> <span class="k">if</span> <span class="n">shaft</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Shafts in threading are 0-based but bitmask_from_bits wants 1-based values</span>
+        <span class="n">shaft_nums</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_number0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_number1</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="n">bitmask_from_bits</span><span class="p">(</span><span class="n">shaft_nums</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">increment_end_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">thread_low_to_high</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.increment_end_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.increment_end_number" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment self.end_number0 in the specified direction.</span>
@@ -902,20 +1039,36 @@
             <span class="n">end_repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">increment_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number" title="Go to docs">docs</a></div>
+    <span class="k">def</span> <span class="nf">increment_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.increment_pick_number" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment pick_number in the specified direction.</span>
 
-<span class="sd">        Increment pick_repeat_number as well, if appropriate.</span>
+<span class="sd">        Update pick_repeat_number as well, if appropriate.</span>
 
-<span class="sd">        Return the new pick number.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            pick_number: The new pick number.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            IndexError: If trying to increment past the start of weaving.</span>
+<span class="sd">            IndexError: If trying to back up past the start of weaving.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_next_pick_numbers</span><span class="p">(</span>
             <span class="n">direction_forward</span><span class="o">=</span><span class="n">direction_forward</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span>
+<div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.increment_tabby_pick_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.increment_tabby_pick_number" title="Go to docs">docs</a></div>
+    <span class="k">def</span> <span class="nf">increment_tabby_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment tabby_pick_number in the specified direction.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tabby_pick_number: The new tabby pick number.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError: If trying to back up past the start of weaving.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">direction_forward</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">new_tabby_pick_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="o">+</span> <span class="n">delta</span>
+        <span class="k">if</span> <span class="n">new_tabby_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_tabby_pick_number</span><span class="si">=}</span><span class="s2"> must be &gt;= 0&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="o">=</span> <span class="n">new_tabby_pick_number</span>
 
     <span class="k">def</span> <span class="nf">set_current_end_number</span><span class="p">(</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.set_current_end_number" title="Go to docs">docs</a></div>
         <span class="bp">self</span><span class="p">,</span>
@@ -964,10 +1117,24 @@
 <span class="sd">        Args:</span>
 <span class="sd">            pick_number: The pick number.</span>
 
-<span class="sd">        Raise IndexError if pick_number &lt; 0 or &gt; num picks.</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError if pick_number &lt; 0 or &gt; num picks.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_pick_number</span><span class="p">(</span><span class="n">pick_number</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pick_number</span> <span class="o">=</span> <span class="n">pick_number</span>
+<div class="mkapi-source-link" id="base_loom_server.reduced_pattern.ReducedPattern.set_current_tabby_pick_number"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.ReducedPattern.set_current_tabby_pick_number" title="Go to docs">docs</a></div>
+    <span class="k">def</span> <span class="nf">set_current_tabby_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set pick_number.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tabby_pick_number: The tabby pick number.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError if pick_number &lt; 0 or &gt; num picks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tabby_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tabby_pick_number</span><span class="si">=}</span><span class="s2"> must be &gt;= 0&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="o">=</span> <span class="n">tabby_pick_number</span>
 
 
 <span class="k">def</span> <span class="nf">_smallest_shaft</span><span class="p">(</span><span class="n">shafts</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -1017,37 +1184,47 @@
             <span class="n">color_strs</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;#ffffff&quot;</span><span class="p">,</span> <span class="s2">&quot;#000000&quot;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">color_strs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#ffffff&quot;</span><span class="p">,</span> <span class="s2">&quot;#000000&quot;</span><span class="p">]</span>
-    <span class="n">num_warps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">threading</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="n">warps_from1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_warps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="n">num_wefts</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">liftplan</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">liftplan</span> <span class="k">else</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">treadling</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="n">wefts_from1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_wefts</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">num_ends</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">threading</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">end_numbers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_ends</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="c1"># Shaft numbers in threading are 0-based</span>
+    <span class="n">threading</span> <span class="o">=</span> <span class="p">[</span><span class="n">_smallest_shaft</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">threading</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">end_number</span><span class="p">,</span> <span class="p">{</span><span class="mi">0</span><span class="p">}))</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">end_number</span> <span class="ow">in</span> <span class="n">end_numbers</span><span class="p">]</span>
+    <span class="n">max_threaded_shaft_number</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">threading</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># +1 because 1-based</span>
+
+    <span class="n">num_picks</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">liftplan</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">liftplan</span> <span class="k">else</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">treadling</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">pick_numbers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_picks</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">default_warp_color</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">warp</span><span class="o">.</span><span class="n">color</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">warp</span><span class="o">.</span><span class="n">color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
-    <span class="n">warp_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">warp_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">warp</span><span class="p">,</span> <span class="n">default_warp_color</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">warp</span> <span class="ow">in</span> <span class="n">warps_from1</span><span class="p">]</span>
+    <span class="n">warp_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">warp_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">end_number</span><span class="p">,</span> <span class="n">default_warp_color</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">end_number</span> <span class="ow">in</span> <span class="n">end_numbers</span><span class="p">]</span>
     <span class="n">default_weft_color</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">weft</span><span class="o">.</span><span class="n">color</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">weft</span><span class="o">.</span><span class="n">color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">2</span>
-    <span class="n">weft_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">weft_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weft</span><span class="p">,</span> <span class="n">default_weft_color</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">weft</span> <span class="ow">in</span> <span class="n">wefts_from1</span><span class="p">]</span>
+    <span class="n">weft_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">weft_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weft</span><span class="p">,</span> <span class="n">default_weft_color</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">weft</span> <span class="ow">in</span> <span class="n">pick_numbers</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">liftplan</span><span class="p">:</span>
-        <span class="n">shaft_sets</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">liftplan</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weft</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span> <span class="k">for</span> <span class="n">weft</span> <span class="ow">in</span> <span class="n">wefts_from1</span><span class="p">]</span>
+        <span class="n">shaft_sets</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">liftplan</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weft</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span> <span class="k">for</span> <span class="n">weft</span> <span class="ow">in</span> <span class="n">pick_numbers</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">shaft_sets</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">weft</span> <span class="ow">in</span> <span class="n">wefts_from1</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">weft</span> <span class="ow">in</span> <span class="n">pick_numbers</span><span class="p">:</span>
             <span class="n">treadle_set</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">treadling</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weft</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>
             <span class="n">shaft_sets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">tieup</span><span class="p">[</span><span class="n">treadle</span><span class="p">]</span> <span class="k">for</span> <span class="n">treadle</span> <span class="ow">in</span> <span class="n">treadle_set</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">})</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shaft_sets</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">weft_colors</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shaft_sets</span><span class="p">)</span><span class="si">=}</span><span class="s2"> != </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">weft_colors</span><span class="p">)</span><span class="si">=}</span><span class="se">\n</span><span class="si">{</span><span class="n">shaft_sets</span><span class="si">=}</span><span class="se">\n</span><span class="si">{</span><span class="n">weft_colors</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">num_shafts</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">shaft_set</span><span class="p">)</span> <span class="k">for</span> <span class="n">shaft_set</span> <span class="ow">in</span> <span class="n">shaft_sets</span> <span class="k">if</span> <span class="n">shaft_set</span><span class="p">)</span>
+        <span class="n">max_raised_shaft_number</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">shaft_set</span><span class="p">)</span> <span class="k">for</span> <span class="n">shaft_set</span> <span class="ow">in</span> <span class="n">shaft_sets</span> <span class="k">if</span> <span class="n">shaft_set</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No shafts are raised&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
-    <span class="n">threading</span> <span class="o">=</span> <span class="p">[</span><span class="n">_smallest_shaft</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">threading</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">warp</span><span class="p">,</span> <span class="p">{</span><span class="mi">0</span><span class="p">}))</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">warp</span> <span class="ow">in</span> <span class="n">warps_from1</span><span class="p">]</span>
-    <span class="n">all_shafts</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_shafts</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">all_shafts</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_raised_shaft_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">is_rising_shed</span><span class="p">:</span>
-        <span class="n">shaft_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">shaft_word_from_shaft_set</span><span class="p">(</span><span class="n">shaft_set</span><span class="p">)</span> <span class="k">for</span> <span class="n">shaft_set</span> <span class="ow">in</span> <span class="n">shaft_sets</span><span class="p">]</span>
+        <span class="n">shaft_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">bitmask_from_bits</span><span class="p">(</span><span class="n">shaft_set</span><span class="p">)</span> <span class="k">for</span> <span class="n">shaft_set</span> <span class="ow">in</span> <span class="n">shaft_sets</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">shaft_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">shaft_word_from_shaft_set</span><span class="p">(</span><span class="n">all_shafts</span> <span class="o">-</span> <span class="n">shaft_set</span><span class="p">)</span> <span class="k">for</span> <span class="n">shaft_set</span> <span class="ow">in</span> <span class="n">shaft_sets</span><span class="p">]</span>
+        <span class="n">shaft_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">bitmask_from_bits</span><span class="p">(</span><span class="n">all_shafts</span> <span class="o">-</span> <span class="n">shaft_set</span><span class="p">)</span> <span class="k">for</span> <span class="n">shaft_set</span> <span class="ow">in</span> <span class="n">shaft_sets</span><span class="p">]</span>
     <span class="n">picks</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">Pick</span><span class="p">(</span><span class="n">shaft_word</span><span class="o">=</span><span class="n">shaft_word</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">weft_color</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">shaft_word</span><span class="p">,</span> <span class="n">weft_color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">shaft_words</span><span class="p">,</span> <span class="n">weft_colors</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">tabby_shaft_words</span> <span class="o">=</span> <span class="n">compute_tabby_shaft_words</span><span class="p">(</span><span class="n">threading</span><span class="p">)</span>
+    <span class="n">tabby_picks</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Pick</span><span class="p">(</span><span class="n">shaft_word</span><span class="o">=</span><span class="n">tabby_shaft_word</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ReducedPattern</span><span class="o">.</span><span class="n">tabby_color</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tabby_shaft_word</span> <span class="ow">in</span> <span class="n">tabby_shaft_words</span>
     <span class="p">]</span>
 
     <span class="k">return</span> <span class="n">ReducedPattern</span><span class="p">(</span>
@@ -1056,30 +1233,11 @@
         <span class="n">warp_colors</span><span class="o">=</span><span class="n">warp_colors</span><span class="p">,</span>
         <span class="n">threading</span><span class="o">=</span><span class="n">threading</span><span class="p">,</span>
         <span class="n">picks</span><span class="o">=</span><span class="n">picks</span><span class="p">,</span>
-        <span class="n">pick0</span><span class="o">=</span><span class="n">Pick</span><span class="p">(</span><span class="n">shaft_word</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">default_weft_color</span><span class="p">),</span>
+        <span class="n">tabby_picks</span><span class="o">=</span><span class="n">tabby_picks</span><span class="p">,</span>
+        <span class="n">num_shafts</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">max_raised_shaft_number</span><span class="p">,</span> <span class="n">max_threaded_shaft_number</span><span class="p">),</span>
         <span class="n">separate_weaving_repeats</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">picks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">NUM_ITEMS_FOR_REPEAT_SEPARATOR</span><span class="p">,</span>
         <span class="n">separate_threading_repeats</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">threading</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">NUM_ITEMS_FOR_REPEAT_SEPARATOR</span><span class="p">,</span>
     <span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">shaft_word_from_shaft_set</span><span class="p">(</span><span class="n">shaft_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.shaft_word_from_shaft_set"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.shaft_word_from_shaft_set" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a shaft set to a shaft word.</span>
-
-<span class="sd">    A shaft set is a collection of 1-based shafts numbers</span>
-<span class="sd">    for shafts that are up. If 0 is present, it is ignored.</span>
-<span class="sd">    A shaft word is a bit mask, with bit 0 = shaft 1;</span>
-<span class="sd">    if a bit is high, that shaft is up.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">shaft</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">shaft</span> <span class="ow">in</span> <span class="n">shaft_set</span> <span class="k">if</span> <span class="n">shaft</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">shaft_set_from_shaft_word</span><span class="p">(</span><span class="n">shaft_word</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span><div class="mkapi-source-link" id="base_loom_server.reduced_pattern.shaft_set_from_shaft_word"><a href="../../../api/base_loom_server/reduced_pattern/#base_loom_server.reduced_pattern.shaft_set_from_shaft_word" title="Go to docs">docs</a></div>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a shaft word to a shaft set.</span>
-
-<span class="sd">    See shaft_word_from_shaft_set for details.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">bin_str</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="n">shaft_word</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">bin_str</span><span class="p">))</span> <span class="k">if</span> <span class="n">bit</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 
               

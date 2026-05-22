@@ -55,6 +55,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../weaving_tabby/">Weaving Tabby</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../../../threading/">Threading</a>
                 </li>
               </ul>
@@ -94,6 +98,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../client_replies/">base_loom_server.client_replies</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../compute_tabby/">base_loom_server.compute_tabby</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../constants/">base_loom_server.constants</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../enums/">base_loom_server.enums</a>
@@ -120,11 +126,17 @@
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="#">base_loom_server.utils</a>
     <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.bitmask_from_bits">bitmask_from_bits</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.bits_from_bitmask">bits_from_bitmask</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.compute_num_within_and_repeats">compute_num_within_and_repeats</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.compute_total_num">compute_total_num</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.get_version">get_version</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.prune_duplicates">prune_duplicates</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.run_shell_command">run_shell_command</a>
     </li>
@@ -183,6 +195,16 @@
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.bitmask_from_bits" title="base_loom_server.utils.bitmask_from_bits">bitmask_from_bits</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Convert a collection of 1-based bit numbers to a bitmask (binary word).</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.bits_from_bitmask" title="base_loom_server.utils.bits_from_bitmask">bits_from_bitmask</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Convert a bitmask (binary word) to a list of 1-based bit numbers.</p>
+</li>
+<li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.compute_num_within_and_repeats" title="base_loom_server.utils.compute_num_within_and_repeats">compute_num_within_and_repeats</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Compute num_within and repeat_number from total_num and repeat_len
@@ -199,12 +221,47 @@ Compute total_num from num_within, repeat_number, and repeat_len.</p>
 Return version.<strong>version</strong> from a package.</p>
 </li>
 <li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.prune_duplicates" title="base_loom_server.utils.prune_duplicates">prune_duplicates</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Prune duplicate entries in an ordered sequence.</p>
+</li>
+<li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.run_shell_command" title="base_loom_server.utils.run_shell_command">run_shell_command</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Run a shell command and return the result.</p>
 </li>
 </ul>
 </div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.utils.bitmask_from_bits">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/utils/#base_loom_server.utils.bitmask_from_bits" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.utils.bitmask_from_bits" title="base_loom_server.utils.bitmask_from_bits">bitmask_from_bits</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">bit_nums</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Iterable">Iterable</span>[int]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">int</span></span>
+</p>
+<div class="mkapi-document">
+<p>Convert a collection of 1-based bit numbers to a bitmask (binary word).</p>
+<p>Repeated values are ignored (naturally).</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.utils.bits_from_bitmask">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/utils/#base_loom_server.utils.bits_from_bitmask" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.utils.bits_from_bitmask" title="base_loom_server.utils.bits_from_bitmask">bits_from_bitmask</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">bitmask</span><span class="mkapi-colon">: </span><span class="mkapi-ann">int</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">list[int]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Convert a bitmask (binary word) to a list of 1-based bit numbers.</p>
+<p>The numbers will be in increasing order.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.utils.compute_num_within_and_repeats">
 <span class="mkapi-object-link">
@@ -379,6 +436,20 @@ total_num = repeat_len * (repeat_number - 1) + num_within</p>
 <div class="mkapi-document">
 <p>Return version.<strong>version</strong> from a package.</p>
 <p>Return "?" if there the information is not available.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.utils.prune_duplicates">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/utils/#base_loom_server.utils.prune_duplicates" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.utils.prune_duplicates" title="base_loom_server.utils.prune_duplicates">prune_duplicates</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">data</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="collections.abc.Sequence">Sequence</span>[int]</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">list[int]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Prune duplicate entries in an ordered sequence.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.utils.run_shell_command">
 <span class="mkapi-object-link">
