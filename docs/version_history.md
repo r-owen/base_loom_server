@@ -1,5 +1,9 @@
 # Version History
 
+## 1.2.1 2026-06-06
+
+* Update the screen shots to show the - and + buttons in the Jump controls.
+
 ## 1.2 2026-03-12
 
 * Add support for weaving tabby, via a new Tabby panel.
