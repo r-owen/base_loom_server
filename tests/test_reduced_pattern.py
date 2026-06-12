@@ -238,8 +238,8 @@ def test_end_number() -> None:
         for thread_group_size in group_size_numbers:
             reduced_pattern.thread_group_size = thread_group_size
 
-            # Use nominal_expected_end_number0 to avoid warnings
-            # about overwriting a loop variable.
+            # Use nominal_expected_end_number0, instead of expected_end_number0,
+            # to avoid warnings about overwriting a loop variable.
             for nominal_expected_end_number0 in (0, 1, num_ends - 1, num_ends):
                 expected_end_number0 = nominal_expected_end_number0
                 expected_repeat_number = 1

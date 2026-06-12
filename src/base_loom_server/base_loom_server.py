@@ -219,10 +219,14 @@ class BaseLoomServer:
 
         Takes into account settings and self.direction_forward.
         """
+        return self.compute_thread_low_to_high(direction_forward=self.direction_forward)
+
+    def compute_thread_low_to_high(self, *, direction_forward: bool) -> bool:
+        """Compute thread_low_to_high."""
         low_to_high = self.settings.thread_back_to_front == self.settings.thread_right_to_left
         if not self.settings.end1_on_right:
             low_to_high = not low_to_high
-        if not self.direction_forward:
+        if not direction_forward:
             low_to_high = not low_to_high
         return low_to_high
 
@@ -481,6 +485,9 @@ class BaseLoomServer:
         """Handle the clear_pattern_names command.
 
         Clear all patterns except the current pattern.
+
+        Args:
+            command: IgnoredCommand with no command-specific parameters. Ignored.
         """
         # Clear the pattern database
         # Then add the current pattern (if any)
@@ -491,32 +498,81 @@ class BaseLoomServer:
             await self.report_pattern_names()
 
     async def cmd_direction(self, command: SimpleNamespace) -> None:
-        """Handle the direction command: set direction."""
+        """Handle the direction command, to set the direction.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * forward (bool): Set direction to forward, if true, else backwards (undo).
+        """
         self.direction_forward = command.forward
         await self.report_direction()
 
     async def cmd_jump_to_end(self, command: SimpleNamespace) -> None:
-        """Handle the jump_to_end command."""
+        """Handle the jump_to_end command.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * total_end_number0 (int | None): The desired total_end_number0,
+                or None to clear the jump.
+              * delta (int): Specify whether to go to the group that starts
+                at total_end_number0 (delta=0),
+                to the next group after that (delta>0),
+                or to the previous group before that (delta <0).
+        """
         if self.current_pattern is None:
             raise CommandError(self.t("cannot jump") + ": " + self.t("no pattern"))
         if command.total_end_number0 is None:
             self.jump_end = client_replies.JumpEndNumber()
         else:
-            if command.total_end_number0 < 0:
+            if command.total_end_number0 < 0 or (command.total_end_number0 == 0 and command.delta < 0):
                 raise CommandError(self.t("Number must be") + " >= 0")
             end_number0, end_repeat_number = compute_num_within_and_repeats(
                 total_num=command.total_end_number0,
                 repeat_len=self.current_pattern.num_ends,
             )
             end_number1 = self.current_pattern.compute_end_number1(end_number0=end_number0)
+
+            # Now increment, if requested
+            if command.delta != 0:
+                thread_low_to_high = self.compute_thread_low_to_high(direction_forward=command.delta > 0)
+                end_number0, end_number1, end_repeat_number = (
+                    self.current_pattern.compute_relative_next_end_numbers(
+                        thread_low_to_high=thread_low_to_high,
+                        end_number0=end_number0,
+                        end_number1=end_number1,
+                        end_repeat_number=end_repeat_number,
+                    )
+                )
+                if end_number0 == 0:
+                    if command.total_end_number0 == 1 and command.delta < 0:
+                        # Backing up from end 1; back up to end 0.
+                        pass
+                    else:
+                        # Jump past 0 to avoid getting stuck in low_to_high direction,
+                        # or overshooting the next time in the other direction.
+                        end_number0, end_number1, end_repeat_number = (
+                            self.current_pattern.compute_relative_next_end_numbers(
+                                thread_low_to_high=thread_low_to_high,
+                                end_number0=end_number0,
+                                end_number1=end_number1,
+                                end_repeat_number=end_repeat_number,
+                            )
+                        )
+
+            total_end_number0 = compute_total_num(
+                num_within=end_number0,
+                repeat_number=end_repeat_number,
+                repeat_len=self.current_pattern.num_ends,
+            )
             total_end_number1 = compute_total_num(
                 num_within=end_number1,
                 repeat_number=end_repeat_number,
                 repeat_len=self.current_pattern.num_ends,
             )
-
             self.jump_end = client_replies.JumpEndNumber(
-                total_end_number0=command.total_end_number0,
+                total_end_number0=total_end_number0,
                 total_end_number1=total_end_number1,
                 end_number0=end_number0,
                 end_number1=end_number1,
@@ -525,54 +581,92 @@ class BaseLoomServer:
         await self.report_jump_end()
 
     async def cmd_jump_to_pick(self, command: SimpleNamespace) -> None:
-        """Handle the jump_to_pick command."""
+        """Handle the jump_to_pick command.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * total_pick_number (int | None): The desired total_pick_number,
+                or None to clear the jump.
+              * delta (int): An offset to total_pick_number;
+                typically -1, 0, or +1, but other values are obeyed.
+        """
         if self.current_pattern is None:
             raise CommandError(self.t("cannot jump") + ": " + self.t("no pattern"))
         if command.total_pick_number is None:
             self.jump_pick = client_replies.JumpPickNumber()
         else:
-            if command.total_pick_number < 0:
+            total_pick_number = command.total_pick_number + command.delta
+            if total_pick_number < 0:
                 raise CommandError(self.t("Number must be") + " >= 0")
             pick_number, pick_repeat_number = compute_num_within_and_repeats(
-                total_num=command.total_pick_number,
+                total_num=total_pick_number,
                 repeat_len=self.current_pattern.num_picks,
             )
             self.jump_pick = client_replies.JumpPickNumber(
-                total_pick_number=command.total_pick_number,
+                total_pick_number=total_pick_number,
                 pick_number=pick_number,
                 pick_repeat_number=pick_repeat_number,
             )
         await self.report_jump_pick()
 
     async def cmd_jump_to_tabby_pick(self, command: SimpleNamespace) -> None:
-        """Handle the jump_to_tabby_pick command."""
+        """Handle the jump_to_tabby_pick command.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * tabby_pick_number (int | None): The desired tabby_pick_number,
+                or None to clear the jump.
+              * delta (int): An offset to tabby_pick_number;
+                typically -1, 0, or +1, but other values are obeyed.
+        """
         if self.current_pattern is None:
             raise CommandError(self.t("cannot jump") + ": " + self.t("no pattern"))
         if command.tabby_pick_number is None:
             self.jump_tabby_pick = client_replies.JumpTabbyPickNumber()
         else:
-            if command.tabby_pick_number < 0:
+            tabby_pick_number = command.tabby_pick_number + command.delta
+            if tabby_pick_number < 0:
                 raise CommandError(self.t("Number must be") + " >= 0")
             self.jump_tabby_pick = client_replies.JumpTabbyPickNumber(
-                tabby_pick_number=command.tabby_pick_number,
+                tabby_pick_number=tabby_pick_number,
             )
         await self.report_jump_tabby_pick()
 
     async def cmd_mode(self, command: SimpleNamespace) -> None:
-        """Handle the mode command: set the mode."""
+        """Handle the mode command: set the mode.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * mode (int): The desired mode; one of `ModeEnum`.
+        """
         self.mode = ModeEnum(command.mode)
         await self.report_mode()
         if self.mode == ModeEnum.SETTINGS and self.wifi_manager is not None:
             await self.report_wifi()
 
     async def cmd_select_pattern(self, command: SimpleNamespace) -> None:
-        """Handle the select_pattern command."""
+        """Handle the select_pattern command.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * name (str): Name of a pattern that is in the pattern database.
+        """
         name = command.name
         await self.select_pattern(name)
         await self.clear_jumps()
 
     async def cmd_separate_threading_repeats(self, command: SimpleNamespace) -> None:
-        """Handle the separate_threading_repeats command."""
+        """Handle the separate_threading_repeats command.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * separate (bool): Separate threading pattern repeats?
+        """
         if self.current_pattern is None:
             return
         await self.pattern_db.update_separate_threading_repeats(
@@ -583,7 +677,13 @@ class BaseLoomServer:
         await self.report_separate_threading_repeats()
 
     async def cmd_separate_weaving_repeats(self, command: SimpleNamespace) -> None:
-        """Handle the separate_weaving_repeats command."""
+        """Handle the separate_weaving_repeats command.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * separate (bool): Separate weaving pattern repeats?
+        """
         if self.current_pattern is None:
             return
         await self.pattern_db.update_separate_weaving_repeats(
@@ -594,7 +694,19 @@ class BaseLoomServer:
         await self.report_separate_weaving_repeats()
 
     async def cmd_settings(self, command: SimpleNamespace) -> None:
-        """Handle the settings command: set one or more settings."""
+        """Handle the settings command: set one or more settings.
+
+        Args:
+            command: Command with one or more command-specific parameters:
+
+              * direction_control (DirectionControlEnum): How to control direction.
+              * language (str): Name of desired language.
+              * loom_name (str): Name of loom.
+              * thread_group_size (int): Default threading group size.
+              * end1_on_right (bool): Should end 1 be displayed on the right (true) or left (false)?
+              * thread_right_to_left (bool): Thread right to left (true) or left to right (false)?
+              * thread_back_to_front (bool): Thread back to front (true) or front to back (false)?
+        """
         bad_keys: list[str] = []
         new_settings = copy.copy(self.settings)
         # Use raw_value to avoid warnings about overwriting a loop variable.
@@ -646,7 +758,13 @@ class BaseLoomServer:
         self.save_settings()
 
     async def cmd_thread_group_size(self, command: SimpleNamespace) -> None:
-        """Handle the thread_group_size command."""
+        """Handle the thread_group_size command.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * group_size (int): Desired threading group size.
+        """
         if self.current_pattern is None:
             return
         await self.pattern_db.update_thread_group_size(
@@ -661,6 +779,11 @@ class BaseLoomServer:
 
         Send an out-of-band command to the mock loom.
         Ignored with a logged warning if the loom is not the mock loom.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * command (str): Out of band command for the mock loom.
         """
         if self.mock_loom is not None:
             await self.mock_loom.oob_command(command.command)
@@ -668,7 +791,15 @@ class BaseLoomServer:
             self.log.warning(f"Ignoring oob command {command.command!r}: no mock loom")
 
     async def cmd_upload(self, command: SimpleNamespace) -> None:
-        """Handle the upload command."""
+        """Handle the upload command.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * name (str): Name of pattern.
+              * data (str): Weaving pattern file contents, in any supported format.
+                Depending on the format the data may be text or binary.
+        """
         suffix = command.name[-4:]
         if self.verbose:
             cmd_data = command.data
@@ -692,13 +823,26 @@ class BaseLoomServer:
         await self.add_pattern(pattern)
 
     async def cmd_wifi_forget(self, command: SimpleNamespace) -> None:
-        """Forget the specified WiFi network."""
+        """Forget the specified WiFi network.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * ssid (str): SSID (name) of WiFi network to forget.
+        """
         if self.wifi_manager is None:
             raise CommandError("WiFi management not enabled")
         await self.wifi_manager.forget_network(ssid=command.ssid)
 
     async def cmd_wifi_use(self, command: SimpleNamespace) -> None:
-        """Use the specified WiFi network."""
+        """Use the specified WiFi network.
+
+        Args:
+            command: Command with command-specific parameters:
+
+              * ssid (str): SSID (name) of WiFi network to use.
+              * password (str): WiFi password.
+        """
         if self.wifi_manager is None:
             raise CommandError("WiFi management not enabled")
         await self.write_to_client(
@@ -1210,7 +1354,7 @@ class BaseLoomServer:
         )
 
     async def report_wifi(self) -> None:
-        """Start updating WiFI info, if supported, else report not supported."""
+        """Start updating WiFi info, if supported, else report not supported."""
         if self.wifi_manager is None:
             await self.write_to_client(client_replies.WiFi.create_unsupported())
             return

@@ -175,61 +175,25 @@ class ReducedPattern:
         return min(end_number0 + self.thread_group_size - 1, max_end_number)
 
     def compute_next_end_numbers(self, *, thread_low_to_high: bool) -> tuple[int, int, int]:
-        """Compute the next (end_number0, end_number1, end_repeat_number)
+        """Compute the next (end_number0, end_number1, end_repeat_number),
         in the specified direction.
 
         End number is 1-based, but 0 means at start or between repeats
         (in which case there are no threads in the group).
 
+        Args:
+            thread_low_to_high: is the next end number larger (true) or smaller (false)?
+
         Raises:
             IndexError: If trying to increment past the start of threading.
             IndexError: if self.end_number0 is invalid.
         """
-        self.check_end_number(self.end_number0)
-
-        max_end_number = len(self.threading)
-        new_end_number0 = 0
-        # Initialize new_end_number1 to None to allow set_current_end_number
-        # to compute it, if possible (most cases below).
-        new_end_number1 = None
-        new_end_repeat_number = self.end_repeat_number
-        if thread_low_to_high:
-            if self.end_number0 == 0:
-                new_end_number0 = 1
-            elif self.end_number1 < max_end_number:
-                new_end_number0 = self.end_number1 + 1
-            else:
-                # At the end of one repeat; start the next.
-                new_end_number0 = 0 if self.separate_threading_repeats else 1
-                new_end_repeat_number += 1
-        else:
-            # Thread high to low
-            if self.end_number0 == 0 and self.end_repeat_number == 1:
-                raise IndexError("At start of threading")
-
-            if self.end_number0 == 1 and (self.separate_threading_repeats or self.end_repeat_number == 1):
-                # We are at the beginning of a pattern repeat and
-                # either we separate repeats or it is the very first.
-                # Go to end 0.
-                new_end_number0 = 0
-            elif self.end_number0 == 0 or (self.end_number0 == 1 and not self.separate_threading_repeats):
-                # Start the previous repeat.
-                new_end_number1 = max_end_number
-                new_end_number0 = max(new_end_number1 + 1 - self.thread_group_size, 1)
-                new_end_repeat_number -= 1
-            else:
-                # We are still threading the current pattern repeat.
-                # We must compute end_number1 because the available group
-                # size may be smaller than the desired group size.
-                new_end_number0 = max(self.end_number0 - self.thread_group_size, 1)
-                new_end_number1 = self.end_number0 - 1
-        if new_end_number1 is None:
-            if new_end_number0 == 0:
-                new_end_number1 = 0
-            else:
-                new_end_number1 = min(new_end_number0 + self.thread_group_size - 1, max_end_number)
-
-        return (new_end_number0, new_end_number1, new_end_repeat_number)
+        return self.compute_relative_next_end_numbers(
+            thread_low_to_high=thread_low_to_high,
+            end_number0=self.end_number0,
+            end_number1=self.end_number1,
+            end_repeat_number=self.end_repeat_number,
+        )
 
     def compute_next_pick_numbers(self, *, direction_forward: bool) -> tuple[int, int]:
         """Compute (next pick_number, pick_repeat_number)
@@ -267,6 +231,76 @@ class ReducedPattern:
                 next_pick_number = len(self.picks)
                 next_pick_repeat_number -= 1
         return (next_pick_number, next_pick_repeat_number)
+
+    def compute_relative_next_end_numbers(
+        self,
+        *,
+        thread_low_to_high: bool,
+        end_number0: int,
+        end_number1: int,
+        end_repeat_number: int,
+    ) -> tuple[int, int, int]:
+        """Compute the next (end_number0, end_number1, end_repeat_number).
+        in the specified direction, relative to a specified starting position.
+
+        End number is 1-based, but 0 means at start or between repeats
+        (in which case there are no threads in the group).
+
+        Args:
+            thread_low_to_high: is the next end number larger (true) or smaller (false)?
+            end_number0: the starting end number
+            end_number1: the starting end number 1
+            end_repeat_number: the starting end repeat number 0
+
+        Raises:
+            IndexError: If trying to increment past the start of threading.
+            IndexError: if end_number0 is invalid.
+        """
+        self.check_end_number(end_number0)
+
+        max_end_number = len(self.threading)
+        new_end_number0 = 0
+        # Initialize new_end_number1 to None to allow set_current_end_number
+        # to compute it, if possible (most cases below).
+        new_end_number1 = None
+        new_end_repeat_number = end_repeat_number
+        if thread_low_to_high:
+            if end_number0 == 0:
+                new_end_number0 = 1
+            elif end_number1 < max_end_number:
+                new_end_number0 = end_number1 + 1
+            else:
+                # At the end of one repeat; start the next.
+                new_end_number0 = 0 if self.separate_threading_repeats else 1
+                new_end_repeat_number += 1
+        else:
+            # Thread high to low
+            if end_number0 == 0 and end_repeat_number == 1:
+                raise IndexError("At start of threading")
+
+            if end_number0 == 1 and (self.separate_threading_repeats or end_repeat_number == 1):
+                # We are at the beginning of a pattern repeat and
+                # either we separate repeats or it is the very first.
+                # Go to end 0.
+                new_end_number0 = 0
+            elif end_number0 == 0 or (end_number0 == 1 and not self.separate_threading_repeats):
+                # Start the previous repeat.
+                new_end_number1 = max_end_number
+                new_end_number0 = max(new_end_number1 + 1 - self.thread_group_size, 1)
+                new_end_repeat_number -= 1
+            else:
+                # We are still threading the current pattern repeat.
+                # We must compute end_number1 because the available group
+                # size may be smaller than the desired group size.
+                new_end_number0 = max(end_number0 - self.thread_group_size, 1)
+                new_end_number1 = end_number0 - 1
+        if new_end_number1 is None:
+            if new_end_number0 == 0:
+                new_end_number1 = 0
+            else:
+                new_end_number1 = min(new_end_number0 + self.thread_group_size - 1, max_end_number)
+
+        return (new_end_number0, new_end_number1, new_end_repeat_number)
 
     def get_current_pick(self) -> Pick:
         """Get the current pick."""

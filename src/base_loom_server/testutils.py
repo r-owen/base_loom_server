@@ -30,7 +30,7 @@ from .reduced_pattern import (
     ReducedPattern,
     reduced_pattern_from_pattern_data,
 )
-from .utils import compute_total_num, get_version
+from .utils import compute_num_within_and_repeats, compute_total_num, get_version
 
 WebSocketType: TypeAlias = WebSocket | WebSocketTestSession
 
@@ -590,7 +590,11 @@ class BaseTestLoomServer:
     extra_args = ()
 
     def test_jump_to_end(self) -> None:
-        """Test the jump_to_end command."""
+        """Test the jump_to_end command with delta=0.
+
+        Test what happens after you send the jump command
+        if you cancel it or advance to the next threading group.
+        """
         pattern_name = ALL_PATTERN_PATHS[4].name
 
         with self.create_test_client(
@@ -615,7 +619,7 @@ class BaseTestLoomServer:
                 end_number0,
                 end_repeat_number,
             ) in itertools.product(
-                (1, 4),
+                (1, 4, num_ends_in_pattern, num_ends_in_pattern + 1),
                 ("cancel", "next", "nothing"),
                 (0, 1, num_ends_in_pattern // 3, num_ends_in_pattern),
                 (1, 2),
@@ -631,7 +635,7 @@ class BaseTestLoomServer:
                     repeat_len=num_ends_in_pattern,
                 )
                 replies = client.send_command(
-                    dict(type="jump_to_end", total_end_number0=total_end_number0),
+                    dict(type="jump_to_end", total_end_number0=total_end_number0, delta=0),
                 )
                 assert len(replies) == 2  # noqa: PLR2004
                 jump_end_reply = SimpleNamespace(**replies[0])
@@ -670,7 +674,9 @@ class BaseTestLoomServer:
                     )
                 match post_action:
                     case "cancel":
-                        replies = client.send_command(dict(type="jump_to_end", total_end_number0=None))
+                        replies = client.send_command(
+                            dict(type="jump_to_end", total_end_number0=None, delta=0)
+                        )
                         assert len(replies) == 2  # noqa: PLR2004
                         jump_end_cancel_reply = SimpleNamespace(**replies[0])
                         assert jump_end_cancel_reply == SimpleNamespace(
@@ -704,7 +710,7 @@ class BaseTestLoomServer:
             }
             for bad_total_end_number0 in (-1, -2):
                 client.send_command(
-                    dict(type="jump_to_end", total_end_number0=bad_total_end_number0),
+                    dict(type="jump_to_end", total_end_number0=bad_total_end_number0, delta=0),
                     should_fail=True,
                 )
                 for field_name in end_field_names:
@@ -713,8 +719,124 @@ class BaseTestLoomServer:
                         == current_end_data[field_name]
                     )
 
+    def test_jump_to_end_delta(self) -> None:
+        """Test the jump_to_end command with nonzero delta."""
+        pattern_name = ALL_PATTERN_PATHS[4].name
+
+        with self.create_test_client(
+            app=self.app,
+            num_shafts=32,
+            upload_patterns=ALL_PATTERN_PATHS[2:5],
+        ) as client:
+            pattern = client.select_pattern(pattern_name=pattern_name)
+            num_ends_in_pattern = len(pattern.threading)
+
+            replies = client.send_command(dict(type="mode", mode=ModeEnum.THREAD))
+            assert len(replies) == 2  # noqa: PLR2004
+            assert replies[0] == dict(type="Mode", mode=ModeEnum.THREAD)
+
+            for (
+                thread_group_size,
+                total_end_number0,
+                delta,
+            ) in itertools.product(
+                (1, 4, num_ends_in_pattern, num_ends_in_pattern + 1),
+                (
+                    0,
+                    1,
+                    num_ends_in_pattern // 3,
+                    num_ends_in_pattern - 1,
+                    num_ends_in_pattern,
+                    num_ends_in_pattern + 1,
+                ),
+                (-1, 1),
+            ):
+                if total_end_number0 + delta < 0:
+                    continue
+
+                max_change = min(num_ends_in_pattern, thread_group_size)
+
+                replies = client.send_command(dict(type="thread_group_size", group_size=thread_group_size))
+                assert len(replies) == 2  # noqa: PLR2004
+                assert replies[0] == dict(type="ThreadGroupSize", group_size=thread_group_size)
+                assert pattern.thread_group_size == thread_group_size
+
+                replies = client.send_command(
+                    dict(type="jump_to_end", total_end_number0=total_end_number0, delta=delta),
+                )
+                assert len(replies) == 2  # noqa: PLR2004
+
+                end_number0, end_repeat_number = compute_num_within_and_repeats(
+                    total_num=total_end_number0, repeat_len=num_ends_in_pattern
+                )
+                if end_number0 == 0 and delta > 0:
+                    # Jump to beginning of the next repeat
+                    expected_total_end_number0 = compute_total_num(
+                        num_within=1, repeat_number=end_repeat_number, repeat_len=num_ends_in_pattern
+                    )
+                elif end_number0 == 0 and delta < 0:
+                    # Jump to end of the previous repeat
+                    expected_total_end_number1 = compute_total_num(
+                        num_within=num_ends_in_pattern,
+                        repeat_number=end_repeat_number - 1,
+                        repeat_len=num_ends_in_pattern,
+                    )
+                    expected_total_end_number0 = expected_total_end_number1 - max_change
+                elif delta > 0:
+                    if end_number0 + thread_group_size > num_ends_in_pattern:
+                        # The delta=0 jump group ends at the end of a repeat;
+                        # jump to the beginning of the next repeat.
+                        expected_total_end_number0 = compute_total_num(
+                            num_within=1,
+                            repeat_number=end_repeat_number + 1,
+                            repeat_len=num_ends_in_pattern,
+                        )
+                    else:
+                        # Progress within the current repeat
+                        expected_total_end_number0 = total_end_number0 + thread_group_size
+                else:
+                    assert delta < 0
+                    if total_end_number0 == 1:
+                        # The delta=0 jump group begins at end 1; back up to end 0.
+                        expected_total_end_number0 = 0
+                    elif end_number0 == 1:
+                        # The delta=0 jump group begins at the beginning of a repeat
+                        # that is not the first repeat; jump to the end of the previous repeat.
+                        expected_total_end_number0 = compute_total_num(
+                            num_within=num_ends_in_pattern - max_change,
+                            repeat_number=end_repeat_number - 1,
+                            repeat_len=num_ends_in_pattern,
+                        )
+                        expected_total_end_number0 = total_end_number0 - max_change
+                    else:
+                        # Back up within the current repeat
+                        expected_total_end_number0 = total_end_number0 - min(max_change, end_number0 - 1)
+
+                assert_replies_equal(
+                    replies[0],
+                    dict(
+                        type="JumpEndNumber",
+                        total_end_number0=expected_total_end_number0,
+                    ),
+                )
+
+            # Test jumping to invalid ends.
+            # Start by clearing the jump, and test that it remains clear.
+            client.send_command(dict(type="jump_to_end", total_end_number0=None, delta=0))
+            assert client.loom_server.jump_end.total_end_number0 is None
+            for total_end_number0, delta in ((-2, 1), (-1, 0), (0, -1)):
+                client.send_command(
+                    dict(type="jump_to_end", total_end_number0=total_end_number0, delta=delta),
+                    should_fail=True,
+                )
+                assert client.loom_server.jump_end.total_end_number0 is None
+
     def test_jump_to_pick(self) -> None:
-        """Test the jump_to_pick command."""
+        """Test the jump_to_pick command with delta=0.
+
+        Test what happens after you send the jump command
+        if you cancel it or advance to the next pick.
+        """
         pattern_name = ALL_PATTERN_PATHS[3].name
 
         with self.create_test_client(
@@ -739,7 +861,9 @@ class BaseTestLoomServer:
                     repeat_number=pick_repeat_number,
                     repeat_len=num_picks_in_pattern,
                 )
-                replies = client.send_command(dict(type="jump_to_pick", total_pick_number=total_pick_number))
+                replies = client.send_command(
+                    dict(type="jump_to_pick", total_pick_number=total_pick_number, delta=0)
+                )
                 assert len(replies) == 2  # noqa: PLR2004
                 jump_pick_reply = SimpleNamespace(**replies[0])
                 if total_pick_number == 0:
@@ -770,7 +894,9 @@ class BaseTestLoomServer:
                     )
                 match post_action:
                     case "cancel":
-                        replies = client.send_command(dict(type="jump_to_pick", total_pick_number=None))
+                        replies = client.send_command(
+                            dict(type="jump_to_pick", total_pick_number=None, delta=0)
+                        )
                         assert len(replies) == 2  # noqa: PLR2004
                         jump_pick_cancel_reply = SimpleNamespace(**replies[0])
                         assert jump_pick_cancel_reply == SimpleNamespace(
@@ -799,7 +925,7 @@ class BaseTestLoomServer:
             }
             for bad_total_pick_number in (-1, -2):
                 client.send_command(
-                    dict(type="jump_to_pick", total_pick_number=bad_total_pick_number),
+                    dict(type="jump_to_pick", total_pick_number=bad_total_pick_number, delta=0),
                     should_fail=True,
                 )
                 for field_name in pick_field_names:
@@ -808,8 +934,61 @@ class BaseTestLoomServer:
                         == current_pick_data[field_name]
                     )
 
+    def test_jump_to_pick_delta(self) -> None:
+        """Test the jump_to_pick command with nonzero delta."""
+        pattern_name = ALL_PATTERN_PATHS[3].name
+
+        with self.create_test_client(
+            app=self.app,
+            num_shafts=32,
+            upload_patterns=ALL_PATTERN_PATHS[2:5],
+        ) as client:
+            pattern = client.select_pattern(pattern_name=pattern_name)
+            num_picks_in_pattern = len(pattern.picks)
+
+            for total_pick_number, delta in itertools.product(
+                (
+                    0,
+                    1,
+                    num_picks_in_pattern // 3,
+                    num_picks_in_pattern - 1,
+                    num_picks_in_pattern,
+                    num_picks_in_pattern + 1,
+                ),
+                (-1, 0, 1),
+            ):
+                expected_total_pick_number = total_pick_number + delta
+                if expected_total_pick_number < 0:
+                    continue
+                replies = client.send_command(
+                    dict(type="jump_to_pick", total_pick_number=total_pick_number, delta=delta)
+                )
+                assert len(replies) == 2  # noqa: PLR2004
+                assert_replies_equal(
+                    replies[0],
+                    dict(
+                        type="JumpPickNumber",
+                        total_pick_number=expected_total_pick_number,
+                    ),
+                )
+
+            # Test jumping to invalid picks.
+            # Start by clearing the jump, and test that it remains clear.
+            client.send_command(dict(type="jump_to_pick", total_pick_number=None, delta=0))
+            assert client.loom_server.jump_pick.total_pick_number is None
+            for total_pick_number, delta in ((-2, 1), (-1, 0), (0, -1)):
+                client.send_command(
+                    dict(type="jump_to_pick", total_pick_number=total_pick_number, delta=delta),
+                    should_fail=True,
+                )
+                assert client.loom_server.jump_pick.total_pick_number is None
+
     def test_jump_to_tabby_pick(self) -> None:
-        """Test the jump_to_tabby_pick command."""
+        """Test the jump_to_tabby_pick command with delta=0.
+
+        Test what happens after you send the jump command
+        if you cancel it or advance to the next tabby pick.
+        """
         pattern_name = ALL_PATTERN_PATHS[3].name
 
         with self.create_test_client(
@@ -831,7 +1010,7 @@ class BaseTestLoomServer:
                 ("cancel", "next", "nothing"), (0, 1, 2, 3, 4)
             ):
                 replies = client.send_command(
-                    dict(type="jump_to_tabby_pick", tabby_pick_number=tabby_pick_number)
+                    dict(type="jump_to_tabby_pick", tabby_pick_number=tabby_pick_number, delta=0)
                 )
                 assert len(replies) == 2  # noqa: PLR2004
                 jump_pick_reply = SimpleNamespace(**replies[0])
@@ -840,7 +1019,9 @@ class BaseTestLoomServer:
                 )
                 match post_action:
                     case "cancel":
-                        replies = client.send_command(dict(type="jump_to_tabby_pick", tabby_pick_number=None))
+                        replies = client.send_command(
+                            dict(type="jump_to_tabby_pick", tabby_pick_number=None, delta=0)
+                        )
                         assert len(replies) == 2  # noqa: PLR2004
                         jump_pick_cancel_reply = SimpleNamespace(**replies[0])
                         assert jump_pick_cancel_reply == SimpleNamespace(
@@ -861,10 +1042,51 @@ class BaseTestLoomServer:
             current_tabby_pick_number = client.loom_server.current_pattern.tabby_pick_number
             for bad_tabby_pick_number in (-1, -2):
                 client.send_command(
-                    dict(type="jump_to_pick", tabby_pick_number=bad_tabby_pick_number),
+                    dict(type="jump_to_pick", tabby_pick_number=bad_tabby_pick_number, delta=0),
                     should_fail=True,
                 )
                 assert client.loom_server.current_pattern.tabby_pick_number == current_tabby_pick_number
+
+    def test_jump_to_tabby_pick_delta(self) -> None:
+        """Test the jump_to_tabby_pick command with nonzero delta."""
+        pattern_name = ALL_PATTERN_PATHS[3].name
+
+        with self.create_test_client(
+            app=self.app,
+            num_shafts=32,
+            upload_patterns=ALL_PATTERN_PATHS[2:5],
+        ) as client:
+            client.select_pattern(pattern_name=pattern_name)
+
+            for tabby_pick_number, delta in itertools.product(
+                (0, 1, 2, 3),
+                (-1, 0, 1),
+            ):
+                expected_tabby_pick_number = tabby_pick_number + delta
+                if expected_tabby_pick_number < 0:
+                    continue
+                replies = client.send_command(
+                    dict(type="jump_to_tabby_pick", tabby_pick_number=tabby_pick_number, delta=delta)
+                )
+                assert len(replies) == 2  # noqa: PLR2004
+                assert_replies_equal(
+                    replies[0],
+                    dict(
+                        type="JumpTabbyPickNumber",
+                        tabby_pick_number=expected_tabby_pick_number,
+                    ),
+                )
+
+            # Test jumping to invalid picks.
+            # Start by clearing the jump, and test that it remains clear.
+            client.send_command(dict(type="jump_to_tabby_pick", tabby_pick_number=None, delta=0))
+            assert client.loom_server.jump_tabby_pick.tabby_pick_number is None
+            for tabby_pick_number, delta in ((-2, 1), (-1, 0), (0, -1)):
+                client.send_command(
+                    dict(type="jump_to_tabby_pick", tabby_pick_number=tabby_pick_number, delta=delta),
+                    should_fail=True,
+                )
+                assert client.loom_server.jump_tabby_pick.tabby_pick_number is None
 
     def test_next_end(self) -> None:
         """Test advancing to the next end."""
@@ -1186,7 +1408,7 @@ class BaseTestLoomServer:
                         repeat_len=num_picks_in_pattern,
                     )
                     replies = client.send_command(
-                        dict(type="jump_to_pick", total_pick_number=total_pick_number),
+                        dict(type="jump_to_pick", total_pick_number=total_pick_number, delta=0),
                     )
                     assert len(replies) == 2  # noqa: PLR2004
                     if total_pick_number == 0:
@@ -1240,7 +1462,7 @@ class BaseTestLoomServer:
                         repeat_len=num_ends_in_pattern,
                     )
                     replies = client.send_command(
-                        dict(type="jump_to_end", total_end_number0=total_end_number0),
+                        dict(type="jump_to_end", total_end_number0=total_end_number0, delta=0),
                     )
                     if total_end_number0 == 0:
                         assert total_end_number1 == 0

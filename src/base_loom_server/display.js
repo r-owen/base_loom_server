@@ -87,6 +87,12 @@ const DirectionControlEnum = {
     "SOFTWARE": 3,
 }
 
+const JumpDeltaEnum = {
+    "PLUS": 1,
+    "NONE": 0,
+    "MINUS": -1,
+}
+
 const ModeEnum = {
     "WEAVE_PATTERN": 1,
     "WEAVE_TABBY": 2,
@@ -454,14 +460,12 @@ class JumpHandler {
         if (totalNumber == null) {
             return
         }
-        if (totalNumber < 1) {
+        if (totalNumber <= 0) {
             return
         }
-        totalNumber -= 1
-        await this.sendJumpCommand(totalNumber)
+        await this.sendJumpCommand(totalNumber, JumpDeltaEnum.MINUS)
         event.preventDefault()
     }
-
 
     /*
     Handle plus (+) button.
@@ -471,8 +475,7 @@ class JumpHandler {
         if (totalNumber == null) {
             return
         }
-        totalNumber += 1
-        await this.sendJumpCommand(totalNumber)
+        await this.sendJumpCommand(totalNumber, JumpDeltaEnum.PLUS)
         event.preventDefault()
     }
 
@@ -497,8 +500,9 @@ class JumpHandler {
     /*
     Send the jump command
     */
-    async sendJumpCommand(totalNumber) {
+    async sendJumpCommand(totalNumber, delta = JumpDeltaEnum.NONE) {
         this.jumpCommand[this.jumpCommandParameterName] = totalNumber
+        this.jumpCommand.delta = delta
         await this.loomClient.sendCommand(this.jumpCommand)
     }
 }
