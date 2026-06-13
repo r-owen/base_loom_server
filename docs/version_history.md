@@ -1,5 +1,10 @@
 # Version History
 
+## 1.2.2b1 2026-06-14
+
+* Make the threading input box show the numeric keyboard on phones and tablets (by setting type="numeric").
+* Make the threading - and + jump buttons move by a threading group, rather than a single warp end.
+
 ## 1.2.1 2026-06-06
 
 * Update the screen shots to show the - and + buttons in the Jump controls.
