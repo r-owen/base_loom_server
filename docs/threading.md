@@ -49,6 +49,9 @@ Special cases that may only be supported by WIF files:
 You can jump to a different group of warp ends, specified by the smaller warp end number.
 For example if the group size is 4 and you jump to end 21, the new ends will be 21, 22, 23, 24, and 25 (or fewer, if the warp has fewer than 25 threads), regardless of the threading direction.
 
+The "-" and "+" buttons go back or ahead by one group of threads.
+In other words, "-" is undo and "+" is redo (regardless of whether you are threading from low-to-high or high-to-low end numbers).
+
 See [Weaving: Jumping](weaving.md#jumping) for details.
 
 ## Group Size
@@ -66,10 +69,10 @@ The software will automatically repeat threading if you thread beyond the end.
 However, like [Weaving](weaving.md), the transition depends on the "Separate repeats?" checkbox:
 
 * "On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
-  The first advance will lower all shafts, as a signal that you have finished threading or unthreading one pattern repeat. That is the "separator".
+    The first advance will lower all shafts, as a signal that you have finished threading or unthreading one pattern repeat. That is the "separator".
 
 * "Off" (unchecked): there is no indication that you have reached the end of threading.
-  The next advance will start the next repeat of threading or unthreading.
+    The next advance will start the next repeat of threading or unthreading.
 
 The default value of "Separate repeats?" is checked (on) if the pattern has more than 20 warp threads, unchecked (off) otherwise.
 The idea is that frequent separator "picks" are annoying for short threading sequences, but having a separator "Weft thread" is useful for long sequences.

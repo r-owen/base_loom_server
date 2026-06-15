@@ -36,10 +36,10 @@ To clearly warn you when unweaving or unthreading, the direction button is shown
 How you change direction depends on the loom:
 
 * Séguin looms allow you to change direction by pressing the direction button in web browser display,
-  or pressing the UNW button on the dobby unit. Both work equally well; use whichever you prefer.
+    or pressing the UNW button on the dobby unit. Both work equally well; use whichever you prefer.
 
 * Toika looms can be operated in one of two ways, specified by **Direction control**
-  in the [Settings](settings.md) panel:
+    in the [Settings](settings.md) panel:
 
     * **Software**: push the direction button (Weave/Unweave if weaving, Thread/Unthread if threading)
         in the web browser display to change direction.
@@ -68,19 +68,32 @@ In detail:
   The box will turn pink and the Jump button will be enabled.
 
 * Press the "return" keyboard key or click the "Jump" button on the web page to send the requested jump to the server.
-  You will see several changes:
+    You will see several changes:
 
-  * The jump input box will have a white background and the jump button will be disabled.
+    * The jump input box will have a white background and the jump button will be disabled.
 
-  * The pattern display will show the jump-to pick in the center row, with a dotted box around it.
-
-* You may also use the "-" and "+" buttons.
-  These work much like the input box, but are immediately applied (there is no need to push the "return" keyboard key or click "Jump").
-  The new jump value is relative to the value in the box, if there is one, else it is relative to the current pick.
+    * The pattern display will show the jump-to pick in the center row, with a dotted box around it.
 
 * Advance to the next pick by pressing the loom's pedal.
 
-* Until you advance to the next pick, you may request a different jump
+* You may also use the "-" and "+" buttons to jump.
+    The value is applied immediately (there is no need to press Jump) and you will see the value in the jump entry box.
+    The value is relative to the value that was in the jump entry box, if any,
+    else it is relative to the current pick.
+
+    Using the "-" button is a great way to undo a few picks (or groups of ends, if threading).
+    It is safer than changing the direction, because you don't have to remember to change the direction again when you are done unweaving (or unthreading).
+    To undo using "-":
+
+    * Press "-". Then press the loom's pedal. This should back up one pick (or one group of ends, if threading).
+    * Unweave.
+    * Repeat for each thread to unweave.
+    * When you have finished unweaving (or unthreading), resume weaving as usual.
+
+    Note: for threading, the "-" and "+" buttons go back or ahead by one group of threads.
+    In other words, "-" is undo and "+" is redo (regardless of whether you are threading from low-to-high or high-to-low end numbers).
+
+* Until you advance to the next pick, you may specify a different jump
   (in case you got it wrong the first time) or cancel it.
   To cancel the jump you may do any of the following:
 
@@ -96,13 +109,13 @@ The software will automatically repeat patterns if you weave or unweave beyond t
 The exact behavior is controlled by the "Separate repeats?" checkbox:
 
 * "On" (checked): you must advance twice when you reach an end, before the next set of shafts is raised.
-  The first advance will lower all shafts, as a signal that you have finished weaving or unweaving one pattern repeat. That is the "separator".
+    The first advance will lower all shafts, as a signal that you have finished weaving or unweaving one pattern repeat. That is the "separator".
 
-  This will be displayed as a blank row in the center of the pattern display, and also between repeats
-  in the display of unwoven fabric above the center.
+    This will be displayed as a blank row in the center of the pattern display, and also between repeats
+    in the display of unwoven fabric above the center.
 
 * "Off" (unchecked): there is no indication that you have reached the end of the pattern.
-  The next pick will be pick 1 of the pattern, if weaving, or the last pick, if unweaving.
+    The next pick will be pick 1 of the pattern, if weaving, or the last pick, if unweaving.
 
 The default value of "Separate repeats?" is checked (on) if the pattern has more than 20 picks, unchecked (off) otherwise.
 The idea is that frequent separator picks are annoying for short patterns, but having a separator pick is useful for long patterns.
