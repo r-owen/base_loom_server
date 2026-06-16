@@ -1517,7 +1517,151 @@
 <span class="normal">1350</span>
 <span class="normal">1351</span>
 <span class="normal">1352</span>
-<span class="normal">1353</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">1353</span>
+<span class="normal">1354</span>
+<span class="normal">1355</span>
+<span class="normal">1356</span>
+<span class="normal">1357</span>
+<span class="normal">1358</span>
+<span class="normal">1359</span>
+<span class="normal">1360</span>
+<span class="normal">1361</span>
+<span class="normal">1362</span>
+<span class="normal">1363</span>
+<span class="normal">1364</span>
+<span class="normal">1365</span>
+<span class="normal">1366</span>
+<span class="normal">1367</span>
+<span class="normal">1368</span>
+<span class="normal">1369</span>
+<span class="normal">1370</span>
+<span class="normal">1371</span>
+<span class="normal">1372</span>
+<span class="normal">1373</span>
+<span class="normal">1374</span>
+<span class="normal">1375</span>
+<span class="normal">1376</span>
+<span class="normal">1377</span>
+<span class="normal">1378</span>
+<span class="normal">1379</span>
+<span class="normal">1380</span>
+<span class="normal">1381</span>
+<span class="normal">1382</span>
+<span class="normal">1383</span>
+<span class="normal">1384</span>
+<span class="normal">1385</span>
+<span class="normal">1386</span>
+<span class="normal">1387</span>
+<span class="normal">1388</span>
+<span class="normal">1389</span>
+<span class="normal">1390</span>
+<span class="normal">1391</span>
+<span class="normal">1392</span>
+<span class="normal">1393</span>
+<span class="normal">1394</span>
+<span class="normal">1395</span>
+<span class="normal">1396</span>
+<span class="normal">1397</span>
+<span class="normal">1398</span>
+<span class="normal">1399</span>
+<span class="normal">1400</span>
+<span class="normal">1401</span>
+<span class="normal">1402</span>
+<span class="normal">1403</span>
+<span class="normal">1404</span>
+<span class="normal">1405</span>
+<span class="normal">1406</span>
+<span class="normal">1407</span>
+<span class="normal">1408</span>
+<span class="normal">1409</span>
+<span class="normal">1410</span>
+<span class="normal">1411</span>
+<span class="normal">1412</span>
+<span class="normal">1413</span>
+<span class="normal">1414</span>
+<span class="normal">1415</span>
+<span class="normal">1416</span>
+<span class="normal">1417</span>
+<span class="normal">1418</span>
+<span class="normal">1419</span>
+<span class="normal">1420</span>
+<span class="normal">1421</span>
+<span class="normal">1422</span>
+<span class="normal">1423</span>
+<span class="normal">1424</span>
+<span class="normal">1425</span>
+<span class="normal">1426</span>
+<span class="normal">1427</span>
+<span class="normal">1428</span>
+<span class="normal">1429</span>
+<span class="normal">1430</span>
+<span class="normal">1431</span>
+<span class="normal">1432</span>
+<span class="normal">1433</span>
+<span class="normal">1434</span>
+<span class="normal">1435</span>
+<span class="normal">1436</span>
+<span class="normal">1437</span>
+<span class="normal">1438</span>
+<span class="normal">1439</span>
+<span class="normal">1440</span>
+<span class="normal">1441</span>
+<span class="normal">1442</span>
+<span class="normal">1443</span>
+<span class="normal">1444</span>
+<span class="normal">1445</span>
+<span class="normal">1446</span>
+<span class="normal">1447</span>
+<span class="normal">1448</span>
+<span class="normal">1449</span>
+<span class="normal">1450</span>
+<span class="normal">1451</span>
+<span class="normal">1452</span>
+<span class="normal">1453</span>
+<span class="normal">1454</span>
+<span class="normal">1455</span>
+<span class="normal">1456</span>
+<span class="normal">1457</span>
+<span class="normal">1458</span>
+<span class="normal">1459</span>
+<span class="normal">1460</span>
+<span class="normal">1461</span>
+<span class="normal">1462</span>
+<span class="normal">1463</span>
+<span class="normal">1464</span>
+<span class="normal">1465</span>
+<span class="normal">1466</span>
+<span class="normal">1467</span>
+<span class="normal">1468</span>
+<span class="normal">1469</span>
+<span class="normal">1470</span>
+<span class="normal">1471</span>
+<span class="normal">1472</span>
+<span class="normal">1473</span>
+<span class="normal">1474</span>
+<span class="normal">1475</span>
+<span class="normal">1476</span>
+<span class="normal">1477</span>
+<span class="normal">1478</span>
+<span class="normal">1479</span>
+<span class="normal">1480</span>
+<span class="normal">1481</span>
+<span class="normal">1482</span>
+<span class="normal">1483</span>
+<span class="normal">1484</span>
+<span class="normal">1485</span>
+<span class="normal">1486</span>
+<span class="normal">1487</span>
+<span class="normal">1488</span>
+<span class="normal">1489</span>
+<span class="normal">1490</span>
+<span class="normal">1491</span>
+<span class="normal">1492</span>
+<span class="normal">1493</span>
+<span class="normal">1494</span>
+<span class="normal">1495</span>
+<span class="normal">1496</span>
+<span class="normal">1497</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;BaseLoomServer&quot;</span><span class="p">,</span> <span class="s2">&quot;DEFAULT_DATABASE_PATH&quot;</span><span class="p">,</span> <span class="s2">&quot;MOCK_PORT_NAME&quot;</span><span class="p">]</span>
 
@@ -1738,10 +1882,14 @@
 
 <span class="sd">        Takes into account settings and self.direction_forward.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_thread_low_to_high</span><span class="p">(</span><span class="n">direction_forward</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">)</span>
+<div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.compute_thread_low_to_high"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.compute_thread_low_to_high" title="Go to docs">docs</a></div>
+    <span class="k">def</span> <span class="nf">compute_thread_low_to_high</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">direction_forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute thread_low_to_high.&quot;&quot;&quot;</span>
         <span class="n">low_to_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_back_to_front</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thread_right_to_left</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">end1_on_right</span><span class="p">:</span>
             <span class="n">low_to_high</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">low_to_high</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">direction_forward</span><span class="p">:</span>
             <span class="n">low_to_high</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">low_to_high</span>
         <span class="k">return</span> <span class="n">low_to_high</span>
 
@@ -2000,6 +2148,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the clear_pattern_names command.</span>
 
 <span class="sd">        Clear all patterns except the current pattern.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: IgnoredCommand with no command-specific parameters. Ignored.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Clear the pattern database</span>
         <span class="c1"># Then add the current pattern (if any)</span>
@@ -2010,32 +2161,81 @@
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_pattern_names</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_direction"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_direction" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the direction command: set direction.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the direction command, to set the direction.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * forward (bool): Set direction to forward, if true, else backwards (undo).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">direction_forward</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">forward</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_direction</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_jump_to_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the jump_to_end command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the jump_to_end command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * total_end_number0 (int | None): The desired total_end_number0,</span>
+<span class="sd">                or None to clear the jump.</span>
+<span class="sd">              * delta (int): Specify whether to go to the group that starts</span>
+<span class="sd">                at total_end_number0 (delta=0),</span>
+<span class="sd">                to the next group after that (delta&gt;0),</span>
+<span class="sd">                or to the previous group before that (delta &lt;0).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;cannot jump&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;no pattern&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpEndNumber</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">command</span><span class="o">.</span><span class="n">delta</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;Number must be&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &gt;= 0&quot;</span><span class="p">)</span>
             <span class="n">end_number0</span><span class="p">,</span> <span class="n">end_repeat_number</span> <span class="o">=</span> <span class="n">compute_num_within_and_repeats</span><span class="p">(</span>
                 <span class="n">total_num</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span><span class="p">,</span>
                 <span class="n">repeat_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">num_ends</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">end_number1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">compute_end_number1</span><span class="p">(</span><span class="n">end_number0</span><span class="o">=</span><span class="n">end_number0</span><span class="p">)</span>
+
+            <span class="c1"># Now increment, if requested</span>
+            <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">delta</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">thread_low_to_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_thread_low_to_high</span><span class="p">(</span><span class="n">direction_forward</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">end_number0</span><span class="p">,</span> <span class="n">end_number1</span><span class="p">,</span> <span class="n">end_repeat_number</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">compute_relative_next_end_numbers</span><span class="p">(</span>
+                        <span class="n">thread_low_to_high</span><span class="o">=</span><span class="n">thread_low_to_high</span><span class="p">,</span>
+                        <span class="n">end_number0</span><span class="o">=</span><span class="n">end_number0</span><span class="p">,</span>
+                        <span class="n">end_number1</span><span class="o">=</span><span class="n">end_number1</span><span class="p">,</span>
+                        <span class="n">end_repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">command</span><span class="o">.</span><span class="n">delta</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c1"># Backing up from end 1; back up to end 0.</span>
+                        <span class="k">pass</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Jump past 0 to avoid getting stuck in low_to_high direction,</span>
+                        <span class="c1"># or overshooting the next time in the other direction.</span>
+                        <span class="n">end_number0</span><span class="p">,</span> <span class="n">end_number1</span><span class="p">,</span> <span class="n">end_repeat_number</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">compute_relative_next_end_numbers</span><span class="p">(</span>
+                                <span class="n">thread_low_to_high</span><span class="o">=</span><span class="n">thread_low_to_high</span><span class="p">,</span>
+                                <span class="n">end_number0</span><span class="o">=</span><span class="n">end_number0</span><span class="p">,</span>
+                                <span class="n">end_number1</span><span class="o">=</span><span class="n">end_number1</span><span class="p">,</span>
+                                <span class="n">end_repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+
+            <span class="n">total_end_number0</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
+                <span class="n">num_within</span><span class="o">=</span><span class="n">end_number0</span><span class="p">,</span>
+                <span class="n">repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
+                <span class="n">repeat_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">num_ends</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">total_end_number1</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
                 <span class="n">num_within</span><span class="o">=</span><span class="n">end_number1</span><span class="p">,</span>
                 <span class="n">repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span>
                 <span class="n">repeat_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">num_ends</span><span class="p">,</span>
             <span class="p">)</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpEndNumber</span><span class="p">(</span>
-                <span class="n">total_end_number0</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_end_number0</span><span class="p">,</span>
+                <span class="n">total_end_number0</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">,</span>
                 <span class="n">total_end_number1</span><span class="o">=</span><span class="n">total_end_number1</span><span class="p">,</span>
                 <span class="n">end_number0</span><span class="o">=</span><span class="n">end_number0</span><span class="p">,</span>
                 <span class="n">end_number1</span><span class="o">=</span><span class="n">end_number1</span><span class="p">,</span>
@@ -2044,54 +2244,92 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_jump_end</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_jump_to_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_pick" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the jump_to_pick command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the jump_to_pick command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * total_pick_number (int | None): The desired total_pick_number,</span>
+<span class="sd">                or None to clear the jump.</span>
+<span class="sd">              * delta (int): An offset to total_pick_number;</span>
+<span class="sd">                typically -1, 0, or +1, but other values are obeyed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;cannot jump&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;no pattern&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpPickNumber</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">total_pick_number</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span> <span class="o">+</span> <span class="n">command</span><span class="o">.</span><span class="n">delta</span>
+            <span class="k">if</span> <span class="n">total_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;Number must be&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &gt;= 0&quot;</span><span class="p">)</span>
             <span class="n">pick_number</span><span class="p">,</span> <span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="n">compute_num_within_and_repeats</span><span class="p">(</span>
-                <span class="n">total_num</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span><span class="p">,</span>
+                <span class="n">total_num</span><span class="o">=</span><span class="n">total_pick_number</span><span class="p">,</span>
                 <span class="n">repeat_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">num_picks</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpPickNumber</span><span class="p">(</span>
-                <span class="n">total_pick_number</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">total_pick_number</span><span class="p">,</span>
+                <span class="n">total_pick_number</span><span class="o">=</span><span class="n">total_pick_number</span><span class="p">,</span>
                 <span class="n">pick_number</span><span class="o">=</span><span class="n">pick_number</span><span class="p">,</span>
                 <span class="n">pick_repeat_number</span><span class="o">=</span><span class="n">pick_repeat_number</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_jump_pick</span><span class="p">()</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_tabby_pick"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_tabby_pick" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_jump_to_tabby_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the jump_to_tabby_pick command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the jump_to_tabby_pick command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * tabby_pick_number (int | None): The desired tabby_pick_number,</span>
+<span class="sd">                or None to clear the jump.</span>
+<span class="sd">              * delta (int): An offset to tabby_pick_number;</span>
+<span class="sd">                typically -1, 0, or +1, but other values are obeyed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;cannot jump&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;no pattern&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpTabbyPickNumber</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">tabby_pick_number</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="o">+</span> <span class="n">command</span><span class="o">.</span><span class="n">delta</span>
+            <span class="k">if</span> <span class="n">tabby_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;Number must be&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &gt;= 0&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span> <span class="o">=</span> <span class="n">client_replies</span><span class="o">.</span><span class="n">JumpTabbyPickNumber</span><span class="p">(</span>
-                <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">tabby_pick_number</span><span class="p">,</span>
+                <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">tabby_pick_number</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_jump_tabby_pick</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_mode"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_mode" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the mode command: set the mode.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the mode command: set the mode.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * mode (int): The desired mode; one of `ModeEnum`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">ModeEnum</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_mode</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">SETTINGS</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">wifi_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_wifi</span><span class="p">()</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_select_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the select_pattern command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the select_pattern command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * name (str): Name of a pattern that is in the pattern database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">name</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_pattern</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_separate_threading_repeats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the separate_threading_repeats command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the separate_threading_repeats command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * separate (bool): Separate threading pattern repeats?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">update_separate_threading_repeats</span><span class="p">(</span>
@@ -2102,7 +2340,13 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_separate_threading_repeats</span><span class="p">()</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_separate_weaving_repeats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the separate_weaving_repeats command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the separate_weaving_repeats command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * separate (bool): Separate weaving pattern repeats?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">update_separate_weaving_repeats</span><span class="p">(</span>
@@ -2113,7 +2357,19 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_separate_weaving_repeats</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_settings"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_settings" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the settings command: set one or more settings.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the settings command: set one or more settings.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with one or more command-specific parameters:</span>
+
+<span class="sd">              * direction_control (DirectionControlEnum): How to control direction.</span>
+<span class="sd">              * language (str): Name of desired language.</span>
+<span class="sd">              * loom_name (str): Name of loom.</span>
+<span class="sd">              * thread_group_size (int): Default threading group size.</span>
+<span class="sd">              * end1_on_right (bool): Should end 1 be displayed on the right (true) or left (false)?</span>
+<span class="sd">              * thread_right_to_left (bool): Thread right to left (true) or left to right (false)?</span>
+<span class="sd">              * thread_back_to_front (bool): Thread back to front (true) or front to back (false)?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bad_keys</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">new_settings</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
         <span class="c1"># Use raw_value to avoid warnings about overwriting a loop variable.</span>
@@ -2165,7 +2421,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">save_settings</span><span class="p">()</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_thread_group_size" title="Go to docs">docs</a></div>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_thread_group_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the thread_group_size command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the thread_group_size command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * group_size (int): Desired threading group size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_db</span><span class="o">.</span><span class="n">update_thread_group_size</span><span class="p">(</span>
@@ -2180,6 +2442,11 @@
 
 <span class="sd">        Send an out-of-band command to the mock loom.</span>
 <span class="sd">        Ignored with a logged warning if the loom is not the mock loom.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * command (str): Out of band command for the mock loom.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_loom</span><span class="o">.</span><span class="n">oob_command</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">command</span><span class="p">)</span>
@@ -2187,7 +2454,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring oob command </span><span class="si">{</span><span class="n">command</span><span class="o">.</span><span class="n">command</span><span class="si">!r}</span><span class="s2">: no mock loom&quot;</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_upload"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_upload" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the upload command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the upload command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * name (str): Name of pattern.</span>
+<span class="sd">              * data (str): Weaving pattern file contents, in any supported format.</span>
+<span class="sd">                Depending on the format the data may be text or binary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">suffix</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="n">cmd_data</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">data</span>
@@ -2211,13 +2486,26 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_pattern</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_wifi_forget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_wifi_forget"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_wifi_forget" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forget the specified WiFi network.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forget the specified WiFi network.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * ssid (str): SSID (name) of WiFi network to forget.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wifi_manager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="s2">&quot;WiFi management not enabled&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">wifi_manager</span><span class="o">.</span><span class="n">forget_network</span><span class="p">(</span><span class="n">ssid</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">ssid</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cmd_wifi_use</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_wifi_use"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.cmd_wifi_use" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use the specified WiFi network.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use the specified WiFi network.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Command with command-specific parameters:</span>
+
+<span class="sd">              * ssid (str): SSID (name) of WiFi network to use.</span>
+<span class="sd">              * password (str): WiFi password.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wifi_manager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="s2">&quot;WiFi management not enabled&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span>
@@ -2729,7 +3017,7 @@
         <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">report_wifi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.report_wifi"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.report_wifi" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start updating WiFI info, if supported, else report not supported.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start updating WiFi info, if supported, else report not supported.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wifi_manager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_client</span><span class="p">(</span><span class="n">client_replies</span><span class="o">.</span><span class="n">WiFi</span><span class="o">.</span><span class="n">create_unsupported</span><span class="p">())</span>
             <span class="k">return</span>

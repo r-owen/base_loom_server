@@ -1883,7 +1883,229 @@
 <span class="normal">1716</span>
 <span class="normal">1717</span>
 <span class="normal">1718</span>
-<span class="normal">1719</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
+<span class="normal">1719</span>
+<span class="normal">1720</span>
+<span class="normal">1721</span>
+<span class="normal">1722</span>
+<span class="normal">1723</span>
+<span class="normal">1724</span>
+<span class="normal">1725</span>
+<span class="normal">1726</span>
+<span class="normal">1727</span>
+<span class="normal">1728</span>
+<span class="normal">1729</span>
+<span class="normal">1730</span>
+<span class="normal">1731</span>
+<span class="normal">1732</span>
+<span class="normal">1733</span>
+<span class="normal">1734</span>
+<span class="normal">1735</span>
+<span class="normal">1736</span>
+<span class="normal">1737</span>
+<span class="normal">1738</span>
+<span class="normal">1739</span>
+<span class="normal">1740</span>
+<span class="normal">1741</span>
+<span class="normal">1742</span>
+<span class="normal">1743</span>
+<span class="normal">1744</span>
+<span class="normal">1745</span>
+<span class="normal">1746</span>
+<span class="normal">1747</span>
+<span class="normal">1748</span>
+<span class="normal">1749</span>
+<span class="normal">1750</span>
+<span class="normal">1751</span>
+<span class="normal">1752</span>
+<span class="normal">1753</span>
+<span class="normal">1754</span>
+<span class="normal">1755</span>
+<span class="normal">1756</span>
+<span class="normal">1757</span>
+<span class="normal">1758</span>
+<span class="normal">1759</span>
+<span class="normal">1760</span>
+<span class="normal">1761</span>
+<span class="normal">1762</span>
+<span class="normal">1763</span>
+<span class="normal">1764</span>
+<span class="normal">1765</span>
+<span class="normal">1766</span>
+<span class="normal">1767</span>
+<span class="normal">1768</span>
+<span class="normal">1769</span>
+<span class="normal">1770</span>
+<span class="normal">1771</span>
+<span class="normal">1772</span>
+<span class="normal">1773</span>
+<span class="normal">1774</span>
+<span class="normal">1775</span>
+<span class="normal">1776</span>
+<span class="normal">1777</span>
+<span class="normal">1778</span>
+<span class="normal">1779</span>
+<span class="normal">1780</span>
+<span class="normal">1781</span>
+<span class="normal">1782</span>
+<span class="normal">1783</span>
+<span class="normal">1784</span>
+<span class="normal">1785</span>
+<span class="normal">1786</span>
+<span class="normal">1787</span>
+<span class="normal">1788</span>
+<span class="normal">1789</span>
+<span class="normal">1790</span>
+<span class="normal">1791</span>
+<span class="normal">1792</span>
+<span class="normal">1793</span>
+<span class="normal">1794</span>
+<span class="normal">1795</span>
+<span class="normal">1796</span>
+<span class="normal">1797</span>
+<span class="normal">1798</span>
+<span class="normal">1799</span>
+<span class="normal">1800</span>
+<span class="normal">1801</span>
+<span class="normal">1802</span>
+<span class="normal">1803</span>
+<span class="normal">1804</span>
+<span class="normal">1805</span>
+<span class="normal">1806</span>
+<span class="normal">1807</span>
+<span class="normal">1808</span>
+<span class="normal">1809</span>
+<span class="normal">1810</span>
+<span class="normal">1811</span>
+<span class="normal">1812</span>
+<span class="normal">1813</span>
+<span class="normal">1814</span>
+<span class="normal">1815</span>
+<span class="normal">1816</span>
+<span class="normal">1817</span>
+<span class="normal">1818</span>
+<span class="normal">1819</span>
+<span class="normal">1820</span>
+<span class="normal">1821</span>
+<span class="normal">1822</span>
+<span class="normal">1823</span>
+<span class="normal">1824</span>
+<span class="normal">1825</span>
+<span class="normal">1826</span>
+<span class="normal">1827</span>
+<span class="normal">1828</span>
+<span class="normal">1829</span>
+<span class="normal">1830</span>
+<span class="normal">1831</span>
+<span class="normal">1832</span>
+<span class="normal">1833</span>
+<span class="normal">1834</span>
+<span class="normal">1835</span>
+<span class="normal">1836</span>
+<span class="normal">1837</span>
+<span class="normal">1838</span>
+<span class="normal">1839</span>
+<span class="normal">1840</span>
+<span class="normal">1841</span>
+<span class="normal">1842</span>
+<span class="normal">1843</span>
+<span class="normal">1844</span>
+<span class="normal">1845</span>
+<span class="normal">1846</span>
+<span class="normal">1847</span>
+<span class="normal">1848</span>
+<span class="normal">1849</span>
+<span class="normal">1850</span>
+<span class="normal">1851</span>
+<span class="normal">1852</span>
+<span class="normal">1853</span>
+<span class="normal">1854</span>
+<span class="normal">1855</span>
+<span class="normal">1856</span>
+<span class="normal">1857</span>
+<span class="normal">1858</span>
+<span class="normal">1859</span>
+<span class="normal">1860</span>
+<span class="normal">1861</span>
+<span class="normal">1862</span>
+<span class="normal">1863</span>
+<span class="normal">1864</span>
+<span class="normal">1865</span>
+<span class="normal">1866</span>
+<span class="normal">1867</span>
+<span class="normal">1868</span>
+<span class="normal">1869</span>
+<span class="normal">1870</span>
+<span class="normal">1871</span>
+<span class="normal">1872</span>
+<span class="normal">1873</span>
+<span class="normal">1874</span>
+<span class="normal">1875</span>
+<span class="normal">1876</span>
+<span class="normal">1877</span>
+<span class="normal">1878</span>
+<span class="normal">1879</span>
+<span class="normal">1880</span>
+<span class="normal">1881</span>
+<span class="normal">1882</span>
+<span class="normal">1883</span>
+<span class="normal">1884</span>
+<span class="normal">1885</span>
+<span class="normal">1886</span>
+<span class="normal">1887</span>
+<span class="normal">1888</span>
+<span class="normal">1889</span>
+<span class="normal">1890</span>
+<span class="normal">1891</span>
+<span class="normal">1892</span>
+<span class="normal">1893</span>
+<span class="normal">1894</span>
+<span class="normal">1895</span>
+<span class="normal">1896</span>
+<span class="normal">1897</span>
+<span class="normal">1898</span>
+<span class="normal">1899</span>
+<span class="normal">1900</span>
+<span class="normal">1901</span>
+<span class="normal">1902</span>
+<span class="normal">1903</span>
+<span class="normal">1904</span>
+<span class="normal">1905</span>
+<span class="normal">1906</span>
+<span class="normal">1907</span>
+<span class="normal">1908</span>
+<span class="normal">1909</span>
+<span class="normal">1910</span>
+<span class="normal">1911</span>
+<span class="normal">1912</span>
+<span class="normal">1913</span>
+<span class="normal">1914</span>
+<span class="normal">1915</span>
+<span class="normal">1916</span>
+<span class="normal">1917</span>
+<span class="normal">1918</span>
+<span class="normal">1919</span>
+<span class="normal">1920</span>
+<span class="normal">1921</span>
+<span class="normal">1922</span>
+<span class="normal">1923</span>
+<span class="normal">1924</span>
+<span class="normal">1925</span>
+<span class="normal">1926</span>
+<span class="normal">1927</span>
+<span class="normal">1928</span>
+<span class="normal">1929</span>
+<span class="normal">1930</span>
+<span class="normal">1931</span>
+<span class="normal">1932</span>
+<span class="normal">1933</span>
+<span class="normal">1934</span>
+<span class="normal">1935</span>
+<span class="normal">1936</span>
+<span class="normal">1937</span>
+<span class="normal">1938</span>
+<span class="normal">1939</span>
+<span class="normal">1940</span>
+<span class="normal">1941</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
@@ -1915,7 +2137,7 @@
     <span class="n">ReducedPattern</span><span class="p">,</span>
     <span class="n">reduced_pattern_from_pattern_data</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compute_total_num</span><span class="p">,</span> <span class="n">get_version</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compute_num_within_and_repeats</span><span class="p">,</span> <span class="n">compute_total_num</span><span class="p">,</span> <span class="n">get_version</span>
 
 <span class="n">WebSocketType</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="n">WebSocket</span> <span class="o">|</span> <span class="n">WebSocketTestSession</span>
 
@@ -2475,7 +2697,11 @@
     <span class="n">extra_args</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">test_jump_to_end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_end"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_end" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the jump_to_end command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the jump_to_end command with delta=0.</span>
+
+<span class="sd">        Test what happens after you send the jump command</span>
+<span class="sd">        if you cancel it or advance to the next threading group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pattern_name</span> <span class="o">=</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
 
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_test_client</span><span class="p">(</span>
@@ -2500,7 +2726,7 @@
                 <span class="n">end_number0</span><span class="p">,</span>
                 <span class="n">end_repeat_number</span><span class="p">,</span>
             <span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
-                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
                 <span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">,</span> <span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;nothing&quot;</span><span class="p">),</span>
                 <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span> <span class="o">//</span> <span class="mi">3</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span><span class="p">),</span>
                 <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
@@ -2516,7 +2742,7 @@
                     <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
-                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">),</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
                 <span class="p">)</span>
                 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
                 <span class="n">jump_end_reply</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -2555,7 +2781,9 @@
                     <span class="p">)</span>
                 <span class="k">match</span> <span class="n">post_action</span><span class="p">:</span>
                     <span class="k">case</span> <span class="s2">&quot;cancel&quot;</span><span class="p">:</span>
-                        <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+                        <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                            <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="p">)</span>
                         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
                         <span class="n">jump_end_cancel_reply</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                         <span class="k">assert</span> <span class="n">jump_end_cancel_reply</span> <span class="o">==</span> <span class="n">SimpleNamespace</span><span class="p">(</span>
@@ -2589,7 +2817,7 @@
             <span class="p">}</span>
             <span class="k">for</span> <span class="n">bad_total_end_number0</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">):</span>
                 <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
-                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="n">bad_total_end_number0</span><span class="p">),</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="n">bad_total_end_number0</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
                     <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">end_field_names</span><span class="p">:</span>
@@ -2598,8 +2826,124 @@
                         <span class="o">==</span> <span class="n">current_end_data</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
                     <span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">test_jump_to_end_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_end_delta"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_end_delta" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the jump_to_end command with nonzero delta.&quot;&quot;&quot;</span>
+        <span class="n">pattern_name</span> <span class="o">=</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_test_client</span><span class="p">(</span>
+            <span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span>
+            <span class="n">num_shafts</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">upload_patterns</span><span class="o">=</span><span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">select_pattern</span><span class="p">(</span><span class="n">pattern_name</span><span class="o">=</span><span class="n">pattern_name</span><span class="p">)</span>
+            <span class="n">num_ends_in_pattern</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">threading</span><span class="p">)</span>
+
+            <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">THREAD</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
+            <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Mode&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ModeEnum</span><span class="o">.</span><span class="n">THREAD</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="p">(</span>
+                <span class="n">thread_group_size</span><span class="p">,</span>
+                <span class="n">total_end_number0</span><span class="p">,</span>
+                <span class="n">delta</span><span class="p">,</span>
+            <span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span><span class="p">,</span> <span class="n">num_ends_in_pattern</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="mi">0</span><span class="p">,</span>
+                    <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">num_ends_in_pattern</span> <span class="o">//</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="n">num_ends_in_pattern</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">num_ends_in_pattern</span><span class="p">,</span>
+                    <span class="n">num_ends_in_pattern</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="n">total_end_number0</span> <span class="o">+</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">max_change</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_ends_in_pattern</span><span class="p">,</span> <span class="n">thread_group_size</span><span class="p">)</span>
+
+                <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;thread_group_size&quot;</span><span class="p">,</span> <span class="n">group_size</span><span class="o">=</span><span class="n">thread_group_size</span><span class="p">))</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
+                <span class="k">assert</span> <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;ThreadGroupSize&quot;</span><span class="p">,</span> <span class="n">group_size</span><span class="o">=</span><span class="n">thread_group_size</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">thread_group_size</span> <span class="o">==</span> <span class="n">thread_group_size</span>
+
+                <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
+
+                <span class="n">end_number0</span><span class="p">,</span> <span class="n">end_repeat_number</span> <span class="o">=</span> <span class="n">compute_num_within_and_repeats</span><span class="p">(</span>
+                    <span class="n">total_num</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">,</span> <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># Jump to beginning of the next repeat</span>
+                    <span class="n">expected_total_end_number0</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
+                        <span class="n">num_within</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span><span class="p">,</span> <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># Jump to end of the previous repeat</span>
+                    <span class="n">expected_total_end_number1</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
+                        <span class="n">num_within</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
+                        <span class="n">repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">expected_total_end_number0</span> <span class="o">=</span> <span class="n">expected_total_end_number1</span> <span class="o">-</span> <span class="n">max_change</span>
+                <span class="k">elif</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">end_number0</span> <span class="o">+</span> <span class="n">thread_group_size</span> <span class="o">&gt;</span> <span class="n">num_ends_in_pattern</span><span class="p">:</span>
+                        <span class="c1"># The delta=0 jump group ends at the end of a repeat;</span>
+                        <span class="c1"># jump to the beginning of the next repeat.</span>
+                        <span class="n">expected_total_end_number0</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
+                            <span class="n">num_within</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                            <span class="n">repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Progress within the current repeat</span>
+                        <span class="n">expected_total_end_number0</span> <span class="o">=</span> <span class="n">total_end_number0</span> <span class="o">+</span> <span class="n">thread_group_size</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="mi">0</span>
+                    <span class="k">if</span> <span class="n">total_end_number0</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="c1"># The delta=0 jump group begins at end 1; back up to end 0.</span>
+                        <span class="n">expected_total_end_number0</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">elif</span> <span class="n">end_number0</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="c1"># The delta=0 jump group begins at the beginning of a repeat</span>
+                        <span class="c1"># that is not the first repeat; jump to the end of the previous repeat.</span>
+                        <span class="n">expected_total_end_number0</span> <span class="o">=</span> <span class="n">compute_total_num</span><span class="p">(</span>
+                            <span class="n">num_within</span><span class="o">=</span><span class="n">num_ends_in_pattern</span> <span class="o">-</span> <span class="n">max_change</span><span class="p">,</span>
+                            <span class="n">repeat_number</span><span class="o">=</span><span class="n">end_repeat_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">expected_total_end_number0</span> <span class="o">=</span> <span class="n">total_end_number0</span> <span class="o">-</span> <span class="n">max_change</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Back up within the current repeat</span>
+                        <span class="n">expected_total_end_number0</span> <span class="o">=</span> <span class="n">total_end_number0</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_change</span><span class="p">,</span> <span class="n">end_number0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="n">assert_replies_equal</span><span class="p">(</span>
+                    <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpEndNumber&quot;</span><span class="p">,</span>
+                        <span class="n">total_end_number0</span><span class="o">=</span><span class="n">expected_total_end_number0</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Test jumping to invalid ends.</span>
+            <span class="c1"># Start by clearing the jump, and test that it remains clear.</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">jump_end</span><span class="o">.</span><span class="n">total_end_number0</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">total_end_number0</span><span class="p">,</span> <span class="n">delta</span> <span class="ow">in</span> <span class="p">((</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">),</span>
+                    <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">jump_end</span><span class="o">.</span><span class="n">total_end_number0</span> <span class="ow">is</span> <span class="kc">None</span>
+
     <span class="k">def</span> <span class="nf">test_jump_to_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the jump_to_pick command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the jump_to_pick command with delta=0.</span>
+
+<span class="sd">        Test what happens after you send the jump command</span>
+<span class="sd">        if you cancel it or advance to the next pick.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pattern_name</span> <span class="o">=</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
 
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_test_client</span><span class="p">(</span>
@@ -2624,7 +2968,9 @@
                     <span class="n">repeat_number</span><span class="o">=</span><span class="n">pick_repeat_number</span><span class="p">,</span>
                     <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_picks_in_pattern</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="n">total_pick_number</span><span class="p">))</span>
+                <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="n">total_pick_number</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="p">)</span>
                 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
                 <span class="n">jump_pick_reply</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="k">if</span> <span class="n">total_pick_number</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -2655,7 +3001,9 @@
                     <span class="p">)</span>
                 <span class="k">match</span> <span class="n">post_action</span><span class="p">:</span>
                     <span class="k">case</span> <span class="s2">&quot;cancel&quot;</span><span class="p">:</span>
-                        <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+                        <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                            <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="p">)</span>
                         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
                         <span class="n">jump_pick_cancel_reply</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                         <span class="k">assert</span> <span class="n">jump_pick_cancel_reply</span> <span class="o">==</span> <span class="n">SimpleNamespace</span><span class="p">(</span>
@@ -2684,7 +3032,7 @@
             <span class="p">}</span>
             <span class="k">for</span> <span class="n">bad_total_pick_number</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">):</span>
                 <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
-                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="n">bad_total_pick_number</span><span class="p">),</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="n">bad_total_pick_number</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
                     <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">pick_field_names</span><span class="p">:</span>
@@ -2693,8 +3041,61 @@
                         <span class="o">==</span> <span class="n">current_pick_data</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
                     <span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">test_jump_to_pick_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick_delta"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_pick_delta" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the jump_to_pick command with nonzero delta.&quot;&quot;&quot;</span>
+        <span class="n">pattern_name</span> <span class="o">=</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_test_client</span><span class="p">(</span>
+            <span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span>
+            <span class="n">num_shafts</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">upload_patterns</span><span class="o">=</span><span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">select_pattern</span><span class="p">(</span><span class="n">pattern_name</span><span class="o">=</span><span class="n">pattern_name</span><span class="p">)</span>
+            <span class="n">num_picks_in_pattern</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">picks</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">total_pick_number</span><span class="p">,</span> <span class="n">delta</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="mi">0</span><span class="p">,</span>
+                    <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">num_picks_in_pattern</span> <span class="o">//</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="n">num_picks_in_pattern</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">num_picks_in_pattern</span><span class="p">,</span>
+                    <span class="n">num_picks_in_pattern</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="p">):</span>
+                <span class="n">expected_total_pick_number</span> <span class="o">=</span> <span class="n">total_pick_number</span> <span class="o">+</span> <span class="n">delta</span>
+                <span class="k">if</span> <span class="n">expected_total_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="n">total_pick_number</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
+                <span class="n">assert_replies_equal</span><span class="p">(</span>
+                    <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpPickNumber&quot;</span><span class="p">,</span>
+                        <span class="n">total_pick_number</span><span class="o">=</span><span class="n">expected_total_pick_number</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Test jumping to invalid picks.</span>
+            <span class="c1"># Start by clearing the jump, and test that it remains clear.</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">total_pick_number</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">total_pick_number</span><span class="p">,</span> <span class="n">delta</span> <span class="ow">in</span> <span class="p">((</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="n">total_pick_number</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">),</span>
+                    <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">total_pick_number</span> <span class="ow">is</span> <span class="kc">None</span>
+
     <span class="k">def</span> <span class="nf">test_jump_to_tabby_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_tabby_pick"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_tabby_pick" title="Go to docs">docs</a></div>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the jump_to_tabby_pick command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the jump_to_tabby_pick command with delta=0.</span>
+
+<span class="sd">        Test what happens after you send the jump command</span>
+<span class="sd">        if you cancel it or advance to the next tabby pick.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pattern_name</span> <span class="o">=</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
 
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_test_client</span><span class="p">(</span>
@@ -2716,7 +3117,7 @@
                 <span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">,</span> <span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;nothing&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
             <span class="p">):</span>
                 <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
-                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_tabby_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">tabby_pick_number</span><span class="p">)</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_tabby_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">tabby_pick_number</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                 <span class="p">)</span>
                 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
                 <span class="n">jump_pick_reply</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -2725,7 +3126,9 @@
                 <span class="p">)</span>
                 <span class="k">match</span> <span class="n">post_action</span><span class="p">:</span>
                     <span class="k">case</span> <span class="s2">&quot;cancel&quot;</span><span class="p">:</span>
-                        <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_tabby_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+                        <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                            <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_tabby_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="p">)</span>
                         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
                         <span class="n">jump_pick_cancel_reply</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                         <span class="k">assert</span> <span class="n">jump_pick_cancel_reply</span> <span class="o">==</span> <span class="n">SimpleNamespace</span><span class="p">(</span>
@@ -2746,10 +3149,51 @@
             <span class="n">current_tabby_pick_number</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">tabby_pick_number</span>
             <span class="k">for</span> <span class="n">bad_tabby_pick_number</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">):</span>
                 <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
-                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">bad_tabby_pick_number</span><span class="p">),</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">bad_tabby_pick_number</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
                     <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="o">==</span> <span class="n">current_tabby_pick_number</span>
+
+    <span class="k">def</span> <span class="nf">test_jump_to_tabby_pick_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_jump_to_tabby_pick_delta"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_jump_to_tabby_pick_delta" title="Go to docs">docs</a></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the jump_to_tabby_pick command with nonzero delta.&quot;&quot;&quot;</span>
+        <span class="n">pattern_name</span> <span class="o">=</span> <span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_test_client</span><span class="p">(</span>
+            <span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span>
+            <span class="n">num_shafts</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">upload_patterns</span><span class="o">=</span><span class="n">ALL_PATTERN_PATHS</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">select_pattern</span><span class="p">(</span><span class="n">pattern_name</span><span class="o">=</span><span class="n">pattern_name</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">tabby_pick_number</span><span class="p">,</span> <span class="n">delta</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+                <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="p">):</span>
+                <span class="n">expected_tabby_pick_number</span> <span class="o">=</span> <span class="n">tabby_pick_number</span> <span class="o">+</span> <span class="n">delta</span>
+                <span class="k">if</span> <span class="n">expected_tabby_pick_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_tabby_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">tabby_pick_number</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
+                <span class="n">assert_replies_equal</span><span class="p">(</span>
+                    <span class="n">replies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;JumpTabbyPickNumber&quot;</span><span class="p">,</span>
+                        <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">expected_tabby_pick_number</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Test jumping to invalid picks.</span>
+            <span class="c1"># Start by clearing the jump, and test that it remains clear.</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_tabby_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">jump_tabby_pick</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">tabby_pick_number</span><span class="p">,</span> <span class="n">delta</span> <span class="ow">in</span> <span class="p">((</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_tabby_pick&quot;</span><span class="p">,</span> <span class="n">tabby_pick_number</span><span class="o">=</span><span class="n">tabby_pick_number</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">),</span>
+                    <span class="n">should_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">loom_server</span><span class="o">.</span><span class="n">jump_tabby_pick</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="ow">is</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">test_next_end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span><div class="mkapi-source-link" id="base_loom_server.testutils.BaseTestLoomServer.test_next_end"><a href="../../../api/base_loom_server/testutils/#base_loom_server.testutils.BaseTestLoomServer.test_next_end" title="Go to docs">docs</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Test advancing to the next end.&quot;&quot;&quot;</span>
@@ -3071,7 +3515,7 @@
                         <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_picks_in_pattern</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
-                        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="n">total_pick_number</span><span class="p">),</span>
+                        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_pick&quot;</span><span class="p">,</span> <span class="n">total_pick_number</span><span class="o">=</span><span class="n">total_pick_number</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
                     <span class="p">)</span>
                     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># noqa: PLR2004</span>
                     <span class="k">if</span> <span class="n">total_pick_number</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -3125,7 +3569,7 @@
                         <span class="n">repeat_len</span><span class="o">=</span><span class="n">num_ends_in_pattern</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="n">replies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span>
-                        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">),</span>
+                        <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;jump_to_end&quot;</span><span class="p">,</span> <span class="n">total_end_number0</span><span class="o">=</span><span class="n">total_end_number0</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
                     <span class="p">)</span>
                     <span class="k">if</span> <span class="n">total_end_number0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="k">assert</span> <span class="n">total_end_number1</span> <span class="o">==</span> <span class="mi">0</span>

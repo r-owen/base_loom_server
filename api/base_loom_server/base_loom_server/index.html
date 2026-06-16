@@ -102,6 +102,8 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.thread_low_to_high">thread_low_to_high</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.compute_thread_low_to_high">compute_thread_low_to_high</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.loom_connected">loom_connected</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#base_loom_server.base_loom_server.BaseLoomServer.start">start</a>
@@ -476,6 +478,11 @@ Process one reply from the loom.</p>
 Write the shaft word to the loom.</p>
 </li>
 <li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.compute_thread_low_to_high" title="base_loom_server.base_loom_server.BaseLoomServer.compute_thread_low_to_high">compute_thread_low_to_high</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Compute thread_low_to_high.</p>
+</li>
+<li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.start" title="base_loom_server.base_loom_server.BaseLoomServer.start">start</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Run asynchronous startup tasks.</p>
@@ -553,7 +560,7 @@ Handle the clear_pattern_names command.</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_direction" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_direction">cmd_direction</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Handle the direction command: set direction.</p>
+Handle the direction command, to set the direction.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end">cmd_jump_to_end</a></span>
@@ -768,7 +775,7 @@ Report Direction.</p>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_wifi" title="base_loom_server.base_loom_server.BaseLoomServer.report_wifi">report_wifi</a></span>
  <span class="mkapi-dash">&mdash;</span>
-Start updating WiFI info, if supported, else report not supported.</p>
+Start updating WiFi info, if supported, else report not supported.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.wifi_manager_callback" title="base_loom_server.base_loom_server.BaseLoomServer.wifi_manager_callback">wifi_manager_callback</a></span>
@@ -911,6 +918,23 @@ Send data to the loom.</p>
 <div class="mkapi-document">
 <p>Return True if threading (or unthreading) is currently low to high.</p>
 <p>Takes into account settings and self.direction_forward.</p>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.compute_thread_low_to_high">
+<span class="mkapi-object-link">
+<span class="mkapi-parent-toggle" title="Toggle class names">
+<i class="fa-solid fa-square-plus"></i>
+</span>
+
+<a href="../../../src/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.compute_thread_low_to_high" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span><span class="mkapi-object-kind">method</span>
+<span class="mkapi-object-parent">
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.compute_thread_low_to_high" title="base_loom_server.base_loom_server.BaseLoomServer.compute_thread_low_to_high">compute_thread_low_to_high</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-star">*</span><span class="mkapi-comma">, </span><span class="mkapi-arg">direction_forward</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bool</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">bool</span></span>
+</p>
+<div class="mkapi-document">
+<p>Compute thread_low_to_high.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.loom_connected">
 <span class="mkapi-object-link">
@@ -1266,6 +1290,23 @@ even if it has not changed.</p>
 <div class="mkapi-document">
 <p>Handle the clear_pattern_names command.</p>
 <p>Clear all patterns except the current pattern.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+IgnoredCommand with no command-specific parameters. Ignored.</p>
+</li>
+</ul>
+</div>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_direction">
 <span class="mkapi-object-link">
@@ -1282,7 +1323,27 @@ even if it has not changed.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.cmd_direction" title="base_loom_server.base_loom_server.BaseLoomServer.cmd_direction">cmd_direction</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">command</span><span class="mkapi-colon">: </span><span class="mkapi-ann"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Handle the direction command: set direction.</p>
+<p>Handle the direction command, to set the direction.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>forward (bool): Set direction to forward, if true, else backwards (undo).</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_jump_to_end">
 <span class="mkapi-object-link">
@@ -1300,6 +1361,31 @@ even if it has not changed.</p>
 </p>
 <div class="mkapi-document">
 <p>Handle the jump_to_end command.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>total_end_number0 (int | None): The desired total_end_number0,
+  or None to clear the jump.</li>
+<li>delta (int): Specify whether to go to the group that starts
+  at total_end_number0 (delta=0),
+  to the next group after that (delta&gt;0),
+  or to the previous group before that (delta &lt;0).</li>
+</ul>
+</li>
+</ul>
+</div>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -1334,6 +1420,29 @@ even if it has not changed.</p>
 <p>Handle the jump_to_pick command.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>total_pick_number (int | None): The desired total_pick_number,
+  or None to clear the jump.</li>
+<li>delta (int): An offset to total_pick_number;
+  typically -1, 0, or +1, but other values are obeyed.</li>
+</ul>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
 <i class="fa-regular fa-square-minus"></i>
 </span>
@@ -1366,6 +1475,29 @@ even if it has not changed.</p>
 <p>Handle the jump_to_tabby_pick command.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>tabby_pick_number (int | None): The desired tabby_pick_number,
+  or None to clear the jump.</li>
+<li>delta (int): An offset to tabby_pick_number;
+  typically -1, 0, or +1, but other values are obeyed.</li>
+</ul>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
 <i class="fa-regular fa-square-minus"></i>
 </span>
@@ -1396,6 +1528,26 @@ even if it has not changed.</p>
 </p>
 <div class="mkapi-document">
 <p>Handle the mode command: set the mode.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>mode (int): The desired mode; one of <a href="../enums/#base_loom_server.enums.ModeEnum" title="base_loom_server.enums.ModeEnum"><code>ModeEnum</code></a>.</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_select_pattern">
 <span class="mkapi-object-link">
@@ -1413,6 +1565,26 @@ even if it has not changed.</p>
 </p>
 <div class="mkapi-document">
 <p>Handle the select_pattern command.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>name (str): Name of a pattern that is in the pattern database.</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_threading_repeats">
 <span class="mkapi-object-link">
@@ -1430,6 +1602,26 @@ even if it has not changed.</p>
 </p>
 <div class="mkapi-document">
 <p>Handle the separate_threading_repeats command.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>separate (bool): Separate threading pattern repeats?</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_separate_weaving_repeats">
 <span class="mkapi-object-link">
@@ -1447,6 +1639,26 @@ even if it has not changed.</p>
 </p>
 <div class="mkapi-document">
 <p>Handle the separate_weaving_repeats command.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>separate (bool): Separate weaving pattern repeats?</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_settings">
 <span class="mkapi-object-link">
@@ -1464,6 +1676,32 @@ even if it has not changed.</p>
 </p>
 <div class="mkapi-document">
 <p>Handle the settings command: set one or more settings.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with one or more command-specific parameters:</p>
+<ul>
+<li>direction_control (DirectionControlEnum): How to control direction.</li>
+<li>language (str): Name of desired language.</li>
+<li>loom_name (str): Name of loom.</li>
+<li>thread_group_size (int): Default threading group size.</li>
+<li>end1_on_right (bool): Should end 1 be displayed on the right (true) or left (false)?</li>
+<li>thread_right_to_left (bool): Thread right to left (true) or left to right (false)?</li>
+<li>thread_back_to_front (bool): Thread back to front (true) or front to back (false)?</li>
+</ul>
+</li>
+</ul>
+</div>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -1496,6 +1734,26 @@ even if it has not changed.</p>
 </p>
 <div class="mkapi-document">
 <p>Handle the thread_group_size command.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>group_size (int): Desired threading group size.</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_oobcommand">
 <span class="mkapi-object-link">
@@ -1515,6 +1773,26 @@ even if it has not changed.</p>
 <p>Handle the oob_command command.</p>
 <p>Send an out-of-band command to the mock loom.
 Ignored with a logged warning if the loom is not the mock loom.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>command (str): Out of band command for the mock loom.</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.cmd_upload">
 <span class="mkapi-object-link">
@@ -1532,6 +1810,28 @@ Ignored with a logged warning if the loom is not the mock loom.</p>
 </p>
 <div class="mkapi-document">
 <p>Handle the upload command.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>name (str): Name of pattern.</li>
+<li>data (str): Weaving pattern file contents, in any supported format.
+  Depending on the format the data may be text or binary.</li>
+</ul>
+</li>
+</ul>
+</div>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -1566,6 +1866,26 @@ Ignored with a logged warning if the loom is not the mock loom.</p>
 <p>Forget the specified WiFi network.</p>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>ssid (str): SSID (name) of WiFi network to forget.</li>
+</ul>
+</li>
+</ul>
+</div>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
 <i class="fa-regular fa-square-minus"></i>
 </span>
@@ -1596,6 +1916,27 @@ Ignored with a logged warning if the loom is not the mock loom.</p>
 </p>
 <div class="mkapi-document">
 <p>Use the specified WiFi network.</p>
+<p class="mkapi-section">
+<span class="mkapi-object-link">
+<span class="mkapi-section-toggle" title="Toggle parameters">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-section-name">Parameters</span>
+</p>
+<div class="mkapi-section-content">
+<ul class="mkapi-item-list">
+<li>
+<p><span class="mkapi-item-name">command</span> : 
+<span class="mkapi-item-type"><span class="mkapi-tooltip" title="types.SimpleNamespace">SimpleNamespace</span></span> <span class="mkapi-dash">&mdash;</span>
+Command with command-specific parameters:</p>
+<ul>
+<li>ssid (str): SSID (name) of WiFi network to use.</li>
+<li>password (str): WiFi password.</li>
+</ul>
+</li>
+</ul>
+</div>
 <p class="mkapi-section">
 <span class="mkapi-object-link">
 <span class="mkapi-section-toggle" title="Toggle raises">
@@ -2179,7 +2520,7 @@ Unusable entries will be ignored, with a logged warning.</p>
 <a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.report_wifi" title="base_loom_server.base_loom_server.BaseLoomServer.report_wifi">report_wifi</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
-<p>Start updating WiFI info, if supported, else report not supported.</p>
+<p>Start updating WiFi info, if supported, else report not supported.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.base_loom_server.BaseLoomServer.wifi_manager_callback">
 <span class="mkapi-object-link">
