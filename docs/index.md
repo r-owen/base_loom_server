@@ -77,7 +77,7 @@ Click on "?" to open documentation in a new browser tab.
 ## Upload and Select Pattern Files
 
 Before you can weave or thread, you must upload one or more pattern files to the loom server.
-The server accepts WIF (.wif), Fiberworks (.dtx), and WeavePoint (.wpo) files.
+You can upload WIF (.wif and .wifw), Fiberworks (.dtx), TempoWeave (.twa), and WeavePoint (.wpo) files.
 
 There are two ways to upload files:
 
