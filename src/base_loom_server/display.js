@@ -22,6 +22,10 @@ const WeavingThreadHalfWidth = 10
 
 const TabbyPickColor = "lightgray"
 
+// Supported extensions for weaving files
+const BinaryFileExtensions = ["twa", "wpo"]
+const TextFileExtensions = ["dtx", "wif", "wifw"]
+
 const ShaftRaisedHeight = 20
 const ShaftLoweredHeight = 5
 const ShaftMinWidth = 5
@@ -1158,6 +1162,7 @@ class LoomClient {
     Display the status message (a combination of this.loomConnectionState and this.statusMessage)
     */
     displayStatusMessage() {
+        console.log("displayStatusMessage", this.statusMessage)
         let text = ConnectionStateTranslationDict[this.loomConnectionState.state]
         let textColor = null
         if (this.isConnected() && (this.statusMessage != null)) {
@@ -2332,18 +2337,19 @@ class LoomClient {
 
             let isFirst = true
             for (let file of fileArray) {
-                const fileExt = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2)
-                // .wpo WeavePoint files are binary. Decode them as latin-1 strings
-                // so that the data can reliably be encoded at the other end
-                // (latin-1 encodes any possible byte to a corresponding 8-bit char).
-                // All other files are text; assume utf-8.
+                const fileExt = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase()
                 let data
-                if (fileExt == "wpo") {
+                if (BinaryFileExtensions.includes(fileExt)) {
                     data = await readAndEncodeBinaryFile(file)
-                } else {
+                } else if (TextFileExtensions.includes(fileExt)) {
                     data = await readTextFile(file, "utf-8")
+                } else {
+                    this.statusMessage = { message: `Ignored "${file.name}"; unsupported type`, severity: SeverityEnum.WARNING }
+                    this.displayStatusMessage()
+                    continue
                 }
                 const fileCommand = { "type": "upload", "name": file.name, "data": data }
+                console.log("fileCommand=", fileCommand)
                 let replyDict = await this.sendCommandAndWait(fileCommand)
                 if (!replyDict.success) {
                     return

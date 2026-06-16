@@ -96,7 +96,9 @@
             <option>{Clear Recents}</option>
         </select>
         <form class="upload-form">
-            <input type="file" id="upload_file_input" multiple accept=".dtx,.wif,.wpo" style="display:none;">
+            <!-- The file extensions are ignored on iOS and iPadOS 26,
+            but application/octet-stream allows selecting files without a horrible extra menu. -->
+            <input type="file" id="upload_file_input" multiple accept="application/octet-stream, .dtx, .twa, .wif, .wifw, .wpo" style="display:none;">
             <button type="button" id="upload_file_button">{Upload}</button>
         </form>
     </div>
