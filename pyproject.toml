@@ -12,7 +12,7 @@ description = "Base package for web servers that control dobby multi-shaft looms
 readme = "README.md"
 dependencies = [
   "aiosqlite >= 0.21",
-  "dtx_to_wif ~= 4.4",
+  "dtx_to_wif ~= 4.7",
   "fastapi[standard] ~= 0.120",
   "pyserial-asyncio-fast ~= 0.16",
 ]
