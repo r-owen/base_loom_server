@@ -14,7 +14,8 @@ Click an image to see a gallery of screen shots.
 
 Features include:
 
-* Direct support for three types of weaving pattern files: WIF (.wif), Fiberworks (.dtx), and WeavePoint (.wpo).
+* Direct support for several types of weaving pattern files:
+    WIF (.wif and .wifw), Fiberworks (.dtx), TempoWeave (.twa), and WeavePoint (.wpo).
 * Support for weaving and threading.
 * Settings to accommodate your preferences.
 * Preliminary support for multiple languages (the translation files need work; [contributions welcome](translations.md)).
