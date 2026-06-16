@@ -1,6 +1,7 @@
 // value is replaced by python code
 const TranslationDict = { translation_dict }
 
+// The maximum number of files that can be uploaded at one time
 const MaxFiles = 10
 
 const MinBlockSize = 11
@@ -683,6 +684,14 @@ class LoomClient {
 
         let uploadFileInputElt = document.getElementById("upload_file_input")
         uploadFileInputElt.addEventListener("change", this.handleUploadFileInput.bind(this))
+        // The accept attribute includes application/octet-stream to work around
+        // a bug in Safari and Brave on iOS and iPadOS 26: the file extensions are both ignored
+        // and all weaving pattern file types are disallowed.
+        // Adding application/octet-stream allows most file types in iOS and iPadOS,
+        // (including weaving pattern file types) and Safari on macOS 15 seems to behave normally.
+        const acceptFileExtensions = "." + TextFileExtensions.concat(BinaryFileExtensions).join(", .")
+        const acceptStr = `application/octet-stream, ${acceptFileExtensions}`
+        uploadFileInputElt.setAttribute("accept", acceptStr)
 
         let weaveDirectionElt = document.getElementById("weave_direction")
         weaveDirectionElt.addEventListener("click", this.handleToggleDirection.bind(this))
@@ -1162,7 +1171,6 @@ class LoomClient {
     Display the status message (a combination of this.loomConnectionState and this.statusMessage)
     */
     displayStatusMessage() {
-        console.log("displayStatusMessage", this.statusMessage)
         let text = ConnectionStateTranslationDict[this.loomConnectionState.state]
         let textColor = null
         if (this.isConnected() && (this.statusMessage != null)) {
@@ -2331,7 +2339,6 @@ class LoomClient {
 
             // Sort the file names; this requires a bit of extra work
             // because FileList doesn't support sort.
-
             let fileArray = Array.from(fileList)
             fileArray.sort(compareFiles)
 
@@ -2344,12 +2351,14 @@ class LoomClient {
                 } else if (TextFileExtensions.includes(fileExt)) {
                     data = await readTextFile(file, "utf-8")
                 } else {
-                    this.statusMessage = { message: `Ignored "${file.name}"; unsupported type`, severity: SeverityEnum.WARNING }
+                    this.statusMessage = {
+                        message: `Ignored "${file.name}"; unsupported file type`,
+                        severity: SeverityEnum.WARNING
+                    }
                     this.displayStatusMessage()
                     continue
                 }
                 const fileCommand = { "type": "upload", "name": file.name, "data": data }
-                console.log("fileCommand=", fileCommand)
                 let replyDict = await this.sendCommandAndWait(fileCommand)
                 if (!replyDict.success) {
                     return
