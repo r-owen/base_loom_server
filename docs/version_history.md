@@ -1,14 +1,11 @@
 # Version History
 
-## 1.2.2b2 2026-06-15
+## 1.2.2 2026-06-15
 
 * Add support for uploading TempoWeave .twa files and WeaveIt .wifw files (standard WIF files with a nonstandard extension).
 * Fix file upload on iOS and iPadO 26. 
-
-## 1.2.2b1 2026-06-14
-
-* Make the threading input box show the numeric keyboard on phones and tablets (by setting type="numeric").
 * Make the threading - and + jump buttons move by a threading group, rather than a single warp end.
+* Make the threading input box show the numeric keyboard on phones and tablets (by setting type="numeric").
 
 ## 1.2.1 2026-06-06
 
