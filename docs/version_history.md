@@ -1,5 +1,9 @@
 # Version History
 
+## 1.2.3 2026-06-16
+
+* Fix an html error (incorrect spaces in the value of the `accept` property).
+
 ## 1.2.2 2026-06-15
 
 * Add support for uploading TempoWeave .twa files and WeaveIt .wifw files (standard WIF files with a nonstandard extension).
