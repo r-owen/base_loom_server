@@ -4,6 +4,11 @@ const TranslationDict = { translation_dict }
 // The maximum number of files that can be uploaded at one time
 const MaxFiles = 10
 
+// Supported extensions for weaving files
+const BinaryFileExtensions = ["twa", "wpo"]
+const TextFileExtensions = ["dtx", "wif", "wifw"]
+
+// Size limits (pixels) for displaying a single square of warp or weft
 const MinBlockSize = 11
 const MaxBlockSize = 21
 
@@ -22,10 +27,6 @@ const WeavingThreadDisplayGap = 1
 const WeavingThreadHalfWidth = 10
 
 const TabbyPickColor = "lightgray"
-
-// Supported extensions for weaving files
-const BinaryFileExtensions = ["twa", "wpo"]
-const TextFileExtensions = ["dtx", "wif", "wifw"]
 
 const ShaftRaisedHeight = 20
 const ShaftLoweredHeight = 5
@@ -689,8 +690,8 @@ class LoomClient {
         // and all weaving pattern file types are disallowed.
         // Adding application/octet-stream allows most file types in iOS and iPadOS,
         // (including weaving pattern file types) and Safari on macOS 15 seems to behave normally.
-        const acceptFileExtensions = "." + TextFileExtensions.concat(BinaryFileExtensions).join(", .")
-        const acceptStr = `application/octet-stream, ${acceptFileExtensions}`
+        const acceptFileExtensions = "." + TextFileExtensions.concat(BinaryFileExtensions).join(",.")
+        const acceptStr = `${acceptFileExtensions}`
         uploadFileInputElt.setAttribute("accept", acceptStr)
 
         let weaveDirectionElt = document.getElementById("weave_direction")
