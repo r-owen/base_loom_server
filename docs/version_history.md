@@ -1,5 +1,9 @@
 # Version History
 
+## 1.2.4 2026-08-03
+
+* Improve display of jump number; increase the font and make the field narrower.
+
 ## 1.2.3 2026-06-16
 
 * Fix an html error (incorrect spaces in the value of the `accept` property).
