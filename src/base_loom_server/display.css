@@ -158,10 +158,14 @@ div.flex-row {
     margin-bottom: 5px;
 }
 
-input[type=text] {
+input {
     background-color: var(--page-bg-color);
     color: var(--text-color);
     font-size: 80%;
+}
+
+input.jump-number {
+    width: 5em;  /* Cut excessive width on Safari */
 }
 
 input[type=text][modified=true] {
@@ -170,8 +174,8 @@ input[type=text][modified=true] {
 
 /* Make the Separate repeats?" checkboxes larger. This is especially important on macOS Safari */
 input[type=checkbox] {
-    width: calc(8px + 0.5vh + 0.5vw);
-    height: calc(8px + 0.5vh + 0.5vw);
+    width: calc(10px + 0.5vh + 0.5vw);
+    height: calc(10px + 0.5vh + 0.5vw);
 }
 
 select {
