@@ -217,17 +217,6 @@ function preventDefaults(event) {
     event.preventDefault()
     event.stopPropagation()
 }
-/*
-* Select the text in an input field when it gets focus
-*
-* Use as follows:
-*   myInputElt.addEventListener("focus", selectOnInput.bind(this, myInputElt))
-*
-* See https://stackoverflow.com/a/13542708/1653413 for why the obvious solution fails.
-*/
-function selectOnInput(inputField) {
-    setTimeout(function () { inputField.select() }, 0)
-}
 
 /*
 Read a binary file and encode it using base64
@@ -265,6 +254,25 @@ function readTextFile(file, encoding = "utf-8") {
     })
 }
 
+/*
+* Select the text in an input field when it gets focus
+*
+* Use as follows:
+*   myInputElt.addEventListener("focus", selectOnInput.bind(this, myInputElt))
+*
+* See https://stackoverflow.com/a/13542708/1653413 for why the obvious solution fails.
+*/
+function selectOnInput(inputField) {
+    setTimeout(function () { inputField.select() }, 0)
+}
+
+/*
+Sleep for the specified duration, in ms
+*/
+function sleep(durationMs) {
+    return new Promise(resolve => setTimeout(resolve, durationMs))
+}
+
 /* Translate a phrase using TranslationDict */
 function t(phrase) {
     if (!(phrase in TranslationDict)) {
@@ -286,7 +294,6 @@ function truncateStr(value, maxLength = 100) {
         return value
     }
 }
-
 
 /*
 A class similar to Python asyncio.Future, but with an optional timeout
@@ -588,6 +595,7 @@ class LoomClient {
         this.jumpEndHandler = new JumpHandler(this, "end")
         this.jumpPickHandler = new JumpHandler(this, "pick")
         this.jumpTabbyPickHandler = new JumpHandler(this, "tabby_pick")
+        this.windowFlasher = new WindowFlasher()
         this.ws = new WebSocket("ws")
     }
 
@@ -1900,6 +1908,9 @@ class LoomClient {
             this.currentPattern.end_repeat_number = datadict.end_repeat_number
             this.displayThreadingPattern()
             this.displayEnds()
+            if (!this.direction.forward) {
+                this.windowFlasher.flash()
+            }
         } else if (datadict.type == "CurrentPickNumber") {
             if (!this.currentPattern) {
                 this.currentPickData = NullPickData
@@ -1908,6 +1919,9 @@ class LoomClient {
             this.currentPickData = datadict
             this.displayWeavingPattern()
             this.displayPick()
+            if (!this.direction.forward) {
+                this.windowFlasher.flash()
+            }
         } else if (datadict.type == "CurrentTabbyPickNumber") {
             if (!this.currentPattern) {
                 this.currentTabbyPickData = NullTabbyPickData
@@ -1916,6 +1930,9 @@ class LoomClient {
             this.currentTabbyPickData = datadict
             this.displayTabbyPattern()
             this.displayTabbyPick()
+            if (!this.direction.forward) {
+                this.windowFlasher.flash()
+            }
         } else if (datadict.type == "Direction") {
             this.direction = datadict
             this.displayDirection()
@@ -2376,6 +2393,34 @@ class LoomClient {
         } catch (error) {
             commandProblemElt.textContent = truncateStr(datadict.message)
             commandProblemElt.style.color = SeverityColors[SeverityEnum.ERROR]
+        }
+    }
+}
+
+/*
+Flash the main window by toggling between light and dark theme.
+
+The use of the isFlashing attribute prevents fast multiple calls
+from leaving the window in the wrong state.
+*/
+class WindowFlasher {
+    constructor(durationMs = 100) {
+        this.isFlashing = false
+        this.durationMs = durationMs
+    }
+
+    async flash() {
+        if (this.isFlashing) {
+            return
+        }
+        this.isFlashing = true
+        try {
+            const isDark = document.documentElement.getAttribute("data-theme") == "dark"
+            document.documentElement.setAttribute("data-theme", isDark ? "light" : "dark")
+            await sleep(this.durationMs)
+            document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light")
+        } finally {
+            this.isFlashing = false
         }
     }
 }

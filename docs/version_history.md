@@ -1,5 +1,10 @@
 # Version History
 
+## 1.2.5 2026-08-15
+
+* Flash the window when going to the next pick (or thread group) in reverse.
+* Make the jump number input field a bit narrower.
+
 ## 1.2.4 2026-08-03
 
 * Improve display of jump number; increase the font and make the field narrower.

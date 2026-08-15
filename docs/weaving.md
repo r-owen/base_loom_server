@@ -31,7 +31,10 @@ and does not display multi-layer patterns, such as doubleweave, correctly.
 
 The "Direction" button shows "Weave" or "Unweave". (In [Thread](threading.md) mode the button shows "Thread" or "Unthread", prefixed by an arrow showing the direction of the next group of warp ends.)
 
-To clearly warn you when unweaving or unthreading, the direction button is shown in red, and the pattern is shown with a red border and a pink background.
+To clearly warn you when unweaving or unthreading:
+
+* The direction button is shown in red, and the pattern is shown with a red border and a pink background.
+* The window will flash when you press the pedal to request the previous pick (or group of warp ends).
 
 How you change direction depends on the loom:
 
