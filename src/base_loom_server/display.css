@@ -165,7 +165,7 @@ input {
 }
 
 input.jump-number {
-    width: 5em;  /* Cut excessive width on Safari */
+    width: 4em;  /* Cut excessive width on Safari */
 }
 
 input[type=text][modified=true] {
