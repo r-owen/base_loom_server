@@ -16,9 +16,9 @@ Features include:
 
 * Direct support for several types of weaving pattern files:
     WIF (.wif and .wifw), Fiberworks (.dtx), TempoWeave (.twa), and WeavePoint (.wpo).
-* Support for weaving and threading.
+* Support for weaving, weaving tabby, and threading.
 * Settings to accommodate your preferences.
-* Preliminary support for multiple languages (the translation files need work; [contributions welcome](translations.md)).
+* Support for several languages. [Contributions are welcome.](translations.md).
 * Runs on all major operating systems.
 * The software is free and uses the generous MIT license.
 
@@ -69,11 +69,11 @@ Click on the word to select that mode.
 The bold word shows the current mode.
 
 The links above give detailed instructions for each mode.
-But before you dive into that, read the next section about pattern files:
+But before you dive into that, read the next section about pattern files.
 
 In addition, you may see a "?" link to the right of the mode tabs.
-This will be shown if the server is connected to the internet and can see the help site.
-Click on "?" to open documentation in a new browser tab.
+This will be shown if the server is connected to the internet and can see the documentation site.
+Click on "?" to open this documentation in a new browser tab.
 
 ## Upload and Select Pattern Files
 
@@ -83,18 +83,17 @@ You can upload WIF (.wif and .wifw), Fiberworks (.dtx), TempoWeave (.twa), and W
 There are two ways to upload files:
 
 * Push the "Upload" button.
-* Drag and drop the files onto the web page (making sure the web page is gray before dropping them).
+* Drag and drop the files onto the web page (make sure the web page is gray before dropping them).
 
-Once you have uploaded patterns, you can select one using the menu labeled "Pattern" (next to the "Upload" button).
+Once you have uploaded patterns, you can select one using the menu labeled "Pattern", next to the "Upload" button.
 
 The loom server remembers the 25 most recent patterns that you have uploaded,
 and this information is saved on disk, so should not be lost in a power failure.
 
 The saved information includes the most recent pick (weaving) and the most recent warp thread group (threading).
-This allows you to switch between different patterns while weaving someth
-ing.
+This allows you to switch between different patterns while weaving.
 However, if you upload a new pattern with the same file name as a saved pattern,
-the new pattern overwrites the old and the pick and warp thread group information is reset.
+the new pattern overwrites the old, and the current pick and warp thread group information is lost.
 So please be careful.
 
 To clear out the pattern menu (which may become cluttered over time),
@@ -111,10 +110,8 @@ simply reload the page to regain the connection.
 ## Reset the Loom Connection
 
 Every time you reload the web page or connect from a different device, the server refreshes its connection to the loom (by disconnecting and immediately reconnecting).
-
-If the server is reporting a problem with its connection to the loom,
-and it is not due to the loom losing power, or a disconnected or bad USB cable,
-you might try reloading the page.
+So if the server is reporting a problem with its connection to the loom,
+and it is not due to the loom losing power, or a disconnected or bad USB cable, try reloading the page.
 
 If the loom seems confused, try turning off the loom, waiting a few seconds, then turning it on again.
 Then reload the web page, to force the web server to make a new connection to the loom.
@@ -125,7 +122,7 @@ Directions for using Guided Access on iOS to prevent your device from going to s
 
 > *Warning*: Guided Access disables all notifications while in use.
 
-Configure Guided Aceess. You just need to do this once:
+### Configure Guided Aceess. You only need to do this once:
 
 * Turn on Guided Access in Settings:
 
@@ -142,15 +139,25 @@ Configure Guided Aceess. You just need to do this once:
     * Click "Add a Control" at the bottom of the control center.
     * Search for Guided Access and add it.
 
-Then, whenever you start weaving, open the web browser, then bring up the control center to enter Guided Access.
-When you are done weaving, double-click the power button to disable Guided Access.
+### Then, whenever you want to weave:
+
+* Open the web browser you wish to use.
+* Bring up the control center to enter Guided Access.
+* Connect to the loom and weave.
+* When you are done weaving, double-click the power button and authenticate to disable Guided Access.
+
+Note that guided access locks you into the currently running app,
+so it is important to be running your web browser before enabling guided access mode.
+
+Personally I find it easier to dedicate an old used tablet to weaving, and disable sleep (auto-lock) on it.
 
 ## Software Versions
 
 You can see the versions of the main packages in a table in [Settings](settings.md).
 Please include this information in bug reports and feature requests.
 
-Also please check the version history for each package (especially base_loom_server),
+Also please check the version history for each package
+(especially [base_loom_server](https://r-owen.github.io/base_loom_server/version_history/)),
 to see if it has already been fixed in a newer version.
 
 ## Acknowledgements
@@ -159,6 +166,7 @@ to see if it has already been fixed in a newer version.
 * Toika for providing the Toika loom API.
 * Séguin for providing the Séguin loom API.
 * FiberWorks for providing the .dtx file specification.
+* TempoWeave for providing the .twa file specification, and making it public.
 * WeavePoint for providing the essential parts of the .wpo file specification.
 * CrowdIn for providing free use of their language translation site for this project.
 * All those who helped with language translations, including Kalle Pihlajasaari.
