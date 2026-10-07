@@ -107,6 +107,10 @@ class BaseLoomServer:
     loom_reports_direction = True
     loom_reports_motion = True
     mock_loom_type: type[BaseMockLoom] | None = None
+    # Note: for looms that do not support direction control at all
+    # (e.g. LeClerc) set loom_reports_direction=False
+    # and supports_full_direction_control=True.
+    # This prevents the direction control setting from being displayed.
     supports_full_direction_control = True
 
     def __init__(
