@@ -14,7 +14,8 @@ class DirectionControlEnum(enum.IntEnum):
     """What controls the direction (weave/unweave).
 
     * FULL: The direction can be changed by both the web interface
-        and the direction button on the loom.
+        and the direction button on the loom,
+        OR the loom does not support direction control at all.
         If the loom supports this (e.g. Séguin), it is the only allowed value.
         If the loom does not (e.g. Toika), this value is prohibited.
     * LOOM: The direction can only be changed by the unweave button
@@ -52,3 +53,4 @@ class ShaftStateEnum(enum.IntEnum):
     DONE = 1
     MOVING = 2
     ERROR = 3
+    NEED_RESTART = 4
