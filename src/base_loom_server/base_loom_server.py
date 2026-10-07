@@ -1073,13 +1073,14 @@ class BaseLoomServer:
 
                 # Parse the command
                 cmd_type = data.get("type")
+                if cmd_type is None:
+                    self.log.warning(f"{self}: ignoring command with no 'type' field: {data}")
+                    await self.report_command_problem(
+                        message=f"Invalid command; no 'type' field: {data!r}",
+                        severity=MessageSeverityEnum.WARNING,
+                    )
+                    continue
                 try:
-                    if cmd_type is None:
-                        await self.report_command_problem(
-                            message=f"Invalid command; no 'type' field: {data!r}",
-                            severity=MessageSeverityEnum.WARNING,
-                        )
-                        continue
                     command = SimpleNamespace(**data)
                     if self.verbose:
                         msg_summary = str(command)
