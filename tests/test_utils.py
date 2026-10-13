@@ -1,3 +1,4 @@
+import asyncio
 import itertools
 
 import pytest
@@ -7,6 +8,7 @@ from base_loom_server.utils import (
     bits_from_bitmask,
     compute_num_within_and_repeats,
     compute_total_num,
+    create_done_future,
     get_version,
     prune_duplicates,
 )
@@ -82,6 +84,13 @@ def test_compute_total_num() -> None:
 
         with pytest.raises(ValueError):
             compute_total_num(num_within, repeat_number, -1)
+
+
+async def test_create_done_future() -> None:
+    # This test must be async so an event loop is available
+    future = create_done_future()
+    assert isinstance(future, asyncio.Future)
+    assert future.done()
 
 
 def test_get_version() -> None:
