@@ -1,5 +1,6 @@
 import copy
 import dataclasses
+import itertools
 
 import pytest
 from dtx_to_wif import read_pattern_file
@@ -180,7 +181,7 @@ def test_end_number() -> None:
             for thread_group_size in group_size_numbers:
                 reduced_pattern.thread_group_size = thread_group_size
                 with pytest.raises(IndexError):
-                    reduced_pattern.set_current_end_number(end_number0)
+                    reduced_pattern.set_end_number(end_number0)
             assert reduced_pattern.end_number0 == 0
             assert reduced_pattern.end_repeat_number == 1
 
@@ -192,7 +193,7 @@ def test_end_number() -> None:
                 for thread_group_size in group_size_numbers:
                     reduced_pattern.thread_group_size = thread_group_size
                     with pytest.raises(IndexError):
-                        reduced_pattern.set_current_end_number(end_number0, end_number1=end_number1)
+                        reduced_pattern.set_end_number(end_number0, end_number1=end_number1)
             assert reduced_pattern.end_number0 == 0
             assert reduced_pattern.end_repeat_number == 1
 
@@ -203,12 +204,12 @@ def test_end_number() -> None:
                 reduced_pattern.thread_group_size = thread_group_size
             assert reduced_pattern.thread_group_size == initial_thread_group_size
 
-        # Test set_current_end_number and get_threading_shaft_word
+        # Test set_end_number and get_threading_shaft_word
         for thread_group_size in group_size_numbers:
             reduced_pattern.thread_group_size = thread_group_size
             # Test get_threading_group
             for end_number0 in (0, 1, num_ends - 1, num_ends):
-                reduced_pattern.set_current_end_number(end_number0=end_number0)
+                reduced_pattern.set_end_number(end_number0=end_number0)
                 if end_number0 == 0:
                     expected_end_number1 = 0
                 elif end_number0 + thread_group_size > num_ends:
@@ -243,7 +244,7 @@ def test_end_number() -> None:
             for nominal_expected_end_number0 in (0, 1, num_ends - 1, num_ends):
                 expected_end_number0 = nominal_expected_end_number0
                 expected_repeat_number = 1
-                reduced_pattern.set_current_end_number(
+                reduced_pattern.set_end_number(
                     end_number0=expected_end_number0,
                     end_number1=None,
                     end_repeat_number=expected_repeat_number,
@@ -340,7 +341,7 @@ def test_pick_number() -> None:
 
         num_picks = len(reduced_pattern.picks)
 
-        # Test check_pick_number, set_current_pick_number, and get_pick
+        # Test check_pick_number, set_pick_number, and get_pick
         # on some bad values
         assert reduced_pattern.pick_number == 0
         assert reduced_pattern.pick_repeat_number == 1
@@ -348,19 +349,25 @@ def test_pick_number() -> None:
             with pytest.raises(IndexError):
                 reduced_pattern.check_pick_number(pick_number)
             with pytest.raises(IndexError):
-                reduced_pattern.set_current_pick_number(pick_number)
+                reduced_pattern.set_pick_number(pick_number)
+            with pytest.raises(IndexError):
+                # Use a valid pick_repeat_number that is not the current value
+                # so we can test the repeat number has not changed.
+                reduced_pattern.set_pick_number(pick_number=pick_number, pick_repeat_number=2)
             with pytest.raises(IndexError):
                 reduced_pattern.get_pick(pick_number=pick_number)
         assert reduced_pattern.pick_number == 0
         assert reduced_pattern.pick_repeat_number == 1
 
-        # Test check_pick_number and set_current_pick_number,
+        # Test check_pick_number and set_pick_number,
         # get_pick, and get_current_pick on some good values.
-        for pick_number in (0, 1, num_picks - 1, num_picks):
+        for pick_number, pick_repeat_number in itertools.product(
+            (0, 1, num_picks - 1, num_picks), (-1, 0, 5)
+        ):
             reduced_pattern.check_pick_number(pick_number)
-            reduced_pattern.set_current_pick_number(pick_number)
+            reduced_pattern.set_pick_number(pick_number=pick_number, pick_repeat_number=pick_repeat_number)
             assert reduced_pattern.pick_number == pick_number
-            assert reduced_pattern.pick_repeat_number == 1
+            assert reduced_pattern.pick_repeat_number == pick_repeat_number
             pick = reduced_pattern.get_pick(pick_number=pick_number)
             current_pick = reduced_pattern.get_current_pick()
             assert pick == current_pick
@@ -372,8 +379,9 @@ def test_pick_number() -> None:
         # Go forward into repeat 3
         expected_pick_number = 0
         expected_repeat_number = 1
-        reduced_pattern.set_current_pick_number(pick_number=expected_pick_number)
-        reduced_pattern.pick_repeat_number = expected_repeat_number
+        reduced_pattern.set_pick_number(
+            pick_number=expected_pick_number, pick_repeat_number=expected_repeat_number
+        )
         while expected_repeat_number < 3:
             expected_pick_number += 1
             if expected_pick_number > num_picks:
@@ -442,20 +450,20 @@ def test_tabby_pick_number() -> None:
         full_pattern = read_pattern_file(filepath)
         reduced_pattern = reduced_pattern_from_pattern_data(name=filepath.name, data=full_pattern)
 
-        # Test check_tabby_pick_number, set_current_tabby_pick_number, and get_tabby_pick
+        # Test check_tabby_pick_number, set_tabby_pick_number, and get_tabby_pick
         # on some bad values
         assert reduced_pattern.tabby_pick_number == 0
         for tabby_pick_number in (-1, -2, -10):
             with pytest.raises(IndexError):
-                reduced_pattern.set_current_tabby_pick_number(tabby_pick_number)
+                reduced_pattern.set_tabby_pick_number(tabby_pick_number)
             with pytest.raises(IndexError):
                 reduced_pattern.get_tabby_pick(tabby_pick_number=tabby_pick_number)
         assert reduced_pattern.tabby_pick_number == 0
 
-        # Test check_tabby_pick_number and set_current_tabby_pick_number,
+        # Test check_tabby_pick_number and set_tabby_pick_number,
         # get_tabby_pick, and get_current_tabby_pick on some good values.
         for tabby_pick_number in (0, 1, 2, 99, 100):
-            reduced_pattern.set_current_tabby_pick_number(tabby_pick_number)
+            reduced_pattern.set_tabby_pick_number(tabby_pick_number)
             assert reduced_pattern.tabby_pick_number == tabby_pick_number
             tabby_pick = reduced_pattern.get_tabby_pick(tabby_pick_number=tabby_pick_number)
             current_tabby_pick = reduced_pattern.get_current_tabby_pick()
@@ -467,7 +475,7 @@ def test_tabby_pick_number() -> None:
                 assert tabby_pick == reduced_pattern.tabby_picks[tabby_pick_index]
 
         # Go forward for awhile
-        reduced_pattern.set_current_tabby_pick_number(tabby_pick_number=0)
+        reduced_pattern.set_tabby_pick_number(tabby_pick_number=0)
         for expected_tabby_pick_number in range(1, 10):
             reduced_pattern.increment_tabby_pick_number(direction_forward=True)
             assert reduced_pattern.tabby_pick_number == expected_tabby_pick_number
