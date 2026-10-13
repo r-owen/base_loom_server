@@ -260,7 +260,7 @@ class ReducedPattern:
 
         max_end_number = len(self.threading)
         new_end_number0 = 0
-        # Initialize new_end_number1 to None to allow set_current_end_number
+        # Initialize new_end_number1 to None to allow set_end_number
         # to compute it, if possible (most cases below).
         new_end_number1 = None
         new_end_repeat_number = end_repeat_number
@@ -364,7 +364,7 @@ class ReducedPattern:
         end_number0, end_number1, end_repeat_number = self.compute_next_end_numbers(
             thread_low_to_high=thread_low_to_high
         )
-        self.set_current_end_number(
+        self.set_end_number(
             end_number0=end_number0,
             end_number1=end_number1,
             end_repeat_number=end_repeat_number,
@@ -401,7 +401,7 @@ class ReducedPattern:
 
         self.tabby_pick_number = new_tabby_pick_number
 
-    def set_current_end_number(
+    def set_end_number(
         self,
         end_number0: int,
         end_number1: int | None = None,
@@ -419,7 +419,7 @@ class ReducedPattern:
                 * 0, if end_number0 = 0.
                 * Else in range end_number0 <= end_number1 ≤ num ends.
             end_repeat_number: New value for end_repeat_number.
-                If None, use the current value.
+                If None, retain the current value.
 
         Raises:
             IndexError: If end_number0 < 0 or > len(self.threading).
@@ -442,19 +442,23 @@ class ReducedPattern:
         if end_repeat_number is not None:
             self.end_repeat_number = end_repeat_number
 
-    def set_current_pick_number(self, pick_number: int) -> None:
-        """Set pick_number.
+    def set_pick_number(self, pick_number: int, pick_repeat_number: int | None = None) -> None:
+        """Set pick_number and possibly pick_repeat_number.
 
         Args:
             pick_number: The pick number.
+            pick_repeat_number: New value of pick_repeat_number.
+                If None retain the current value.
 
         Raises:
             IndexError if pick_number < 0 or > num picks.
         """
         self.check_pick_number(pick_number)
         self.pick_number = pick_number
+        if pick_repeat_number is not None:
+            self.pick_repeat_number = pick_repeat_number
 
-    def set_current_tabby_pick_number(self, tabby_pick_number: int) -> None:
+    def set_tabby_pick_number(self, tabby_pick_number: int) -> None:
         """Set pick_number.
 
         Args:

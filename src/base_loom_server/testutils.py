@@ -1123,7 +1123,7 @@ class BaseTestLoomServer:
                 client.loom_server.settings.thread_back_to_front = True
                 client.loom_server.settings.thread_right_to_left = True
                 client.loom_server.direction_forward = True
-                pattern.set_current_end_number(end_number0=0, end_repeat_number=1)
+                pattern.set_end_number(end_number0=0, end_repeat_number=1)
                 expected_end_number0 = 0
                 expected_end_number1 = 0
                 expected_repeat_number = 1

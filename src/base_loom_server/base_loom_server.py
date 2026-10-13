@@ -884,7 +884,10 @@ class BaseLoomServer:
             case ModeEnum.WEAVE_PATTERN:
                 # Command a new pattern pick, if there is one, else send 0
                 if self.jump_pick.pick_number is not None:
-                    self.current_pattern.set_current_pick_number(self.jump_pick.pick_number)
+                    self.current_pattern.set_pick_number(
+                        pick_number=self.jump_pick.pick_number,
+                        pick_repeat_number=self.jump_pick.pick_repeat_number,
+                    )
                 else:
                     try:
                         self.increment_pick_number()
@@ -899,8 +902,6 @@ class BaseLoomServer:
                         )
                         return True
 
-                if self.jump_pick.pick_repeat_number is not None:
-                    self.current_pattern.pick_repeat_number = self.jump_pick.pick_repeat_number
                 pick = self.current_pattern.get_current_pick()
                 await self.write_shafts_to_loom(pick.shaft_word)
                 await self.clear_jumps()
@@ -908,7 +909,7 @@ class BaseLoomServer:
             case ModeEnum.WEAVE_TABBY:
                 # Command a new tabby pick, if there is one, else send 0
                 if self.jump_tabby_pick.tabby_pick_number is not None:
-                    self.current_pattern.set_current_tabby_pick_number(self.jump_tabby_pick.tabby_pick_number)
+                    self.current_pattern.set_tabby_pick_number(self.jump_tabby_pick.tabby_pick_number)
                 else:
                     try:
                         self.increment_tabby_pick_number()
@@ -930,7 +931,7 @@ class BaseLoomServer:
             case ModeEnum.THREAD:
                 # Advance to the next thread group, if there is one
                 if self.jump_end.end_number0 is not None:
-                    self.current_pattern.set_current_end_number(
+                    self.current_pattern.set_end_number(
                         end_number0=self.jump_end.end_number0,
                         end_number1=self.jump_end.end_number1,
                         end_repeat_number=self.jump_end.end_repeat_number,
