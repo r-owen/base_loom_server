@@ -83,6 +83,13 @@ def compute_total_num(num_within: int, repeat_number: int, repeat_len: int) -> i
     return repeat_len * (repeat_number - 1) + num_within
 
 
+def create_done_future() -> asyncio.Future[None]:
+    """Create an asyncio.Future that is already done."""
+    future: asyncio.Future = asyncio.Future()
+    future.set_result(None)
+    return future
+
+
 def get_version(package_name: str) -> str:
     """Return version.__version__ from a package.
 
