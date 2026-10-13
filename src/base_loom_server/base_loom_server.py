@@ -66,6 +66,20 @@ class CommandError(Exception):
     pass
 
 
+@dataclasses.dataclass
+class State:
+    """Record the state, for undo."""
+
+    pattern_name: str
+    mode: ModeEnum
+    end: client_replies.CurrentEndNumber
+    pick: client_replies.CurrentPickNumber
+    tabby_pick: client_replies.CurrentTabbyPickNumber
+    jump_end: client_replies.JumpEndNumber
+    jump_pick: client_replies.JumpPickNumber
+    jump_tabby_pick: client_replies.JumpTabbyPickNumber
+
+
 def str_from_task(task: asyncio.Future, running_text: str) -> str:
     """Return an English description of the state of a task.
 
@@ -193,6 +207,7 @@ class BaseLoomServer:
             if nmcli_wifi
             else None
         )
+        self.previous_state: State | None = None
         self.__post_init__()
 
     @abc.abstractmethod
@@ -361,6 +376,77 @@ class BaseLoomServer:
             self.loom_connecting = False
 
         self.read_loom_task = asyncio.create_task(self.read_loom_loop())
+
+    def record_previous_state(self) -> None:
+        """Update self.previous_state, for restore_previous_state."""
+        if not self.current_pattern:
+            self.previous_state = None
+            return
+
+        self.previous_state = State(
+            pattern_name=self.current_pattern.name,
+            mode=self.mode,
+            end=self.get_current_end_number(),
+            pick=self.get_current_pick_number(),
+            tabby_pick=self.get_current_tabby_pick_number(),
+            jump_end=self.jump_end,
+            jump_pick=self.jump_pick,
+            jump_tabby_pick=self.jump_tabby_pick,
+        )
+
+    async def restore_previous_state(self) -> bool:
+        """Restore the previous state, if possible.
+
+        Restore is not possible if there is no previous data,
+        there is no current pattern, or the current pattern name
+        doesn't match that in the previous data.
+
+        Returns:
+            True if restore possible, else False.
+        """
+        if self.previous_state is None or self.current_pattern is None:
+            return False
+        if self.current_pattern.name != self.previous_state.pattern_name:
+            return False
+
+        pattern = self.current_pattern
+
+        self.mode = self.previous_state.mode
+        if (
+            pattern.pick_number != self.previous_state.pick.pick_number
+            or pattern.pick_repeat_number != self.previous_state.pick.pick_repeat_number
+        ):
+            pattern.set_pick_number(
+                pick_number=self.previous_state.pick.pick_number,
+                pick_repeat_number=self.previous_state.pick.pick_repeat_number,
+            )
+            await self.report_current_pick_number()
+        if (
+            pattern.end_number0 != self.previous_state.end.end_number0
+            or pattern.end_number1 != self.previous_state.end.end_number1
+            or pattern.end_repeat_number != self.previous_state.end.end_repeat_number
+        ):
+            pattern.set_end_number(
+                end_number0=self.previous_state.end.end_number0,
+                end_number1=self.previous_state.end.end_number1,
+                end_repeat_number=self.previous_state.end.end_repeat_number,
+            )
+            await self.report_current_end_numbers()
+        if pattern.tabby_pick_number != self.previous_state.tabby_pick.tabby_pick_number:
+            pattern.set_tabby_pick_number(tabby_pick_number=self.previous_state.tabby_pick.tabby_pick_number)
+            await self.report_current_tabby_pick_number()
+        if self.jump_pick != self.previous_state.jump_pick:
+            self.jump_pick = self.previous_state.jump_pick
+            await self.report_jump_pick()
+        if self.jump_end != self.previous_state.jump_end:
+            self.jump_end = self.previous_state.jump_end
+            await self.report_jump_end()
+        if self.jump_tabby_pick != self.previous_state.jump_tabby_pick:
+            self.jump_tabby_pick = self.previous_state.jump_tabby_pick
+            await self.report_jump_tabby_pick()
+
+        self.previous_state = None
+        return True
 
     async def run_client(self, websocket: WebSocket) -> None:
         """Run a client connection, closing any existing connection.
@@ -852,6 +938,65 @@ class BaseLoomServer:
         )
         await self.wifi_manager.use_network(ssid=command.ssid, password=command.password)
 
+    def get_current_pick_number(self) -> client_replies.CurrentPickNumber:
+        """Get CurrentPickNumber.
+
+        Raises:
+            RuntimeError if no current patter.
+        """
+        if self.current_pattern is None:
+            raise RuntimeError("No current pattern")
+
+        return client_replies.CurrentPickNumber(
+            total_pick_number=compute_total_num(
+                num_within=self.current_pattern.pick_number,
+                repeat_number=self.current_pattern.pick_repeat_number,
+                repeat_len=self.current_pattern.num_picks,
+            ),
+            pick_number=self.current_pattern.pick_number,
+            pick_repeat_number=self.current_pattern.pick_repeat_number,
+        )
+
+    def get_current_tabby_pick_number(self) -> client_replies.CurrentTabbyPickNumber:
+        """Get CurrentPickNumber.
+
+        Raises:
+            RuntimeError if no current patter.
+        """
+        if self.current_pattern is None:
+            raise RuntimeError("No current pattern")
+
+        return client_replies.CurrentTabbyPickNumber(
+            tabby_pick_number=self.current_pattern.tabby_pick_number,
+        )
+
+    def get_current_end_number(self) -> client_replies.CurrentEndNumber:
+        """Get CurrentEndNumber.
+
+        Raises:
+            RuntimeError if no current patter.
+        """
+        if self.current_pattern is None:
+            raise RuntimeError("No current pattern")
+
+        total_end_number0 = compute_total_num(
+            num_within=self.current_pattern.end_number0,
+            repeat_number=self.current_pattern.end_repeat_number,
+            repeat_len=self.current_pattern.num_ends,
+        )
+        total_end_number1 = compute_total_num(
+            num_within=self.current_pattern.end_number1,
+            repeat_number=self.current_pattern.end_repeat_number,
+            repeat_len=self.current_pattern.num_ends,
+        )
+        return client_replies.CurrentEndNumber(
+            total_end_number0=total_end_number0,
+            total_end_number1=total_end_number1,
+            end_number0=self.current_pattern.end_number0,
+            end_number1=self.current_pattern.end_number1,
+            end_repeat_number=self.current_pattern.end_repeat_number,
+        )
+
     def get_threading_shaft_word(self) -> int:
         """Get the current threading shaft word."""
         if self.current_pattern is None:
@@ -880,6 +1025,7 @@ class BaseLoomServer:
             await self.clear_jumps()
             return True
 
+        self.record_previous_state()
         match self.mode:
             case ModeEnum.WEAVE_PATTERN:
                 # Command a new pattern pick, if there is one, else send 0
@@ -1229,15 +1375,7 @@ class BaseLoomServer:
             pick_number=self.current_pattern.pick_number,
             pick_repeat_number=self.current_pattern.pick_repeat_number,
         )
-        reply = client_replies.CurrentPickNumber(
-            total_pick_number=compute_total_num(
-                num_within=self.current_pattern.pick_number,
-                repeat_number=self.current_pattern.pick_repeat_number,
-                repeat_len=self.current_pattern.num_picks,
-            ),
-            pick_number=self.current_pattern.pick_number,
-            pick_repeat_number=self.current_pattern.pick_repeat_number,
-        )
+        reply = self.get_current_pick_number()
         await self.write_to_client(reply)
 
     async def report_current_tabby_pick_number(self) -> None:
@@ -1251,9 +1389,7 @@ class BaseLoomServer:
             pattern_name=self.current_pattern.name,
             tabby_pick_number=self.current_pattern.tabby_pick_number,
         )
-        reply = client_replies.CurrentTabbyPickNumber(
-            tabby_pick_number=self.current_pattern.tabby_pick_number,
-        )
+        reply = self.get_current_tabby_pick_number()
         await self.write_to_client(reply)
 
     async def report_current_end_numbers(self) -> None:
@@ -1269,23 +1405,7 @@ class BaseLoomServer:
             end_number1=self.current_pattern.end_number1,
             end_repeat_number=self.current_pattern.end_repeat_number,
         )
-        total_end_number0 = compute_total_num(
-            num_within=self.current_pattern.end_number0,
-            repeat_number=self.current_pattern.end_repeat_number,
-            repeat_len=self.current_pattern.num_ends,
-        )
-        total_end_number1 = compute_total_num(
-            num_within=self.current_pattern.end_number1,
-            repeat_number=self.current_pattern.end_repeat_number,
-            repeat_len=self.current_pattern.num_ends,
-        )
-        reply = client_replies.CurrentEndNumber(
-            total_end_number0=total_end_number0,
-            total_end_number1=total_end_number1,
-            end_number0=self.current_pattern.end_number0,
-            end_number1=self.current_pattern.end_number1,
-            end_repeat_number=self.current_pattern.end_repeat_number,
-        )
+        reply = self.get_current_end_number()
         await self.write_to_client(reply)
 
     async def report_jump_end(self) -> None:
