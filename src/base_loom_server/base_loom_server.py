@@ -353,7 +353,6 @@ class BaseLoomServer:
 
             self.loom_connecting = False
             await self.report_loom_connection_state()
-            await self.get_initial_loom_state()
         except Exception as e:
             self.loom_connecting = False
             await self.report_loom_connection_state(reason=str(e))
@@ -1467,16 +1466,19 @@ class BaseLoomServer:
         elif self.verbose:
             self.log.info(f"{self}: do not send reply {reply_str}; not connected")
 
-    async def write_to_loom(self, data: bytes | bytearray | str) -> None:
+    async def write_to_loom(self, data: bytes | bytearray | str, encoding: str = "ascii") -> None:
         """Send data to the loom.
 
         Args:
             data: The data to send, without a terminator.
-                (This method will append the terminator).
+                (This method appends the terminator).
+            encoding: The method used to encode the data.
+                Ignored unless data is a str.
+                The default is "ascii" because that is common for dobby looms.
         """
         if self.loom_writer is None or self.loom_writer.is_closing():
             raise RuntimeError("Cannot write to the loom: no connection.")
-        data_bytes = data.encode() if isinstance(data, str) else bytes(data)
+        data_bytes = data.encode(encoding=encoding) if isinstance(data, str) else bytes(data)
         if self.verbose:
             self.log.info(f"{self}: sending command to loom: {data_bytes + self.terminator!r}")
         self.loom_writer.write(data_bytes + self.terminator)
