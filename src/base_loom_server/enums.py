@@ -47,10 +47,26 @@ class ModeEnum(enum.IntEnum):
 
 
 class ShaftStateEnum(enum.IntEnum):
-    """The current shaft motion state."""
+    """The current shaft motion state.
+
+    The following values may apply to most looms:
+
+    * UNKNOWN: the initial state.
+    * DONE: the weaving cycle is ready and the loom is ready for the next shed.
+    * MOVING: the shafts are moving into their shed position.
+    * ERROR: something went wrong. Abort this pick and try again.
+
+    The following values may apply to looms with manually opened sheds:
+
+    * READY: the solenoids are engaged and the loom is ready for the weaver to open the shed.
+    * TIMED_OUT: the solenoids timed out while waiting the user to open the shed.
+    * WAITING_FOR_CLOSE: the software is waiting for the user to close the shed.
+    """
 
     UNKNOWN = 0
     DONE = 1
     MOVING = 2
     ERROR = 3
-    NEED_RESTART = 4
+    READY = 4
+    TIMED_OUT = 5
+    WAITING_FOR_CLOSE = 6
