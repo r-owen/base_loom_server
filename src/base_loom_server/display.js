@@ -123,6 +123,9 @@ const ShaftStateEnum = {
     DONE: 1,
     MOVING: 2,
     ERROR: 3,
+    READY: 4,
+    TIMED_OUT: 5,
+    WAITING_FOR_CLOSE: 6,
 }
 
 const ShaftStateTranslationDict = {
@@ -130,6 +133,9 @@ const ShaftStateTranslationDict = {
     1: "",  // Done is not displayed, so no translation needed
     2: t("Moving"),
     3: t("Error"),
+    4: t("ready"),
+    5: t("timed out"),
+    6: t("waiting for close"),
 }
 
 const NullShaftStateData = {
@@ -1133,7 +1139,8 @@ class LoomClient {
 
         const firstBlockStartX = Math.floor(ShaftSeparation / 2)
         let bitmask = BigInt(this.shaftState.shaft_word)
-        if (this.shaftState.state == ShaftStateEnum.DONE) {
+        if ((this.shaftState.state == ShaftStateEnum.DONE)
+            || (this.shaftState.state == ShaftStateEnum.READY)) {
             // Display shaft numbers 1, 4, 8, ...
             const firstBlockCenterX = Math.floor((ShaftSeparation + blockWidth) / 2)
             for (let shaftIndex = 0; shaftIndex < this.loomInfo.num_shafts; shaftIndex++) {
