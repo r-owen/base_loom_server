@@ -736,6 +736,22 @@ class BaseLoomServer:
         if self.mode == ModeEnum.SETTINGS and self.wifi_manager is not None:
             await self.report_wifi()
 
+    async def cmd_resume(
+        self,
+        command: SimpleNamespace,  # noqa: ARG002
+    ) -> None:
+        """Handle the resume command, which has no parameters.
+
+        This command is ignored unless shaft_state=TIMED_OUT.
+        """
+        if self.shaft_state != ShaftStateEnum.TIMED_OUT:
+            await self.report_command_problem(
+                message="Ignored: not waiting for resume.",
+                severity=MessageSeverityEnum.INFO,
+            )
+            return
+        await self.handle_next_pick_request()
+
     async def cmd_select_pattern(self, command: SimpleNamespace) -> None:
         """Handle the select_pattern command.
 
