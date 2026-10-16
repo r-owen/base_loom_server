@@ -283,6 +283,10 @@
     "message": "Use",
     "description": "Use the selected WiFi network"
   },
+  "waiting for close": {
+    "message": "waiting for close",
+    "description": "A shaft state indicating that the software is waiting for the user to close the shed."
+  },
   "Warp thread 1": {
     "message": "Warp thread 1",
     "description": "Setting: display warp thread 1 on the right or left"
