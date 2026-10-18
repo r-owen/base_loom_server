@@ -327,15 +327,6 @@ class BaseLoomServer:
         except Exception as e:
             self.log.warning(f"{self}: failed to close websocket: {e!r}")
 
-    async def get_initial_loom_state(self) -> None:
-        """Obtain the loom state.
-
-        Called just after the server connects to the loom.
-
-        Usually a no-op, because a well designed loom automatically
-        reports its own state when software connects to it.
-        """
-
     async def connect_to_loom(self) -> None:
         """Connect to the loom and start the read loom task.
 
@@ -387,6 +378,30 @@ class BaseLoomServer:
             self.loom_connecting = False
 
         self.read_loom_task = asyncio.create_task(self.read_loom_loop())
+
+    async def handle_change(
+        self,
+        command: SimpleNamespace,  # noqa: ARG002
+    ) -> None:
+        """Handle a discontiguous change to the weaving or threading.
+
+        This is any of: a new pattern, a different mode, or jumping
+        to a new pick or end.
+
+        If subclasses override this and call restore_previous_state,
+        then they should call super().handle_change last in the override,
+        since the base method records the previous state.
+        """
+        self.record_previous_state()
+
+    async def get_initial_loom_state(self) -> None:
+        """Obtain the loom state.
+
+        Called just after the server connects to the loom.
+
+        Usually a no-op, because a well designed loom automatically
+        reports its own state when software connects to it.
+        """
 
     def record_previous_state(self) -> None:
         """Update self.previous_state, for restore_previous_state."""
@@ -663,6 +678,7 @@ class BaseLoomServer:
                 end_number1=end_number1,
                 end_repeat_number=end_repeat_number,
             )
+        await self.handle_change(command=command)
         await self.report_jump_end()
 
     async def cmd_jump_to_pick(self, command: SimpleNamespace) -> None:
@@ -693,6 +709,7 @@ class BaseLoomServer:
                 pick_number=pick_number,
                 pick_repeat_number=pick_repeat_number,
             )
+        await self.handle_change(command=command)
         await self.report_jump_pick()
 
     async def cmd_jump_to_tabby_pick(self, command: SimpleNamespace) -> None:
@@ -717,6 +734,7 @@ class BaseLoomServer:
             self.jump_tabby_pick = client_replies.JumpTabbyPickNumber(
                 tabby_pick_number=tabby_pick_number,
             )
+        await self.handle_change(command=command)
         await self.report_jump_tabby_pick()
 
     async def cmd_mode(self, command: SimpleNamespace) -> None:
@@ -731,6 +749,7 @@ class BaseLoomServer:
         await self.report_mode()
         if self.mode == ModeEnum.SETTINGS and self.wifi_manager is not None:
             await self.report_wifi()
+        await self.handle_change(command=command)
 
     async def cmd_select_pattern(self, command: SimpleNamespace) -> None:
         """Handle the select_pattern command.
@@ -743,6 +762,7 @@ class BaseLoomServer:
         name = command.name
         await self.select_pattern(name)
         await self.clear_jumps()
+        await self.handle_change(command=command)
 
     async def cmd_separate_threading_repeats(self, command: SimpleNamespace) -> None:
         """Handle the separate_threading_repeats command.
@@ -844,13 +864,22 @@ class BaseLoomServer:
 
     async def cmd_start(
         self,
-        command: SimpleNamespace,
+        command: SimpleNamespace,  # noqa: ARG002
     ) -> None:
         """Handle the start command, which has no parameters.
 
-        By default this command is ignored.
-        Subclasses must override to add behavior.
+        Subclasses which support start/stop will likely want to
+        override for additional behavior.
+
+        Raises:
+            CommandError if self.supports_start_stop false.
         """
+        if not self.supports_start_stop:
+            raise CommandError("This loom does not support the stop command")
+        if self.run_state in {RunStateEnum.STOPPING, RunStateEnum.STOPPED}:
+            return
+        self.run_state = RunStateEnum.STOPPING
+        await self.report_run_state()
 
     async def cmd_stop(
         self,
@@ -858,9 +887,19 @@ class BaseLoomServer:
     ) -> None:
         """Handle the stop command, which has no parameters.
 
-        By default this command is ignored.
-        Subclasses must override to add behavior.
+        Subclasses which support start/stop will likely want to
+        override for additional behavior.
+
+        Raises:
+            CommandError if self.supports_start_stop false.
         """
+        if not self.supports_start_stop:
+            raise CommandError("This loom does not support the stop command")
+        if self.run_state in {RunStateEnum.STOPPING, RunStateEnum.STOPPED}:
+            return
+        self.run_state = RunStateEnum.STOPPING
+        await self.report_run_state()
+        await self.handle_change(command=command)
 
     async def cmd_thread_group_size(self, command: SimpleNamespace) -> None:
         """Handle the thread_group_size command.
@@ -1347,6 +1386,7 @@ class BaseLoomServer:
         """
         await self.report_version()
         await self.report_wifi()
+        await self.report_run_state()
         await self.report_loom_connection_state()
         await self.write_to_client(self.loom_info)
         await self.report_language_names()
@@ -1452,7 +1492,7 @@ class BaseLoomServer:
 
     async def report_run_state(self) -> None:
         """Report the current run state to the client."""
-        await self.write_to_client(client_replies.RunState(mode=self.run_state))
+        await self.write_to_client(client_replies.RunState(run_state=self.run_state))
 
     async def report_separate_threading_repeats(self) -> None:
         """Report SeparateThreadingRepeats."""
