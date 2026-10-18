@@ -21,7 +21,14 @@ from serial_asyncio_fast import open_serial_connection
 
 from . import client_replies
 from .constants import LOG_NAME
-from .enums import ConnectionStateEnum, DirectionControlEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
+from .enums import (
+    ConnectionStateEnum,
+    DirectionControlEnum,
+    MessageSeverityEnum,
+    ModeEnum,
+    RunStateEnum,
+    ShaftStateEnum,
+)
 from .nmcli_wifi import WiFiManager
 from .pattern_database import PatternDatabase
 from .reduced_pattern import DEFAULT_THREAD_GROUP_SIZE, ReducedPattern, reduced_pattern_from_pattern_data
@@ -123,6 +130,8 @@ class BaseLoomServer:
     # and supports_full_direction_control=True.
     # This prevents the direction control setting from being displayed.
     supports_full_direction_control = True
+    # Does this loom support the start and stop commands?
+    supports_start_stop = False
 
     def __init__(
         self,
@@ -202,6 +211,7 @@ class BaseLoomServer:
         self.jump_tabby_pick = client_replies.JumpTabbyPickNumber()
         self.jump_end = client_replies.JumpEndNumber()
         self.mode = ModeEnum.WEAVE_PATTERN
+        self.run_state = RunStateEnum.STOPPED if self.supports_start_stop else RunStateEnum.NOT_SUPPORTED
         self.direction_forward: bool = True
         self.wifi_manager: WiFiManager | None = (
             WiFiManager(log=self.log, callback=self.wifi_manager_callback, verbose=self.verbose)
@@ -407,6 +417,7 @@ class BaseLoomServer:
         if self.current_pattern.name != self.previous_state.pattern_name:
             return False
 
+        # Use an aliased name to shorten the lines of code below.
         pattern = self.current_pattern
 
         self.mode = self.previous_state.mode
@@ -721,22 +732,6 @@ class BaseLoomServer:
         if self.mode == ModeEnum.SETTINGS and self.wifi_manager is not None:
             await self.report_wifi()
 
-    async def cmd_resume(
-        self,
-        command: SimpleNamespace,  # noqa: ARG002
-    ) -> None:
-        """Handle the resume command, which has no parameters.
-
-        This command is ignored unless shaft_state=TIMED_OUT.
-        """
-        if self.shaft_state != ShaftStateEnum.TIMED_OUT:
-            await self.report_command_problem(
-                message="Ignored: not waiting for resume.",
-                severity=MessageSeverityEnum.INFO,
-            )
-            return
-        await self.handle_next_pick_request()
-
     async def cmd_select_pattern(self, command: SimpleNamespace) -> None:
         """Handle the select_pattern command.
 
@@ -846,6 +841,26 @@ class BaseLoomServer:
         self.settings = new_settings
         await self.report_settings()
         self.save_settings()
+
+    async def cmd_start(
+        self,
+        command: SimpleNamespace,
+    ) -> None:
+        """Handle the start command, which has no parameters.
+
+        By default this command is ignored.
+        Subclasses must override to add behavior.
+        """
+
+    async def cmd_stop(
+        self,
+        command: SimpleNamespace,
+    ) -> None:
+        """Handle the stop command, which has no parameters.
+
+        By default this command is ignored.
+        Subclasses must override to add behavior.
+        """
 
     async def cmd_thread_group_size(self, command: SimpleNamespace) -> None:
         """Handle the thread_group_size command.
@@ -1434,6 +1449,10 @@ class BaseLoomServer:
     async def report_mode(self) -> None:
         """Report the current mode to the client."""
         await self.write_to_client(client_replies.Mode(mode=self.mode))
+
+    async def report_run_state(self) -> None:
+        """Report the current run state to the client."""
+        await self.write_to_client(client_replies.RunState(mode=self.run_state))
 
     async def report_separate_threading_repeats(self) -> None:
         """Report SeparateThreadingRepeats."""
