@@ -46,6 +46,20 @@ class ModeEnum(enum.IntEnum):
     SETTINGS = 4
 
 
+class RunStateEnum(enum.IntEnum):
+    """The current run state.
+
+    NOT_SUPPORTED indicates that start and stop controls and run state
+    should not be displayed.
+    """
+
+    NOT_SUPPORTED = 0
+    STARTING = 1
+    RUNNING = 2
+    STOPPING = 3
+    STOPPED = 4
+
+
 class ShaftStateEnum(enum.IntEnum):
     """The current shaft motion state.
 
