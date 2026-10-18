@@ -11,6 +11,7 @@ if TYPE_CHECKING:
         DirectionControlEnum,
         MessageSeverityEnum,
         ModeEnum,
+        RunStateEnum,
         ShaftStateEnum,
     )
     from .nmcli_wifi import WiFiManager
@@ -154,6 +155,14 @@ class Mode:
 
     type: str = dataclasses.field(init=False, default="Mode")
     mode: ModeEnum
+
+
+@dataclasses.dataclass
+class RunState:
+    """The run state of the server."""
+
+    type: str = dataclasses.field(init=False, default="RunState")
+    mode: RunStateEnum
 
 
 @dataclasses.dataclass
