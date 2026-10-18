@@ -162,7 +162,7 @@ class RunState:
     """The run state of the server."""
 
     type: str = dataclasses.field(init=False, default="RunState")
-    mode: RunStateEnum
+    run_state: RunStateEnum
 
 
 @dataclasses.dataclass
