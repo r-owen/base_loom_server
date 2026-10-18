@@ -23,7 +23,14 @@ from starlette.testclient import WebSocketTestSession
 
 from .base_loom_server import MAX_THREAD_GROUP_SIZE, SETTINGS_FILE_NAME, BaseLoomServer
 from .base_mock_loom import BaseMockLoom
-from .enums import ConnectionStateEnum, DirectionControlEnum, MessageSeverityEnum, ModeEnum, ShaftStateEnum
+from .enums import (
+    ConnectionStateEnum,
+    DirectionControlEnum,
+    MessageSeverityEnum,
+    ModeEnum,
+    RunStateEnum,
+    ShaftStateEnum,
+)
 from .reduced_pattern import (
     DEFAULT_THREAD_GROUP_SIZE,
     NUM_ITEMS_FOR_REPEAT_SEPARATOR,
@@ -1801,6 +1808,7 @@ class BaseTestLoomServer:
                         "LoomConnectionState",
                         "LoomInfo",
                         "Mode",
+                        "RunState",
                         "PatternNames",
                         "Settings",
                         "ShaftState",
@@ -1894,6 +1902,8 @@ class BaseTestLoomServer:
                                     )
 
                                 assert reply.name == expected_pattern_names[-1]
+                            case "RunState":
+                                assert reply.run_state == RunStateEnum.NOT_SUPPORTED
                             case "SeparateThreadingRepeats":
                                 assert expected_current_pattern is not None
                                 assert reply.separate == expected_current_pattern.separate_threading_repeats
