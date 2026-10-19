@@ -211,6 +211,10 @@
     "message": "Right to left",
     "description": "Setting: thread from right to left"
   },
+  "running": {
+    "message": "running",
+    "description": "a run state: weaving is running"
+  },
   "Save": {
     "message": "Save",
     "description": "Button that submits a new loom name"
@@ -239,9 +243,29 @@
     "message": "Software",
     "description": "Direction control: Software (the web interface)"
   },
+  "Start": {
+    "message": "Start",
+    "description": "Label for start button"
+  },
+  "starting": {
+    "message": "starting",
+    "description": "a run state: weaving is starting"
+  },
   "Status": {
     "message": "Status",
     "description": "Label for status display"
+  },
+  "Stop": {
+    "message": "Stop",
+    "description": "Label for stop button"
+  },
+  "stopped": {
+    "message": "stopped",
+    "description": "a run state: weaving is stopped"
+  },
+  "stopping": {
+    "message": "stopping",
+    "description": "a run state: weaving is stopping"
   },
   "Thread": {
     "message": "Thread",
