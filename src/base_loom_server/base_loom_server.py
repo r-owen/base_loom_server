@@ -868,14 +868,14 @@ class BaseLoomServer:
     ) -> None:
         """Handle the start command, which has no parameters.
 
-        Subclasses which support start/stop will likely want to
+        Subclasses with supports_start_stop true will likely want to
         override for additional behavior.
 
         Raises:
             CommandError if self.supports_start_stop false.
         """
         if not self.supports_start_stop:
-            raise CommandError("This loom does not support the stop command")
+            raise CommandError("This loom does not support the start command")
         if self.run_state in {RunStateEnum.STOPPING, RunStateEnum.STOPPED}:
             return
         self.run_state = RunStateEnum.STOPPING
@@ -887,7 +887,7 @@ class BaseLoomServer:
     ) -> None:
         """Handle the stop command, which has no parameters.
 
-        Subclasses which support start/stop will likely want to
+        Subclasses with supports_start_stop true will likely want to
         override for additional behavior.
 
         Raises:
