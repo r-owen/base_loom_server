@@ -99,6 +99,14 @@ const JumpDeltaEnum = {
     "MINUS": -1,
 }
 
+const RunStateEnum = {
+    "NOT_SUPPORTED": 0,
+    "STARTING": 1,
+    "RUNNING": 2,
+    "STOPPING": 3,
+    "STOPPED": 4,
+}
+
 const ModeEnum = {
     "WEAVE_PATTERN": 1,
     "WEAVE_TABBY": 2,
@@ -126,6 +134,14 @@ const ShaftStateEnum = {
     READY: 4,
     TIMED_OUT: 5,
     WAITING_FOR_CLOSE: 6,
+}
+
+const RunStateTranslationDict = {
+    0: t("?"),
+    1: t("starting"),
+    2: t("running"),
+    3: t("stopping"),
+    4: t("stopped"),
 }
 
 const ShaftStateTranslationDict = {
@@ -282,6 +298,7 @@ function sleep(durationMs) {
 /* Translate a phrase using TranslationDict */
 function t(phrase) {
     if (!(phrase in TranslationDict)) {
+        throw Error(`Missing translation key: "${phrase}"`)
         console.warn(`Missing translation key: "${phrase}"`)
         return phrase
     }
@@ -589,6 +606,7 @@ class LoomClient {
         this.jumpEndData = NullEndData
         this.jumpPickData = NullPickData
         this.jumpTabbyPickData = NullTabbyPickData
+        this.runState = RunStateEnum.NOT_SUPPORTED
         this.separateThreadingRepeatsData = NullSeparateData
         this.separateWeavingRepeatsData = NullSeparateData
         this.versionData = NullVersionData
@@ -637,6 +655,12 @@ class LoomClient {
 
         let loomNameResetButton = document.getElementById("setting_loom_name_reset")
         loomNameResetButton.addEventListener("click", this.handleSettingsReset.bind(this))
+
+        let startButton = document.getElementById("start_button")
+        startButton.addEventListener("click", this.handleStartButton.bind(this))
+
+        let stopButton = document.getElementById("stop_button")
+        stopButton.addEventListener("click", this.handleStopButton.bind(this))
 
         let separateThreadingRepeatsCheckbox = document.getElementById("separate_threading_repeats")
         separateThreadingRepeatsCheckbox.addEventListener("change", this.handleSeparateRepeats.bind(this, true))
@@ -1032,6 +1056,24 @@ class LoomClient {
         pickNumberElt.textContent = "(" + nullToDefault(this.currentPickData.pick_number)
         picksPerRepeatElt.textContent = nullToDefault(this.currentPattern.picks.length, "?") + ","
         repeatNumberElt.textContent = nullToDefault(this.currentPickData.pick_repeat_number) + ")"
+    }
+
+    /*
+    Display run state
+    */
+    displayRunState() {
+        let runStateDiv = document.getElementById("run_state_div")
+        if (this.runState == RunStateEnum.NOT_SUPPORTED) {
+            runStateDiv.style.display = "none"
+            return
+        }
+        runStateDiv.style.display = "flex"
+        let runStateLabel = document.getElementById("run_state_label")
+        let startButton = document.getElementById("start_button")
+        let stopButton = document.getElementById("stop_button")
+        startButton.disabled = (this.runState == RunStateEnum.RUNNING || this.runState == RunStateEnum.STARTING)
+        stopButton.disabled = (this.runState == RunStateEnum.STOPPED || this.runState == RunStateEnum.STOPPING)
+        runStateLabel.textContent = RunStateTranslationDict[this.runState]
     }
 
     /*
@@ -1588,8 +1630,6 @@ class LoomClient {
             return
         }
 
-        const end1OnRight = this.settings.end1_on_right
-
         let pickColorCanvas = document.getElementById("pick_color")
         let canvas = document.getElementById("main_canvas")
 
@@ -1615,6 +1655,8 @@ class LoomClient {
             // Now that it's the right size, leave it blank
             return
         }
+
+        const end1OnRight = this.settings.end1_on_right
 
         const separateRepeats = this.separateWeavingRepeatsData.separate
         const numEnds = this.currentPattern.warp_colors.length
@@ -2016,6 +2058,9 @@ class LoomClient {
             let patternMenu = document.getElementById("pattern_menu")
             patternMenu.value = this.currentPattern.name
             this.displayMainCanvas()
+        } else if (datadict.type == "RunState") {
+            this.runState = datadict.run_state
+            this.displayRunState()
         } else if (datadict.type == "SeparateThreadingRepeats") {
             this.separateThreadingRepeatsData = datadict
             let separateThreadingRepeatsCheckbox = document.getElementById("separate_threading_repeats")
@@ -2160,6 +2205,20 @@ class LoomClient {
     */
     async handleSettingsReset(event) {
         this.displaySettings()
+    }
+
+    /*
+    Handle the start button
+    */
+    async handleStartButton(event) {
+        await this.sendCommand({ "type": "start" })
+    }
+
+    /*
+    Handle the stop button
+    */
+    async handleStopButton(event) {
+        await this.sendCommand({ "type": "stop" })
     }
 
     /*
