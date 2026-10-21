@@ -82,6 +82,9 @@ class State:
     end: client_replies.CurrentEndNumber
     pick: client_replies.CurrentPickNumber
     tabby_pick: client_replies.CurrentTabbyPickNumber
+    jump_end: client_replies.JumpEndNumber
+    jump_pick: client_replies.JumpPickNumber
+    jump_tabby_pick: client_replies.JumpTabbyPickNumber
 
 
 def str_from_task(task: asyncio.Future, running_text: str) -> str:
@@ -415,6 +418,9 @@ class BaseLoomServer:
             end=self.get_current_end_number(),
             pick=self.get_current_pick_number(),
             tabby_pick=self.get_current_tabby_pick_number(),
+            jump_end=self.jump_end,
+            jump_pick=self.jump_pick,
+            jump_tabby_pick=self.jump_tabby_pick,
         )
 
     async def restore_previous_state(self) -> bool:
@@ -459,6 +465,15 @@ class BaseLoomServer:
         if pattern.tabby_pick_number != self.previous_state.tabby_pick.tabby_pick_number:
             pattern.set_tabby_pick_number(tabby_pick_number=self.previous_state.tabby_pick.tabby_pick_number)
             await self.report_current_tabby_pick_number()
+        if self.jump_pick != self.previous_state.jump_pick:
+            self.jump_pick = self.previous_state.jump_pick
+            await self.report_jump_pick()
+        if self.jump_end != self.previous_state.jump_end:
+            self.jump_end = self.previous_state.jump_end
+            await self.report_jump_end()
+        if self.jump_tabby_pick != self.previous_state.jump_tabby_pick:
+            self.jump_tabby_pick = self.previous_state.jump_tabby_pick
+            await self.report_jump_tabby_pick()
 
         self.previous_state = None
         return True
