@@ -384,7 +384,7 @@ class BaseLoomServer:
 
     async def handle_change(
         self,
-        command: SimpleNamespace,  # noqa: ARG002
+        command: SimpleNamespace,
     ) -> None:
         """Handle a discontiguous change to the weaving or threading.
 
@@ -395,7 +395,6 @@ class BaseLoomServer:
         then they should call super().handle_change last in the override,
         since the base method records the previous state.
         """
-        self.record_previous_state()
 
     async def get_initial_loom_state(self) -> None:
         """Obtain the loom state.
@@ -405,23 +404,6 @@ class BaseLoomServer:
         Usually a no-op, because a well designed loom automatically
         reports its own state when software connects to it.
         """
-
-    def record_previous_state(self) -> None:
-        """Update self.previous_state, for restore_previous_state."""
-        if not self.current_pattern:
-            self.previous_state = None
-            return
-
-        self.previous_state = State(
-            pattern_name=self.current_pattern.name,
-            mode=self.mode,
-            end=self.get_current_end_number(),
-            pick=self.get_current_pick_number(),
-            tabby_pick=self.get_current_tabby_pick_number(),
-            jump_end=self.jump_end,
-            jump_pick=self.jump_pick,
-            jump_tabby_pick=self.jump_tabby_pick,
-        )
 
     async def restore_previous_state(self) -> bool:
         """Restore the previous state, if possible.
@@ -477,6 +459,23 @@ class BaseLoomServer:
 
         self.previous_state = None
         return True
+
+    def save_previous_state(self) -> None:
+        """Save current state in self.previous_state, for use by restore_previous_state."""
+        if not self.current_pattern:
+            self.previous_state = None
+            return
+
+        self.previous_state = State(
+            pattern_name=self.current_pattern.name,
+            mode=self.mode,
+            end=self.get_current_end_number(),
+            pick=self.get_current_pick_number(),
+            tabby_pick=self.get_current_tabby_pick_number(),
+            jump_end=self.jump_end,
+            jump_pick=self.jump_pick,
+            jump_tabby_pick=self.jump_tabby_pick,
+        )
 
     async def run_client(self, websocket: WebSocket) -> None:
         """Run a client connection, closing any existing connection.
@@ -1099,7 +1098,7 @@ class BaseLoomServer:
             await self.clear_jumps()
             return True
 
-        self.record_previous_state()
+        self.save_previous_state()
         match self.mode:
             case ModeEnum.WEAVE_PATTERN:
                 # Command a new pattern pick, if there is one, else send 0
