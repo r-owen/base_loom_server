@@ -1,5 +1,13 @@
 # Version History
 
+## 1.3.0  2026-xx-xx
+
+* Add support for LeClerc looms, including:
+
+  * BaseLoomServer: add supports_run_state class variable and start and stop commands.
+  * Add RunState client message.
+  * display.js: add Start and Stop buttons.
+
 ## 1.2.6 2026-10-28
 
 * Make the -/+ jump buttons a bit wider.
