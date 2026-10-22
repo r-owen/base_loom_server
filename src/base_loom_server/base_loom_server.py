@@ -1081,8 +1081,9 @@ class BaseLoomServer:
 
         Call this from handle_loom_reply.
 
-        Figure out the next pick, send it to the loom,
-        and report the current pick or end numbers to the client.
+        Save the state in self.previous_state.
+        Figure out the next pick, send it to the loom.
+        Report the current pick or end numbers to the client.
 
         Returns:
             did_advance: True if the loom was sent the next set of shafts.
