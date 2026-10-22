@@ -1,5 +1,18 @@
 # Version History
 
+## 1.3.0  2026-xx-xx
+
+* Add support for LeClerc looms, including:
+
+  * BaseLoomServer: add supports_run_state class variable and start and stop commands.
+  * Add RunState client message.
+  * display.js: add Start and Stop buttons.
+
+* Other changes:
+
+  * Only request initial state once when connecting to the loom.
+  * Add `encoding` parameter to `BaseLoomServer.write_to_loom`, with a default of "ascii".
+
 ## 1.2.5 2026-08-15
 
 * Flash the window when going to the next pick (or thread group) in reverse.
