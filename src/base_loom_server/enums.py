@@ -66,21 +66,25 @@ class ShaftStateEnum(enum.IntEnum):
     The following values may apply to most looms:
 
     * UNKNOWN: the initial state.
-    * DONE: the weaving cycle is ready and the loom is ready for the next shed.
+    * DONE: the weaving cycle is done and the loom is ready for the next shed.
     * MOVING: the shafts are moving into their shed position.
     * ERROR: something went wrong. Abort this pick and try again.
 
     The following values may apply to looms with manually opened sheds:
 
-    * READY: the solenoids are engaged and the loom is ready for the weaver to open the shed.
+    * CLOSED: the shed is closed. If run state is running, send a new pick.
+    * RUNNING: in a weaving cycle. Run state should be running or stopping:
+
+        * If running, display the requested shafts.
+        * If stopping, display "waiting for close".
     * TIMED_OUT: the solenoids timed out while waiting the user to open the shed.
-    * WAITING_FOR_CLOSE: the software is waiting for the user to close the shed.
+        This should result in run state = stopping or stopped.
     """
 
     UNKNOWN = 0
     DONE = 1
     MOVING = 2
     ERROR = 3
-    READY = 4
-    TIMED_OUT = 5
-    WAITING_FOR_CLOSE = 6
+    CLOSED = 4
+    RUNNING = 5
+    TIMED_OUT = 6

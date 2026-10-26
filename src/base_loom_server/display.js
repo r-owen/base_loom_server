@@ -99,19 +99,19 @@ const JumpDeltaEnum = {
     "MINUS": -1,
 }
 
+const ModeEnum = {
+    "WEAVE_PATTERN": 1,
+    "WEAVE_TABBY": 2,
+    "THREAD": 3,
+    "SETTINGS": 4,
+}
+
 const RunStateEnum = {
     "NOT_SUPPORTED": 0,
     "STARTING": 1,
     "RUNNING": 2,
     "STOPPING": 3,
     "STOPPED": 4,
-}
-
-const ModeEnum = {
-    "WEAVE_PATTERN": 1,
-    "WEAVE_TABBY": 2,
-    "THREAD": 3,
-    "SETTINGS": 4,
 }
 
 const SeverityColors = {
@@ -131,9 +131,9 @@ const ShaftStateEnum = {
     DONE: 1,
     MOVING: 2,
     ERROR: 3,
-    READY: 4,
-    TIMED_OUT: 5,
-    WAITING_FOR_CLOSE: 6,
+    CLOSED: 4,
+    RUNNING: 5,
+    TIMED_OUT: 6,
 }
 
 const RunStateTranslationDict = {
@@ -149,9 +149,9 @@ const ShaftStateTranslationDict = {
     1: "",  // Done is not displayed, so no translation needed
     2: t("Moving"),
     3: t("Error"),
-    4: t("ready"),
-    5: t("timed out"),
-    6: t("waiting for close"),
+    4: t("closed"),
+    5: t("running"),
+    6: t("timed out"),
 }
 
 const NullShaftStateData = {
@@ -1182,7 +1182,7 @@ class LoomClient {
         const firstBlockStartX = Math.floor(ShaftSeparation / 2)
         let bitmask = BigInt(this.shaftState.shaft_word)
         if ((this.shaftState.state == ShaftStateEnum.DONE)
-            || (this.shaftState.state == ShaftStateEnum.READY)) {
+            || (this.shaftState.state == ShaftStateEnum.RUNNING)) {
             // Display shaft numbers 1, 4, 8, ...
             const firstBlockCenterX = Math.floor((ShaftSeparation + blockWidth) / 2)
             for (let shaftIndex = 0; shaftIndex < this.loomInfo.num_shafts; shaftIndex++) {

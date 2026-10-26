@@ -47,6 +47,10 @@
     "message": "Close Connection",
     "description": "Button text (only in mock mode)"
   },
+  "closed": {
+    "message": "closed",
+    "description": "The shed is closed"
+  },
   "Command mock loom": {
     "message": "Command mock loom",
     "description": "Heading for the debug controls that are only shown in mock mode"
