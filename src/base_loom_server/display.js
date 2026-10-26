@@ -134,6 +134,7 @@ const ShaftStateEnum = {
     CLOSED: 4,
     RUNNING: 5,
     TIMED_OUT: 6,
+    WAITING_FOR_CLOSE: 7,
 }
 
 const RunStateTranslationDict = {
@@ -152,6 +153,7 @@ const ShaftStateTranslationDict = {
     4: t("closed"),
     5: t("running"),
     6: t("timed out"),
+    7: t("waiting for close"),
 }
 
 const NullShaftStateData = {

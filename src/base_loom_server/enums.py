@@ -79,6 +79,7 @@ class ShaftStateEnum(enum.IntEnum):
         * If stopping, display "waiting for close".
     * TIMED_OUT: the solenoids timed out while waiting the user to open the shed.
         This should result in run state = stopping or stopped.
+    * WAITING_FOR_CLOSE: the software is waiting for the user to close the shed.
     """
 
     UNKNOWN = 0
@@ -88,3 +89,4 @@ class ShaftStateEnum(enum.IntEnum):
     CLOSED = 4
     RUNNING = 5
     TIMED_OUT = 6
+    WAITING_FOR_CLOSE = 7
