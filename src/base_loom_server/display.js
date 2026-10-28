@@ -1083,7 +1083,7 @@ class LoomClient {
         startButton.disabled = (runStateEnum == RunStateEnum.RUNNING || runStateEnum == RunStateEnum.STARTING)
         stopButton.disabled = (runStateEnum == RunStateEnum.STOPPED || runStateEnum == RunStateEnum.STOPPING)
         runStateLabel.textContent = RunStateTranslationDict[runStateEnum]
-        runStateReasonLabel.textContent = this.runState.reason == "" ? "" : this.runState.reason
+        runStateReasonLabel.textContent = this.runState.reason == "" ? "" : `: ${this.runState.reason}`
     }
 
     /*

@@ -214,7 +214,10 @@ class BaseLoomServer:
         self.jump_tabby_pick = client_replies.JumpTabbyPickNumber()
         self.jump_end = client_replies.JumpEndNumber()
         self.mode = ModeEnum.WEAVE_PATTERN
-        self.run_state = RunStateEnum.STOPPED if self.supports_start_stop else RunStateEnum.NOT_SUPPORTED
+        self.run_state = client_replies.RunState(
+            run_state=RunStateEnum.STOPPED if self.supports_start_stop else RunStateEnum.NOT_SUPPORTED,
+            reason="",
+        )
         self.direction_forward: bool = True
         self.wifi_manager: WiFiManager | None = (
             WiFiManager(log=self.log, callback=self.wifi_manager_callback, verbose=self.verbose)
@@ -890,9 +893,9 @@ class BaseLoomServer:
         """
         if not self.supports_start_stop:
             raise CommandError("This loom does not support the start command")
-        if self.run_state in {RunStateEnum.STOPPING, RunStateEnum.STOPPED}:
+        if self.run_state.run_state in {RunStateEnum.STARTING, RunStateEnum.RUNNING}:
             return
-        self.run_state = RunStateEnum.STOPPING
+        self.run_state.run_state = RunStateEnum.STARTING
         await self.report_run_state()
 
     async def cmd_stop(
@@ -909,9 +912,9 @@ class BaseLoomServer:
         """
         if not self.supports_start_stop:
             raise CommandError("This loom does not support the stop command")
-        if self.run_state in {RunStateEnum.STOPPING, RunStateEnum.STOPPED}:
+        if self.run_state.run_state in {RunStateEnum.STOPPING, RunStateEnum.STOPPED}:
             return
-        self.run_state = RunStateEnum.STOPPING
+        self.run_state.run_state = RunStateEnum.STOPPING
         await self.report_run_state()
         await self.handle_change(command=command)
 
@@ -1507,7 +1510,7 @@ class BaseLoomServer:
 
     async def report_run_state(self) -> None:
         """Report the current run state to the client."""
-        await self.write_to_client(client_replies.RunState(run_state=self.run_state))
+        await self.write_to_client(self.run_state)
 
     async def report_separate_threading_repeats(self) -> None:
         """Report SeparateThreadingRepeats."""
