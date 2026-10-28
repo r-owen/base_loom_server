@@ -114,6 +114,11 @@ const RunStateEnum = {
     "STOPPED": 4,
 }
 
+const NullRunState = {
+    "run_state": RunStateEnum.NOT_SUPPORTED,
+    "reason": "",
+}
+
 const SeverityColors = {
     1: null,
     2: "orange",
@@ -212,7 +217,7 @@ Handle websocket close
 */
 async function handleWebsocketClosed(event) {
     let statusElt = document.getElementById("status")
-    statusElt.textContent = t("lost connection to server") + `: ${event.reason} `
+    statusElt.textContent = t("lost connection to server") + `: ${event.reason}`
     statusElt.style.color = "red"
 }
 
@@ -608,7 +613,7 @@ class LoomClient {
         this.jumpEndData = NullEndData
         this.jumpPickData = NullPickData
         this.jumpTabbyPickData = NullTabbyPickData
-        this.runState = RunStateEnum.NOT_SUPPORTED
+        this.runState = NullRunState
         this.separateThreadingRepeatsData = NullSeparateData
         this.separateWeavingRepeatsData = NullSeparateData
         this.versionData = NullVersionData
@@ -1065,17 +1070,20 @@ class LoomClient {
     */
     displayRunState() {
         let runStateDiv = document.getElementById("run_state_div")
-        if (this.runState == RunStateEnum.NOT_SUPPORTED) {
+        const runStateEnum = this.runState.run_state
+        if (runStateEnum == RunStateEnum.NOT_SUPPORTED) {
             runStateDiv.style.display = "none"
             return
         }
         runStateDiv.style.display = "flex"
         let runStateLabel = document.getElementById("run_state_label")
+        let runStateReasonLabel = document.getElementById("run_state_reason_label")
         let startButton = document.getElementById("start_button")
         let stopButton = document.getElementById("stop_button")
-        startButton.disabled = (this.runState == RunStateEnum.RUNNING || this.runState == RunStateEnum.STARTING)
-        stopButton.disabled = (this.runState == RunStateEnum.STOPPED || this.runState == RunStateEnum.STOPPING)
-        runStateLabel.textContent = RunStateTranslationDict[this.runState]
+        startButton.disabled = (runStateEnum == RunStateEnum.RUNNING || runStateEnum == RunStateEnum.STARTING)
+        stopButton.disabled = (runStateEnum == RunStateEnum.STOPPED || runStateEnum == RunStateEnum.STOPPING)
+        runStateLabel.textContent = RunStateTranslationDict[runStateEnum]
+        runStateReasonLabel.textContent = this.runState.reason == "" ? "" : this.runState.reason
     }
 
     /*
@@ -2061,7 +2069,7 @@ class LoomClient {
             patternMenu.value = this.currentPattern.name
             this.displayMainCanvas()
         } else if (datadict.type == "RunState") {
-            this.runState = datadict.run_state
+            this.runState = datadict
             this.displayRunState()
         } else if (datadict.type == "SeparateThreadingRepeats") {
             this.separateThreadingRepeatsData = datadict

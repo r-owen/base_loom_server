@@ -72,14 +72,16 @@ class ShaftStateEnum(enum.IntEnum):
 
     The following values may apply to looms with manually opened sheds:
 
-    * CLOSED: the shed is closed. If run state is running, send a new pick.
-    * RUNNING: in a weaving cycle. Run state should be running or stopping:
+    * CLOSED: the shed is closed and we are not in a weaving cycle.
+    * RUNNING: in a weaving cycle. Run state should be RUNNING or STOPPING:
 
         * If running, display the requested shafts.
         * If stopping, display "waiting for close".
     * TIMED_OUT: the solenoids timed out while waiting the user to open the shed.
-        This should result in run state = stopping or stopped.
+        The run state should be STOPPING or STOPPED, depending if the shed is closed.
     * WAITING_FOR_CLOSE: the software is waiting for the user to close the shed.
+        The run state should be STOPPING or RUNNNG (the latter when jumping or
+        changing modes, which results in needing to undo the last pick or end).
     """
 
     UNKNOWN = 0

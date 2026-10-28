@@ -163,6 +163,7 @@ class RunState:
 
     type: str = dataclasses.field(init=False, default="RunState")
     run_state: RunStateEnum
+    reason: str = ""
 
 
 @dataclasses.dataclass
