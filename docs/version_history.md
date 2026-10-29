@@ -1,5 +1,14 @@
 # Version History
 
+## 1.2.6 2026-10-28
+
+* Make the -/+ jump buttons a bit wider.
+* Only request initial state once when connecting to the loom.
+* Add `encoding` parameter to `BaseLoomServer.write_to_loom`, with a default of "ascii".
+* Add utils.create_done_future.
+* `ReducedPattern`: rename set_current... to set_... and add pick_repeat_number argument to set_pick_number.
+* Use github actions to automatically publish new releases to PyPI.
+
 ## 1.2.5 2026-08-15
 
 * Flash the window when going to the next pick (or thread group) in reverse.
