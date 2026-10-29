@@ -2686,7 +2686,7 @@ a "type" field whose value is a string.</p>
 </span>
 </span><span class="mkapi-object-kind">async method</span>
 <span class="mkapi-object-parent">
-<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.write_to_loom" title="base_loom_server.base_loom_server.BaseLoomServer.write_to_loom">write_to_loom</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">data</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bytes | bytearray | str</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
+<a href="./#base_loom_server.base_loom_server.BaseLoomServer" title="base_loom_server.base_loom_server.BaseLoomServer">BaseLoomServer</a><span class="mkapi-dot">.</span></span><span class="mkapi-object-name"><a href="./#base_loom_server.base_loom_server.BaseLoomServer.write_to_loom" title="base_loom_server.base_loom_server.BaseLoomServer.write_to_loom">write_to_loom</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">self</span><span class="mkapi-comma">, </span><span class="mkapi-arg">data</span><span class="mkapi-colon">: </span><span class="mkapi-ann">bytes | bytearray | str</span><span class="mkapi-comma">, </span><span class="mkapi-arg">encoding</span><span class="mkapi-colon">: </span><span class="mkapi-ann">str</span><span class="mkapi-equal"> = </span><span class="mkapi-default">'ascii'</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return">None</span></span>
 </p>
 <div class="mkapi-document">
 <p>Send data to the loom.</p>
@@ -2704,7 +2704,14 @@ a "type" field whose value is a string.</p>
 <p><span class="mkapi-item-name">data</span> : 
 <span class="mkapi-item-type">bytes | bytearray | str</span> <span class="mkapi-dash">&mdash;</span>
 The data to send, without a terminator.
-(This method will append the terminator).</p>
+(This method appends the terminator).</p>
+</li>
+<li>
+<p><span class="mkapi-item-name">encoding</span> : 
+<span class="mkapi-item-type">str</span> <span class="mkapi-dash">&mdash;</span>
+The method used to encode the data.
+Ignored unless data is a str.
+The default is "ascii" because that is common for dobby looms.</p>
 </li>
 </ul>
 </div>

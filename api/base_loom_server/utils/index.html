@@ -134,6 +134,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.compute_total_num">compute_total_num</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.create_done_future">create_done_future</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.get_version">get_version</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#base_loom_server.utils.prune_duplicates">prune_duplicates</a>
@@ -214,6 +216,11 @@ such that total_num = (repeat_number - 1) * repeat_len + num_within.</p>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.compute_total_num" title="base_loom_server.utils.compute_total_num">compute_total_num</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Compute total_num from num_within, repeat_number, and repeat_len.</p>
+</li>
+<li>
+<p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.create_done_future" title="base_loom_server.utils.create_done_future">create_done_future</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Create an asyncio.Future that is already done.</p>
 </li>
 <li>
 <p><span class="mkapi-item-name"><a href="./#base_loom_server.utils.get_version" title="base_loom_server.utils.get_version">get_version</a></span>
@@ -421,6 +428,20 @@ total_num = repeat_len * (repeat_number - 1) + num_within</p>
 </li>
 </ul>
 </div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="base_loom_server.utils.create_done_future">
+<span class="mkapi-object-link">
+
+
+<a href="../../../src/base_loom_server/utils/#base_loom_server.utils.create_done_future" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#base_loom_server.utils.create_done_future" title="base_loom_server.utils.create_done_future">create_done_future</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-paren">)</span><span class="mkapi-arrow"> → </span><span class="mkapi-return"><span class="mkapi-tooltip" title="asyncio">asyncio</span>.<span class="mkapi-tooltip" title="asyncio.futures.Future">Future</span>[None]</span></span>
+</p>
+<div class="mkapi-document">
+<p>Create an asyncio.Future that is already done.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="base_loom_server.utils.get_version">
 <span class="mkapi-object-link">

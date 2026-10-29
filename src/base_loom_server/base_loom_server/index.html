@@ -1661,7 +1661,11 @@
 <span class="normal">1494</span>
 <span class="normal">1495</span>
 <span class="normal">1496</span>
-<span class="normal">1497</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="normal">1497</span>
+<span class="normal">1498</span>
+<span class="normal">1499</span>
+<span class="normal">1500</span>
+<span class="normal">1501</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;BaseLoomServer&quot;</span><span class="p">,</span> <span class="s2">&quot;DEFAULT_DATABASE_PATH&quot;</span><span class="p">,</span> <span class="s2">&quot;MOCK_PORT_NAME&quot;</span><span class="p">]</span>
 
@@ -2016,7 +2020,6 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">loom_connecting</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_loom_connection_state</span><span class="p">()</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_loom_state</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loom_connecting</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_loom_connection_state</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -2548,7 +2551,10 @@
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_PATTERN</span><span class="p">:</span>
                 <span class="c1"># Command a new pattern pick, if there is one, else send 0</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">set_current_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_number</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">set_pick_number</span><span class="p">(</span>
+                        <span class="n">pick_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_number</span><span class="p">,</span>
+                        <span class="n">pick_repeat_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_repeat_number</span><span class="p">,</span>
+                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">increment_pick_number</span><span class="p">()</span>
@@ -2563,8 +2569,6 @@
                         <span class="p">)</span>
                         <span class="k">return</span> <span class="kc">True</span>
 
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">pick_repeat_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_pick</span><span class="o">.</span><span class="n">pick_repeat_number</span>
                 <span class="n">pick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">get_current_pick</span><span class="p">()</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_shafts_to_loom</span><span class="p">(</span><span class="n">pick</span><span class="o">.</span><span class="n">shaft_word</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_jumps</span><span class="p">()</span>
@@ -2572,7 +2576,7 @@
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">WEAVE_TABBY</span><span class="p">:</span>
                 <span class="c1"># Command a new tabby pick, if there is one, else send 0</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span><span class="o">.</span><span class="n">tabby_pick_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">set_current_tabby_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span><span class="o">.</span><span class="n">tabby_pick_number</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">set_tabby_pick_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_tabby_pick</span><span class="o">.</span><span class="n">tabby_pick_number</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">increment_tabby_pick_number</span><span class="p">()</span>
@@ -2594,7 +2598,7 @@
             <span class="k">case</span> <span class="n">ModeEnum</span><span class="o">.</span><span class="n">THREAD</span><span class="p">:</span>
                 <span class="c1"># Advance to the next thread group, if there is one</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span><span class="o">.</span><span class="n">end_number0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">set_current_end_number</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_pattern</span><span class="o">.</span><span class="n">set_end_number</span><span class="p">(</span>
                         <span class="n">end_number0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span><span class="o">.</span><span class="n">end_number0</span><span class="p">,</span>
                         <span class="n">end_number1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span><span class="o">.</span><span class="n">end_number1</span><span class="p">,</span>
                         <span class="n">end_repeat_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jump_end</span><span class="o">.</span><span class="n">end_repeat_number</span><span class="p">,</span>
@@ -2736,13 +2740,14 @@
 
                 <span class="c1"># Parse the command</span>
                 <span class="n">cmd_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cmd_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: ignoring command with no &#39;type&#39; field: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_problem</span><span class="p">(</span>
+                        <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Invalid command; no &#39;type&#39; field: </span><span class="si">{</span><span class="n">data</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">continue</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">cmd_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_command_problem</span><span class="p">(</span>
-                            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Invalid command; no &#39;type&#39; field: </span><span class="si">{</span><span class="n">data</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
-                            <span class="n">severity</span><span class="o">=</span><span class="n">MessageSeverityEnum</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
-                        <span class="p">)</span>
-                        <span class="k">continue</span>
                     <span class="n">command</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                         <span class="n">msg_summary</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
@@ -3129,16 +3134,19 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: do not send reply </span><span class="si">{</span><span class="n">reply_str</span><span class="si">}</span><span class="s2">; not connected&quot;</span><span class="p">)</span>
 <div class="mkapi-source-link" id="base_loom_server.base_loom_server.BaseLoomServer.write_to_loom"><a href="../../../api/base_loom_server/base_loom_server/#base_loom_server.base_loom_server.BaseLoomServer.write_to_loom" title="Go to docs">docs</a></div>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">write_to_loom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">write_to_loom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ascii&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Send data to the loom.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data: The data to send, without a terminator.</span>
-<span class="sd">                (This method will append the terminator).</span>
+<span class="sd">                (This method appends the terminator).</span>
+<span class="sd">            encoding: The method used to encode the data.</span>
+<span class="sd">                Ignored unless data is a str.</span>
+<span class="sd">                The default is &quot;ascii&quot; because that is common for dobby looms.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_writer</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">loom_writer</span><span class="o">.</span><span class="n">is_closing</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot write to the loom: no connection.&quot;</span><span class="p">)</span>
-        <span class="n">data_bytes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">data_bytes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: sending command to loom: </span><span class="si">{</span><span class="n">data_bytes</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loom_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data_bytes</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="p">)</span>
