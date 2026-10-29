@@ -1904,6 +1904,7 @@ class BaseTestLoomServer:
                                 assert reply.name == expected_pattern_names[-1]
                             case "RunState":
                                 assert reply.run_state == RunStateEnum.NOT_SUPPORTED
+                                assert reply.reason == ""
                             case "SeparateThreadingRepeats":
                                 assert expected_current_pattern is not None
                                 assert reply.separate == expected_current_pattern.separate_threading_repeats
