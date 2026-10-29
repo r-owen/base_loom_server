@@ -114,9 +114,14 @@ const RunStateEnum = {
     "STOPPED": 4,
 }
 
+const RunStateReasonEnum = {
+    "NONE": 0,
+    "TIMEOUT": 1,
+}
+
 const NullRunState = {
-    "run_state": RunStateEnum.NOT_SUPPORTED,
-    "reason": "",
+    "state": RunStateEnum.NOT_SUPPORTED,
+    "reason": RunStateReasonEnum.NONE,
 }
 
 const SeverityColors = {
@@ -148,6 +153,11 @@ const RunStateTranslationDict = {
     2: t("running"),
     3: t("stopping"),
     4: t("stopped"),
+}
+
+const RunStateReasonTranslationDict = {
+    0: "",
+    1: t("timed out"),
 }
 
 const ShaftStateTranslationDict = {
@@ -1070,8 +1080,8 @@ class LoomClient {
     */
     displayRunState() {
         let runStateDiv = document.getElementById("run_state_div")
-        const runStateEnum = this.runState.run_state
-        if (runStateEnum == RunStateEnum.NOT_SUPPORTED) {
+        const state = this.runState.state
+        if (state == RunStateEnum.NOT_SUPPORTED) {
             runStateDiv.style.display = "none"
             return
         }
@@ -1080,10 +1090,11 @@ class LoomClient {
         let runStateReasonLabel = document.getElementById("run_state_reason_label")
         let startButton = document.getElementById("start_button")
         let stopButton = document.getElementById("stop_button")
-        startButton.disabled = (runStateEnum == RunStateEnum.RUNNING || runStateEnum == RunStateEnum.STARTING)
-        stopButton.disabled = (runStateEnum == RunStateEnum.STOPPED || runStateEnum == RunStateEnum.STOPPING)
-        runStateLabel.textContent = RunStateTranslationDict[runStateEnum]
-        runStateReasonLabel.textContent = this.runState.reason == "" ? "" : `: ${this.runState.reason}`
+        startButton.disabled = (state == RunStateEnum.RUNNING || state == RunStateEnum.STARTING)
+        stopButton.disabled = (state == RunStateEnum.STOPPED || state == RunStateEnum.STOPPING)
+        runStateLabel.textContent = RunStateTranslationDict[state]
+        const runStateReason = RunStateReasonTranslationDict[this.runState.reason]
+        runStateReasonLabel.textContent = this.runState.reason == "" ? "" : `: ${runStateReason}`
     }
 
     /*

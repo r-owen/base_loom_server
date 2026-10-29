@@ -60,6 +60,13 @@ class RunStateEnum(enum.IntEnum):
     STOPPED = 4
 
 
+class RunStateReasonEnum(enum.IntEnum):
+    """Reasons for the run state transition."""
+
+    NONE = 0
+    TIMEOUT = 1
+
+
 class ShaftStateEnum(enum.IntEnum):
     """The current shaft motion state.
 

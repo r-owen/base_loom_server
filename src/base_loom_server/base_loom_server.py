@@ -27,6 +27,7 @@ from .enums import (
     MessageSeverityEnum,
     ModeEnum,
     RunStateEnum,
+    RunStateReasonEnum,
     ShaftStateEnum,
 )
 from .nmcli_wifi import WiFiManager
@@ -215,8 +216,8 @@ class BaseLoomServer:
         self.jump_end = client_replies.JumpEndNumber()
         self.mode = ModeEnum.WEAVE_PATTERN
         self.run_state = client_replies.RunState(
-            run_state=RunStateEnum.STOPPED if self.supports_start_stop else RunStateEnum.NOT_SUPPORTED,
-            reason="",
+            state=RunStateEnum.STOPPED if self.supports_start_stop else RunStateEnum.NOT_SUPPORTED,
+            reason=RunStateReasonEnum.NONE,
         )
         self.direction_forward: bool = True
         self.wifi_manager: WiFiManager | None = (
@@ -893,9 +894,9 @@ class BaseLoomServer:
         """
         if not self.supports_start_stop:
             raise CommandError("This loom does not support the start command")
-        if self.run_state.run_state in {RunStateEnum.STARTING, RunStateEnum.RUNNING}:
+        if self.run_state.state in {RunStateEnum.STARTING, RunStateEnum.RUNNING}:
             return
-        self.run_state.run_state = RunStateEnum.STARTING
+        self.run_state.state = RunStateEnum.STARTING
         await self.report_run_state()
 
     async def cmd_stop(
@@ -912,9 +913,9 @@ class BaseLoomServer:
         """
         if not self.supports_start_stop:
             raise CommandError("This loom does not support the stop command")
-        if self.run_state.run_state in {RunStateEnum.STOPPING, RunStateEnum.STOPPED}:
+        if self.run_state.state in {RunStateEnum.STOPPING, RunStateEnum.STOPPED}:
             return
-        self.run_state.run_state = RunStateEnum.STOPPING
+        self.run_state.state = RunStateEnum.STOPPING
         await self.report_run_state()
         await self.handle_change(command=command)
 

@@ -29,6 +29,7 @@ from .enums import (
     MessageSeverityEnum,
     ModeEnum,
     RunStateEnum,
+    RunStateReasonEnum,
     ShaftStateEnum,
 )
 from .reduced_pattern import (
@@ -1903,8 +1904,8 @@ class BaseTestLoomServer:
 
                                 assert reply.name == expected_pattern_names[-1]
                             case "RunState":
-                                assert reply.run_state == RunStateEnum.NOT_SUPPORTED
-                                assert reply.reason == ""
+                                assert reply.state == RunStateEnum.NOT_SUPPORTED
+                                assert reply.reason == RunStateReasonEnum.NONE
                             case "SeparateThreadingRepeats":
                                 assert expected_current_pattern is not None
                                 assert reply.separate == expected_current_pattern.separate_threading_repeats
