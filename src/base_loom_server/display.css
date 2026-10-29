@@ -48,6 +48,7 @@ button {
     border-radius: 8px;
     color: var(--text-color);
     font-size: 80%;
+    min-width: 2em;
 }
 
 button.direction_do:disabled {
